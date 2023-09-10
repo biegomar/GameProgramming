@@ -16,8 +16,10 @@ namespace EscapeRoom
 
         public PlayGround(Coordinate dimension)
         {
-            this.rulez = new Rulez();
-            (this.room, this.playerPosition, this.keyPosition, this.doorPosition) = this.rulez.InitialzeEnvironmentOnValidRules(dimension);
+            this.rulez = new Rulez(dimension);
+            (this.room, this.playerPosition, this.keyPosition, this.doorPosition) = this.rulez;
+
+            this.DrawPlayGround();
         }
 
         internal void NextStep(ConsoleKeyInfo input)
@@ -28,6 +30,21 @@ namespace EscapeRoom
             }
 
             this.playerPosition = this.rulez.CalculateNewPlayerPositionOnValidRules(input.Key, this.playerPosition);
-        }            
+        } 
+        
+        private void DrawPlayGround()
+        {
+            int numberOfRows = room.GetLength(1);
+            int numberOfColumns = room.GetLength(0);
+
+            for (int row = 0; row < numberOfRows; row++)
+            {
+                for (int column = 0; column < numberOfColumns; column++)
+                {
+                    Console.Write(room[column, row]);
+                }
+                Console.WriteLine();
+            }           
+        }
     }
 }

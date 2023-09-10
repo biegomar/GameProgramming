@@ -5,8 +5,8 @@ namespace EscapeRoom
     internal class Program
     {
         const string ErrorMessage = "Upps, da ist was schief gegangen...bitte nochmal.";
-        const string LengthMessage = "Bitte gib die Länge des Raumes ein: ";
-        const string WidthMessage = "Bitte gib die Breite des Raumes ein: ";
+        const string WidthMessage = "Bitte gib die Breite (X-Ausdehnung) des Raumes ein: ";
+        const string HeightMessage = "Bitte gib die Höhe (Y-Ausdehnung) des Raumes ein: ";
 
         static void Main(string[] args)
         {
@@ -26,20 +26,20 @@ namespace EscapeRoom
 
             do
             {
-                Console.Write(LengthMessage);
+                Console.Write(WidthMessage);
 
                 while (!int.TryParse(Console.ReadLine(), out x))
                 {
                     Console.WriteLine(ErrorMessage);
-                    Console.Write(LengthMessage);
+                    Console.Write(WidthMessage);
                 }
 
-                Console.Write(WidthMessage);
+                Console.Write(HeightMessage);
 
                 while (!int.TryParse(Console.ReadLine(), out y))
                 {
                     Console.WriteLine(ErrorMessage);
-                    Console.Write(WidthMessage);
+                    Console.Write(HeightMessage);
                 }
 
                 roomDimension = new(x, y);               
