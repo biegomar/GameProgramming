@@ -44,7 +44,7 @@ namespace EscapeRoom
 
                 roomDimension = new(x, y);               
 
-            } while (!Rulez.IsRoomDimensionValid(roomDimension));
+            } while (!PlayGround.IsRoomDimensionValid(roomDimension));
             
             return roomDimension;
         }

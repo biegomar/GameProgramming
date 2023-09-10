@@ -30,26 +30,7 @@ namespace EscapeRoom
             initialPlayerPosition = this.InitialPlayerPosition;
             keyPosition = this.KeyPosition;
             doorPosition = this.DoorPosition;
-        }
-
-        internal static bool IsRoomDimensionValid(Coordinate roomDimension)
-        {
-            int maxDimensionX = 50;
-            int maxDimensionY = 25;
-
-            if (roomDimension.X <= 0 || roomDimension.Y <= 0)
-            {
-                Console.WriteLine("Der Raum benötigt eine Breite und eine Höhe > 0.");
-                return false;
-            }
-            else if (roomDimension.X > maxDimensionX || roomDimension.Y > maxDimensionY)
-            {
-                Console.WriteLine($"Der Raum sollte die maximale Breite ({maxDimensionX}) oder die maximale Höhe ({maxDimensionY}) nicht überschreiten.");
-                return false;
-            }
-
-            return true;
-        }        
+        }             
 
         internal Coordinate CalculateNewPlayerPositionOnValidRules(ConsoleKey input, Coordinate playerPosition)
         {
