@@ -18,15 +18,8 @@ namespace EscapeRoom
         internal Rulez(Coordinate roomDimension)
         {
             this.dimension = roomDimension;
-            this.KeyPosition = this.GetKeyPosition();
             this.Room = this.GenerateRoom();
         }
-
-        internal void Deconstruct(out char[,] room, out Coordinate keyPosition)
-        {
-            room = this.Room;
-            keyPosition = this.KeyPosition;            
-        }             
 
         internal Coordinate CalculateNewPlayerPositionOnValidRules(ConsoleKey input, Coordinate playerPosition)
         {
@@ -64,11 +57,6 @@ namespace EscapeRoom
             }
 
             return '.';
-        }       
-
-        private Coordinate GetKeyPosition()
-        {
-            return new Coordinate(2, 2);
-        }        
+        }                     
     }
 }
