@@ -19,15 +19,13 @@ namespace EscapeRoom
         {
             this.dimension = roomDimension;
             this.KeyPosition = this.GetKeyPosition();
-            this.DoorPosition = this.GetDoorPosition();
             this.Room = this.GenerateRoom();
         }
 
-        internal void Deconstruct(out char[,] room, out Coordinate keyPosition, out Coordinate doorPosition)
+        internal void Deconstruct(out char[,] room, out Coordinate keyPosition)
         {
             room = this.Room;
-            keyPosition = this.KeyPosition;
-            doorPosition = this.DoorPosition;
+            keyPosition = this.KeyPosition;            
         }             
 
         internal Coordinate CalculateNewPlayerPositionOnValidRules(ConsoleKey input, Coordinate playerPosition)
@@ -71,11 +69,6 @@ namespace EscapeRoom
         private Coordinate GetKeyPosition()
         {
             return new Coordinate(2, 2);
-        }
-
-        private Coordinate GetDoorPosition()
-        {
-            return new Coordinate(0, 0);
-        }
+        }        
     }
 }
