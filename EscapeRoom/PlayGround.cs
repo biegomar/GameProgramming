@@ -51,9 +51,14 @@ namespace EscapeRoom
                 throw new QuitException("Ok, das Spiel wird beendet.");
             }
 
-            this.playerPosition = this.rulez.CalculateNewPlayerPositionOnValidRules(input.Key, this.playerPosition);
-        } 
-        
+            this.playerPosition = this.CalculateNewPlayerPositionOnValidRules(input.Key, this.playerPosition);
+        }
+
+        private Coordinate CalculateNewPlayerPositionOnValidRules(ConsoleKey input, Coordinate playerPosition)
+        {
+            return playerPosition;
+        }
+
         private void DrawPlayGround()
         {
             int numberOfRows = room.GetLength(1);

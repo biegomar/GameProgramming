@@ -19,12 +19,7 @@ namespace EscapeRoom
         {
             this.dimension = roomDimension;
             this.Room = this.GenerateRoom();
-        }
-
-        internal Coordinate CalculateNewPlayerPositionOnValidRules(ConsoleKey input, Coordinate playerPosition)
-        {
-            return playerPosition;
-        }
+        }        
 
         private char[,] GenerateRoom()
         {
