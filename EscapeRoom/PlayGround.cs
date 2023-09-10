@@ -10,11 +10,11 @@ namespace EscapeRoom
     {
         private char[,] room;
         private Rulez rulez;
-        private Vector playerPosition;
-        private Vector keyPosition;
-        private Vector doorPosition;
+        private Coordinate playerPosition;
+        private Coordinate keyPosition;
+        private Coordinate doorPosition;
 
-        public PlayGround(Vector dimension)
+        public PlayGround(Coordinate dimension)
         {
             this.rulez = new Rulez();
             (this.room, this.playerPosition, this.keyPosition, this.doorPosition) = this.rulez.InitialzeEnvironmentOnValidRules(dimension);
@@ -28,6 +28,6 @@ namespace EscapeRoom
             }
 
             this.playerPosition = this.rulez.CalculateNewPlayerPositionOnValidRules(input.Key, this.playerPosition);
-        }               
+        }            
     }
 }

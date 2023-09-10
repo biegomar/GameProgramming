@@ -11,21 +11,21 @@ namespace EscapeRoom
     /// </summary>
     internal sealed class GameLoop
     {
-        private readonly Vector dimension;
+        private readonly Coordinate dimension;
         private readonly PlayGround playGround;
        
         /// <summary>
         /// Ctor.
         /// </summary>
         /// <param name="dimension"></param>
-        internal GameLoop(Vector dimension)  
+        internal GameLoop(Coordinate dimension)  
         { 
             this.dimension = dimension;
             this.playGround = new PlayGround(dimension);
         }
 
         /// <summary>
-        /// Hierüber wird das Spiel gestartet.
+        /// Hierüber wird das Spiel gestartet und der eigentliche Game-Loop ausgeführt.
         /// </summary>
         internal void Run()
         {          

@@ -17,12 +17,12 @@ namespace EscapeRoom
             gameLoop.Run();
         }
 
-        private static Vector GetRoomDimension()
+        private static Coordinate GetRoomDimension()
         {
             int x = 0;
             int y = 0;
 
-            Vector roomDimension = new(x, y);
+            Coordinate roomDimension = new(x, y);
 
             do
             {

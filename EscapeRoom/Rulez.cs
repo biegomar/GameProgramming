@@ -9,11 +9,11 @@ namespace EscapeRoom
 {
     internal sealed class Rulez
     {
-        private Vector? dimension;
-        private Vector? keyPosition;
-        private Vector? doorPosition;
+        private Coordinate? dimension;
+        private Coordinate? keyPosition;
+        private Coordinate? doorPosition;
 
-        internal static bool IsRoomDimensionValid(Vector roomDimension)
+        internal static bool IsRoomDimensionValid(Coordinate roomDimension)
         {
             if (roomDimension.X <= 0 || roomDimension.Y <= 0)
             {
@@ -29,36 +29,36 @@ namespace EscapeRoom
             return true;
         }
 
-        internal (char[,] room, Vector playerPosition, Vector keyPosition, Vector doorPosition) InitialzeEnvironmentOnValidRules(Vector dimension)
+        internal (char[,] room, Coordinate playerPosition, Coordinate keyPosition, Coordinate doorPosition) InitialzeEnvironmentOnValidRules(Coordinate dimension)
         {
             this.dimension = dimension;
             return (this.GenerateRoom(dimension), this.GetPlayerPosition(), this.GetKeyPosition(), this.GetDoorPosition());
         }
 
-        internal Vector CalculateNewPlayerPositionOnValidRules(ConsoleKey input, Vector playerPosition)
+        internal Coordinate CalculateNewPlayerPositionOnValidRules(ConsoleKey input, Coordinate playerPosition)
         {
             return playerPosition;
         }
 
-        private char[,] GenerateRoom(Vector dimension)
+        private char[,] GenerateRoom(Coordinate dimension)
         {
             return new char[dimension.X - 1, dimension.Y - 1];
         }
 
-        private Vector GetPlayerPosition()
+        private Coordinate GetPlayerPosition()
         {
-            return new Vector(1, 1);
+            return new Coordinate(1, 1);
         }
 
-        private Vector GetKeyPosition()
+        private Coordinate GetKeyPosition()
         {
-            this.keyPosition = new Vector(2, 2);
+            this.keyPosition = new Coordinate(2, 2);
             return this.keyPosition;
         }
 
-        private Vector GetDoorPosition()
+        private Coordinate GetDoorPosition()
         {
-            this.doorPosition = new Vector(0, 0);
+            this.doorPosition = new Coordinate(0, 0);
             return this.doorPosition;
         }
     }

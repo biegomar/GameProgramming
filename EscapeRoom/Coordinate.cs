@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace EscapeRoom
 {
     /// <summary>
-    /// 2D-Vektor für die Spielfeld-Dimension, die Playerposition, ...
+    /// 2D-Koordinate für die Spielfeld-Dimension, die Playerposition, ...
     /// </summary>
-    internal sealed record Vector(int X, int Y);
+    internal sealed record Coordinate(int X, int Y);
 }
