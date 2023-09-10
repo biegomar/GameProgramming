@@ -35,8 +35,10 @@ namespace EscapeRoom
 
         public PlayGround(Coordinate dimension)
         {
+            this.playerPosition = this.GetPlayerPosition();
+
             this.rulez = new Rulez(dimension);
-            (this.room, this.playerPosition, this.keyPosition, this.doorPosition) = this.rulez;
+            (this.room, this.keyPosition, this.doorPosition) = this.rulez;
 
             this.DrawPlayGround();
         }
@@ -64,6 +66,11 @@ namespace EscapeRoom
                 }
                 Console.WriteLine();
             }           
+        }
+
+        private Coordinate GetPlayerPosition()
+        {
+            return new Coordinate(1, 1);
         }
     }
 }
