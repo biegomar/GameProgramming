@@ -12,6 +12,8 @@ namespace EscapeRoom
         private Coordinate playerPosition;
         private Coordinate keyPosition;
         private Coordinate doorPosition;
+        private int origRow;
+        private int origCol;
 
         internal static bool IsRoomDimensionValid(Coordinate roomDimension)
         {
@@ -40,6 +42,9 @@ namespace EscapeRoom
 
             this.room = this.GenerateRoom(dimension);
 
+            origRow = Console.CursorTop + 1;
+            origCol = Console.CursorLeft;
+
             this.DrawPlayGround();
         }
 
@@ -51,15 +56,34 @@ namespace EscapeRoom
             }
 
             this.playerPosition = this.CalculateNewPlayerPositionOnValidRules(input.Key, this.playerPosition);
+            this.DrawPlayGround();
         }
 
-        private Coordinate CalculateNewPlayerPositionOnValidRules(ConsoleKey input, Coordinate playerPosition)
-        {
+        private Coordinate CalculateNewPlayerPositionOnValidRules(ConsoleKey inputKey, Coordinate playerPosition)
+        {            
+            switch (inputKey)
+            {                
+                case ConsoleKey.LeftArrow:
+                    return new Coordinate(playerPosition.X - 1, playerPosition.Y);
+                case ConsoleKey.UpArrow:
+                    return new Coordinate(playerPosition.X, playerPosition.Y - 1);
+                case ConsoleKey.RightArrow:
+                    return new Coordinate(playerPosition.X + 1, playerPosition.Y);
+                case ConsoleKey.DownArrow:
+                    return new Coordinate(playerPosition.X, playerPosition.Y + 1);                               
+                default:
+                    break;
+            }
+
             return playerPosition;
         }
 
         private void DrawPlayGround()
         {
+            UpdatePlayGround();
+
+            Console.SetCursorPosition(origCol, origRow);
+
             int numberOfRows = room.GetLength(1);
             int numberOfColumns = room.GetLength(0);
 
@@ -71,6 +95,20 @@ namespace EscapeRoom
                 }
                 Console.WriteLine();
             }           
+        }
+
+        private void UpdatePlayGround()
+        {
+            int numberOfRows = room.GetLength(1);
+            int numberOfColumns = room.GetLength(0);
+
+            for (int row = 0; row < numberOfRows; row++)
+            {
+                for (int column = 0; column < numberOfColumns; column++)
+                {
+                    room[column, row] = GetRoomPositionContent(column, row);                    
+                }                
+            }
         }
 
         private Coordinate GetPlayerPosition()
