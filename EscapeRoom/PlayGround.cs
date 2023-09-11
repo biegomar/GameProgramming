@@ -187,7 +187,7 @@ namespace EscapeRoom
             }
             else if (column == this.doorPosition.X && row == this.doorPosition.Y)
             {
-                return 'O';
+                return '#';
             }
             else if (column == 0 || column == dimension.X - 1)
             {
