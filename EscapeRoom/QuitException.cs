@@ -8,7 +8,7 @@ namespace EscapeRoom
 {
     internal class QuitException : Exception
     {
-        public QuitException(string message) : base(message)
+        internal QuitException(string message) : base(message)
         {
         }
     }
