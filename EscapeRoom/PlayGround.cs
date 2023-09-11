@@ -9,7 +9,6 @@ namespace EscapeRoom
     internal sealed class PlayGround
     {
         private char[,] room;
-        private Rulez rulez;
         private Coordinate playerPosition;
         private Coordinate keyPosition;
         private Coordinate doorPosition;
@@ -39,7 +38,7 @@ namespace EscapeRoom
             this.doorPosition = this.GetDoorPosition();
             this.keyPosition = this.GetKeyPosition();
 
-            this.rulez = new Rulez(dimension);            
+            this.room = this.GenerateRoom(dimension);
 
             this.DrawPlayGround();
         }
@@ -87,6 +86,39 @@ namespace EscapeRoom
         private Coordinate GetKeyPosition()
         {
             return new Coordinate(2, 2);
+        }
+
+        private char[,] GenerateRoom(Coordinate dimension)
+        {
+            var roomDefinition = new char[dimension.X, dimension.Y];
+
+            for (int row = 0; row < dimension.Y; row++)
+            {
+                for (int column = 0; column < dimension.X; column++)
+                {
+                    roomDefinition[column, row] = GetRoomPositionContent(column, row);
+                }
+            }
+
+            return roomDefinition;
+        }
+
+        private char GetRoomPositionContent(int column, int row)
+        {
+            if (column == this.playerPosition.X && row == this.playerPosition.Y)
+            {
+                return 'ß';
+            }
+            else if (column == this.doorPosition.X && row == this.doorPosition.Y)
+            {
+                return '|';
+            }
+            else if (column == this.keyPosition.X && row == this.keyPosition.Y)
+            {
+                return '§';
+            }
+
+            return '.';
         }
     }
 }
