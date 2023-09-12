@@ -9,18 +9,23 @@ namespace EscapeRoom
 {
     internal sealed class PlayGround
     {
-        private char[,] room;
+        private readonly Random randomGenerator;
+
+        private readonly char[,] room;
+
         private Coordinate playerPosition;
-        private Coordinate keyPosition;
-        private Coordinate doorPosition;
-        private Coordinate dimension;
-        private int origRow;
-        private int origCol;       
+
+        private readonly Coordinate keyPosition;
+        private readonly Coordinate doorPosition;
+        private readonly Coordinate dimension;
+        
+        private const int origRow = 13; //logo size
+        private const int origCol = 0;       
 
         internal static bool IsRoomDimensionValid(Coordinate dimension)
         {
-            int maxDimensionX = 50;
-            int maxDimensionY = 25;
+            int maxDimensionX = Console.WindowWidth-2;
+            int maxDimensionY = Console.WindowHeight-(origRow+2); //take care of the logo size.
 
             if (dimension.X <= 0 || dimension.Y <= 0)
             {
@@ -38,17 +43,14 @@ namespace EscapeRoom
 
         internal PlayGround(Coordinate dimension)
         {
+            this.randomGenerator = new Random();
+
             this.dimension = dimension;
             this.playerPosition = this.GetPlayerPosition();
             this.doorPosition = this.GetDoorPosition();
             this.keyPosition = this.GetKeyPosition();
 
-            this.room = this.GenerateRoom();
-
-            origRow = Console.CursorTop + 1;
-            origCol = Console.CursorLeft;
-
-            this.DrawPlayGround();
+            this.room = this.GenerateRoom();                        
         }
 
         internal void NextStep(ConsoleKeyInfo input)
@@ -60,6 +62,25 @@ namespace EscapeRoom
 
             this.playerPosition = this.CalculateNewPlayerPositionOnValidRules(input.Key, this.playerPosition);
             this.DrawPlayGround();
+        }
+
+        internal void DrawPlayGround()
+        {
+            UpdatePlayGround();
+
+            Console.SetCursorPosition(origCol, origRow);
+
+            int numberOfRows = room.GetLength(1);
+            int numberOfColumns = room.GetLength(0);
+
+            for (int row = 0; row < numberOfRows; row++)
+            {
+                for (int column = 0; column < numberOfColumns; column++)
+                {
+                    Console.Write(room[column, row]);
+                }
+                Console.WriteLine();
+            }
         }
 
         private Coordinate CalculateNewPlayerPositionOnValidRules(ConsoleKey inputKey, Coordinate playerPosition)
@@ -114,26 +135,7 @@ namespace EscapeRoom
             }
 
             return playerPosition;
-        }
-
-        private void DrawPlayGround()
-        {
-            UpdatePlayGround();
-
-            Console.SetCursorPosition(origCol, origRow);
-
-            int numberOfRows = room.GetLength(1);
-            int numberOfColumns = room.GetLength(0);
-
-            for (int row = 0; row < numberOfRows; row++)
-            {
-                for (int column = 0; column < numberOfColumns; column++)
-                {
-                    Console.Write(room[column, row]);
-                }
-                Console.WriteLine();
-            }           
-        }
+        }       
 
         private void UpdatePlayGround()
         {
@@ -151,17 +153,54 @@ namespace EscapeRoom
 
         private Coordinate GetPlayerPosition()
         {
-            return new Coordinate(1, 1);
+            int playerPositionX = this.randomGenerator.Next(1, this.dimension.X - 1);
+            int playerPositionY = this.randomGenerator.Next(1, this.dimension.Y - 1);
+
+            return new Coordinate(playerPositionX, playerPositionY);
         }
 
         private Coordinate GetDoorPosition()
         {
-            return new Coordinate(0, 0);
+            //choose a side (0 = up, 1 = down, 2 = left, 3 = right)
+            int side = this.randomGenerator.Next(0,4);
+            
+            if (side is 0 or 1)
+            {
+                int doorPositionX = this.randomGenerator.Next(1, this.dimension.X - 1);
+
+                if (side == 0)
+                {
+                    return new Coordinate(doorPositionX, 0);
+                }
+
+                return new Coordinate(doorPositionX, this.dimension.Y - 1);
+            }
+            else
+            {
+                int doorPositionY = this.randomGenerator.Next(1, this.dimension.Y - 1);
+
+                if (side == 2)
+                {
+                    return new Coordinate(0, doorPositionY);
+                }
+
+                return new Coordinate(this.dimension.X - 1, doorPositionY);
+            }            
         }
 
         private Coordinate GetKeyPosition()
         {
-            return new Coordinate(2, 2);
+            int keyPositionX;
+            int keyPositionY;
+
+            //player and key should not be placed at the same position.
+            do
+            {
+                keyPositionX = this.randomGenerator.Next(1, this.dimension.X - 1);
+                keyPositionY = this.randomGenerator.Next(1, this.dimension.Y - 1);
+            } while (keyPositionX == this.playerPosition.X && keyPositionY == this.playerPosition.Y);
+
+            return new Coordinate(keyPositionX, keyPositionY);
         }
 
         private char[,] GenerateRoom()

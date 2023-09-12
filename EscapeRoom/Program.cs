@@ -14,6 +14,8 @@ namespace EscapeRoom
 
             var gameLoop = new GameLoop(GetRoomDimension());
 
+            PrintLogo();
+
             gameLoop.Run();
         }
 
@@ -49,8 +51,14 @@ namespace EscapeRoom
             return roomDimension;
         }
 
-        private static void PrintIntro()
+        private static void PrintIntro() 
+        { 
+            PrintLogo();
+        }
+
+        private static void PrintLogo()
         {
+            Console.Clear();
             Console.WriteLine("");
             Console.WriteLine("▓█████   ██████  ▄████▄   ▄▄▄       ██▓███  ▓█████  ██▀███   ▒█████   ▒█████   ███▄ ▄███▓");
             Console.WriteLine("▓█   ▀ ▒██    ▒ ▒██▀ ▀█  ▒████▄    ▓██░  ██▒▓█   ▀ ▓██ ▒ ██▒▒██▒  ██▒▒██▒  ██▒▓██▒▀█▀ ██▒");

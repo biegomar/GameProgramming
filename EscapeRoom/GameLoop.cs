@@ -28,7 +28,9 @@ namespace EscapeRoom
         /// Hierüber wird das Spiel gestartet und der eigentliche Game-Loop ausgeführt.
         /// </summary>
         internal void Run()
-        {          
+        {
+            playGround.DrawPlayGround();
+
             try
             {
                 do
