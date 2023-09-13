@@ -29,6 +29,8 @@ namespace EscapeRoom
         private const char topWallIcon = '-';
         private const char groundIcon = '.';
 
+        private bool isKeyCollected = false;
+
         internal static bool IsRoomDimensionValid(Coordinate dimension)
         {
             int maxDimensionX = Console.WindowWidth-2;
@@ -67,7 +69,9 @@ namespace EscapeRoom
                 throw new QuitException("Ok, das Spiel wird beendet.");
             }
 
-            this.RedrawPlayerPosition(input);            
+            this.SetNewPlayerPosition(input);   
+            
+            this.CheckIfKeyIsCollected();
         }      
 
         internal void DrawInitialPlayGround()
@@ -90,7 +94,7 @@ namespace EscapeRoom
             Console.CursorVisible = true;
         }
 
-        private void RedrawPlayerPosition(ConsoleKeyInfo input)
+        private void SetNewPlayerPosition(ConsoleKeyInfo input)
         {
             Coordinate oldPlayerPosition = new Coordinate(this.playerPosition.X, this.playerPosition.Y);
             this.playerPosition = this.CalculateNewPlayerPositionOnValidRules(input.Key, this.playerPosition);
@@ -102,6 +106,14 @@ namespace EscapeRoom
             Console.Write(playerIcon);
 
             Console.SetCursorPosition(origCol, origRow + this.dimension.Y + 1);
+        }
+
+        private void CheckIfKeyIsCollected()
+        {
+            this.isKeyCollected = 
+                this.playerPosition.X == this.keyPosition.X 
+                && this.playerPosition.Y == this.keyPosition.Y
+                || this.isKeyCollected;
         }
 
         private Coordinate CalculateNewPlayerPositionOnValidRules(ConsoleKey inputKey, Coordinate playerPosition)
