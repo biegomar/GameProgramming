@@ -29,7 +29,7 @@ namespace EscapeRoom
         /// </summary>
         internal void Run()
         {
-            playGround.DrawPlayGround();
+            playGround.DrawInitialPlayGround();
 
             try
             {
@@ -47,6 +47,8 @@ namespace EscapeRoom
 
                 throw;
             }
+
+            playGround.CleanUp();
         }     
     }
 }

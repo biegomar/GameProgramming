@@ -18,9 +18,16 @@ namespace EscapeRoom
         private readonly Coordinate keyPosition;
         private readonly Coordinate doorPosition;
         private readonly Coordinate dimension;
-        
+
         private const int origRow = 13; //logo size
-        private const int origCol = 0;       
+        private const int origCol = 0;
+
+        private const char playerIcon = 'ß';
+        private const char doorIcon = '#';
+        private const char keyIcon = '§';
+        private const char sideWallIcon = '|';
+        private const char topWallIcon = '-';
+        private const char groundIcon = '.';
 
         internal static bool IsRoomDimensionValid(Coordinate dimension)
         {
@@ -60,22 +67,17 @@ namespace EscapeRoom
                 throw new QuitException("Ok, das Spiel wird beendet.");
             }
 
-            this.playerPosition = this.CalculateNewPlayerPositionOnValidRules(input.Key, this.playerPosition);
-            this.DrawPlayGround();
-        }
+            this.RedrawPlayerPosition(input);            
+        }      
 
-        internal void DrawPlayGround()
+        internal void DrawInitialPlayGround()
         {
-            UpdatePlayGround();
+            Console.CursorVisible = false;
+            Console.SetCursorPosition(origCol, origRow);            
 
-            Console.SetCursorPosition(origCol, origRow);
-
-            int numberOfRows = room.GetLength(1);
-            int numberOfColumns = room.GetLength(0);
-
-            for (int row = 0; row < numberOfRows; row++)
+            for (int row = 0; row < this.dimension.Y; row++)
             {
-                for (int column = 0; column < numberOfColumns; column++)
+                for (int column = 0; column < this.dimension.X; column++)
                 {
                     Console.Write(room[column, row]);
                 }
@@ -83,11 +85,27 @@ namespace EscapeRoom
             }
         }
 
+        internal void CleanUp()
+        {
+            Console.CursorVisible = true;
+        }
+
+        private void RedrawPlayerPosition(ConsoleKeyInfo input)
+        {
+            Coordinate oldPlayerPosition = new Coordinate(this.playerPosition.X, this.playerPosition.Y);
+            this.playerPosition = this.CalculateNewPlayerPositionOnValidRules(input.Key, this.playerPosition);
+
+            Console.SetCursorPosition(origCol + oldPlayerPosition.X, origRow + oldPlayerPosition.Y);
+            Console.Write(groundIcon);
+
+            Console.SetCursorPosition(origCol + this.playerPosition.X, origRow + this.playerPosition.Y);
+            Console.Write(playerIcon);
+
+            Console.SetCursorPosition(origCol, origRow + this.dimension.Y + 1);
+        }
+
         private Coordinate CalculateNewPlayerPositionOnValidRules(ConsoleKey inputKey, Coordinate playerPosition)
         {
-            int numberOfRows = room.GetLength(1);
-            int numberOfColumns = room.GetLength(0);
-
             switch (inputKey)
             {                
                 case ConsoleKey.LeftArrow:
@@ -113,7 +131,7 @@ namespace EscapeRoom
                 case ConsoleKey.RightArrow:
                     {
                         var newPosition = new Coordinate(playerPosition.X + 1, playerPosition.Y);
-                        if (newPosition.X == numberOfColumns - 1)
+                        if (newPosition.X == this.dimension.X - 1)
                         {
                             Console.Beep();
                             return playerPosition;
@@ -123,7 +141,7 @@ namespace EscapeRoom
                 case ConsoleKey.DownArrow:
                     {
                         var newPosition = new Coordinate(playerPosition.X, playerPosition.Y + 1);
-                        if (newPosition.Y == numberOfRows - 1)
+                        if (newPosition.Y == this.dimension.Y - 1)
                         {
                             Console.Beep();
                             return playerPosition;
@@ -136,20 +154,6 @@ namespace EscapeRoom
 
             return playerPosition;
         }       
-
-        private void UpdatePlayGround()
-        {
-            int numberOfRows = room.GetLength(1);
-            int numberOfColumns = room.GetLength(0);
-
-            for (int row = 0; row < numberOfRows; row++)
-            {
-                for (int column = 0; column < numberOfColumns; column++)
-                {
-                    room[column, row] = GetRoomPositionContent(column, row);                    
-                }                
-            }
-        }
 
         private Coordinate GetPlayerPosition()
         {
@@ -213,7 +217,7 @@ namespace EscapeRoom
                 {
                     roomDefinition[column, row] = GetRoomPositionContent(column, row);
                 }
-            }
+            }            
 
             return roomDefinition;
         }
@@ -222,26 +226,26 @@ namespace EscapeRoom
         {
             if (column == this.playerPosition.X && row == this.playerPosition.Y)
             {
-                return 'ß';
+                return playerIcon;
             }
             else if (column == this.doorPosition.X && row == this.doorPosition.Y)
             {
-                return '#';
+                return doorIcon;
             }
             else if (column == 0 || column == dimension.X - 1)
             {
-                return '|';
+                return sideWallIcon;
             }
             else if (row == 0 || row == dimension.Y - 1)
             {
-                return '-';
+                return topWallIcon;
             }            
             else if (column == this.keyPosition.X && row == this.keyPosition.Y)
             {
-                return '§';
+                return keyIcon;
             }
 
-            return '.';
+            return groundIcon;
         }
     }
 }
