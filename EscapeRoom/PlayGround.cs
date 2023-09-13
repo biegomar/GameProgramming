@@ -29,6 +29,8 @@ namespace EscapeRoom
         private const char topWallIcon = '-';
         private const char groundIcon = '.';
 
+        private const string youWin = "█▓▒▒░░░You win!░░░▒▒▓█";
+
         private bool isKeyCollected = false;
 
         private ConsoleColor defaultColor = Console.ForegroundColor;
@@ -71,7 +73,9 @@ namespace EscapeRoom
                 throw new QuitException("Ok, das Spiel wird beendet.");
             }
 
-            this.SetNewPlayerPosition(input);   
+            this.SetNewPlayerPosition(input);
+
+            this.CheckIfYouWin();
             
             this.CheckIfKeyIsCollected();
 
@@ -135,6 +139,7 @@ namespace EscapeRoom
             Console.SetCursorPosition(origCol + itemPosition.X, origRow + itemPosition.Y);
             room[itemPosition.X, itemPosition.Y] = itemIcon;
             Console.Write(itemIcon);
+            
             this.SetItemColorAndPrint(itemPosition, itemIcon);
         }
 
@@ -152,6 +157,16 @@ namespace EscapeRoom
                 this.playerPosition.X == this.keyPosition.X 
                 && this.playerPosition.Y == this.keyPosition.Y
                 || this.isKeyCollected;
+        }
+
+        private void CheckIfYouWin()
+        {
+            if (this.isKeyCollected 
+                && this.playerPosition.X == this.doorPosition.X
+                && this.playerPosition.Y == this.doorPosition.Y)
+            {
+                throw new WinException(youWin);
+            }
         }
 
         private Coordinate CalculateNewPlayerPositionOnValidRules(ConsoleKey inputKey, Coordinate playerPosition)

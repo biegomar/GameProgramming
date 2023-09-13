@@ -42,6 +42,10 @@ namespace EscapeRoom
             {
                 Console.WriteLine(ex.Message);
             }
+            catch (WinException ex)
+            {
+                Console.WriteLine();
+            }
             catch (Exception)
             {
 
