@@ -31,6 +31,8 @@ namespace EscapeRoom
 
         private bool isKeyCollected = false;
 
+        private ConsoleColor defaultColor = Console.ForegroundColor;
+
         internal static bool IsRoomDimensionValid(Coordinate dimension)
         {
             int maxDimensionX = Console.WindowWidth-2;
@@ -72,6 +74,8 @@ namespace EscapeRoom
             this.SetNewPlayerPosition(input);   
             
             this.CheckIfKeyIsCollected();
+
+            this.SetItemColorAndPrint(this.doorPosition, doorIcon);
         }      
 
         internal void DrawInitialPlayGround()
@@ -83,10 +87,30 @@ namespace EscapeRoom
             {
                 for (int column = 0; column < this.dimension.X; column++)
                 {
+                    this.SetItemColor(column, row);
                     Console.Write(room[column, row]);
+                    this.ResetItemColor();
                 }
                 Console.WriteLine();
             }
+        }
+
+        private void SetItemColor(int column, int row)
+        {           
+            ConsoleColor doorColor = this.isKeyCollected ? ConsoleColor.Green : ConsoleColor.Red;
+
+            Console.ForegroundColor = room[column, row] switch
+            {
+                playerIcon => ConsoleColor.Yellow,
+                doorIcon => doorColor,
+                keyIcon => ConsoleColor.Blue,
+                _ => defaultColor                
+            };                        
+        }
+
+        private void ResetItemColor()
+        {
+            Console.ForegroundColor = defaultColor;
         }
 
         internal void CleanUp()
@@ -99,13 +123,27 @@ namespace EscapeRoom
             Coordinate oldPlayerPosition = new Coordinate(this.playerPosition.X, this.playerPosition.Y);
             this.playerPosition = this.CalculateNewPlayerPositionOnValidRules(input.Key, this.playerPosition);
 
-            Console.SetCursorPosition(origCol + oldPlayerPosition.X, origRow + oldPlayerPosition.Y);
-            Console.Write(groundIcon);
+            SetItemPositionAndColorAndPrint(oldPlayerPosition, groundIcon);          
 
-            Console.SetCursorPosition(origCol + this.playerPosition.X, origRow + this.playerPosition.Y);
-            Console.Write(playerIcon);
+            SetItemPositionAndColorAndPrint(this.playerPosition, playerIcon);
 
             Console.SetCursorPosition(origCol, origRow + this.dimension.Y + 1);
+        }
+
+        private void SetItemPositionAndColorAndPrint(Coordinate itemPosition, char itemIcon)
+        {
+            Console.SetCursorPosition(origCol + itemPosition.X, origRow + itemPosition.Y);
+            room[itemPosition.X, itemPosition.Y] = itemIcon;
+            Console.Write(itemIcon);
+            this.SetItemColorAndPrint(itemPosition, itemIcon);
+        }
+
+        private void SetItemColorAndPrint(Coordinate itemPosition, char itemIcon)
+        {
+            this.SetItemColor(itemPosition.X, itemPosition.Y);
+            Console.SetCursorPosition(origCol + itemPosition.X, origRow + itemPosition.Y);
+            Console.Write(itemIcon);
+            this.ResetItemColor();
         }
 
         private void CheckIfKeyIsCollected()
