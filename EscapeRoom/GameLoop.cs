@@ -11,7 +11,6 @@ namespace EscapeRoom
     /// </summary>
     internal sealed class GameLoop
     {
-        private readonly Coordinate dimension;
         private readonly PlayGround playGround;
        
         /// <summary>
@@ -20,7 +19,6 @@ namespace EscapeRoom
         /// <param name="dimension"></param>
         internal GameLoop(Coordinate dimension)  
         { 
-            this.dimension = dimension;
             this.playGround = new PlayGround(dimension);
         }
 
