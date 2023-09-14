@@ -19,8 +19,8 @@ namespace EscapeRoom
         private readonly Coordinate doorPosition;
         private readonly Coordinate dimension;
 
-        private const int origRow = 13; //logo size
-        private const int origCol = 0;
+        private const int originalRowPosition = 13; //logo size
+        private const int originalColumnPosition = 0;
 
         private const char playerIcon = 'ß';
         private const char doorIcon = '#';
@@ -38,7 +38,7 @@ namespace EscapeRoom
         internal static bool IsRoomDimensionValid(Coordinate dimension)
         {
             int maxDimensionX = Console.WindowWidth-2;
-            int maxDimensionY = Console.WindowHeight-(origRow+2); //take care of the logo size.
+            int maxDimensionY = Console.WindowHeight-(originalRowPosition+2); //take care of the logo size.
 
             if (dimension.X <= 0 || dimension.Y <= 0)
             {
@@ -67,25 +67,27 @@ namespace EscapeRoom
         }
 
         internal void NextStep(ConsoleKeyInfo input)
-        {            
-            if (input.Key == ConsoleKey.Q)
-            {
-                throw new QuitException("Ok, das Spiel wird beendet.");
-            }
+        {
+            this.CheckIfPlayerWantsToQuit(input);
 
-            this.SetNewPlayerPosition(input);
+            this.SetNewPlayerPositionAndPrint(input);
 
             this.CheckIfYouWin();
-            
+
             this.CheckIfKeyIsCollected();
 
             this.SetItemColorAndPrint(this.doorPosition, doorIcon);
-        }      
+        }
+
+        private void SetCursorBelowPlayGround()
+        {
+            Console.SetCursorPosition(0, originalRowPosition + dimension.Y + 1);
+        }
 
         internal void DrawInitialPlayGround()
         {
             Console.CursorVisible = false;
-            Console.SetCursorPosition(origCol, origRow);            
+            Console.SetCursorPosition(originalColumnPosition, originalRowPosition);            
 
             for (int row = 0; row < this.dimension.Y; row++)
             {
@@ -122,7 +124,7 @@ namespace EscapeRoom
             Console.CursorVisible = true;
         }
 
-        private void SetNewPlayerPosition(ConsoleKeyInfo input)
+        private void SetNewPlayerPositionAndPrint(ConsoleKeyInfo input)
         {
             Coordinate oldPlayerPosition = new Coordinate(this.playerPosition.X, this.playerPosition.Y);
             this.playerPosition = this.CalculateNewPlayerPositionOnValidRules(input.Key, this.playerPosition);
@@ -131,12 +133,12 @@ namespace EscapeRoom
 
             SetItemPositionAndColorAndPrint(this.playerPosition, playerIcon);
 
-            Console.SetCursorPosition(origCol, origRow + this.dimension.Y + 1);
+            Console.SetCursorPosition(originalColumnPosition, originalRowPosition + this.dimension.Y + 1);
         }
 
         private void SetItemPositionAndColorAndPrint(Coordinate itemPosition, char itemIcon)
         {
-            Console.SetCursorPosition(origCol + itemPosition.X, origRow + itemPosition.Y);
+            Console.SetCursorPosition(originalColumnPosition + itemPosition.X, originalRowPosition + itemPosition.Y);
             room[itemPosition.X, itemPosition.Y] = itemIcon;
             Console.Write(itemIcon);
             
@@ -146,7 +148,7 @@ namespace EscapeRoom
         private void SetItemColorAndPrint(Coordinate itemPosition, char itemIcon)
         {
             this.SetItemColor(itemPosition.X, itemPosition.Y);
-            Console.SetCursorPosition(origCol + itemPosition.X, origRow + itemPosition.Y);
+            Console.SetCursorPosition(originalColumnPosition + itemPosition.X, originalRowPosition + itemPosition.Y);
             Console.Write(itemIcon);
             this.ResetItemColor();
         }
@@ -165,18 +167,39 @@ namespace EscapeRoom
                 && this.playerPosition.X == this.doorPosition.X
                 && this.playerPosition.Y == this.doorPosition.Y)
             {
+                SetCursorBelowPlayGround();
                 throw new WinException(youWin);
+            }
+        }
+        private void CheckIfPlayerWantsToQuit(ConsoleKeyInfo input)
+        {
+            if (input.Key == ConsoleKey.Q)
+            {
+                SetCursorBelowPlayGround();
+                throw new QuitException("Ok, das Spiel wird beendet.");
             }
         }
 
         private Coordinate CalculateNewPlayerPositionOnValidRules(ConsoleKey inputKey, Coordinate playerPosition)
         {
+            bool isPlayerOnOpenDoor(Coordinate positionToCheck)
+            {
+                if(this.isKeyCollected 
+                    && positionToCheck.X == this.doorPosition.X 
+                    && positionToCheck.Y == this.doorPosition.Y)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
             switch (inputKey)
             {                
                 case ConsoleKey.LeftArrow:
                     {
                         var newPosition = new Coordinate(playerPosition.X - 1, playerPosition.Y);
-                        if (newPosition.X == 0)
+                        if (newPosition.X == 0 && !isPlayerOnOpenDoor(newPosition))
                         {
                             Console.Beep();
                             return playerPosition;
@@ -186,7 +209,7 @@ namespace EscapeRoom
                 case ConsoleKey.UpArrow:
                     {
                         var newPosition = new Coordinate(playerPosition.X, playerPosition.Y - 1);
-                        if (newPosition.Y == 0)
+                        if (newPosition.Y == 0 && !isPlayerOnOpenDoor(newPosition))
                         {
                             Console.Beep();
                             return playerPosition;
@@ -196,7 +219,7 @@ namespace EscapeRoom
                 case ConsoleKey.RightArrow:
                     {
                         var newPosition = new Coordinate(playerPosition.X + 1, playerPosition.Y);
-                        if (newPosition.X == this.dimension.X - 1)
+                        if (newPosition.X == this.dimension.X - 1 && !isPlayerOnOpenDoor(newPosition))
                         {
                             Console.Beep();
                             return playerPosition;
@@ -206,7 +229,7 @@ namespace EscapeRoom
                 case ConsoleKey.DownArrow:
                     {
                         var newPosition = new Coordinate(playerPosition.X, playerPosition.Y + 1);
-                        if (newPosition.Y == this.dimension.Y - 1)
+                        if (newPosition.Y == this.dimension.Y - 1 && !isPlayerOnOpenDoor(newPosition))
                         {
                             Console.Beep();
                             return playerPosition;

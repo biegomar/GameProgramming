@@ -35,7 +35,7 @@ namespace EscapeRoom
             {
                 do
                 {
-                    playGround.NextStep(Console.ReadKey());
+                    playGround.NextStep(Console.ReadKey(true));
                 } while (true);
             }
             catch (QuitException ex)
@@ -44,7 +44,7 @@ namespace EscapeRoom
             }
             catch (WinException ex)
             {
-                Console.WriteLine();
+                Console.WriteLine(ex.Message);
             }
             catch (Exception)
             {
