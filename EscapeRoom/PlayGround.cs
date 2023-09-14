@@ -201,7 +201,7 @@ namespace EscapeRoom
                         var newPosition = new Coordinate(playerPosition.X - 1, playerPosition.Y);
                         if (newPosition.X == 0 && !isPlayerOnOpenDoor(newPosition))
                         {
-                            Console.Beep();
+                            BeepOnWallBump();
                             return playerPosition;
                         }
                         return newPosition;
@@ -211,7 +211,7 @@ namespace EscapeRoom
                         var newPosition = new Coordinate(playerPosition.X, playerPosition.Y - 1);
                         if (newPosition.Y == 0 && !isPlayerOnOpenDoor(newPosition))
                         {
-                            Console.Beep();
+                            BeepOnWallBump();
                             return playerPosition;
                         }
                         return newPosition;
@@ -221,7 +221,7 @@ namespace EscapeRoom
                         var newPosition = new Coordinate(playerPosition.X + 1, playerPosition.Y);
                         if (newPosition.X == this.dimension.X - 1 && !isPlayerOnOpenDoor(newPosition))
                         {
-                            Console.Beep();
+                            BeepOnWallBump();
                             return playerPosition;
                         }
                         return newPosition;
@@ -231,7 +231,7 @@ namespace EscapeRoom
                         var newPosition = new Coordinate(playerPosition.X, playerPosition.Y + 1);
                         if (newPosition.Y == this.dimension.Y - 1 && !isPlayerOnOpenDoor(newPosition))
                         {
-                            Console.Beep();
+                            BeepOnWallBump();
                             return playerPosition;
                         }
                         return newPosition;
@@ -241,7 +241,7 @@ namespace EscapeRoom
             }
 
             return playerPosition;
-        }       
+        }
 
         private Coordinate GetPlayerPosition()
         {
@@ -335,5 +335,11 @@ namespace EscapeRoom
 
             return groundIcon;
         }
+
+        private static void BeepOnWallBump()
+        {
+            Console.Beep(300, 60);
+        }
+
     }
 }

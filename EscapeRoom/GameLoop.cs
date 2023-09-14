@@ -46,10 +46,9 @@ namespace EscapeRoom
             {
                 Console.WriteLine(ex.Message);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                Console.WriteLine(ex.Message);
             }
 
             playGround.CleanUp();
