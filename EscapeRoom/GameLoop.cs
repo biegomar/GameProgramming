@@ -9,24 +9,19 @@ namespace EscapeRoom
     /// <summary>
     /// Zentraler GameLoop.
     /// </summary>
-    internal sealed class GameLoop
+    internal static class GameLoop
     {
-        private readonly PlayGround playGround;
-       
-        /// <summary>
-        /// Ctor.
-        /// </summary>
-        /// <param name="dimension"></param>
-        internal GameLoop(Coordinate dimension)  
-        { 
-            this.playGround = new PlayGround(dimension);
-        }
-
+ 
         /// <summary>
         /// Hierüber wird das Spiel gestartet und der eigentliche Game-Loop ausgeführt.
         /// </summary>
-        internal void Run()
-        {
+        internal static void Run()
+        {            
+            Coordinate dimension = GetRoomDimension();
+            PlayGround playGround = new PlayGround(dimension);
+
+            Constants.PrintLogo();
+
             playGround.DrawInitialPlayGround();
 
             try
@@ -50,6 +45,38 @@ namespace EscapeRoom
             }
 
             playGround.CleanUp();
-        }     
+        }
+
+        private static Coordinate GetRoomDimension()
+        {
+            int x = 0;
+            int y = 0;
+
+            Coordinate roomDimension = new(x, y);
+
+            do
+            {
+                Console.Write(Constants.WidthMessage);
+
+                while (!int.TryParse(Console.ReadLine(), out x))
+                {
+                    Console.WriteLine(Constants.ErrorMessage);
+                    Console.Write(Constants.WidthMessage);
+                }
+
+                Console.Write(Constants.HeightMessage);
+
+                while (!int.TryParse(Console.ReadLine(), out y))
+                {
+                    Console.WriteLine(Constants.ErrorMessage);
+                    Console.Write(Constants.HeightMessage);
+                }
+
+                roomDimension = new(x, y);
+
+            } while (!PlayGround.IsRoomDimensionValid(roomDimension));
+
+            return roomDimension;
+        }
     }
 }
