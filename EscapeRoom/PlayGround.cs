@@ -17,19 +17,7 @@ namespace EscapeRoom
 
         private readonly Coordinate keyPosition;
         private readonly Coordinate doorPosition;
-        private readonly Coordinate dimension;
-
-        private const int originalRowPosition = 13; //logo size
-        private const int originalColumnPosition = 0;
-
-        private const char playerIcon = 'ß';
-        private const char doorIcon = '#';
-        private const char keyIcon = '§';
-        private const char sideWallIcon = '|';
-        private const char topWallIcon = '-';
-        private const char groundIcon = '.';
-
-        private const string youWin = "█▓▒▒░░░You win!░░░▒▒▓█";
+        private readonly Coordinate dimension;      
 
         private bool isKeyCollected = false;
 
@@ -38,7 +26,7 @@ namespace EscapeRoom
         internal static bool IsRoomDimensionValid(Coordinate dimension)
         {
             int maxDimensionX = Console.WindowWidth-2;
-            int maxDimensionY = Console.WindowHeight-(originalRowPosition+2); //take care of the logo size.
+            int maxDimensionY = Console.WindowHeight-(Constants.OriginalRowPosition+2); //take care of the logo size.
 
             if (dimension.X <= 0 || dimension.Y <= 0)
             {
@@ -76,18 +64,18 @@ namespace EscapeRoom
 
             this.CheckIfKeyIsCollected();
 
-            this.SetItemColorAndPrint(this.doorPosition, doorIcon);
+            this.SetItemColorAndPrint(this.doorPosition, Constants.DoorIcon);
         }
 
         private void SetCursorBelowPlayGround()
         {
-            Console.SetCursorPosition(0, originalRowPosition + dimension.Y + 1);
+            Console.SetCursorPosition(0, Constants.OriginalRowPosition + dimension.Y + 1);
         }
 
         internal void DrawInitialPlayGround()
         {
             Console.CursorVisible = false;
-            Console.SetCursorPosition(originalColumnPosition, originalRowPosition);            
+            Console.SetCursorPosition(Constants.OriginalColumnPosition, Constants.OriginalRowPosition);            
 
             for (int row = 0; row < this.dimension.Y; row++)
             {
@@ -107,9 +95,9 @@ namespace EscapeRoom
 
             Console.ForegroundColor = room[column, row] switch
             {
-                playerIcon => ConsoleColor.Yellow,
-                doorIcon => doorColor,
-                keyIcon => ConsoleColor.Blue,
+                Constants.PlayerIcon => ConsoleColor.Yellow,
+                Constants.DoorIcon => doorColor,
+                Constants.KeyIcon => ConsoleColor.Blue,
                 _ => defaultColor                
             };                        
         }
@@ -129,16 +117,16 @@ namespace EscapeRoom
             Coordinate oldPlayerPosition = new Coordinate(this.playerPosition.X, this.playerPosition.Y);
             this.playerPosition = this.CalculateNewPlayerPositionOnValidRules(input.Key, this.playerPosition);
 
-            SetItemPositionAndColorAndPrint(oldPlayerPosition, groundIcon);          
+            SetItemPositionAndColorAndPrint(oldPlayerPosition, Constants.GroundIcon);          
 
-            SetItemPositionAndColorAndPrint(this.playerPosition, playerIcon);
+            SetItemPositionAndColorAndPrint(this.playerPosition, Constants.PlayerIcon);
 
-            Console.SetCursorPosition(originalColumnPosition, originalRowPosition + this.dimension.Y + 1);
+            Console.SetCursorPosition(Constants.OriginalColumnPosition, Constants.OriginalRowPosition + this.dimension.Y + 1);
         }
 
         private void SetItemPositionAndColorAndPrint(Coordinate itemPosition, char itemIcon)
         {
-            Console.SetCursorPosition(originalColumnPosition + itemPosition.X, originalRowPosition + itemPosition.Y);
+            Console.SetCursorPosition(Constants.OriginalColumnPosition + itemPosition.X, Constants.OriginalRowPosition + itemPosition.Y);
             room[itemPosition.X, itemPosition.Y] = itemIcon;
             Console.Write(itemIcon);
             
@@ -148,7 +136,7 @@ namespace EscapeRoom
         private void SetItemColorAndPrint(Coordinate itemPosition, char itemIcon)
         {
             this.SetItemColor(itemPosition.X, itemPosition.Y);
-            Console.SetCursorPosition(originalColumnPosition + itemPosition.X, originalRowPosition + itemPosition.Y);
+            Console.SetCursorPosition(Constants.OriginalColumnPosition + itemPosition.X, Constants.OriginalRowPosition + itemPosition.Y);
             Console.Write(itemIcon);
             this.ResetItemColor();
         }
@@ -168,7 +156,7 @@ namespace EscapeRoom
                 && this.playerPosition.Y == this.doorPosition.Y)
             {
                 SetCursorBelowPlayGround();
-                throw new WinException(youWin);
+                throw new WinException(Constants.YouWin);
             }
         }
         private void CheckIfPlayerWantsToQuit(ConsoleKeyInfo input)
@@ -314,26 +302,26 @@ namespace EscapeRoom
         {
             if (column == this.playerPosition.X && row == this.playerPosition.Y)
             {
-                return playerIcon;
+                return Constants.PlayerIcon;
             }
             else if (column == this.doorPosition.X && row == this.doorPosition.Y)
             {
-                return doorIcon;
+                return Constants.DoorIcon;
             }
             else if (column == 0 || column == dimension.X - 1)
             {
-                return sideWallIcon;
+                return Constants.SideWallIcon;
             }
             else if (row == 0 || row == dimension.Y - 1)
             {
-                return topWallIcon;
+                return Constants.TopWallIcon;
             }            
             else if (column == this.keyPosition.X && row == this.keyPosition.Y)
             {
-                return keyIcon;
+                return Constants.KeyIcon;
             }
 
-            return groundIcon;
+            return Constants.GroundIcon;
         }
 
         private static void BeepOnWallBump()
