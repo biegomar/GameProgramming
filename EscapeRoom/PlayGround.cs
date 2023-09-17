@@ -183,17 +183,8 @@ namespace EscapeRoom
             }
 
             switch (inputKey)
-            {                
-                case ConsoleKey.LeftArrow:
-                    {
-                        var newPosition = new Coordinate(playerPosition.X - 1, playerPosition.Y);
-                        if (newPosition.X == 0 && !isPlayerOnOpenDoor(newPosition))
-                        {
-                            BeepOnWallBump();
-                            return playerPosition;
-                        }
-                        return newPosition;
-                    }                    
+            {               
+                case ConsoleKey.W:
                 case ConsoleKey.UpArrow:
                     {
                         var newPosition = new Coordinate(playerPosition.X, playerPosition.Y - 1);
@@ -203,17 +194,8 @@ namespace EscapeRoom
                             return playerPosition;
                         }
                         return newPosition;
-                    }                    
-                case ConsoleKey.RightArrow:
-                    {
-                        var newPosition = new Coordinate(playerPosition.X + 1, playerPosition.Y);
-                        if (newPosition.X == this.dimension.X - 1 && !isPlayerOnOpenDoor(newPosition))
-                        {
-                            BeepOnWallBump();
-                            return playerPosition;
-                        }
-                        return newPosition;
-                    }                    
+                    }
+                case ConsoleKey.S:
                 case ConsoleKey.DownArrow:
                     {
                         var newPosition = new Coordinate(playerPosition.X, playerPosition.Y + 1);
@@ -223,7 +205,29 @@ namespace EscapeRoom
                             return playerPosition;
                         }
                         return newPosition;
-                    }                                                  
+                    }
+                case ConsoleKey.D:
+                case ConsoleKey.RightArrow:
+                    {
+                        var newPosition = new Coordinate(playerPosition.X + 1, playerPosition.Y);
+                        if (newPosition.X == this.dimension.X - 1 && !isPlayerOnOpenDoor(newPosition))
+                        {
+                            BeepOnWallBump();
+                            return playerPosition;
+                        }
+                        return newPosition;
+                    }
+                case ConsoleKey.A:
+                case ConsoleKey.LeftArrow:
+                    {
+                        var newPosition = new Coordinate(playerPosition.X - 1, playerPosition.Y);
+                        if (newPosition.X == 0 && !isPlayerOnOpenDoor(newPosition))
+                        {
+                            BeepOnWallBump();
+                            return playerPosition;
+                        }
+                        return newPosition;
+                    }                
                 default:
                     break;
             }
