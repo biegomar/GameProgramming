@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EscapeRoom
+﻿namespace EscapeRoom
 {
+    /// <summary>
+    /// This exception will be fired if the player wins the game.
+    /// </summary>
     internal class WinException : Exception
     {
         internal WinException(string message) : base(message)

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EscapeRoom
+﻿namespace EscapeRoom
 {
-    internal static class Constants
+    /// <summary>
+    /// A small utility class.
+    /// </summary>
+    internal static class Utils
     {
         internal const string ErrorMessage = "Upps, da ist was schief gegangen...bitte nochmal.";
         internal const string WidthMessage = "Bitte gib die Breite (X-Ausdehnung) des Raumes ein: ";
@@ -23,8 +20,7 @@ namespace EscapeRoom
         internal const char GroundIcon = '.';
 
         internal const string YouWin = "█▓▒▒░░░You win!░░░▒▒▓█";
-
-
+        
         internal static void PrintRulez()
         {
             Console.WriteLine();
@@ -35,9 +31,9 @@ namespace EscapeRoom
             Console.WriteLine("-----------");
             Console.WriteLine();
             Console.WriteLine("Folgende Items kannst Du auf dem Spielfeld erkennen:");
-            Console.WriteLine($"{Constants.PlayerIcon} - der Spieler (also Du!)");
-            Console.WriteLine($"{Constants.DoorIcon} - die Tür. Sie befindet sich irgendwo auf dem Rand des Spielfelds. Ist sie rot, ist sie noch verschlossen. Ansonsten ist sie grün und kann passiert werden.");
-            Console.WriteLine($"{Constants.KeyIcon} - der Schlüssel. Finde ihn und der Weg ist frei.");
+            Console.WriteLine($"{PlayerIcon} - der Spieler (also Du!)");
+            Console.WriteLine($"{DoorIcon} - die Tür. Sie befindet sich irgendwo auf dem Rand des Spielfelds. Ist sie rot, ist sie noch verschlossen. Ansonsten ist sie grün und kann passiert werden.");
+            Console.WriteLine($"{KeyIcon} - der Schlüssel. Finde ihn und der Weg ist frei.");
             Console.WriteLine();
             Console.WriteLine("Steuerung");
             Console.WriteLine("---------");
@@ -65,6 +61,11 @@ namespace EscapeRoom
             Console.WriteLine("   ░  ░      ░  ░ ░            ░  ░            ░  ░   ░         ░ ░      ░ ░         ░   ");
             Console.WriteLine("                ░                                                                        ");
             Console.WriteLine();
+        }
+
+        internal static void BeepOnWrongEntry()
+        {
+            Console.Beep(300, 60);
         }
     }
 }

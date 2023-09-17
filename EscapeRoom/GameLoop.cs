@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EscapeRoom
+﻿namespace EscapeRoom
 {
     /// <summary>
-    /// Zentraler GameLoop.
+    /// Central GameLoop.
     /// </summary>
     internal static class GameLoop
     {
- 
         /// <summary>
-        /// Hierüber wird das Spiel gestartet und der eigentliche Game-Loop ausgeführt.
+        /// Real entry point of the game.
         /// </summary>
         internal static void Run()
         {
@@ -22,7 +15,7 @@ namespace EscapeRoom
                 Coordinate dimension = GetRoomDimension();
                 PlayGround playGround = new PlayGround(dimension);
 
-                Constants.PrintLogo();
+                Utils.PrintLogo();
 
                 playGround.DrawInitialPlayGround();
 
@@ -64,23 +57,21 @@ namespace EscapeRoom
 
             do
             {
-                Console.Write(Constants.WidthMessage);
-
+                Console.Write(Utils.WidthMessage);
                 while (!int.TryParse(Console.ReadLine(), out x))
                 {
-                    Console.WriteLine(Constants.ErrorMessage);
-                    Console.Write(Constants.WidthMessage);
+                    Console.WriteLine(Utils.ErrorMessage);
+                    Console.Write(Utils.WidthMessage);
                 }
 
-                Console.Write(Constants.HeightMessage);
-
+                Console.Write(Utils.HeightMessage);
                 while (!int.TryParse(Console.ReadLine(), out y))
                 {
-                    Console.WriteLine(Constants.ErrorMessage);
-                    Console.Write(Constants.HeightMessage);
+                    Console.WriteLine(Utils.ErrorMessage);
+                    Console.Write(Utils.HeightMessage);
                 }
 
-                roomDimension = new(x, y);
+                roomDimension = new Coordinate(x, y);
 
             } while (!PlayGround.IsRoomDimensionValid(roomDimension));
 
@@ -91,14 +82,23 @@ namespace EscapeRoom
         {
             Console.WriteLine(message);
             Console.WriteLine();
-            Console.WriteLine("Möchtest Du eine weitere Runde spielen?");
-            if (Console.ReadKey(true).Key is ConsoleKey.Y or ConsoleKey.J)
+            Console.WriteLine("Möchtest Du eine weitere Runde spielen (j/n)?");
+            while (true)
             {
-                Console.WriteLine();
-                return true;
-            }
+                ConsoleKey key = Console.ReadKey(true).Key;
+                if (key is ConsoleKey.Y or ConsoleKey.J)
+                {
+                    Console.WriteLine();
+                    return true;
+                }
+                
+                if (key == ConsoleKey.N)
+                {
+                    return false;
+                }
 
-            return false;
+                Utils.BeepOnWrongEntry();
+            }                        
         }
     }
 }

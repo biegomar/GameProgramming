@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EscapeRoom
+﻿namespace EscapeRoom
 {
     internal sealed class PlayGround
     {
@@ -26,7 +19,7 @@ namespace EscapeRoom
         internal static bool IsRoomDimensionValid(Coordinate dimension)
         {
             int maxDimensionX = Console.WindowWidth-2;
-            int maxDimensionY = Console.WindowHeight-(Constants.OriginalRowPosition+2); //take care of the logo size.
+            int maxDimensionY = Console.WindowHeight-(Utils.OriginalRowPosition+2); //take care of the logo size.
 
             if (dimension.X <= 0 || dimension.Y <= 0)
             {
@@ -44,46 +37,47 @@ namespace EscapeRoom
 
         internal PlayGround(Coordinate dimension)
         {
-            this.randomGenerator = new Random();
+            randomGenerator = new Random();
 
             this.dimension = dimension;
-            this.playerPosition = this.GetPlayerPosition();
-            this.doorPosition = this.GetDoorPosition();
-            this.keyPosition = this.GetKeyPosition();
+            playerPosition = GetPlayerPosition();
+            doorPosition = GetDoorPosition();
+            keyPosition = GetKeyPosition();
 
-            this.room = this.GenerateRoom();                        
+            room = GenerateRoom();                        
         }
 
         internal void NextStep(ConsoleKeyInfo input)
         {
-            this.CheckIfPlayerWantsToQuit(input);
-
-            this.SetNewPlayerPositionAndPrint(input);
-
-            this.CheckIfYouWin();
-
-            this.CheckIfKeyIsCollected();
-
-            this.SetItemColorAndPrint(this.doorPosition, Constants.DoorIcon);
+            CheckIfPlayerWantsToQuit(input);
+            SetNewPlayerPositionAndPrint(input);
+            CheckIfYouWin();
+            CheckIfKeyIsCollected();
+            SetItemColorAndPrint(doorPosition, Utils.DoorIcon);
         }
 
+        internal void CleanUp()
+        {
+            Console.CursorVisible = true;
+        }
+        
         private void SetCursorBelowPlayGround()
         {
-            Console.SetCursorPosition(0, Constants.OriginalRowPosition + dimension.Y + 1);
+            Console.SetCursorPosition(0, Utils.OriginalRowPosition + dimension.Y + 1);
         }
 
         internal void DrawInitialPlayGround()
         {
             Console.CursorVisible = false;
-            Console.SetCursorPosition(Constants.OriginalColumnPosition, Constants.OriginalRowPosition);            
+            Console.SetCursorPosition(Utils.OriginalColumnPosition, Utils.OriginalRowPosition);            
 
-            for (int row = 0; row < this.dimension.Y; row++)
+            for (int row = 0; row < dimension.Y; row++)
             {
-                for (int column = 0; column < this.dimension.X; column++)
+                for (int column = 0; column < dimension.X; column++)
                 {
-                    this.SetItemColor(column, row);
+                    SetItemColor(column, row);
                     Console.Write(room[column, row]);
-                    this.ResetItemColor();
+                    ResetItemColor();
                 }
                 Console.WriteLine();
             }
@@ -91,13 +85,13 @@ namespace EscapeRoom
 
         private void SetItemColor(int column, int row)
         {           
-            ConsoleColor doorColor = this.isKeyCollected ? ConsoleColor.Green : ConsoleColor.Red;
+            ConsoleColor doorColor = isKeyCollected ? ConsoleColor.Green : ConsoleColor.Red;
 
             Console.ForegroundColor = room[column, row] switch
             {
-                Constants.PlayerIcon => ConsoleColor.Yellow,
-                Constants.DoorIcon => doorColor,
-                Constants.KeyIcon => ConsoleColor.Blue,
+                Utils.PlayerIcon => ConsoleColor.Yellow,
+                Utils.DoorIcon => doorColor,
+                Utils.KeyIcon => ConsoleColor.Blue,
                 _ => defaultColor                
             };                        
         }
@@ -107,56 +101,51 @@ namespace EscapeRoom
             Console.ForegroundColor = defaultColor;
         }
 
-        internal void CleanUp()
-        {
-            Console.CursorVisible = true;
-        }
-
         private void SetNewPlayerPositionAndPrint(ConsoleKeyInfo input)
         {
-            Coordinate oldPlayerPosition = new Coordinate(this.playerPosition.X, this.playerPosition.Y);
-            this.playerPosition = this.CalculateNewPlayerPositionOnValidRules(input.Key, this.playerPosition);
+            Coordinate oldPlayerPosition = new Coordinate(playerPosition.X, playerPosition.Y);
+            playerPosition = CalculateNewPlayerPositionOnValidRules(input.Key, playerPosition);
 
-            SetItemPositionAndColorAndPrint(oldPlayerPosition, Constants.GroundIcon);          
+            SetItemPositionAndColorAndPrint(oldPlayerPosition, Utils.GroundIcon);          
 
-            SetItemPositionAndColorAndPrint(this.playerPosition, Constants.PlayerIcon);
+            SetItemPositionAndColorAndPrint(playerPosition, Utils.PlayerIcon);
 
-            Console.SetCursorPosition(Constants.OriginalColumnPosition, Constants.OriginalRowPosition + this.dimension.Y + 1);
+            Console.SetCursorPosition(Utils.OriginalColumnPosition, Utils.OriginalRowPosition + dimension.Y + 1);
         }
 
         private void SetItemPositionAndColorAndPrint(Coordinate itemPosition, char itemIcon)
         {
-            Console.SetCursorPosition(Constants.OriginalColumnPosition + itemPosition.X, Constants.OriginalRowPosition + itemPosition.Y);
+            Console.SetCursorPosition(Utils.OriginalColumnPosition + itemPosition.X, Utils.OriginalRowPosition + itemPosition.Y);
             room[itemPosition.X, itemPosition.Y] = itemIcon;
             Console.Write(itemIcon);
             
-            this.SetItemColorAndPrint(itemPosition, itemIcon);
+            SetItemColorAndPrint(itemPosition, itemIcon);
         }
 
         private void SetItemColorAndPrint(Coordinate itemPosition, char itemIcon)
         {
-            this.SetItemColor(itemPosition.X, itemPosition.Y);
-            Console.SetCursorPosition(Constants.OriginalColumnPosition + itemPosition.X, Constants.OriginalRowPosition + itemPosition.Y);
+            SetItemColor(itemPosition.X, itemPosition.Y);
+            Console.SetCursorPosition(Utils.OriginalColumnPosition + itemPosition.X, Utils.OriginalRowPosition + itemPosition.Y);
             Console.Write(itemIcon);
-            this.ResetItemColor();
+            ResetItemColor();
         }
 
         private void CheckIfKeyIsCollected()
         {
-            this.isKeyCollected = 
-                this.playerPosition.X == this.keyPosition.X 
-                && this.playerPosition.Y == this.keyPosition.Y
-                || this.isKeyCollected;
+            isKeyCollected = 
+                playerPosition.X == keyPosition.X 
+                && playerPosition.Y == keyPosition.Y
+                || isKeyCollected;
         }
 
         private void CheckIfYouWin()
         {
-            if (this.isKeyCollected 
-                && this.playerPosition.X == this.doorPosition.X
-                && this.playerPosition.Y == this.doorPosition.Y)
+            if (isKeyCollected 
+                && playerPosition.X == doorPosition.X
+                && playerPosition.Y == doorPosition.Y)
             {
                 SetCursorBelowPlayGround();
-                throw new WinException(Constants.YouWin);
+                throw new WinException(Utils.YouWin);
             }
         }
         private void CheckIfPlayerWantsToQuit(ConsoleKeyInfo input)
@@ -170,11 +159,11 @@ namespace EscapeRoom
 
         private Coordinate CalculateNewPlayerPositionOnValidRules(ConsoleKey inputKey, Coordinate playerPosition)
         {
-            bool isPlayerOnOpenDoor(Coordinate positionToCheck)
+            bool IsPlayerOnOpenDoor(Coordinate positionToCheck)
             {
-                if(this.isKeyCollected 
-                    && positionToCheck.X == this.doorPosition.X 
-                    && positionToCheck.Y == this.doorPosition.Y)
+                if(isKeyCollected 
+                    && positionToCheck.X == doorPosition.X 
+                    && positionToCheck.Y == doorPosition.Y)
                 {
                     return true;
                 }
@@ -188,9 +177,9 @@ namespace EscapeRoom
                 case ConsoleKey.UpArrow:
                     {
                         var newPosition = new Coordinate(playerPosition.X, playerPosition.Y - 1);
-                        if (newPosition.Y == 0 && !isPlayerOnOpenDoor(newPosition))
+                        if (newPosition.Y == 0 && !IsPlayerOnOpenDoor(newPosition))
                         {
-                            BeepOnWallBump();
+                            Utils.BeepOnWrongEntry();
                             return playerPosition;
                         }
                         return newPosition;
@@ -199,9 +188,9 @@ namespace EscapeRoom
                 case ConsoleKey.DownArrow:
                     {
                         var newPosition = new Coordinate(playerPosition.X, playerPosition.Y + 1);
-                        if (newPosition.Y == this.dimension.Y - 1 && !isPlayerOnOpenDoor(newPosition))
+                        if (newPosition.Y == dimension.Y - 1 && !IsPlayerOnOpenDoor(newPosition))
                         {
-                            BeepOnWallBump();
+                            Utils.BeepOnWrongEntry();
                             return playerPosition;
                         }
                         return newPosition;
@@ -210,9 +199,9 @@ namespace EscapeRoom
                 case ConsoleKey.RightArrow:
                     {
                         var newPosition = new Coordinate(playerPosition.X + 1, playerPosition.Y);
-                        if (newPosition.X == this.dimension.X - 1 && !isPlayerOnOpenDoor(newPosition))
+                        if (newPosition.X == dimension.X - 1 && !IsPlayerOnOpenDoor(newPosition))
                         {
-                            BeepOnWallBump();
+                            Utils.BeepOnWrongEntry();
                             return playerPosition;
                         }
                         return newPosition;
@@ -221,9 +210,9 @@ namespace EscapeRoom
                 case ConsoleKey.LeftArrow:
                     {
                         var newPosition = new Coordinate(playerPosition.X - 1, playerPosition.Y);
-                        if (newPosition.X == 0 && !isPlayerOnOpenDoor(newPosition))
+                        if (newPosition.X == 0 && !IsPlayerOnOpenDoor(newPosition))
                         {
-                            BeepOnWallBump();
+                            Utils.BeepOnWrongEntry();
                             return playerPosition;
                         }
                         return newPosition;
@@ -237,8 +226,8 @@ namespace EscapeRoom
 
         private Coordinate GetPlayerPosition()
         {
-            int playerPositionX = this.randomGenerator.Next(1, this.dimension.X - 1);
-            int playerPositionY = this.randomGenerator.Next(1, this.dimension.Y - 1);
+            int playerPositionX = randomGenerator.Next(1, dimension.X - 1);
+            int playerPositionY = randomGenerator.Next(1, dimension.Y - 1);
 
             return new Coordinate(playerPositionX, playerPositionY);
         }
@@ -246,30 +235,28 @@ namespace EscapeRoom
         private Coordinate GetDoorPosition()
         {
             //choose a side (0 = up, 1 = down, 2 = left, 3 = right)
-            int side = this.randomGenerator.Next(0,4);
+            int side = randomGenerator.Next(0,4);
             
             if (side is 0 or 1)
             {
-                int doorPositionX = this.randomGenerator.Next(1, this.dimension.X - 1);
+                int doorPositionX = randomGenerator.Next(1, dimension.X - 1);
 
                 if (side == 0)
                 {
                     return new Coordinate(doorPositionX, 0);
                 }
 
-                return new Coordinate(doorPositionX, this.dimension.Y - 1);
+                return new Coordinate(doorPositionX, dimension.Y - 1);
             }
-            else
+
+            int doorPositionY = randomGenerator.Next(1, dimension.Y - 1);
+
+            if (side == 2)
             {
-                int doorPositionY = this.randomGenerator.Next(1, this.dimension.Y - 1);
+                return new Coordinate(0, doorPositionY);
+            }
 
-                if (side == 2)
-                {
-                    return new Coordinate(0, doorPositionY);
-                }
-
-                return new Coordinate(this.dimension.X - 1, doorPositionY);
-            }            
+            return new Coordinate(dimension.X - 1, doorPositionY);
         }
 
         private Coordinate GetKeyPosition()
@@ -280,16 +267,16 @@ namespace EscapeRoom
             //player and key should not be placed at the same position.
             do
             {
-                keyPositionX = this.randomGenerator.Next(1, this.dimension.X - 1);
-                keyPositionY = this.randomGenerator.Next(1, this.dimension.Y - 1);
-            } while (keyPositionX == this.playerPosition.X && keyPositionY == this.playerPosition.Y);
+                keyPositionX = randomGenerator.Next(1, dimension.X - 1);
+                keyPositionY = randomGenerator.Next(1, dimension.Y - 1);
+            } while (keyPositionX == playerPosition.X && keyPositionY == playerPosition.Y);
 
             return new Coordinate(keyPositionX, keyPositionY);
         }
 
         private char[,] GenerateRoom()
         {
-            var roomDefinition = new char[dimension.X, dimension.Y];
+            char[,] roomDefinition = new char[dimension.X, dimension.Y];
 
             for (int row = 0; row < dimension.Y; row++)
             {
@@ -304,34 +291,30 @@ namespace EscapeRoom
 
         private char GetRoomPositionContent(int column, int row)
         {
-            if (column == this.playerPosition.X && row == this.playerPosition.Y)
+            if (column == playerPosition.X && row == playerPosition.Y)
             {
-                return Constants.PlayerIcon;
-            }
-            else if (column == this.doorPosition.X && row == this.doorPosition.Y)
-            {
-                return Constants.DoorIcon;
-            }
-            else if (column == 0 || column == dimension.X - 1)
-            {
-                return Constants.SideWallIcon;
-            }
-            else if (row == 0 || row == dimension.Y - 1)
-            {
-                return Constants.TopWallIcon;
-            }            
-            else if (column == this.keyPosition.X && row == this.keyPosition.Y)
-            {
-                return Constants.KeyIcon;
+                return Utils.PlayerIcon;
             }
 
-            return Constants.GroundIcon;
-        }
+            if (column == doorPosition.X && row == doorPosition.Y)
+            {
+                return Utils.DoorIcon;
+            }
 
-        private static void BeepOnWallBump()
-        {
-            Console.Beep(300, 60);
-        }
+            if (column == 0 || column == dimension.X - 1)
+            {
+                return Utils.SideWallIcon;
+            }
+            if (row == 0 || row == dimension.Y - 1)
+            {
+                return Utils.TopWallIcon;
+            }
+            if (column == keyPosition.X && row == keyPosition.Y)
+            {
+                return Utils.KeyIcon;
+            }
 
+            return Utils.GroundIcon;
+        }       
     }
 }

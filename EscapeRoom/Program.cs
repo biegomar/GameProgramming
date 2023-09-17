@@ -1,23 +1,18 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace EscapeRoom
+﻿namespace EscapeRoom
 {
     internal class Program
     {      
         static void Main(string[] args)
         {
-            PrintIntro();
-                       
+            PrintIntro();                      
 
             GameLoop.Run();
         }      
 
         private static void PrintIntro() 
         { 
-            Constants.PrintLogo();
-            Constants.PrintRulez();
-        }
-
-       
+            Utils.PrintLogo();
+            Utils.PrintRulez();
+        }      
     }
 }
