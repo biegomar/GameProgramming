@@ -15,6 +15,7 @@ namespace EscapeRoom
         private static void PrintIntro() 
         { 
             Constants.PrintLogo();
+            Constants.PrintRulez();
         }
 
        
