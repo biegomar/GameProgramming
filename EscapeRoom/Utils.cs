@@ -24,7 +24,7 @@
         internal static void PrintRulez()
         {
             Console.WriteLine();
-            Console.WriteLine("Du stehst allein auf weiter Flur und versucht aus dem Raum, in dem Du Dich befindest zu entkommen.");
+            Console.WriteLine("Du stehst allein auf weiter Flur und versucht aus dem Raum in dem Du Dich befindest zu entkommen.");
             Console.WriteLine("Doch so einfach ist es nicht. Die Tür, die Du entdeckst ist verschlossen und lässt sich nur über einen Schlüssel öffnen. Such den Schlüssel!");
             Console.WriteLine();
             Console.WriteLine("Spielaufbau");
