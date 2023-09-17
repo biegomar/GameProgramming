@@ -16,35 +16,43 @@ namespace EscapeRoom
         /// Hierüber wird das Spiel gestartet und der eigentliche Game-Loop ausgeführt.
         /// </summary>
         internal static void Run()
-        {            
-            Coordinate dimension = GetRoomDimension();
-            PlayGround playGround = new PlayGround(dimension);
-
-            Constants.PrintLogo();
-
-            playGround.DrawInitialPlayGround();
-
-            try
+        {
+            do
             {
-                do
+                Coordinate dimension = GetRoomDimension();
+                PlayGround playGround = new PlayGround(dimension);
+
+                Constants.PrintLogo();
+
+                playGround.DrawInitialPlayGround();
+
+                try
                 {
-                    playGround.NextStep(Console.ReadKey(true));
-                } while (true);
-            }
-            catch (QuitException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (WinException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+                    do
+                    {
+                        playGround.NextStep(Console.ReadKey(true));
+                    } while (true);
+                }
+                catch (QuitException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Environment.Exit(0);
+                }
+                catch (WinException ex)
+                {
+                    if (!WantToContinueGame(ex.Message))
+                    {
+                        Environment.Exit(0);
+                    }                                       
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Environment.Exit(0);
+                }
 
-            playGround.CleanUp();
+                playGround.CleanUp();
+            } while (true);
         }
 
         private static Coordinate GetRoomDimension()
@@ -77,6 +85,20 @@ namespace EscapeRoom
             } while (!PlayGround.IsRoomDimensionValid(roomDimension));
 
             return roomDimension;
+        }
+
+        private static bool WantToContinueGame(string message)
+        {
+            Console.WriteLine(message);
+            Console.WriteLine();
+            Console.WriteLine("Möchtest Du eine weitere Runde spielen?");
+            if (Console.ReadKey(true).Key is ConsoleKey.Y or ConsoleKey.J)
+            {
+                Console.WriteLine();
+                return true;
+            }
+
+            return false;
         }
     }
 }
