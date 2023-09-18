@@ -84,7 +84,7 @@
         {
             Console.WriteLine(message);
             Console.WriteLine();
-            Console.WriteLine("Möchtest Du eine weitere Runde spielen (j/n)?");
+            Console.WriteLine(Utils.WantToContinueGame);
             while (true)
             {
                 ConsoleKey key = Console.ReadKey(true).Key;

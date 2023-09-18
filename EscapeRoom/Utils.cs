@@ -8,6 +8,9 @@
         internal const string ErrorMessage = "Upps, da ist was schief gegangen...bitte nochmal.";
         internal const string WidthMessage = "Bitte gib die Breite (X-Ausdehnung) des Raumes ein: ";
         internal const string HeightMessage = "Bitte gib die Höhe (Y-Ausdehnung) des Raumes ein: ";
+        internal const string WantToContinueGame = "Möchtest Du eine weitere Runde spielen (j/n)?";
+        internal const string QuitGame = "Ok, das Spiel wird beendet.";
+        internal const string EnterRightPlayGroundDimension = "Der Raum benötigt eine Breite und eine Höhe > 0.";       
 
         internal const int OriginalRowPosition = 13; //logo size
         internal const int OriginalColumnPosition = 0;

@@ -23,12 +23,12 @@
 
             if (dimension.X <= 0 || dimension.Y <= 0)
             {
-                Console.WriteLine("Der Raum benötigt eine Breite und eine Höhe > 0.");
+                Console.WriteLine(Utils.EnterRightPlayGroundDimension);
                 return false;
             }
             else if (dimension.X > maxDimensionX || dimension.Y > maxDimensionY)
             {
-                Console.WriteLine($"Der Raum sollte die maximale Breite ({maxDimensionX}) oder die maximale Höhe ({maxDimensionY}) nicht überschreiten.");
+                Console.WriteLine($"Der Raum sollte die maximale Breite ({maxDimensionX}) oder die maximale Höhe ({maxDimensionY}) nicht überschreiten."); // no string interpolation with const
                 return false;
             }
 
@@ -153,7 +153,7 @@
             if (input.Key == ConsoleKey.Q)
             {
                 SetCursorBelowPlayGround();
-                throw new QuitException("Ok, das Spiel wird beendet.");
+                throw new QuitException(Utils.QuitGame);
             }
         }
 
