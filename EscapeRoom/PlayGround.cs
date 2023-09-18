@@ -69,25 +69,25 @@
         internal void DrawInitialPlayGround()
         {
             Console.CursorVisible = false;
-            Console.SetCursorPosition(Utils.OriginalColumnPosition, Utils.OriginalRowPosition);            
+            Console.SetCursorPosition(Utils.OriginalColumnPosition, Utils.OriginalRowPosition);
 
-            for (int row = 0; row < dimension.Y; row++)
+            for (int row = 0; row < dimension.Y; row++)                
             {
                 for (int column = 0; column < dimension.X; column++)
                 {
-                    SetItemColor(column, row);
-                    Console.Write(room[column, row]);
+                    SetItemColor(row, column);
+                    Console.Write(room[row, column]);
                     ResetItemColor();
                 }
                 Console.WriteLine();
             }
         }
 
-        private void SetItemColor(int column, int row)
+        private void SetItemColor(int row, int column)
         {           
             ConsoleColor doorColor = isKeyCollected ? ConsoleColor.Green : ConsoleColor.Red;
 
-            Console.ForegroundColor = room[column, row] switch
+            Console.ForegroundColor = room[row, column] switch
             {
                 Utils.PlayerIcon => ConsoleColor.Yellow,
                 Utils.DoorIcon => doorColor,
@@ -116,7 +116,7 @@
         private void SetItemPositionAndColorAndPrint(Coordinate itemPosition, char itemIcon)
         {
             Console.SetCursorPosition(Utils.OriginalColumnPosition + itemPosition.X, Utils.OriginalRowPosition + itemPosition.Y);
-            room[itemPosition.X, itemPosition.Y] = itemIcon;
+            room[itemPosition.Y, itemPosition.X] = itemIcon;
             Console.Write(itemIcon);
             
             SetItemColorAndPrint(itemPosition, itemIcon);
@@ -124,7 +124,7 @@
 
         private void SetItemColorAndPrint(Coordinate itemPosition, char itemIcon)
         {
-            SetItemColor(itemPosition.X, itemPosition.Y);
+            SetItemColor(itemPosition.Y, itemPosition.X);
             Console.SetCursorPosition(Utils.OriginalColumnPosition + itemPosition.X, Utils.OriginalRowPosition + itemPosition.Y);
             Console.Write(itemIcon);
             ResetItemColor();
@@ -261,8 +261,8 @@
 
         private Coordinate GetKeyPosition()
         {
-            int keyPositionX;
             int keyPositionY;
+            int keyPositionX;
 
             //player and key should not be placed at the same position.
             do
@@ -276,20 +276,20 @@
 
         private char[,] GenerateRoom()
         {
-            char[,] roomDefinition = new char[dimension.X, dimension.Y];
+            char[,] roomDefinition = new char[dimension.Y, dimension.X];
 
-            for (int row = 0; row < dimension.Y; row++)
+            for (int row = 0; row < dimension.Y; row++)               
             {
                 for (int column = 0; column < dimension.X; column++)
                 {
-                    roomDefinition[column, row] = GetRoomPositionContent(column, row);
+                    roomDefinition[row, column] = GetRoomPositionContent(row, column);
                 }
             }            
 
             return roomDefinition;
         }
 
-        private char GetRoomPositionContent(int column, int row)
+        private char GetRoomPositionContent(int row, int column)
         {
             if (column == playerPosition.X && row == playerPosition.Y)
             {

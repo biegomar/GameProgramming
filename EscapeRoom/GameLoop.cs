@@ -10,6 +10,7 @@
         /// </summary>
         internal static void Run()
         {
+            // Outer loop - let me easily "play another round"
             do
             {
                 Coordinate dimension = GetRoomDimension();
@@ -21,6 +22,7 @@
 
                 try
                 {
+                    // Core game loop!
                     do
                     {
                         playGround.NextStep(Console.ReadKey(true));
