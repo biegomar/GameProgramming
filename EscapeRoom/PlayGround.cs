@@ -51,7 +51,7 @@
         {
             CheckIfPlayerWantsToQuit(input);
             SetNewPlayerPositionAndPrint(input);
-            CheckIfYouWin();
+            CheckIfPlayerWins();
             CheckIfKeyIsCollected();
             SetItemColorAndPrint(doorPosition, Utils.DoorIcon);
         }
@@ -85,12 +85,10 @@
 
         private void SetItemColor(int row, int column)
         {           
-            ConsoleColor doorColor = isKeyCollected ? ConsoleColor.Green : ConsoleColor.Red;
-
             Console.ForegroundColor = room[row, column] switch
             {
                 Utils.PlayerIcon => ConsoleColor.Yellow,
-                Utils.DoorIcon => doorColor,
+                Utils.DoorIcon => isKeyCollected ? ConsoleColor.Green : ConsoleColor.Red,
                 Utils.KeyIcon => ConsoleColor.Blue,
                 _ => defaultColor                
             };                        
@@ -138,7 +136,7 @@
                 || isKeyCollected;
         }
 
-        private void CheckIfYouWin()
+        private void CheckIfPlayerWins()
         {
             if (isKeyCollected 
                 && playerPosition.X == doorPosition.X
@@ -305,10 +303,12 @@
             {
                 return Utils.SideWallIcon;
             }
+
             if (row == 0 || row == dimension.Y - 1)
             {
                 return Utils.TopWallIcon;
             }
+
             if (column == keyPosition.X && row == keyPosition.Y)
             {
                 return Utils.KeyIcon;
