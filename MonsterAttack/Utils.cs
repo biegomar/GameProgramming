@@ -8,6 +8,8 @@ namespace MonsterAttack
 {
     internal static class Utils
     {
+        internal const string WantToContinueGame = "Möchtest Du eine weitere Runde spielen (j/n)?";
+
         internal static void PrintLogo()
         {
             Console.WriteLine(" ⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣤⣤⣄⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
@@ -48,6 +50,11 @@ namespace MonsterAttack
             Console.WriteLine();
             Console.WriteLine("     ░█▄▒▄█░▄▀▄░█▄░█░▄▀▀░▀█▀▒██▀▒█▀▄░░▒▄▀▄░▀█▀░▀█▀▒▄▀▄░▄▀▀░█▄▀░█");
             Console.WriteLine("     ░█▒▀▒█░▀▄▀░█▒▀█▒▄██░▒█▒░█▄▄░█▀▄▒░░█▀█░▒█▒░▒█▒░█▀█░▀▄▄░█▒█░▄");
+        }
+
+        internal static void BeepOnWrongEntry()
+        {
+            Console.Beep(300, 60);
         }
     }    
 }
