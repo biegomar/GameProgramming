@@ -13,7 +13,7 @@ namespace MonsterAttack
     {
         public float Attack(Monster attacker, Monster villain)
         {            
-            return attacker.AP - villain.DP;
+            return Math.Max(0, attacker.AP - villain.DP);
         }
     }
 }

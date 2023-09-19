@@ -7,6 +7,14 @@ namespace MonsterAttack
         static void Main(string[] args)
         {           
             Utils.PrintLogo();
-        }     
+
+            GameLoop.Run();
+        }
+
+        private static void PrintIntro()
+        {
+            Utils.PrintLogo();
+            Utils.PrintRulez();
+        }
     }
 }

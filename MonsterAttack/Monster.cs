@@ -49,14 +49,22 @@ namespace MonsterAttack
         /// <param name="villain"></param>
         internal void Attack(Monster villain)
         {
-            float damage = this.attackStrategy.Attack(this, villain);
+            Console.WriteLine($"Der {this.R} attackiert den {villain.R}!");
+            
+            float damage = this.attackStrategy.Attack(this, villain);            
+            Console.WriteLine($"Der Angriff des {this.R} verursacht {damage} Schaden!");
 
-            villain.HP = Math.Max(0, villain.HP - damage);
+            villain.HP = Math.Max(0, villain.HP - damage);            
 
             if (villain.HP == 0)
             {
-                throw new KillException($"The {villain.R} is dead!");
+                throw new KillException($"Der {villain.R} ist tot!");
             }
+
+            Console.WriteLine($"Uhh! Das war heftig! Der {villain.R} hat nur noch {villain.HP} Lebenspunkte!");
+
+            Console.WriteLine();
+            Console.WriteLine("------ Nächste Runde -------");
         }
     }
 }
