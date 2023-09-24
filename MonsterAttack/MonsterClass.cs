@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterAttack
 {
-    internal enum Race
+    internal enum MonsterClass
     {
         Ork = 1, 
         Troll = 2, 

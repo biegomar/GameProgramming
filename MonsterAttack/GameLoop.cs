@@ -12,7 +12,7 @@ namespace MonsterAttack
     {
         private IAttackStrategy attackStrategy = new StandardAttackStrategy();
 
-        private List<Race> possibleMonsters = new List<Race>();
+        private List<MonsterClass> possibleMonsters = new List<MonsterClass>();
 
         private uint attackRounds;
 
@@ -79,7 +79,7 @@ namespace MonsterAttack
         private void InitializePossibleMonsters()
         {
             possibleMonsters.Clear();
-            foreach (var race in (Race[])Enum.GetValues(typeof(Race)))
+            foreach (var race in (MonsterClass[])Enum.GetValues(typeof(MonsterClass)))
             {
                 possibleMonsters.Add(race);   
             }
@@ -90,7 +90,7 @@ namespace MonsterAttack
             attackRounds = 0;
         }
         
-        private void RemoveChoiceFromPossibleMonsters(Race race)
+        private void RemoveChoiceFromPossibleMonsters(MonsterClass race)
         {
             possibleMonsters.Remove(race);
         }
@@ -118,9 +118,9 @@ namespace MonsterAttack
             return (secondOppenent,  firstOppenent);
         }
 
-        private Race GetMonsterRace() 
+        private MonsterClass GetMonsterRace() 
         {
-            Race race;
+            MonsterClass race;
             PrintPossibleMonsters();           
             while (!Enum.TryParse(Console.ReadLine(), out race) || !possibleMonsters.Contains(race))
             {

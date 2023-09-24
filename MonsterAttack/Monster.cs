@@ -39,9 +39,9 @@ namespace MonsterAttack
         internal float S { get; set; }
 
         /// <summary>
-        /// Race (R).
+        /// MonsterClass (R).
         /// </summary>
-        internal Race R { get; set; }     
+        internal MonsterClass R { get; set; }     
         
         /// <summary>
         /// Attack!
