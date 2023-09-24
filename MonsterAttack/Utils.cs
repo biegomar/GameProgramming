@@ -17,6 +17,7 @@ namespace MonsterAttack
         internal const string SpeedPoints = "Wie viele Geschwindigkeit soll das Monster haben?";
         internal const string AttackRounds = "Der Kampf dauerte {0} Runden.";
         internal const string StartMessage = "------ Auf gehts! -------";
+        internal const string ImpossibleFight = "Die von dir erfassten Werte lassen es nicht zu, dass es einen Sieger gibt!";
 
         internal static void PrintRulez()
         {

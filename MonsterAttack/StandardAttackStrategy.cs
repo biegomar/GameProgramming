@@ -15,5 +15,10 @@ namespace MonsterAttack
         {            
             return Math.Max(0, attacker.AP - villain.DP);
         }
+
+        public bool isFightPossible(Monster attacker, Monster villain)
+        {
+            return attacker.AP > villain.DP || villain.AP > attacker.DP;
+        }
     }
 }

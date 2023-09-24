@@ -10,7 +10,7 @@ namespace MonsterAttack
 {
     internal class GameLoop
     {
-        private static IAttackStrategy attackStrategy = new StandardAttackStrategy();
+        private IAttackStrategy attackStrategy = new StandardAttackStrategy();
 
         private List<Race> possibleMonsters = new List<Race>();
 
@@ -25,18 +25,18 @@ namespace MonsterAttack
                 Init();
 
                 Monster firstOppenent = GetMonster();
-                RemoveChoiceFromPossibleMonsters(firstOppenent.R);
-
-                Console.WriteLine();
-
-                Monster secondOppenent = GetMonster();
-
-                (firstOppenent, secondOppenent) = SortMonstersBySpeed(firstOppenent, secondOppenent);
+                RemoveChoiceFromPossibleMonsters(firstOppenent.R);                
                 
+                Monster secondOppenent = GetMonster();
+                
+                (firstOppenent, secondOppenent) = SortMonstersBySpeed(firstOppenent, secondOppenent);                
+
                 PrintStart();
 
                 try
                 {
+                    CheckIfFightIsPossible(firstOppenent, secondOppenent);
+
                     // Core game loop!
                     do
                     {
@@ -49,6 +49,13 @@ namespace MonsterAttack
                 {
                     PrintNumberOfAttackRounds();
 
+                    if (!WantToContinueGame(ex.Message))
+                    {
+                        Environment.Exit(0);
+                    }
+                }
+                catch (ImpossibleFightException ex)
+                {
                     if (!WantToContinueGame(ex.Message))
                     {
                         Environment.Exit(0);
@@ -122,6 +129,14 @@ namespace MonsterAttack
             }
 
             return race;
+        }
+
+        private void CheckIfFightIsPossible(Monster firstOppenent, Monster secondOppenent)
+        {
+            if (!this.attackStrategy.isFightPossible(firstOppenent, secondOppenent))
+            {
+                throw new ImpossibleFightException(Utils.ImpossibleFight);
+            }
         }
 
         private void PrintPossibleMonsters()
