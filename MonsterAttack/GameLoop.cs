@@ -121,11 +121,11 @@ namespace MonsterAttack
         private MonsterClass GetMonsterRace() 
         {
             MonsterClass race;
-            PrintPossibleMonsters();           
+            PrintPossibleMonsterClasses();           
             while (!Enum.TryParse(Console.ReadLine(), out race) || !possibleMonsterClasses.Contains(race))
             {
                 Console.WriteLine(Utils.ErrorMessageUnknownRace);
-                PrintPossibleMonsters();
+                PrintPossibleMonsterClasses();
             }
 
             return race;
@@ -139,7 +139,7 @@ namespace MonsterAttack
             }
         }
 
-        private void PrintPossibleMonsters()
+        private void PrintPossibleMonsterClasses()
         {
             bool firstRace = true;
             Console.Write("Welche Rasse soll das Monster haben (");
