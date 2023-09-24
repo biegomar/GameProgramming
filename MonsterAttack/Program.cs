@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace MonsterAttack
+﻿namespace MonsterAttack
 {
     internal class Program
     {        
