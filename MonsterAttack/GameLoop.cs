@@ -12,7 +12,7 @@ namespace MonsterAttack
     {
         private IAttackStrategy attackStrategy = new StandardAttackStrategy();
 
-        private List<MonsterClass> possibleMonsters = new List<MonsterClass>();
+        private List<MonsterClass> possibleMonsterClasses = new List<MonsterClass>();
 
         private uint attackRounds;
 
@@ -78,10 +78,10 @@ namespace MonsterAttack
         
         private void InitializePossibleMonsters()
         {
-            possibleMonsters.Clear();
+            possibleMonsterClasses.Clear();
             foreach (var race in (MonsterClass[])Enum.GetValues(typeof(MonsterClass)))
             {
-                possibleMonsters.Add(race);   
+                possibleMonsterClasses.Add(race);   
             }
         }
 
@@ -92,7 +92,7 @@ namespace MonsterAttack
         
         private void RemoveChoiceFromPossibleMonsterClasses(MonsterClass race)
         {
-            possibleMonsters.Remove(race);
+            possibleMonsterClasses.Remove(race);
         }
 
         private Monster GetMonster()
@@ -122,7 +122,7 @@ namespace MonsterAttack
         {
             MonsterClass race;
             PrintPossibleMonsters();           
-            while (!Enum.TryParse(Console.ReadLine(), out race) || !possibleMonsters.Contains(race))
+            while (!Enum.TryParse(Console.ReadLine(), out race) || !possibleMonsterClasses.Contains(race))
             {
                 Console.WriteLine(Utils.ErrorMessageUnknownRace);
                 PrintPossibleMonsters();
@@ -143,7 +143,7 @@ namespace MonsterAttack
         {
             bool firstRace = true;
             Console.Write("Welche Rasse soll das Monster haben (");
-            foreach (var race in possibleMonsters)
+            foreach (var race in possibleMonsterClasses)
             {
                 if (firstRace)
                 {
