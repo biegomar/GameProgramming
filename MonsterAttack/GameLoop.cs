@@ -25,7 +25,7 @@ namespace MonsterAttack
                 Init();
 
                 Monster firstOppenent = GetMonster();
-                RemoveChoiceFromPossibleMonsters(firstOppenent.R);                
+                RemoveChoiceFromPossibleMonsterClasses(firstOppenent.R);                
                 
                 Monster secondOppenent = GetMonster();
                 
@@ -90,7 +90,7 @@ namespace MonsterAttack
             attackRounds = 0;
         }
         
-        private void RemoveChoiceFromPossibleMonsters(MonsterClass race)
+        private void RemoveChoiceFromPossibleMonsterClasses(MonsterClass race)
         {
             possibleMonsters.Remove(race);
         }
