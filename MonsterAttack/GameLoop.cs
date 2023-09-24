@@ -22,7 +22,7 @@ namespace MonsterAttack
             do
             {
 
-                Init();
+                InitGame();
 
                 Monster firstOppenent = GetMonster();
                 RemoveChoiceFromPossibleMonsterClasses(firstOppenent.R);                
@@ -70,9 +70,9 @@ namespace MonsterAttack
             } while (true);
         }
       
-        private void Init()
+        private void InitGame()
         {
-            InitAttacksRounds();
+            InitAttackRounds();
             InitializePossibleMonsters();
         }
         
@@ -85,7 +85,7 @@ namespace MonsterAttack
             }
         }
 
-        private void InitAttacksRounds()
+        private void InitAttackRounds()
         {
             attackRounds = 0;
         }
