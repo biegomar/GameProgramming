@@ -12,38 +12,43 @@ namespace MonsterAttack
     {
         private static IAttackStrategy attackStrategy = new StandardAttackStrategy();
 
-        private List<Race> possibleMonsters = new List<Race>();        
+        private List<Race> possibleMonsters = new List<Race>();
+
+        private uint attackRounds;
 
         internal void Run()
         {            
             // Outer loop - let me easily "play another round"
             do
             {
-                InitializePossibleMonsters();
+
+                Init();
 
                 Monster firstOppenent = GetMonster();
                 RemoveChoiceFromPossibleMonsters(firstOppenent.R);
 
                 Console.WriteLine();
-                
+
                 Monster secondOppenent = GetMonster();
 
                 (firstOppenent, secondOppenent) = SortMonstersBySpeed(firstOppenent, secondOppenent);
-
-                Console.WriteLine();
-                Console.WriteLine("------ Auf gehts! -------");
+                
+                PrintStart();
 
                 try
                 {
                     // Core game loop!
                     do
                     {
+                        attackRounds++;
                         firstOppenent.Attack(secondOppenent);
                         secondOppenent.Attack(firstOppenent);
                     } while (true);
                 }
                 catch (KillException ex)
                 {
+                    PrintNumberOfAttackRounds();
+
                     if (!WantToContinueGame(ex.Message))
                     {
                         Environment.Exit(0);
@@ -54,9 +59,15 @@ namespace MonsterAttack
                     Console.WriteLine(ex.Message);
                     Environment.Exit(0);
                 }
-                
+
             } while (true);
-        }  
+        }
+      
+        private void Init()
+        {
+            InitAttacksRounds();
+            InitializePossibleMonsters();
+        }
         
         private void InitializePossibleMonsters()
         {
@@ -65,6 +76,11 @@ namespace MonsterAttack
             {
                 possibleMonsters.Add(race);   
             }
+        }
+
+        private void InitAttacksRounds()
+        {
+            attackRounds = 0;
         }
         
         private void RemoveChoiceFromPossibleMonsters(Race race)
@@ -126,7 +142,17 @@ namespace MonsterAttack
                 
             }
             Console.Write(")? ");
+        }
+        
+        private void PrintNumberOfAttackRounds()
+        {
+            Console.WriteLine(Utils.AttackRounds, this.attackRounds);
+        }
 
+        private static void PrintStart()
+        {
+            Console.WriteLine();
+            Console.WriteLine(Utils.StartMessage);
         }
 
         private float GetPropertyValueForMonster(string message)

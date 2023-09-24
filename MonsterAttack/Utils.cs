@@ -15,6 +15,8 @@ namespace MonsterAttack
         internal const string AttackPoints = "Wie viele Angriffsstärke soll das Monster haben?";
         internal const string DefensePoints = "Wie viele Abwehrpunkte soll das Monster haben?";
         internal const string SpeedPoints = "Wie viele Geschwindigkeit soll das Monster haben?";
+        internal const string AttackRounds = "Der Kampf dauerte {0} Runden.";
+        internal const string StartMessage = "------ Auf gehts! -------";
 
         internal static void PrintRulez()
         {
