@@ -8,20 +8,27 @@ using System.Threading.Tasks;
 
 namespace MonsterAttack
 {
-    internal static class GameLoop
+    internal class GameLoop
     {
         private static IAttackStrategy attackStrategy = new StandardAttackStrategy();
 
-        internal static void Run()
-        {
+        private List<Race> possibleMonsters = new List<Race>();        
+
+        internal void Run()
+        {            
             // Outer loop - let me easily "play another round"
             do
             {
+                InitializePossibleMonsters();
+
                 Monster firstOppenent = GetMonster();
+                RemoveChoiceFromPossibleMonsters(firstOppenent.R);
+
                 Console.WriteLine();
+                
                 Monster secondOppenent = GetMonster();
 
-                (firstOppenent, secondOppenent) = SortMontersBySpeed(firstOppenent, secondOppenent);
+                (firstOppenent, secondOppenent) = SortMonstersBySpeed(firstOppenent, secondOppenent);
 
                 Console.WriteLine();
                 Console.WriteLine("------ Auf gehts! -------");
@@ -49,9 +56,23 @@ namespace MonsterAttack
                 }
                 
             } while (true);
+        }  
+        
+        private void InitializePossibleMonsters()
+        {
+            possibleMonsters.Clear();
+            foreach (var race in (Race[])Enum.GetValues(typeof(Race)))
+            {
+                possibleMonsters.Add(race);   
+            }
+        }
+        
+        private void RemoveChoiceFromPossibleMonsters(Race race)
+        {
+            possibleMonsters.Remove(race);
         }
 
-        private static Monster GetMonster()
+        private Monster GetMonster()
         {           
             Monster monster = new Monster(attackStrategy);
            
@@ -64,7 +85,7 @@ namespace MonsterAttack
             return monster;
         } 
 
-        private static (Monster fasterMonster, Monster slowerMonster) SortMontersBySpeed(Monster firstOppenent, Monster secondOppenent)
+        private (Monster fasterMonster, Monster slowerMonster) SortMonstersBySpeed(Monster firstOppenent, Monster secondOppenent)
         {
             if (firstOppenent.S >= secondOppenent.S) 
             {
@@ -74,20 +95,41 @@ namespace MonsterAttack
             return (secondOppenent,  firstOppenent);
         }
 
-        private static Race GetMonsterRace() 
+        private Race GetMonsterRace() 
         {
-            int race;
-            Console.Write(Utils.MonsterRace);
-            while (!int.TryParse(Console.ReadLine(), out race) || race < 1 || race > 3)
+            Race race;
+            PrintPossibleMonsters();           
+            while (!Enum.TryParse(Console.ReadLine(), out race) || !possibleMonsters.Contains(race))
             {
                 Console.WriteLine(Utils.ErrorMessageUnknownRace);
-                Console.Write(Utils.MonsterRace);
+                PrintPossibleMonsters();
             }
 
-            return (Race)race;
+            return race;
         }
-        
-        private static float GetPropertyValueForMonster(string message)
+
+        private void PrintPossibleMonsters()
+        {
+            bool firstRace = true;
+            Console.Write("Welche Rasse soll das Monster haben (");
+            foreach (var race in possibleMonsters)
+            {
+                if (firstRace)
+                {
+                    Console.Write($"{(int)race} - {race}");
+                    firstRace = false;
+                }
+                else
+                {
+                    Console.Write($", {(int)race} - {race}");
+                }
+                
+            }
+            Console.Write(")? ");
+
+        }
+
+        private float GetPropertyValueForMonster(string message)
         {
             float result;
             Console.Write(message);
@@ -100,7 +142,7 @@ namespace MonsterAttack
             return result;
         }
 
-        private static bool WantToContinueGame(string message)
+        private bool WantToContinueGame(string message)
         {
             Console.WriteLine(message);
             Console.WriteLine();

@@ -3,12 +3,13 @@
 namespace MonsterAttack
 {
     internal class Program
-    {
+    {        
         static void Main(string[] args)
         {
             PrintIntro();
 
-            GameLoop.Run();
+            GameLoop gameLoop = new GameLoop();           
+            gameLoop.Run();
         }
 
         private static void PrintIntro()
