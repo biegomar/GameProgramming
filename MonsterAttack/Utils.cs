@@ -15,7 +15,11 @@
 
         internal static void PrintRulez()
         {
-            Console.WriteLine();            
+            Console.WriteLine("Lasse zwei Monster verschiedener Monsterklassen gegeneinander antreten!");
+            Console.WriteLine("Wähle zunächst die Klasse für das erste Monster aus. Danach erfasst du seine Eigenschaften.");
+            Console.WriteLine("(Lebenspunkte - Angriffsstärke - Abwehrpunkte - Geschwindigkeit)");
+            Console.WriteLine("Danach erfasst du die selben Daten für das zweite Monster. Aber Achtung! Du kannst keine Monster der selben Klasse erschaffen...");
+            Console.WriteLine();
         }
 
         internal static void PrintLogo()
