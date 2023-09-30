@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace MonsterAttack
+﻿namespace MonsterAttack
 {
     internal class GameLoop
     {
@@ -79,9 +71,9 @@ namespace MonsterAttack
         private void InitializePossibleMonsters()
         {
             possibleMonsterClasses.Clear();
-            foreach (var race in (MonsterClass[])Enum.GetValues(typeof(MonsterClass)))
+            foreach (var monsterClass in (MonsterClass[])Enum.GetValues(typeof(MonsterClass)))
             {
-                possibleMonsterClasses.Add(race);   
+                possibleMonsterClasses.Add(monsterClass);   
             }
         }
 
@@ -90,16 +82,16 @@ namespace MonsterAttack
             attackRounds = 0;
         }
         
-        private void RemoveChoiceFromPossibleMonsterClasses(MonsterClass race)
+        private void RemoveChoiceFromPossibleMonsterClasses(MonsterClass monsterClass)
         {
-            possibleMonsterClasses.Remove(race);
+            possibleMonsterClasses.Remove(monsterClass);
         }
 
         private Monster GetMonster()
         {           
             Monster monster = new Monster(attackStrategy);
            
-            monster.R = GetMonsterRace();
+            monster.R = GetMonsterClass();
             monster.HP = GetPropertyValueForMonster(Utils.HealthPoints);
             monster.AP = GetPropertyValueForMonster(Utils.AttackPoints);
             monster.DP = GetPropertyValueForMonster(Utils.DefensePoints);
@@ -118,17 +110,17 @@ namespace MonsterAttack
             return (secondOppenent,  firstOppenent);
         }
 
-        private MonsterClass GetMonsterRace() 
+        private MonsterClass GetMonsterClass() 
         {
-            MonsterClass race;
+            MonsterClass monsterClass;
             PrintPossibleMonsterClasses();           
-            while (!Enum.TryParse(Console.ReadLine(), out race) || !possibleMonsterClasses.Contains(race))
+            while (!Enum.TryParse(Console.ReadLine(), out monsterClass) || !possibleMonsterClasses.Contains(monsterClass))
             {
-                Console.WriteLine(Utils.ErrorMessageUnknownRace);
+                Console.WriteLine(Utils.ErrorMessageEnterValidNumber);
                 PrintPossibleMonsterClasses();
             }
 
-            return race;
+            return monsterClass;
         }
 
         private void CheckIfFightIsPossible(Monster firstOppenent, Monster secondOppenent)
@@ -141,18 +133,18 @@ namespace MonsterAttack
 
         private void PrintPossibleMonsterClasses()
         {
-            bool firstRace = true;
+            bool isFirstMonsterClass = true;
             Console.Write("Welche Rasse soll das Monster haben (");
-            foreach (var race in possibleMonsterClasses)
+            foreach (var monsterClass in possibleMonsterClasses)
             {
-                if (firstRace)
+                if (isFirstMonsterClass)
                 {
-                    Console.Write($"{(int)race} - {race}");
-                    firstRace = false;
+                    Console.Write($"{(int)monsterClass} - {monsterClass}");
+                    isFirstMonsterClass = false;
                 }
                 else
                 {
-                    Console.Write($", {(int)race} - {race}");
+                    Console.Write($", {(int)monsterClass} - {monsterClass}");
                 }
                 
             }
@@ -173,7 +165,7 @@ namespace MonsterAttack
         private float GetPropertyValueForMonster(string message)
         {
             float result;
-            Console.Write(message);
+            Console.Write(message + " ");
             while (!float.TryParse(Console.ReadLine(), out result) || result <= 0f)
             {
                 Console.WriteLine(Utils.ErrorMessageNumberIsZero);
