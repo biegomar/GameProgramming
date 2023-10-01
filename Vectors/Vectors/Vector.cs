@@ -62,7 +62,7 @@
         }
 
         /// <summary>
-        /// Operator overload * (scalar muliplication).
+        /// Operator overload * (scalar multiplication).
         /// </summary>
         /// <param name="v1">The vector to scale.</param>
         /// <param name="scalar">The scale factor.</param>
