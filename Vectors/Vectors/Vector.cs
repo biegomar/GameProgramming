@@ -9,17 +9,17 @@
         /// <summary>
         /// X
         /// </summary>
-        public float X { get; set; }
+        public float X { get; init; }
         
         /// <summary>
         /// Y
         /// </summary>
-        public float Y { get; set; }
+        public float Y { get; init; }
         
         /// <summary>
         /// Z
         /// </summary>
-        public float Z { get; set; }
+        public float Z { get; init; }
 
         /// <summary>
         /// The base constructor.
@@ -98,7 +98,6 @@
         public float Distance(Vector v)
         {
             return Distance(this, v);
-
         }
 
         /// <summary>
