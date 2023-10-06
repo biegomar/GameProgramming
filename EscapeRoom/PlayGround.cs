@@ -169,51 +169,41 @@
                 return false;
             }
 
+            Coordinate GetNewPlayerPosition(bool decision, Coordinate newPosition)
+            {
+                if (decision)
+                {
+                    Utils.BeepOnWrongEntry();
+                    return playerPosition;
+                }
+                return newPosition;
+            }
+
             switch (inputKey)
             {               
                 case ConsoleKey.W:
                 case ConsoleKey.UpArrow:
-                    {
+                    {                        
                         var newPosition = new Coordinate(playerPosition.X, playerPosition.Y - 1);
-                        if (newPosition.Y == 0 && !IsPlayerOnOpenDoor(newPosition))
-                        {
-                            Utils.BeepOnWrongEntry();
-                            return playerPosition;
-                        }
-                        return newPosition;
+                        return GetNewPlayerPosition(newPosition.Y == 0 && !IsPlayerOnOpenDoor(newPosition), newPosition);                        
                     }
                 case ConsoleKey.S:
                 case ConsoleKey.DownArrow:
                     {
                         var newPosition = new Coordinate(playerPosition.X, playerPosition.Y + 1);
-                        if (newPosition.Y == dimension.Y - 1 && !IsPlayerOnOpenDoor(newPosition))
-                        {
-                            Utils.BeepOnWrongEntry();
-                            return playerPosition;
-                        }
-                        return newPosition;
+                        return GetNewPlayerPosition(newPosition.Y == dimension.Y - 1 && !IsPlayerOnOpenDoor(newPosition), newPosition);                        
                     }
                 case ConsoleKey.D:
                 case ConsoleKey.RightArrow:
                     {
                         var newPosition = new Coordinate(playerPosition.X + 1, playerPosition.Y);
-                        if (newPosition.X == dimension.X - 1 && !IsPlayerOnOpenDoor(newPosition))
-                        {
-                            Utils.BeepOnWrongEntry();
-                            return playerPosition;
-                        }
-                        return newPosition;
+                        return GetNewPlayerPosition(newPosition.X == dimension.X - 1 && !IsPlayerOnOpenDoor(newPosition), newPosition);                        
                     }
                 case ConsoleKey.A:
                 case ConsoleKey.LeftArrow:
                     {
                         var newPosition = new Coordinate(playerPosition.X - 1, playerPosition.Y);
-                        if (newPosition.X == 0 && !IsPlayerOnOpenDoor(newPosition))
-                        {
-                            Utils.BeepOnWrongEntry();
-                            return playerPosition;
-                        }
-                        return newPosition;
+                        return GetNewPlayerPosition(newPosition.X == 0 && !IsPlayerOnOpenDoor(newPosition), newPosition);                        
                     }                
                 default:
                     break;
