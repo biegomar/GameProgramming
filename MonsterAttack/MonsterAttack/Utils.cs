@@ -13,6 +13,120 @@
         internal const string StartMessage = "------ Auf gehts! -------";
         internal const string ImpossibleFight = "Die von dir erfassten Werte lassen es nicht zu, dass es einen Sieger gibt!";
 
+        internal const string OrkAvatar = @"                                                  
+                                                  
+           ..:;;;;;.                              
+      .;:;;...:.                                  
+  .+;;::.. .+.           ::.:::                   
+ :x;::..  .;      :;:. :.    ::;. :+:             
+ .:  ..  ..+.      :;:x: .  .:..;;++;:::.         
+ .:   .. :::.       :X;  .;.....;+++;;;++;+;.     
+  ;.      ;     .++.;xXxX:...;XXX+;x+;++: .:x.    
+  ..     .:  .:+++;:;;X::x+.++:+Xx++++;++:+++:.   
+   ;  .  .  .xx;:;:.x+xX++xx+xxXx+x;+;Xx;:+:;::.  
+   :. .  :.  +:x++:.:+;$XX++x+$+XX+xXX     .;;+:  
+    ;    :   .. ++x;:+Xxxx;:+X$x+++;X:     ;Xx+;. 
+    ..   .   :;:.:x$x++XxxXxxx;:::+x:.      ;:++. 
+     . ..;::x+:::;+XXx;:x+x +x+;xxx  ;;;    .:;   
+    .+.  :.;+: ::;;+ ;xXX++x$XXx+X+X;+x:          
+   +x:.:xx;+:: ;:++.;+XXX$X$XXxX$XXXXx:           
+   ;XXx;X; X+X+:x: :++::+XxXx;+$Xx;;:x:           
+    .xx+x+;;: :  ;;:;;;x+Xx+xx+XXX+;++;x;         
+      ::x++   :+;....;;xxx++++xXXX$Xx+;.::.       
+         +;  ;x.::+;;;+$Xxx;++++ +$Xxxx+;;X.      
+            :+.:...;$$: x+x;+;+Xx+;+xx+..::       
+           ;+X+.:+X$Xx  ;;;;;;;xX:.:;xx+:         
+          .;;x;x$X;:;x; ;;++++++Xx+x.             
+            :+. +:..::+ :+;++::Xx:;;              
+             :: ....:;  ..    ;+x;;+;             
+              +.::.+;         +:;x+;;;;;          
+              .;:+;x.         ;+:::xxx+;+.        
+              x$x++x+           .:;;;;++:         
+             :;.:.:+x                             
+           ;+x++;;;+x:                            
+          ;;:;;x;;;;x+.                           
+         ::+x++;;;++x::                           
+         ;x;+:: +:  :x:                           
+          .;;;+:++:.+:                            
+             ..:  :;                              
+                                                  
+                                                  ";
+
+        internal const string GoblinAvatar = @"                                                  
+                 .::-:.         .....             
+      .......:-----=+**+-.::.:======:             
+       .:-=+*=:=-..=++**==+++**=:.                
+         .=#*==--*==*+**=*=+=+.                   
+           -*- ==+*+=+**+=++=.                    
+           .--=***=+***###-.                      
+            .-**+*++***##*=                       
+             .+++***#####**+-.                    
+              ++*#####*##*++*****+-               
+             .-.-==++***+==-==..:=**:             
+             :.:-::-++=-:.. :==--=+#+.            
+            .=++=:  :-   .:-=*#%#**##-.           
+            -+-##=..-......=#%%%+.:=#*:.          
+           :+.:#%#**: :++*##%%%%*: :+#+.          
+          :*+-+%==+==------+#%%#----=***-         
+         --+***#.=*=...-+++*#%%*. =**=-+*-        
+        .:.=+-+#:+:   .-=*####%*. -:+- =*+        
+        :--*==*===. .::-=+**####- .==-:=#*.       
+        :++#++*.+=.-::.:==*#####+. :=--+#*.       
+        :+*##*..++-*+::-=+*##*###- .-++*##:       
+        :+#%#:  -#+*#+=++*#%%%%###. :+*###-       
+        :+*##: .=##%#####%%#%%*+*#+.-=+#%%+.      
+        ::+#%=.--+####**###%%#==*##:-+###%#:      
+       .:+%%#*-:=+#####**#%%#*=-+##==#%%%%#-      
+       .-#%%##-:+*##%#####%#%#+-+*##+#*#%%#:      
+       .=+###*-=*##%%#####*-*#*=+##%***#%#*:      
+       .-#+##==###%#:*####*..=%#+**##+*##*:       
+         :#=+=+%%##%#+#%##*.  .#+--+*###*.        
+          ..:-*##*##%+.        =##*##%+.          
+              .*####%*.        :*#**#%%.          
+               .*###%#:         :*#**%%:          
+                :*##%%=          .*#*#%:          
+               =-=+#%%#:          :#*##+          
+           ..=--+=*####*.         :-+**#=         
+        .-====*++####*+-        ..+-=***#+.       
+       :==*+=*####+-.           .=--+++=+*=:      
+        ..:---.                 .:-=+++*=--:.     
+                                    ......        
+                                       ...";
+
+        internal const string TrollAvatar = @"
+                           ...:;:                           
+                       .;+XXXXXXXXx:.                       
+                 .:++xXXXxxxXXx+xXxx+xxx...                 
+               :XXxXxXXXxxXXxxxXx+xxx++xx;                  
+              .$XXXXxxXXXXxxxxxxxx+xXXxx++.                 
+             .xXXxxxxXXXXxxxxxxxx+XXXX$xx+;:                
+            xxxXXXxxxxxx++xxxxxXXxxXXXXX+xXX;               
+           +XxxxxxX$$Xx+++++xxXX$xx$xxxXx$$XX;              
+         :xXXxxxXX$&$$Xxx+++xxxXXxXXXXxXXXXXX;              
+       .xxxxxXX$$$$&$$XxxxxxxxxXX$XX$$XXXXXx:               
+       +Xx+xX$$+ $$$$XXXXXXXXX$$XX$&$$X;                    
+      .XxxxxXXX  X$$$XXXX$$$$$X$$$$$$X+                     
+      ;XxxxxXX;  X$$$$$$$$$$$$$$$$x$$X;                     
+      .XxxxxX:  :$$$$$$$$$$$$$$$$Xx$$X+                     
+       XXxxxx   +$$$X$$XXX$$X$$$$X$XXX:                     
+      .Xx++xX;  :$$XXXxXXXX$X$$$$XX$$x                      
+      xx++xxX$; +XXXxXxxXXXXXXXXXXX&&x                      
+     .XXX$X+xX  x$$XXxxxxxxXXXXX$XX$$X+                     
+     ;$$$$$$X: .$XXXXX$XXXXX$$$$$$XxxXX:                    
+   :X$$X       :$X++XXX$$$X$$$$$$XXxXX&$+.                  
+ .+X$X:        XXXxxxX$$$$$X$$$$XXxXX$;.+$x+.      .+;      
++xXx.          $XXXXX$$+x$$$XX$$$$XXX$X   :x$x+:  +xXXXx+.  
++;.            +XXXX$X: ;$$$XX.;$$$X$XX.     ;$$XXXXXXXXXXx:
+               XXXX$$X. :$$$X:;$$$$$$$$.       x$XXXXXXXX$$;
+              ;$$$$$$$X  +;::.$$$$$$$X;       .$$XXXXXX$$$+ 
+               +$$$$$$;     .X$$$$X;.         $$$$$$$X$$$+  
+                 +$$$:    +X$&&x.             x$$$$$X$$&;   
+                  ;$$$.   :;$$$$X;           .  :$$$$$$:    
+                .+XXXXX:::;+x$$XXX$X$XXxx++++++xxxxxx+;:.   
+             ;x$XX$XXXX$$XXXXxxxxxxx++;:.                   
+             ::;:;;;;:;;:......                             
+";                    
+
         internal static void PrintRulez()
         {
             Console.WriteLine("Lasse zwei Monster verschiedener Monsterklassen gegeneinander antreten!");
@@ -24,6 +138,7 @@
 
         internal static void PrintLogo()
         {
+            Console.Clear();
             Console.WriteLine("");
             Console.WriteLine(" ███▄ ▄███▓ ▒█████   ███▄    █   ██████ ▄▄▄█████▓▓█████  ██▀███      ▄▄▄     ▄▄▄█████▓▄▄▄█████▓ ▄▄▄       ▄████▄   ██ ▄█▀ ▐██▌ ");
             Console.WriteLine("▓██▒▀█▀ ██▒▒██▒  ██▒ ██ ▀█   █ ▒██    ▒ ▓  ██▒ ▓▒▓█   ▀ ▓██ ▒ ██▒   ▒████▄   ▓  ██▒ ▓▒▓  ██▒ ▓▒▒████▄    ▒██▀ ▀█   ██▄█▒  ▐██▌ ");
