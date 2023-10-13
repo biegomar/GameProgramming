@@ -1,4 +1,6 @@
-﻿namespace MonsterAttack
+﻿using System.Text;
+
+namespace MonsterAttack
 {
     /// <summary>
     /// The monster.
@@ -35,8 +37,13 @@
         /// <summary>
         /// MonsterClass (R).
         /// </summary>
-        internal MonsterClass R { get; set; }     
-        
+        internal MonsterClass R { get; set; }
+
+        /// <summary>
+        /// The visual representation of the monster.
+        /// </summary>
+        public string Avatar { get; set; }
+
         /// <summary>
         /// Attack!
         /// </summary>
@@ -59,6 +66,17 @@
 
             Console.WriteLine();
             Console.WriteLine("------ Nächste Runde -------");
+        }
+
+        public override string ToString()
+        {
+            var result = new StringBuilder();
+
+            result.AppendLine(this.Avatar);
+            result.AppendLine();
+            result.AppendLine($"Attack: {this.AP} - Defense: {this.DP} - Speed: {this.S} - Actual Health: {this.HP}");
+
+            return result.ToString();
         }
     }
 }

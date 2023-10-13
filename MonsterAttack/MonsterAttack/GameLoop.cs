@@ -1,4 +1,6 @@
-﻿namespace MonsterAttack
+﻿using System.IO;
+
+namespace MonsterAttack
 {
     internal class GameLoop
     {
@@ -23,7 +25,7 @@
                 
                 (firstOppenent, secondOppenent) = SortMonstersBySpeed(firstOppenent, secondOppenent);                
 
-                PrintStart();
+                PrintStart(firstOppenent, secondOppenent);
 
                 try
                 {
@@ -95,7 +97,8 @@
             monster.HP = GetPropertyValueForMonster(Utils.HealthPoints);
             monster.AP = GetPropertyValueForMonster(Utils.AttackPoints);
             monster.DP = GetPropertyValueForMonster(Utils.DefensePoints);
-            monster.S = GetPropertyValueForMonster(Utils.SpeedPoints);           
+            monster.S = GetPropertyValueForMonster(Utils.SpeedPoints);
+            monster.Avatar = GetAvatarForMonsterClass(monster.R);
 
             return monster;
         } 
@@ -156,10 +159,13 @@
             Console.WriteLine(Utils.AttackRounds, this.attackRounds);
         }
 
-        private static void PrintStart()
+        private static void PrintStart(Monster firstOppenent, Monster secondOppenent)
         {
+            Console.Clear();
             Console.WriteLine();
             Console.WriteLine(Utils.StartMessage);
+            Console.WriteLine();
+            Console.WriteLine($"{firstOppenent} {secondOppenent}");            
         }
 
         private float GetPropertyValueForMonster(string message)
@@ -173,6 +179,17 @@
             }
             
             return result;
+        }
+
+        private string GetAvatarForMonsterClass(MonsterClass monsterClass)
+        {
+            return monsterClass switch
+            {
+                MonsterClass.Ork => Utils.OrkAvatar,
+                MonsterClass.Troll => Utils.TrollAvatar,
+                MonsterClass.Goblin => Utils.GoblinAvatar,
+                _ => string.Empty,
+            };
         }
 
         private bool WantToContinueGame(string message)
