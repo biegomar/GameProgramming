@@ -5,6 +5,10 @@ VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mazes.Cli", "Mazes.Cli\Mazes.Cli.csproj", "{45F39963-062A-4F47-9403-DBF9316F65B2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mazes.Contracts", "Mazes.Contracts\Mazes.Contracts.csproj", "{863B09C2-74F5-48BB-885C-273325777BB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BinareTreeMaze", "BinareTreeMaze\BinareTreeMaze.csproj", "{9CEA6582-E86B-46E6-938C-FB10163A5BAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{45F39963-062A-4F47-9403-DBF9316F65B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45F39963-062A-4F47-9403-DBF9316F65B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45F39963-062A-4F47-9403-DBF9316F65B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{863B09C2-74F5-48BB-885C-273325777BB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{863B09C2-74F5-48BB-885C-273325777BB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{863B09C2-74F5-48BB-885C-273325777BB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{863B09C2-74F5-48BB-885C-273325777BB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CEA6582-E86B-46E6-938C-FB10163A5BAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CEA6582-E86B-46E6-938C-FB10163A5BAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CEA6582-E86B-46E6-938C-FB10163A5BAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CEA6582-E86B-46E6-938C-FB10163A5BAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

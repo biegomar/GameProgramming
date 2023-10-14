@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Mazes.Contracts
 {
-    internal interface IMazeGenerator
+    public interface IMazeGenerator
     {
+        public Cell[,] Generate(Cell[,] rawMaze);
     }
 }

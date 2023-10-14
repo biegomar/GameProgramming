@@ -6,9 +6,33 @@ using System.Threading.Tasks;
 
 namespace Mazes.Contracts
 {
-    internal class Cell
+    public class Cell
     {
         private readonly IDictionary<Directions, Cell?> Neighbours = new Dictionary<Directions, Cell?>();
+
+        public Cell? NothernNeighbour
+        {
+            get => Neighbours[Directions.North];
+            set => Neighbours[Directions.North] = value;
+        }
+
+        public Cell? EasternNeighbour
+        {
+            get => Neighbours[Directions.East];
+            set => Neighbours[Directions.East] = value;
+        }
+
+        public Cell? SouthernNeighbour
+        {
+            get => Neighbours[Directions.South];
+            set => Neighbours[Directions.South] = value;
+        }
+
+        public Cell? WesternNeighbour
+        {
+            get => Neighbours[Directions.West];
+            set => Neighbours[Directions.West] = value;
+        }
 
         public Cell(Cell? northernNeighbour = null, Cell? easternNeighbour = null, Cell? southernNeighbour = null, Cell? westernNeighbout = null)
         {
