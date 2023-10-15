@@ -9,6 +9,7 @@ namespace Mazes.Contracts
     public class Cell
     {
         private readonly IDictionary<Directions, Cell?> Neighbours = new Dictionary<Directions, Cell?>();
+        private readonly IEnumerable<Cell> linkedCells = new List<Cell>();
 
         public Cell? NothernNeighbour
         {
@@ -33,6 +34,8 @@ namespace Mazes.Contracts
             get => Neighbours[Directions.West];
             set => Neighbours[Directions.West] = value;
         }
+
+        public IEnumerable<Cell> LinkedCells => linkedCells;
 
         public Cell(Cell? northernNeighbour = null, Cell? easternNeighbour = null, Cell? southernNeighbour = null, Cell? westernNeighbout = null)
         {

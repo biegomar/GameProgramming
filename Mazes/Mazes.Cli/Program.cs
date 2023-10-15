@@ -8,6 +8,8 @@ namespace Mazes.Cli
         static void Main(string[] args)
         {
             var maze = new Maze(new BinareTreeMazeGenerator(), 10, 10);
+
+            Console.WriteLine(maze);
         }
     }
 }
