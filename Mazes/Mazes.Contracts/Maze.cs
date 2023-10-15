@@ -13,7 +13,8 @@ namespace Mazes.Contracts
         private const string CellHorizontal = "---";
         private const string CellVertical = "|";
         private const string EmptyFloor = "   ";
-        private const string LinkBetweenCells = " ";
+        private const string LinkToSouthernCell = "   ";
+        private const string LinkToEasternCell = " ";
 
         private readonly Cell[,] cells;
         private readonly IMazeGenerator mazeGenerator;
@@ -77,8 +78,8 @@ namespace Mazes.Contracts
 
                 for (int column = 0; column < dimensionOneLength; column++)
                 {
-                    bodyRow.Append(EmptyFloor).Append(this.cells[row, column].LinkedCells.Contains(this.cells[row, column].EasternNeighbour) ? LinkBetweenCells : CellVertical);
-                    bottomRow.Append(CornerStone).Append(this.cells[row, column].LinkedCells.Contains(this.cells[row, column].SouthernNeighbour) ? LinkBetweenCells : CellHorizontal);
+                    bodyRow.Append(EmptyFloor).Append(this.cells[row, column].LinkedCells.Contains(this.cells[row, column].EasternNeighbour) ? LinkToEasternCell : CellVertical);
+                    bottomRow.Append(CornerStone).Append(this.cells[row, column].LinkedCells.Contains(this.cells[row, column].SouthernNeighbour) ? LinkToSouthernCell : CellHorizontal);
                 }
                 
                 bottomRow.Append(CornerStone);
