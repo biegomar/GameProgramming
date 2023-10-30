@@ -42,7 +42,7 @@ namespace MonsterAttack
         /// <summary>
         /// The visual representation of the monster.
         /// </summary>
-        public string Avatar { get; set; }
+        public string Avatar { get; set; } = string.Empty;
 
         /// <summary>
         /// Attack!
