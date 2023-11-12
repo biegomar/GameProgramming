@@ -25,7 +25,7 @@ namespace MonsterAttack
                 
                 (firstOppenent, secondOppenent) = SortMonstersBySpeed(firstOppenent, secondOppenent);                
 
-                PrintStart(firstOppenent, secondOppenent);
+                Utils.PrintStart(firstOppenent, secondOppenent);
 
                 try
                 {
@@ -98,7 +98,7 @@ namespace MonsterAttack
             monster.AP = GetPropertyValueForMonster(Utils.AttackPoints);
             monster.DP = GetPropertyValueForMonster(Utils.DefensePoints);
             monster.S = GetPropertyValueForMonster(Utils.SpeedPoints);
-            monster.Avatar = GetAvatarForMonsterClass(monster.R);
+            monster.Avatar = Utils.GetAvatarForMonsterClass(monster.R);
 
             return monster;
         } 
@@ -157,16 +157,7 @@ namespace MonsterAttack
         private void PrintNumberOfAttackRounds()
         {
             Console.WriteLine(Utils.AttackRounds, this.attackRounds);
-        }
-
-        private static void PrintStart(Monster firstOppenent, Monster secondOppenent)
-        {
-            Console.Clear();
-            Console.WriteLine();
-            Console.WriteLine(Utils.StartMessage);
-            Console.WriteLine();
-            Console.WriteLine($"{firstOppenent} {secondOppenent}");            
-        }
+        }        
 
         private float GetPropertyValueForMonster(string message)
         {
@@ -179,18 +170,7 @@ namespace MonsterAttack
             }
             
             return result;
-        }
-
-        private string GetAvatarForMonsterClass(MonsterClass monsterClass)
-        {
-            return monsterClass switch
-            {
-                MonsterClass.Ork => Utils.OrkAvatar,
-                MonsterClass.Troll => Utils.TrollAvatar,
-                MonsterClass.Goblin => Utils.GoblinAvatar,
-                _ => string.Empty,
-            };
-        }
+        }        
 
         private bool WantToContinueGame(string message)
         {
