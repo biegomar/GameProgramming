@@ -42,7 +42,7 @@ namespace MonsterAttack
         /// <summary>
         /// The visual representation of the monster.
         /// </summary>
-        public string Avatar { get; set; } = string.Empty;
+        public string[] Avatar { get; set; } = Array.Empty<string>();
 
         /// <summary>
         /// Attack!
@@ -50,6 +50,7 @@ namespace MonsterAttack
         /// <param name="villain"></param>
         internal void Attack(Monster villain)
         {
+            Console.WriteLine();
             Console.WriteLine($"Der {this.R} attackiert den {villain.R}!");
             
             float damage = this.attackStrategy.Attack(this, villain);            
@@ -66,17 +67,6 @@ namespace MonsterAttack
 
             Console.WriteLine();
             Console.WriteLine("------ Nächste Runde -------");
-        }
-
-        public override string ToString()
-        {
-            var result = new StringBuilder();
-
-            result.AppendLine(this.Avatar);
-            result.AppendLine();
-            result.AppendLine($"Attack: {this.AP} - Defense: {this.DP} - Speed: {this.S} - Actual Health: {this.HP}");
-
-            return result.ToString();
-        }
+        }        
     }
 }
