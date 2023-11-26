@@ -66,9 +66,22 @@ public class MonsterFactory
         };
     }
 
-    private static Monster GetZombie()
+    private Monster GetZombie()
     {
-        return new Monster(null, null);
+        sbyte expLevel = 2;
+        DiceThrow diceThrow = new(1, D8);
+        
+        return new(standardAttackStrategy, standardDefendStrategy)
+        {
+            Race = MonsterRace.Zombie,
+            ExperienceLevel = expLevel,
+            Experience = 6,
+            Flags = MonsterFlags.Mean,
+            TreasurePercentage = 0,
+            AmorClass = 8,
+            HitPoints = D8.Roll(expLevel),
+            Damage = new List<DiceThrow>() {diceThrow}
+        };
     }
 
     private Monster GetYeti()
