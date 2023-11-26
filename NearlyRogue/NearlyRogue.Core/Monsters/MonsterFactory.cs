@@ -164,9 +164,22 @@ public class MonsterFactory
         return new Monster(null, null);
     }
 
-    private static Monster GetIceMonster()
+    private Monster GetIceMonster()
     {
-        return new Monster(null, null);
+        sbyte expLevel = 1;
+        DiceThrow diceThrow = new(1, D2);
+        
+        return new(standardAttackStrategy, standardDefendStrategy)
+        {
+            Race = MonsterRace.IceMonster,
+            ExperienceLevel = expLevel,
+            Experience = 15,
+            Flags = MonsterFlags.Mean,
+            TreasurePercentage = 0,
+            AmorClass = 9,
+            HitPoints = D8.Roll(expLevel),
+            Damage = new List<DiceThrow>() {diceThrow}
+        };
     }
 
     private Monster GetHobgoblin()
