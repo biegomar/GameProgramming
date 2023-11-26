@@ -136,9 +136,22 @@ public class MonsterFactory
         return new Monster(null, null);
     }
 
-    private static Monster GetLeprechaun()
+    private Monster GetLeprechaun()
     {
-        return new Monster(null, null);
+        sbyte expLevel = 3;
+        DiceThrow diceThrow = new(1, D2);
+        
+        return new(standardAttackStrategy, standardDefendStrategy)
+        {
+            Race = MonsterRace.Leprechaun,
+            ExperienceLevel = expLevel,
+            Experience = 10,
+            Flags = MonsterFlags.Greedy,
+            TreasurePercentage = 0,
+            AmorClass = 8,
+            HitPoints = D8.Roll(expLevel),
+            Damage = new List<DiceThrow>() {diceThrow}
+        };
     }
 
     private Monster GetKestrel()
