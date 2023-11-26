@@ -86,9 +86,22 @@ public class MonsterFactory
         return new Monster(null, null);
     }
 
-    private static Monster GetVampire()
+    private Monster GetVampire()
     {
-        return new Monster(null, null);
+        sbyte expLevel = 8;
+        DiceThrow diceThrow = new(1, D10);
+        
+        return new(standardAttackStrategy, standardDefendStrategy)
+        {
+            Race = MonsterRace.Vampire,
+            ExperienceLevel = expLevel,
+            Experience = 350,
+            Flags = MonsterFlags.Mean | MonsterFlags.Regeneration,
+            TreasurePercentage = 20,
+            AmorClass = 1,
+            HitPoints = D8.Roll(expLevel),
+            Damage = new List<DiceThrow>() {diceThrow}
+        };
     }
 
     private Monster GetUrvile()
