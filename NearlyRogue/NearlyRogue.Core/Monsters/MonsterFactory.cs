@@ -71,9 +71,21 @@ public class MonsterFactory
         return new Monster(null, null);
     }
 
-    private static Monster GetYeti()
+    private Monster GetYeti()
     {
-        return new Monster(null, null);
+        sbyte expLevel = 4;
+        DiceThrow diceThrow = new(1, D6);
+        
+        return new(standardAttackStrategy, standardDefendStrategy)
+        {
+            Race = MonsterRace.Yeti,
+            ExperienceLevel = expLevel,
+            Experience = 50,
+            TreasurePercentage = 30,
+            AmorClass = 6,
+            HitPoints = D8.Roll(expLevel),
+            Damage = new List<DiceThrow>() {diceThrow, diceThrow}
+        };
     }
 
     private Monster GetXeroc()
