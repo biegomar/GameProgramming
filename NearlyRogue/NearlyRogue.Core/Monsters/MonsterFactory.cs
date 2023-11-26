@@ -56,7 +56,7 @@ public class MonsterFactory
             MonsterRace.Rattlesnake => GetRattlesnake(),
             MonsterRace.Snake => GetSnake(),
             MonsterRace.Troll => GetTroll(),
-            MonsterRace.BlackUnicorn => GetBlackUnicorn(),
+            MonsterRace.Urvile => GetUrvile(),
             MonsterRace.Vampire => GetVampire(),
             MonsterRace.Wraith => GetWraith(),
             MonsterRace.Xeroc => GetXeroc(),
@@ -91,9 +91,23 @@ public class MonsterFactory
         return new Monster(null, null);
     }
 
-    private static Monster GetBlackUnicorn()
+    private Monster GetUrvile()
     {
-        return new Monster(null, null);
+        sbyte expLevel = 7;
+        DiceThrow diceThrowD3 = new(1, D3);
+        DiceThrow diceThrowD6 = new(4, D6);
+        
+        return new(standardAttackStrategy, standardDefendStrategy)
+        {
+            Race = MonsterRace.Urvile,
+            ExperienceLevel = expLevel,
+            Experience = 190,
+            Flags = MonsterFlags.Mean,
+            TreasurePercentage = 0,
+            AmorClass = -2,
+            HitPoints = D8.Roll(expLevel),
+            Damage = new List<DiceThrow>() {diceThrowD3, diceThrowD3, diceThrowD3, diceThrowD6}
+        };
     }
 
     private Monster GetTroll()

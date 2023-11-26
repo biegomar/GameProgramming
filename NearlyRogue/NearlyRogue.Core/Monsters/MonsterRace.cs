@@ -22,7 +22,7 @@ public enum MonsterRace
     Rattlesnake,
     Snake,
     Troll,
-    BlackUnicorn,
+    Urvile,
     Vampire,
     Wraith,
     Xeroc,
