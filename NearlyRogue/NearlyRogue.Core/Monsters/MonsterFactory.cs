@@ -116,9 +116,22 @@ public class MonsterFactory
         return new Monster(null, null);
     }
 
-    private static Monster GetPhantom()
+    private Monster GetPhantom()
     {
-        return new Monster(null, null);
+        sbyte expLevel = 8;
+        DiceThrow diceThrow = new(4, D4);
+        
+        return new(standardAttackStrategy, standardDefendStrategy)
+        {
+            Race = MonsterRace.Phantom,
+            ExperienceLevel = expLevel,
+            Experience = 120,
+            Flags = MonsterFlags.Invisible,
+            TreasurePercentage = 0,
+            AmorClass = 3,
+            HitPoints = D8.Roll(expLevel),
+            Damage = new List<DiceThrow>() {diceThrow}
+        };
     }
 
     private Monster GetOrc()
