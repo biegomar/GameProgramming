@@ -141,9 +141,22 @@ public class MonsterFactory
         return new Monster(null, null);
     }
 
-    private static Monster GetKestrel()
+    private Monster GetKestrel()
     {
-        return new Monster(null, null);
+        sbyte expLevel = 1;
+        DiceThrow diceThrow = new(1, D4);
+        
+        return new(standardAttackStrategy, standardDefendStrategy)
+        {
+            Race = MonsterRace.Kestrel,
+            ExperienceLevel = expLevel,
+            Experience = 1,
+            Flags = MonsterFlags.Mean | MonsterFlags.Flying,
+            TreasurePercentage = 0,
+            AmorClass = 7,
+            HitPoints = D8.Roll(expLevel),
+            Damage = new List<DiceThrow>() {diceThrow}
+        };
     }
 
     private static Monster GetJabberwock()

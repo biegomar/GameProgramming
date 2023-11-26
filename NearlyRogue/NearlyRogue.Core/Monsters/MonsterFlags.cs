@@ -1,5 +1,6 @@
 ﻿namespace NearlyRogue.Core.Monsters;
 
+[Flags]
 public enum MonsterFlags
 {
     Mean,
