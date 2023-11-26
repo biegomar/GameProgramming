@@ -76,9 +76,21 @@ public class MonsterFactory
         return new Monster(null, null);
     }
 
-    private static Monster GetXeroc()
+    private Monster GetXeroc()
     {
-        return new Monster(null, null);
+        sbyte expLevel = 7;
+        DiceThrow diceThrow = new(3, D4);
+        
+        return new(standardAttackStrategy, standardDefendStrategy)
+        {
+            Race = MonsterRace.Xeroc,
+            ExperienceLevel = expLevel,
+            Experience = 100,
+            TreasurePercentage = 30,
+            AmorClass = 7,
+            HitPoints = D8.Roll(expLevel),
+            Damage = new List<DiceThrow>() {diceThrow}
+        };
     }
 
     private Monster GetWraith()
@@ -88,7 +100,7 @@ public class MonsterFactory
         
         return new(standardAttackStrategy, standardDefendStrategy)
         {
-            Race = MonsterRace.Vampire,
+            Race = MonsterRace.Wraith,
             ExperienceLevel = expLevel,
             Experience = 55,
             TreasurePercentage = 0,
