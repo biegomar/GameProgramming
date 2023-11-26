@@ -131,9 +131,23 @@ public class MonsterFactory
         return new Monster(null, null);
     }
 
-    private static Monster GetMedusa()
+    private Monster GetMedusa()
     {
-        return new Monster(null, null);
+        sbyte expLevel = 8;
+        DiceThrow diceThrowD4 = new(3, D4);
+        DiceThrow diceThrowD5 = new(2, D5);
+        
+        return new(standardAttackStrategy, standardDefendStrategy)
+        {
+            Race = MonsterRace.Medusa,
+            ExperienceLevel = expLevel,
+            Experience = 200,
+            Flags = MonsterFlags.Mean,
+            TreasurePercentage = 40,
+            AmorClass = 2,
+            HitPoints = D8.Roll(expLevel),
+            Damage = new List<DiceThrow>() {diceThrowD4, diceThrowD4, diceThrowD5}
+        };
     }
 
     private Monster GetLeprechaun()
