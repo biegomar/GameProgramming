@@ -189,9 +189,23 @@ public class MonsterFactory
         return new Monster(null, null);
     }
 
-    private static Monster GetDragon()
+    private Monster GetDragon()
     {
-        return new Monster(null, null);
+        sbyte expLevel = 10;
+        DiceThrow diceThrowD8 = new(1, D8);
+        DiceThrow diceThrowD10 = new(3, D10);
+        
+        return new(standardAttackStrategy, standardDefendStrategy)
+        {
+            Race = MonsterRace.Dragon,
+            ExperienceLevel = expLevel,
+            Experience = 6800,
+            Flags = MonsterFlags.Mean,
+            TreasurePercentage = 100,
+            AmorClass = -1,
+            HitPoints = D8.Roll(expLevel),
+            Damage = new List<DiceThrow>() {diceThrowD8, diceThrowD8, diceThrowD10}
+        };
     }
 
     private Monster GetCentaur()
