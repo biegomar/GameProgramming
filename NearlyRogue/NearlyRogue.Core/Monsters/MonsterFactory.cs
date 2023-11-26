@@ -126,9 +126,21 @@ public class MonsterFactory
         return new Monster(null, null);
     }
 
-    private static Monster GetNymph()
+    private Monster GetNymph()
     {
-        return new Monster(null, null);
+        sbyte expLevel = 3;
+        DiceThrow diceThrow = new(0, D0);
+        
+        return new(standardAttackStrategy, standardDefendStrategy)
+        {
+            Race = MonsterRace.Nymph,
+            ExperienceLevel = expLevel,
+            Experience = 37,
+            TreasurePercentage = 100,
+            AmorClass = 9,
+            HitPoints = D8.Roll(expLevel),
+            Damage = new List<DiceThrow>() {diceThrow}
+        };
     }
 
     private Monster GetMedusa()
