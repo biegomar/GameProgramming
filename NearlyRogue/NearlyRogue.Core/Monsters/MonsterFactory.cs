@@ -179,9 +179,24 @@ public class MonsterFactory
         return new Monster(null, null);
     }
 
-    private static Monster GetVenusFlytrap()
+    private Monster GetVenusFlytrap()
     {
-        return new Monster(null, null);
+        //special behaviour needed.
+        
+        sbyte expLevel = 8;
+        DiceThrow diceThrow = new(1, D0);
+        
+        return new(standardAttackStrategy, standardDefendStrategy)
+        {
+            Race = MonsterRace.VenusFlytrap,
+            ExperienceLevel = expLevel,
+            Experience = 80,
+            Flags = MonsterFlags.Mean,
+            TreasurePercentage = 0,
+            AmorClass = 3,
+            HitPoints = D8.Roll(expLevel),
+            Damage = new List<DiceThrow>() {diceThrow}
+        };
     }
 
     private Monster GetEmu()
