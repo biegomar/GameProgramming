@@ -111,9 +111,23 @@ public class MonsterFactory
         return new Monster(null, null);
     }
 
-    private static Monster GetQuagga()
+    private Monster GetQuagga()
     {
-        return new Monster(null, null);
+        sbyte expLevel = 3;
+        DiceThrow diceThrowD2 = new(1, D2);
+        DiceThrow diceThrowD4 = new(1, D4);
+        
+        return new(standardAttackStrategy, standardDefendStrategy)
+        {
+            Race = MonsterRace.Quagga,
+            ExperienceLevel = expLevel,
+            Experience = 32,
+            Flags = MonsterFlags.Mean,
+            TreasurePercentage = 30,
+            AmorClass = 2,
+            HitPoints = D8.Roll(expLevel),
+            Damage = new List<DiceThrow>() {diceThrowD2, diceThrowD2, diceThrowD4}
+        };
     }
 
     private Monster GetPhantom()
