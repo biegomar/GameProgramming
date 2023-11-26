@@ -199,9 +199,22 @@ public class MonsterFactory
         return new Monster(null, null);
     }
 
-    private static Monster GetBat()
+    private Monster GetBat()
     {
-        return new Monster(null, null);
+        sbyte expLevel = 1;
+        DiceThrow diceThrow = new(1, D2);
+        
+        return new(standardAttackStrategy, standardDefendStrategy)
+        {
+            Race = MonsterRace.Bat,
+            ExperienceLevel = expLevel,
+            Experience = 1,
+            Flags = MonsterFlags.Flying,
+            TreasurePercentage = 0,
+            AmorClass = 3,
+            HitPoints = D8.Roll(expLevel),
+            Damage = new List<DiceThrow>() {diceThrow}
+        };
     }
 
     private Monster GetAquator()
