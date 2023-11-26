@@ -159,9 +159,22 @@ public class MonsterFactory
         };
     }
 
-    private static Monster GetJabberwock()
+    private Monster GetJabberwock()
     {
-        return new Monster(null, null);
+        sbyte expLevel = 15;
+        DiceThrow diceThrowD4 = new(2, D4);
+        DiceThrow diceThrowD12 = new(2, D12);
+        
+        return new(standardAttackStrategy, standardDefendStrategy)
+        {
+            Race = MonsterRace.Jabberwock,
+            ExperienceLevel = expLevel,
+            Experience = 4000,
+            TreasurePercentage = 70,
+            AmorClass = 6,
+            HitPoints = D8.Roll(expLevel),
+            Damage = new List<DiceThrow>() {diceThrowD12, diceThrowD4}
+        };
     }
 
     private Monster GetIceMonster()
