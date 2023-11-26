@@ -101,9 +101,22 @@ public class MonsterFactory
         return new Monster(null, null);
     }
 
-    private static Monster GetSnake()
+    private Monster GetSnake()
     {
-        return new Monster(null, null);
+        sbyte expLevel = 2;
+        DiceThrow diceThrow = new(1, D3);
+        
+        return new(standardAttackStrategy, standardDefendStrategy)
+        {
+            Race = MonsterRace.Snake,
+            ExperienceLevel = expLevel,
+            Experience = 1,
+            Flags = MonsterFlags.Mean,
+            TreasurePercentage = 0,
+            AmorClass = 8,
+            HitPoints = D8.Roll(expLevel),
+            Damage = new List<DiceThrow>() {diceThrow}
+        };
     }
 
     private Monster GetRattlesnake()
@@ -116,7 +129,7 @@ public class MonsterFactory
             Race = MonsterRace.Rattlesnake,
             ExperienceLevel = expLevel,
             Experience = 9,
-            Flags = MonsterFlags.Invisible,
+            Flags = MonsterFlags.Mean,
             TreasurePercentage = 0,
             AmorClass = 3,
             HitPoints = D8.Roll(expLevel),
