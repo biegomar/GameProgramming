@@ -1,6 +1,6 @@
 ﻿namespace NearlyRogue.Core.FightSystem.StandardImpl;
 
-public class StandardAttackStrategyImpl : IAttackStrategy
+public class PlayerAttackStrategy : IAttackStrategy
 {
     public void Attack(IAttacker attacker, IDefender defender)
     {
