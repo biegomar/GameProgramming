@@ -96,9 +96,23 @@ public class MonsterFactory
         return new Monster(null, null);
     }
 
-    private static Monster GetTroll()
+    private Monster GetTroll()
     {
-        return new Monster(null, null);
+        sbyte expLevel = 6;
+        DiceThrow diceThrowD6 = new(2, D6);
+        DiceThrow diceThrowD8 = new(1, D8);
+        
+        return new(standardAttackStrategy, standardDefendStrategy)
+        {
+            Race = MonsterRace.Troll,
+            ExperienceLevel = expLevel,
+            Experience = 120,
+            Flags = MonsterFlags.Mean | MonsterFlags.Regeneration,
+            TreasurePercentage = 50,
+            AmorClass = 4,
+            HitPoints = D8.Roll(expLevel),
+            Damage = new List<DiceThrow>() {diceThrowD8, diceThrowD8, diceThrowD6}
+        };
     }
 
     private Monster GetSnake()
