@@ -169,9 +169,22 @@ public class MonsterFactory
         return new Monster(null, null);
     }
 
-    private static Monster GetHobgoblin()
+    private Monster GetHobgoblin()
     {
-        return new Monster(null, null);
+        sbyte expLevel = 1;
+        DiceThrow diceThrow = new(1, D8);
+        
+        return new(standardAttackStrategy, standardDefendStrategy)
+        {
+            Race = MonsterRace.Hobgoblin,
+            ExperienceLevel = expLevel,
+            Experience = 3,
+            Flags = MonsterFlags.Mean,
+            TreasurePercentage = 0,
+            AmorClass = 5,
+            HitPoints = D8.Roll(expLevel),
+            Damage = new List<DiceThrow>() {diceThrow}
+        };
     }
 
     private Monster GetGriffin()
