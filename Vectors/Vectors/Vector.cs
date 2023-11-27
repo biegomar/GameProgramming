@@ -73,6 +73,65 @@
         }
 
         /// <summary>
+        /// Operator overload * (scalar multiplication).
+        /// </summary>
+        /// <param name="v1">The vector to scale.</param>
+        /// <param name="scalar">The scale factor.</param>
+        /// <returns>The resulting vector.</returns>
+        public static float operator *(Vector v1, Vector v2)
+        {
+            return DotProduct(v1, v2);
+        }
+
+        /// <summary>
+        /// Operator overload == (equality).
+        /// </summary>
+        /// <param name="v1">The first vector to compare.</param>
+        /// <param name="v2">The second vectore to compare.</param>
+        /// <returns>The resulting vector.</returns>
+        public static bool operator ==(Vector v1, Vector v2)
+        {
+            if (ReferenceEquals(v1, v2))
+                return true;
+
+            if (v1 is null || v2 is null)
+                return false;
+
+            return v1.X == v2.X && v1.Y == v2.Y && v1.Z == v2.Z;
+        }
+
+        /// <summary>
+        /// Operator overload != (inequality).
+        /// </summary>
+        /// <param name="v1">The first vector to compare.</param>
+        /// <param name="v2">The second vectore to compare.</param>
+        /// <returns>The resulting vector.</returns>
+        public static bool operator !=(Vector v1, Vector v2)
+        {
+            return !(v1 == v2);
+        }       
+
+        /// <summary>
+        /// Überschreiben der Equals-Methode für eine korrekte Verwendung mit Listen und Dictionaries.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            if (obj is Vector other)
+            {
+                return this == other;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y, Z);
+        }
+
+        /// <summary>
         /// The length of the vector.
         /// </summary>
         /// <returns>The length of the vector.</returns>
@@ -99,7 +158,7 @@
         {
             return Distance(this, v);
         }
-
+        
         /// <summary>
         /// The distance of two vectors.
         /// </summary>
@@ -114,10 +173,45 @@
             return lengthOfDifferenceVector;
         }
 
+        /// <summary>
+        /// Dot product of two vectors.
+        /// </summary>
+        /// <param name="v">The second vector for the dot product.</param>
+        /// <returns></returns>
+        public float DotProduct(Vector v)
+        {
+            return DotProduct(this, v);
+        }
+
+        /// <summary>
+        /// Dot product of two vectors.
+        /// </summary>
+        /// <param name="v1">The first vector for the dot product.</param>
+        /// <param name="v2">The second vector for the dot product.</param>
+        /// <returns></returns>
+        public static float DotProduct(Vector v1, Vector v2)
+        {
+            return v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z;
+        }
+
+        public Vector CrossProduct(Vector v)
+        {
+            return CrossProduct(this, v);
+        }
+
+        public static Vector CrossProduct(Vector v1, Vector v2)
+        {
+            return new Vector()
+            {
+                X = v1.Y * v2.Z - v1.Z * v2.Y,
+                Y = v1.Z * v2.X - v1.X * v2.Z,
+                Z = v1.X * v2.Y - v1.Y * v2.X
+            };
+        }
+
         private float PowerOfTwo(float value)
         {
             return value * value;
-        }
-
+        }       
     }
 }
