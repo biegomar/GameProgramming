@@ -194,11 +194,22 @@
             return v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z;
         }
 
+        /// <summary>
+        /// Cross product of two vectors.
+        /// </summary>
+        /// <param name="v">The second vector for the cross product.</param>
+        /// <returns>The resulting vector.</returns>
         public Vector CrossProduct(Vector v)
         {
             return CrossProduct(this, v);
         }
 
+        /// <summary>
+        /// Cross product of two vectors.
+        /// </summary>
+        /// <param name="v1">The first vector for the cross product.</param>
+        /// <param name="v2">The second vector for the cross product.</param>
+        /// <returns>The resulting vector.</returns>
         public static Vector CrossProduct(Vector v1, Vector v2)
         {
             return new Vector()
