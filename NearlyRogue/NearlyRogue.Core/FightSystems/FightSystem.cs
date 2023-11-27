@@ -1,4 +1,4 @@
-﻿namespace NearlyRogue.Core.FightSystem;
+﻿namespace NearlyRogue.Core.FightSystems;
 
 public class FightSystem
 {
@@ -8,7 +8,7 @@ public class FightSystem
     {
         this.BattleStrategy = battleStrategy;
     }
-    void BattleOneRound(IAttacker attacker, IDefender defender)
+    public void BattleOneRound(IAttacker attacker, IDefender defender)
     {
         this.BattleStrategy.BattleOneRound(attacker, defender);
     }

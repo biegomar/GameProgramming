@@ -1,6 +1,6 @@
 ﻿using NearlyRogue.Core.Monsters;
 
-namespace NearlyRogue.Core.Player;
+namespace NearlyRogue.Core.Players;
 
 public interface IExperienceCalculator
 {
