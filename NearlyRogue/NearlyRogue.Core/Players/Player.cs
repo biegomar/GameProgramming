@@ -1,17 +1,20 @@
 ﻿using NearlyRogue.Core.Dices;
-using NearlyRogue.Core.FightSystem;
+using NearlyRogue.Core.FightSystems;
 
-namespace NearlyRogue.Core.Player;
+namespace NearlyRogue.Core.Players;
 
 public class Player : IAttacker, IDefender
 {
-    public string Name { get; init; }
+    public required string Name { get; init; }
     public uint Gold { get; set; }
     public ushort Experience { get; set; }
     public sbyte ExperienceLevel { get; set; }
-    public DiceThrow HitPoints { get; set; }
+    public ushort HitPoints { get; set; }
+    public ushort MaxHitPoints { get; set; }
     public ushort Strength { get; set; }
     public sbyte AmorClass { get; set; }
+    public required IList<DiceThrow> Damage { get; set; }
+    public byte Food { get; set; }
 
     private readonly IAttackStrategy attackStrategy;
     private readonly IDefendStrategy defendStrategy;

@@ -1,37 +1,23 @@
 ﻿using NearlyRogue.Core.Dices;
-using NearlyRogue.Core.FightSystem;
+using NearlyRogue.Core.FightSystems;
+using NearlyRogue.Core.FightSystems.StandardImpl;
 
 namespace NearlyRogue.Core.Monsters;
 
 public class MonsterFactory
 {
-    private readonly IAttackStrategy standardAttackStrategy;
-    private readonly IDefendStrategy standardDefendStrategy;
-    private readonly Dice D0;
-    private readonly Dice D2;
-    private readonly Dice D3;
-    private readonly Dice D4;
-    private readonly Dice D5;
-    private readonly Dice D6;
-    private readonly Dice D8;
-    private readonly Dice D10;
-    private readonly Dice D12;
-    
-    public MonsterFactory(IAttackStrategy standardAttackStrategy, IDefendStrategy standardDefendStrategy)
-    {
-        this.standardAttackStrategy = standardAttackStrategy;
-        this.standardDefendStrategy = standardDefendStrategy;
-        this.D0 = new () {TypeOfDice = DiceType.D0};
-        this.D2 = new () {TypeOfDice = DiceType.D2};
-        this.D3 = new () {TypeOfDice = DiceType.D3};
-        this.D4 = new () {TypeOfDice = DiceType.D4};
-        this.D5 = new () {TypeOfDice = DiceType.D5};
-        this.D6 = new () {TypeOfDice = DiceType.D6};
-        this.D8 = new () {TypeOfDice = DiceType.D8};
-        this.D10 = new () {TypeOfDice = DiceType.D10};
-        this.D12 = new () {TypeOfDice = DiceType.D12};
-    }
-    
+    private readonly IAttackStrategy standardAttackStrategy = new MonsterAttackStrategy();
+    private readonly IDefendStrategy standardDefendStrategy = new MonsterDefendStrategy();
+    private readonly Dice D0 = new () {TypeOfDice = DiceType.D0};
+    private readonly Dice D2 = new () {TypeOfDice = DiceType.D2};
+    private readonly Dice D3 = new () {TypeOfDice = DiceType.D3};
+    private readonly Dice D4 = new () {TypeOfDice = DiceType.D4};
+    private readonly Dice D5 = new () {TypeOfDice = DiceType.D5};
+    private readonly Dice D6 = new () {TypeOfDice = DiceType.D6};
+    private readonly Dice D8 = new () {TypeOfDice = DiceType.D8};
+    private readonly Dice D10 = new () {TypeOfDice = DiceType.D10};
+    private readonly Dice D12 = new () {TypeOfDice = DiceType.D12};
+
     public Monster CreateMonster(MonsterRace monsterRace)
     {
         return monsterRace switch

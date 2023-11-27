@@ -1,5 +1,5 @@
 ﻿using NearlyRogue.Core.Dices;
-using NearlyRogue.Core.FightSystem;
+using NearlyRogue.Core.FightSystems;
 
 namespace NearlyRogue.Core.Monsters;
 

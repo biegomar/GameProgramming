@@ -1,4 +1,4 @@
-﻿namespace NearlyRogue.Core.FightSystem;
+﻿namespace NearlyRogue.Core.FightSystems;
 
 public interface IAttacker
 {

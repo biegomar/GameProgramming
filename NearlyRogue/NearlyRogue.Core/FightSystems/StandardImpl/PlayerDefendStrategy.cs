@@ -1,4 +1,4 @@
-﻿namespace NearlyRogue.Core.FightSystem.StandardImpl;
+﻿namespace NearlyRogue.Core.FightSystems.StandardImpl;
 
 public class PlayerDefendStrategy : IDefendStrategy
 {
