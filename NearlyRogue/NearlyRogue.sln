@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NearlyRogue.Cli", "NearlyRo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NearlyRogue.Core", "NearlyRogue.Core\NearlyRogue.Core.csproj", "{0F155E3A-C0A5-4D54-970E-4E1CA9A07223}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NearlyRogue.Core.Test", "NearlyRogue.Core.Test\NearlyRogue.Core.Test.csproj", "{AC731BCE-B5D9-46C3-A8CC-4631461D4E25}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{0F155E3A-C0A5-4D54-970E-4E1CA9A07223}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F155E3A-C0A5-4D54-970E-4E1CA9A07223}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F155E3A-C0A5-4D54-970E-4E1CA9A07223}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC731BCE-B5D9-46C3-A8CC-4631461D4E25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC731BCE-B5D9-46C3-A8CC-4631461D4E25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC731BCE-B5D9-46C3-A8CC-4631461D4E25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC731BCE-B5D9-46C3-A8CC-4631461D4E25}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
