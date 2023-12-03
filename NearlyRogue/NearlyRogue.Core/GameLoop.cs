@@ -34,7 +34,7 @@ public class GameLoop
 
     private Player CreatePlayer()
     {
-        DiceThrow diceThrow = new(1, new Dice() {TypeOfDice = DiceType.D4});
+        DiceThrow diceThrow = new(1, new Dice(DiceType.D4));
         
         return new Player(new PlayerAttackStrategy(), new PlayerDefendStrategy(), new ExperienceCalculator())
         {

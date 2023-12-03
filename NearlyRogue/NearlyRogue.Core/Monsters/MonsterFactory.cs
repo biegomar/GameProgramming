@@ -8,15 +8,15 @@ public class MonsterFactory
 {
     private readonly IAttackStrategy standardAttackStrategy = new MonsterAttackStrategy();
     private readonly IDefendStrategy standardDefendStrategy = new MonsterDefendStrategy();
-    private readonly Dice D0 = new () {TypeOfDice = DiceType.D0};
-    private readonly Dice D2 = new () {TypeOfDice = DiceType.D2};
-    private readonly Dice D3 = new () {TypeOfDice = DiceType.D3};
-    private readonly Dice D4 = new () {TypeOfDice = DiceType.D4};
-    private readonly Dice D5 = new () {TypeOfDice = DiceType.D5};
-    private readonly Dice D6 = new () {TypeOfDice = DiceType.D6};
-    private readonly Dice D8 = new () {TypeOfDice = DiceType.D8};
-    private readonly Dice D10 = new () {TypeOfDice = DiceType.D10};
-    private readonly Dice D12 = new () {TypeOfDice = DiceType.D12};
+    private readonly Dice D0 = new (DiceType.D0);
+    private readonly Dice D2 = new (DiceType.D2);
+    private readonly Dice D3 = new (DiceType.D3);
+    private readonly Dice D4 = new (DiceType.D4);
+    private readonly Dice D5 = new (DiceType.D5);
+    private readonly Dice D6 = new (DiceType.D6);
+    private readonly Dice D8 = new (DiceType.D8);
+    private readonly Dice D10 = new (DiceType.D10);
+    private readonly Dice D12 = new (DiceType.D12);
 
     public Monster CreateMonster(MonsterRace monsterRace)
     {
