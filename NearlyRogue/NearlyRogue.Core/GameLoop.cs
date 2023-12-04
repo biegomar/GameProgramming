@@ -29,12 +29,12 @@ public class GameLoop
     {
         this.player = CreatePlayer();
         this.monster = monsterFactory.CreateMonster(MonsterRace.Kestrel);
-        this.fightSystem = new FightSystem(new StandardBattleStrategy());
+        this.fightSystem = new FightSystem();
     }
 
     private Player CreatePlayer()
     {
-        DiceThrow diceThrow = new(1, new Dice() {TypeOfDice = DiceType.D4});
+        DiceThrow diceThrow = new(1, new Dice(DiceType.D4));
         
         return new Player(new PlayerAttackStrategy(), new PlayerDefendStrategy(), new ExperienceCalculator())
         {

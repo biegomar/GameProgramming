@@ -8,15 +8,15 @@ public class MonsterFactory
 {
     private readonly IAttackStrategy standardAttackStrategy = new MonsterAttackStrategy();
     private readonly IDefendStrategy standardDefendStrategy = new MonsterDefendStrategy();
-    private readonly Dice D0 = new () {TypeOfDice = DiceType.D0};
-    private readonly Dice D2 = new () {TypeOfDice = DiceType.D2};
-    private readonly Dice D3 = new () {TypeOfDice = DiceType.D3};
-    private readonly Dice D4 = new () {TypeOfDice = DiceType.D4};
-    private readonly Dice D5 = new () {TypeOfDice = DiceType.D5};
-    private readonly Dice D6 = new () {TypeOfDice = DiceType.D6};
-    private readonly Dice D8 = new () {TypeOfDice = DiceType.D8};
-    private readonly Dice D10 = new () {TypeOfDice = DiceType.D10};
-    private readonly Dice D12 = new () {TypeOfDice = DiceType.D12};
+    private readonly Dice D0 = new (DiceType.D0);
+    private readonly Dice D2 = new (DiceType.D2);
+    private readonly Dice D3 = new (DiceType.D3);
+    private readonly Dice D4 = new (DiceType.D4);
+    private readonly Dice D5 = new (DiceType.D5);
+    private readonly Dice D6 = new (DiceType.D6);
+    private readonly Dice D8 = new (DiceType.D8);
+    private readonly Dice D10 = new (DiceType.D10);
+    private readonly Dice D12 = new (DiceType.D12);
 
     public Monster CreateMonster(MonsterRace monsterRace)
     {
@@ -65,6 +65,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Mean,
             TreasurePercentage = 0,
             AmorClass = 8,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrow}
         };
@@ -82,6 +83,7 @@ public class MonsterFactory
             Experience = 50,
             TreasurePercentage = 30,
             AmorClass = 6,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrow, diceThrow}
         };
@@ -99,6 +101,7 @@ public class MonsterFactory
             Experience = 100,
             TreasurePercentage = 30,
             AmorClass = 7,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrow}
         };
@@ -116,6 +119,7 @@ public class MonsterFactory
             Experience = 55,
             TreasurePercentage = 0,
             AmorClass = 4,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrow}
         };
@@ -134,6 +138,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Mean | MonsterFlags.Regeneration,
             TreasurePercentage = 20,
             AmorClass = 1,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrow}
         };
@@ -153,6 +158,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Mean,
             TreasurePercentage = 0,
             AmorClass = -2,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrowD3, diceThrowD3, diceThrowD3, diceThrowD6}
         };
@@ -172,6 +178,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Mean | MonsterFlags.Regeneration,
             TreasurePercentage = 50,
             AmorClass = 4,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrowD8, diceThrowD8, diceThrowD6}
         };
@@ -190,6 +197,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Mean,
             TreasurePercentage = 0,
             AmorClass = 8,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrow}
         };
@@ -208,6 +216,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Mean,
             TreasurePercentage = 0,
             AmorClass = 3,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrow}
         };
@@ -227,6 +236,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Mean,
             TreasurePercentage = 30,
             AmorClass = 2,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrowD2, diceThrowD2, diceThrowD4}
         };
@@ -245,6 +255,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Invisible,
             TreasurePercentage = 0,
             AmorClass = 3,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrow}
         };
@@ -263,6 +274,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Greedy,
             TreasurePercentage = 15,
             AmorClass = 6,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrow}
         };
@@ -280,6 +292,7 @@ public class MonsterFactory
             Experience = 37,
             TreasurePercentage = 100,
             AmorClass = 9,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrow}
         };
@@ -299,6 +312,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Mean,
             TreasurePercentage = 40,
             AmorClass = 2,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrowD4, diceThrowD4, diceThrowD5}
         };
@@ -317,6 +331,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Greedy,
             TreasurePercentage = 0,
             AmorClass = 8,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrow}
         };
@@ -335,6 +350,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Mean | MonsterFlags.Flying,
             TreasurePercentage = 0,
             AmorClass = 7,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrow}
         };
@@ -353,6 +369,7 @@ public class MonsterFactory
             Experience = 4000,
             TreasurePercentage = 70,
             AmorClass = 6,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrowD12, diceThrowD4}
         };
@@ -371,6 +388,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Mean,
             TreasurePercentage = 0,
             AmorClass = 9,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrow}
         };
@@ -389,6 +407,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Mean,
             TreasurePercentage = 0,
             AmorClass = 5,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrow}
         };
@@ -408,6 +427,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Mean | MonsterFlags.Flying | MonsterFlags.Regeneration,
             TreasurePercentage = 20,
             AmorClass = 2,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrowD3, diceThrowD5, diceThrowD3}
         };
@@ -428,6 +448,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Mean,
             TreasurePercentage = 0,
             AmorClass = 3,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrow}
         };
@@ -446,6 +467,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Mean,
             TreasurePercentage = 0,
             AmorClass = 7,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrow}
         };
@@ -465,6 +487,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Mean,
             TreasurePercentage = 100,
             AmorClass = -1,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrowD8, diceThrowD8, diceThrowD10}
         };
@@ -482,6 +505,7 @@ public class MonsterFactory
             Experience = 25,
             TreasurePercentage = 15,
             AmorClass = 4,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrow, diceThrow}
         };
@@ -500,6 +524,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Flying,
             TreasurePercentage = 0,
             AmorClass = 3,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrow}
         };
@@ -518,6 +543,7 @@ public class MonsterFactory
             Flags = MonsterFlags.Mean,
             TreasurePercentage = 0,
             AmorClass = 2,
+            Strength = 10,
             HitPoints = D8.Roll(expLevel),
             Damage = new List<DiceThrow>() {diceThrow, diceThrow}
         };
