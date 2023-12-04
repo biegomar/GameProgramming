@@ -29,7 +29,7 @@ public class GameLoop
     {
         this.player = CreatePlayer();
         this.monster = monsterFactory.CreateMonster(MonsterRace.Kestrel);
-        this.fightSystem = new FightSystem(new StandardBattleStrategy());
+        this.fightSystem = new FightSystem();
     }
 
     private Player CreatePlayer()

@@ -1,5 +1,6 @@
 ﻿using NearlyRogue.Core.Dices;
 using NearlyRogue.Core.FightSystems;
+using NearlyRogue.Core.Weapons;
 
 namespace NearlyRogue.Core.Players;
 
@@ -13,6 +14,7 @@ public class Player : IAttacker, IDefender
     public ushort MaxHitPoints { get; set; }
     public ushort Strength { get; set; }
     public sbyte AmorClass { get; set; }
+    public WeaponType ActiveWeapon { get; set; }
     public required IList<DiceThrow> Damage { get; set; }
     public byte Food { get; set; }
 
