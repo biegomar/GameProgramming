@@ -1,6 +1,5 @@
 ﻿using NearlyRogue.Core.Dices;
 using NearlyRogue.Core.FightSystems;
-using NearlyRogue.Core.FightSystems.StandardImpl;
 using NearlyRogue.Core.Monsters;
 using NearlyRogue.Core.Players;
 
@@ -36,7 +35,7 @@ public class GameLoop
     {
         DiceThrow diceThrow = new(1, new Dice(DiceType.D4));
         
-        return new Player(new PlayerAttackStrategy(), new PlayerDefendStrategy(), new ExperienceCalculator())
+        return new Player(new ExperienceCalculator())
         {
             Name = "atogeib",
             Strength = 16,

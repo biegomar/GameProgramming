@@ -3,7 +3,7 @@ using NearlyRogue.Core.FightSystems;
 
 namespace NearlyRogue.Core.Monsters;
 
-public class Monster: IAttacker, IDefender
+public class Monster : ICreature
 {
     public MonsterRace Race { get; init; }
     public string Name => Race.ToString();
@@ -15,24 +15,6 @@ public class Monster: IAttacker, IDefender
     public ushort Strength { get; set; }
     public sbyte AmorClass { get; set; }
     public IList<DiceThrow> Damage { get; set; }
+    
     public ushort Range { get; set; }
-    
-    private readonly IAttackStrategy attackStrategy;
-    private readonly IDefendStrategy defendStrategy;
-
-    public Monster(IAttackStrategy attackStrategy, IDefendStrategy defendStrategy)
-    {
-        this.attackStrategy = attackStrategy;
-        this.defendStrategy = defendStrategy;
-    }
-    
-    public void Attack(IDefender villain)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Defeat(IAttacker attacker)
-    {
-        throw new NotImplementedException();
-    }
 }

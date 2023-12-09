@@ -5,9 +5,8 @@ public class FightSystem
     private readonly Random random;
     
     
-    public void BattleOneRound(IAttacker attacker, IDefender defender)
+    public void BattleOneRound(ICreature attacker, ICreature defender)
     {
-        
     }
     
     public sbyte CalculateStrengthCorrector(ushort strength)
@@ -24,7 +23,7 @@ public class FightSystem
         return add;
     }
     
-    private bool DoesSwingHit(IAttacker attacker, IDefender defender, byte attackerHitBonus)
+    private bool DoesSwingHit(ICreature attacker, ICreature defender, byte attackerHitBonus)
     {
         var res = this.random.Next(1,21);
         var need = 20 - attacker.ExperienceLevel - defender.AmorClass;
