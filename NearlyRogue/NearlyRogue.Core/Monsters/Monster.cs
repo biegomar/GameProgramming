@@ -10,11 +10,12 @@ public class Monster : ICreature
     public byte TreasurePercentage { get; init; }
     public MonsterFlags Flags { get; init; }
     public ushort Experience { get; set; }
-    public sbyte ExperienceLevel { get; set; }
+    public byte ExperienceLevel { get; set; }
     public ushort HitPoints { get; set; }
+    public ushort MaxHitPoints { get; set; }
     public ushort Strength { get; set; }
     public sbyte AmorClass { get; set; }
-    public IList<DiceThrow> Damage { get; set; }
+    public IList<DiceThrow> Damage { get; init; }
     
     public ushort Range { get; set; }
 }

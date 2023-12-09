@@ -7,6 +7,15 @@ public class FightSystem
     
     public void BattleOneRound(ICreature attacker, ICreature defender)
     {
+        foreach (var diceThrow in attacker.Damage)
+        {
+            if (DoesSwingHit(attacker, defender,0))
+            {
+                var result = diceThrow.Dice.Roll(diceThrow.Tries);
+            }    
+        }
+        
+        
     }
     
     public sbyte CalculateStrengthCorrector(ushort strength)

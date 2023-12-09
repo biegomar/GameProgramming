@@ -19,7 +19,7 @@ public class Dice
         this.TypeOfDice = typeOfDice;
     }
     
-    public ushort Roll(sbyte tries)
+    public ushort Roll(byte tries)
     {
         ushort result = 0;
 
