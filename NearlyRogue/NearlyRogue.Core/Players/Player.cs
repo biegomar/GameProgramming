@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using NearlyRogue.Core.Amors;
 using NearlyRogue.Core.Dices;
 using NearlyRogue.Core.FightSystems;
 using NearlyRogue.Core.Weapons;
@@ -16,8 +17,10 @@ public class Player : ICreature
     public ushort Strength { get; set; }
     public sbyte AmorClass { get; set; }
     public byte Food { get; set; }
-    public Weapon ActiveWeapon { get; set; }
+    public Weapon? ActiveWeapon { get; set; }
     public IList<Weapon> Weapons { get; set; }
+    public Armor? ActiveArmor { get; set; }
+    public IList<Armor> Armors { get; set; }
     public required IList<DiceThrow> Damage { get; init; }
     
     private readonly IExperienceCalculator experienceCalculator;
@@ -26,5 +29,6 @@ public class Player : ICreature
     {
         this.experienceCalculator = experienceCalculator;
         this.Weapons = new List<Weapon>();
+        this.Armors = new List<Armor>();
     }
 }
