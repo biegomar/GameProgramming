@@ -4,6 +4,8 @@ namespace NearlyRogue.Core.Weapons;
 
 public class WeaponFactory 
 {
+    private readonly Random random = new Random();
+    
     private readonly Dice D0 = new (DiceType.D0);
     private readonly Dice D1 = new (DiceType.D1);
     private readonly Dice D2 = new (DiceType.D2);
@@ -45,6 +47,7 @@ public class WeaponFactory
             LaunchedByType = null,
             AdditionalDamage = 0,
             AdditionalHit = 0,
+            Count = 1,
             Damage = new List<DiceThrow>() {diceThrow},
             HurlDamage = new List<DiceThrow>() {diceThrowHurl}
         };
@@ -61,6 +64,7 @@ public class WeaponFactory
             LaunchedByType = null,
             AdditionalDamage = 0,
             AdditionalHit = 0,
+            Count = 1,
             Damage = new List<DiceThrow>() {diceThrow},
             HurlDamage = new List<DiceThrow>() {diceThrowHurl}
         };
@@ -74,6 +78,9 @@ public class WeaponFactory
         return new Weapon 
         {
             Type = WeaponType.Bow,
+            AdditionalDamage = 0,
+            AdditionalHit = 0,
+            Count = 1,
             Damage = new List<DiceThrow>() {diceThrow},
             HurlDamage = new List<DiceThrow>() {diceThrowHurl}
         };
@@ -89,6 +96,9 @@ public class WeaponFactory
             Type = WeaponType.Arrow, 
             LaunchedByType = WeaponType.Bow,
             Flags = WeaponFlags.IsMany | WeaponFlags.IsMissile,
+            AdditionalDamage = 0,
+            AdditionalHit = 0,
+            Count = this.GetCount(),
             Damage = new List<DiceThrow>() {diceThrow},
             HurlDamage = new List<DiceThrow>() {diceThrowHurl}
         };
@@ -103,6 +113,9 @@ public class WeaponFactory
         {
             Type = WeaponType.Dagger,
             Flags = WeaponFlags.IsMissile,
+            AdditionalDamage = 0,
+            AdditionalHit = 0,
+            Count = 1,
             Damage = new List<DiceThrow>() {diceThrow},
             HurlDamage = new List<DiceThrow>() {diceThrowHurl}
         };
@@ -116,6 +129,9 @@ public class WeaponFactory
         return new Weapon 
         {
             Type = WeaponType.TwoSword, 
+            AdditionalDamage = 0,
+            AdditionalHit = 0,
+            Count = 1,
             Damage = new List<DiceThrow>() {diceThrow},
             HurlDamage = new List<DiceThrow>() {diceThrowHurl}
         };
@@ -130,6 +146,9 @@ public class WeaponFactory
         {
             Type = WeaponType.Dart, 
             Flags = WeaponFlags.IsMany | WeaponFlags.IsMissile,
+            AdditionalDamage = 0,
+            AdditionalHit = 0,
+            Count = this.GetCount(),
             Damage = new List<DiceThrow>() {diceThrow},
             HurlDamage = new List<DiceThrow>() {diceThrowHurl}
         };
@@ -143,6 +162,9 @@ public class WeaponFactory
         return new Weapon 
         {
             Type = WeaponType.Crossbow, 
+            AdditionalDamage = 0,
+            AdditionalHit = 0,
+            Count = 1,
             Damage = new List<DiceThrow>() {diceThrow},
             HurlDamage = new List<DiceThrow>() {diceThrowHurl}
         };
@@ -158,6 +180,9 @@ public class WeaponFactory
             Type = WeaponType.Bolt, 
             LaunchedByType = WeaponType.Crossbow,
             Flags = WeaponFlags.IsMany | WeaponFlags.IsMissile,
+            AdditionalDamage = 0,
+            AdditionalHit = 0,
+            Count = this.GetCount(),
             Damage = new List<DiceThrow>() {diceThrow},
             HurlDamage = new List<DiceThrow>() {diceThrowHurl}
         };
@@ -172,6 +197,9 @@ public class WeaponFactory
         {
             Type = WeaponType.Spear,
             Flags = WeaponFlags.IsMissile,
+            AdditionalDamage = 0,
+            AdditionalHit = 0,
+            Count = 1,
             Damage = new List<DiceThrow>() {diceThrow},
             HurlDamage = new List<DiceThrow>() {diceThrowHurl}
         };
@@ -185,9 +213,17 @@ public class WeaponFactory
         return new Weapon 
         {
             Type = WeaponType.Flame,
+            AdditionalDamage = 0,
+            AdditionalHit = 0,
+            Count = 1,
             Damage = new List<DiceThrow>() {diceThrow},
             HurlDamage = new List<DiceThrow>() {diceThrowHurl}
         };
+    }
+
+    private byte GetCount()
+    {
+        return (byte)(this.random.Next(1, 9) + 8);
     }
 
 }

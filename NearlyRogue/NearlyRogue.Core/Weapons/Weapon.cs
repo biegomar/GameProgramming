@@ -9,7 +9,7 @@ public class Weapon
     public WeaponFlags Flags { get; set; }
     public byte AdditionalDamage { get; set; }
     public byte AdditionalHit { get; set; }
-    
+    public byte Count { get; set; }
     public required IList<DiceThrow> Damage { get; set; }
     public required IList<DiceThrow> HurlDamage { get; set; }
 }
