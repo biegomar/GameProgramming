@@ -75,5 +75,10 @@
         {
             return string.Join(", ", array);
         }
+
+        public T[] ToArray()
+        {
+            return this.array;
+        }
     }
 }
