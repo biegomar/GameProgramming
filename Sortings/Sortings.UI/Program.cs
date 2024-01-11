@@ -1,4 +1,5 @@
 ﻿using Sortings.Core;
+using Sortings.Core.Display;
 
 //ObservableArray<int> array = new ObservableArray<int>(new []{ 5, 6, 4, 1, 8, 3, 2, 9, 7 });
 //ObservableArray<int> array = new ObservableArray<int>(new []{ 16, 10, 5, 11, 6, 4, 18, 17, 1, 8, 19, 3, 14, 2, 9, 15, 7, 12, 20, 13 });
@@ -56,15 +57,15 @@ else
     }
 }
 
-DisplayArray(array);
+DisplayArray(array, new AscendingDisplay<int>());
 
 ConsoleKeyInfo sortAlgo;
 do
 {
-    Console.Write("Welcher Algorithmus soll benutzt werden (bitte Anfangsbuchstaben eintippen)? Mergesort, Bubblesort, Insertionsort?");
+    Console.Write("Welcher Algorithmus soll benutzt werden (bitte Anfangsbuchstaben eintippen)? Mergesort, Bubblesort, Selectionsort?");
     sortAlgo = Console.ReadKey();
     Console.WriteLine();
-} while ( !(sortAlgo.Key is ConsoleKey.M or ConsoleKey.I or ConsoleKey.B));
+} while ( !(sortAlgo.Key is ConsoleKey.M or ConsoleKey.S or ConsoleKey.B));
 
 var algo = sortAlgo.Key switch
 {
@@ -74,15 +75,31 @@ var algo = sortAlgo.Key switch
 };
 
 var sortedArray = algo.Sort(array);
-DisplayArray(sortedArray, false);
 
-void DisplayArray(ObservableArray<int> input, bool unsorted=true)
+ConsoleKeyInfo howToDisplay;
+do
+{
+    Console.Write("Wie soll das sortierte Array angezeigt werden (bitte Anfangsbuchstaben eintippen)? Ascending, Descending, Zickzack?");
+    howToDisplay = Console.ReadKey();
+    Console.WriteLine();
+} while ( !(howToDisplay.Key is ConsoleKey.A or ConsoleKey.D or ConsoleKey.Z));
+
+IDisplay<int> displayStrategy = howToDisplay.Key switch
+{
+    ConsoleKey.A => new AscendingDisplay<int>(),
+    ConsoleKey.D => new DescendingDisplay<int>(),
+    ConsoleKey.Z => new ZickZackDisplay<int>()
+};
+
+DisplayArray(sortedArray, displayStrategy,false);
+
+void DisplayArray(ObservableArray<int> input, IDisplay<int> displayStrategy, bool unsorted=true)
 {
     if (input.Length <= 20)
     {
         var vorsilbe = unsorted ? "un" : string.Empty;
         Console.WriteLine($"Dies ist das {vorsilbe}sortierte Array: ");
-        Console.WriteLine(string.Join(", ", input));    
+        Console.WriteLine(displayStrategy.Display(input.ToArray()));
     }
 }
 
