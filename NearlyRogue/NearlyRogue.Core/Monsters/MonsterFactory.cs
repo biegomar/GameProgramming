@@ -1,13 +1,9 @@
 ﻿using NearlyRogue.Core.Dices;
-using NearlyRogue.Core.FightSystems;
-using NearlyRogue.Core.FightSystems.StandardImpl;
 
 namespace NearlyRogue.Core.Monsters;
 
 public class MonsterFactory
 {
-    private readonly IAttackStrategy standardAttackStrategy = new MonsterAttackStrategy();
-    private readonly IDefendStrategy standardDefendStrategy = new MonsterDefendStrategy();
     private readonly Dice D0 = new (DiceType.D0);
     private readonly Dice D2 = new (DiceType.D2);
     private readonly Dice D3 = new (DiceType.D3);
@@ -54,10 +50,10 @@ public class MonsterFactory
 
     private Monster GetZombie()
     {
-        sbyte expLevel = 2;
+        byte expLevel = 2;
         DiceThrow diceThrow = new(1, D8);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Zombie,
             ExperienceLevel = expLevel,
@@ -73,10 +69,10 @@ public class MonsterFactory
 
     private Monster GetYeti()
     {
-        sbyte expLevel = 4;
+        byte expLevel = 4;
         DiceThrow diceThrow = new(1, D6);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Yeti,
             ExperienceLevel = expLevel,
@@ -91,10 +87,10 @@ public class MonsterFactory
 
     private Monster GetXeroc()
     {
-        sbyte expLevel = 7;
+        byte expLevel = 7;
         DiceThrow diceThrow = new(3, D4);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Xeroc,
             ExperienceLevel = expLevel,
@@ -109,10 +105,10 @@ public class MonsterFactory
 
     private Monster GetWraith()
     {
-        sbyte expLevel = 5;
+        byte expLevel = 5;
         DiceThrow diceThrow = new(1, D6);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Wraith,
             ExperienceLevel = expLevel,
@@ -127,10 +123,10 @@ public class MonsterFactory
 
     private Monster GetVampire()
     {
-        sbyte expLevel = 8;
+        byte expLevel = 8;
         DiceThrow diceThrow = new(1, D10);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Vampire,
             ExperienceLevel = expLevel,
@@ -146,11 +142,11 @@ public class MonsterFactory
 
     private Monster GetUrvile()
     {
-        sbyte expLevel = 7;
+        byte expLevel = 7;
         DiceThrow diceThrowD3 = new(1, D3);
         DiceThrow diceThrowD6 = new(4, D6);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Urvile,
             ExperienceLevel = expLevel,
@@ -166,11 +162,11 @@ public class MonsterFactory
 
     private Monster GetTroll()
     {
-        sbyte expLevel = 6;
+        byte expLevel = 6;
         DiceThrow diceThrowD6 = new(2, D6);
         DiceThrow diceThrowD8 = new(1, D8);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Troll,
             ExperienceLevel = expLevel,
@@ -186,10 +182,10 @@ public class MonsterFactory
 
     private Monster GetSnake()
     {
-        sbyte expLevel = 2;
+        byte expLevel = 2;
         DiceThrow diceThrow = new(1, D3);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Snake,
             ExperienceLevel = expLevel,
@@ -205,10 +201,10 @@ public class MonsterFactory
 
     private Monster GetRattlesnake()
     {
-        sbyte expLevel = 2;
+        byte expLevel = 2;
         DiceThrow diceThrow = new(1, D6);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Rattlesnake,
             ExperienceLevel = expLevel,
@@ -224,11 +220,11 @@ public class MonsterFactory
 
     private Monster GetQuagga()
     {
-        sbyte expLevel = 3;
+        byte expLevel = 3;
         DiceThrow diceThrowD2 = new(1, D2);
         DiceThrow diceThrowD4 = new(1, D4);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Quagga,
             ExperienceLevel = expLevel,
@@ -244,10 +240,10 @@ public class MonsterFactory
 
     private Monster GetPhantom()
     {
-        sbyte expLevel = 8;
+        byte expLevel = 8;
         DiceThrow diceThrow = new(4, D4);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Phantom,
             ExperienceLevel = expLevel,
@@ -263,10 +259,10 @@ public class MonsterFactory
 
     private Monster GetOrc()
     {
-        sbyte expLevel = 1;
+        byte expLevel = 1;
         DiceThrow diceThrow = new(1, D8);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Orc,
             ExperienceLevel = expLevel,
@@ -282,10 +278,10 @@ public class MonsterFactory
 
     private Monster GetNymph()
     {
-        sbyte expLevel = 3;
+        byte expLevel = 3;
         DiceThrow diceThrow = new(0, D0);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Nymph,
             ExperienceLevel = expLevel,
@@ -300,11 +296,11 @@ public class MonsterFactory
 
     private Monster GetMedusa()
     {
-        sbyte expLevel = 8;
+        byte expLevel = 8;
         DiceThrow diceThrowD4 = new(3, D4);
         DiceThrow diceThrowD5 = new(2, D5);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Medusa,
             ExperienceLevel = expLevel,
@@ -320,10 +316,10 @@ public class MonsterFactory
 
     private Monster GetLeprechaun()
     {
-        sbyte expLevel = 3;
+        byte expLevel = 3;
         DiceThrow diceThrow = new(1, D2);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Leprechaun,
             ExperienceLevel = expLevel,
@@ -339,10 +335,10 @@ public class MonsterFactory
 
     private Monster GetKestrel()
     {
-        sbyte expLevel = 1;
+        byte expLevel = 1;
         DiceThrow diceThrow = new(1, D4);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Kestrel,
             ExperienceLevel = expLevel,
@@ -358,11 +354,11 @@ public class MonsterFactory
 
     private Monster GetJabberwock()
     {
-        sbyte expLevel = 15;
+        byte expLevel = 15;
         DiceThrow diceThrowD4 = new(2, D4);
         DiceThrow diceThrowD12 = new(2, D12);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Jabberwock,
             ExperienceLevel = expLevel,
@@ -377,10 +373,10 @@ public class MonsterFactory
 
     private Monster GetIceMonster()
     {
-        sbyte expLevel = 1;
+        byte expLevel = 1;
         DiceThrow diceThrow = new(1, D2);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.IceMonster,
             ExperienceLevel = expLevel,
@@ -396,10 +392,10 @@ public class MonsterFactory
 
     private Monster GetHobgoblin()
     {
-        sbyte expLevel = 1;
+        byte expLevel = 1;
         DiceThrow diceThrow = new(1, D8);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Hobgoblin,
             ExperienceLevel = expLevel,
@@ -415,11 +411,11 @@ public class MonsterFactory
 
     private Monster GetGriffin()
     {
-        sbyte expLevel = 13;
+        byte expLevel = 13;
         DiceThrow diceThrowD3 = new(4, D3);
         DiceThrow diceThrowD5 = new(3, D5);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Griffin,
             ExperienceLevel = expLevel,
@@ -437,10 +433,10 @@ public class MonsterFactory
     {
         //special behaviour needed.
         
-        sbyte expLevel = 8;
+        byte expLevel = 8;
         DiceThrow diceThrow = new(1, D0);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.VenusFlytrap,
             ExperienceLevel = expLevel,
@@ -456,10 +452,10 @@ public class MonsterFactory
 
     private Monster GetEmu()
     {
-        sbyte expLevel = 1;
+        byte expLevel = 1;
         DiceThrow diceThrow = new(1, D2);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Emu,
             ExperienceLevel = expLevel,
@@ -475,11 +471,11 @@ public class MonsterFactory
 
     private Monster GetDragon()
     {
-        sbyte expLevel = 10;
+        byte expLevel = 10;
         DiceThrow diceThrowD8 = new(1, D8);
         DiceThrow diceThrowD10 = new(3, D10);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Dragon,
             ExperienceLevel = expLevel,
@@ -495,10 +491,10 @@ public class MonsterFactory
 
     private Monster GetCentaur()
     {
-        sbyte expLevel = 4;
+        byte expLevel = 4;
         DiceThrow diceThrow = new(1, D6);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Centaur,
             ExperienceLevel = expLevel,
@@ -513,10 +509,10 @@ public class MonsterFactory
 
     private Monster GetBat()
     {
-        sbyte expLevel = 1;
+        byte expLevel = 1;
         DiceThrow diceThrow = new(1, D2);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Bat,
             ExperienceLevel = expLevel,
@@ -532,10 +528,10 @@ public class MonsterFactory
 
     private Monster GetAquator()
     {
-        sbyte expLevel = 5;
+        byte expLevel = 5;
         DiceThrow diceThrow = new(0, D0);
         
-        return new(standardAttackStrategy, standardDefendStrategy)
+        return new()
         {
             Race = MonsterRace.Aquator,
             ExperienceLevel = expLevel,

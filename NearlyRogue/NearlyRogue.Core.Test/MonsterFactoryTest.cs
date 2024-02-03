@@ -31,7 +31,7 @@ public class MonsterFactoryTest
     [InlineData(MonsterRace.Xeroc, 7,7,100, 30, null)]
     [InlineData(MonsterRace.Yeti, 4,6,50, 30, null)]
     [InlineData(MonsterRace.Zombie, 2,8,6, 0, MonsterFlags.Mean)]
-    public void CreateAllMonsterShouldWork(MonsterRace monsterRace, sbyte level, sbyte amor, ushort experience, byte treasurePercentage, MonsterFlags? flags)
+    public void CreateAllMonsterShouldWork(MonsterRace monsterRace, byte level, sbyte amor, ushort experience, byte treasurePercentage, MonsterFlags? flags)
     {
         //arrange
         var sut = new MonsterFactory();
