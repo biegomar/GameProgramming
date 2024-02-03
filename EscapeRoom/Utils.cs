@@ -10,7 +10,10 @@
         internal const string HeightMessage = "Bitte gib die Höhe (Y-Ausdehnung) des Raumes ein: ";
         internal const string WantToContinueGame = "Möchtest Du eine weitere Runde spielen (j/n)?";
         internal const string QuitGame = "Ok, das Spiel wird beendet.";
-        internal const string EnterRightPlayGroundDimension = "Der Raum benötigt eine Breite und eine Höhe > 0.";       
+        internal const string EnterRightPlayGroundDimension = "Der Raum benötigt eine Breite und eine Höhe > 0.";
+
+        internal const string RoomDimensionNotValid =
+            "Der Raum sollte die maximale Breite ({0}) oder die maximale Höhe ({1}) nicht überschreiten.";
 
         internal const int OriginalRowPosition = 13; //logo size
         internal const int OriginalColumnPosition = 0;
@@ -24,6 +27,9 @@
 
         internal const string YouWin = "█▓▒▒░░░You win!░░░▒▒▓█";
         
+        /// <summary>
+        /// Prints the rulez.
+        /// </summary>
         internal static void PrintRulez()
         {
             Console.WriteLine();
@@ -49,6 +55,9 @@
             Console.WriteLine();
         }
 
+        /// <summary>
+        /// Prints to logo.
+        /// </summary>
         internal static void PrintLogo()
         {
             Console.Clear();
@@ -66,6 +75,9 @@
             Console.WriteLine();
         }
 
+        /// <summary>
+        /// Plays a funny beep.
+        /// </summary>
         internal static void BeepOnWrongEntry()
         {
             Console.Beep(300, 60);

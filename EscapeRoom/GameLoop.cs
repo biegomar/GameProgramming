@@ -13,8 +13,8 @@
             // Outer loop - let me easily "play another round"
             do
             {
-                Coordinate dimension = GetRoomDimension();
-                PlayGround playGround = new PlayGround(dimension);
+                Vector2D dimension = GetRoomDimension();
+                PlayGround playGround = new (dimension);
 
                 Utils.PrintLogo();
 
@@ -42,6 +42,7 @@
                 }
                 catch (Exception ex)
                 {
+                    //catch unexpected exceptions.
                     Console.WriteLine(ex.Message);
                     Environment.Exit(0);
                 }
@@ -50,12 +51,16 @@
             } while (true);
         }
 
-        private static Coordinate GetRoomDimension()
+        /// <summary>
+        /// Ask the player for the room dimensions.
+        /// </summary>
+        /// <returns>The dimension of the room as a vector.</returns>
+        private static Vector2D GetRoomDimension()
         {
             int x = 0;
             int y = 0;
 
-            Coordinate roomDimension = new(x, y);
+            Vector2D roomDimension;
 
             do
             {
@@ -73,13 +78,18 @@
                     Console.Write(Utils.HeightMessage);
                 }
 
-                roomDimension = new Coordinate(x, y);
+                roomDimension = new Vector2D(x, y);
 
             } while (!PlayGround.IsRoomDimensionValid(roomDimension));
 
             return roomDimension;
         }
 
+        /// <summary>
+        /// Maybe the player wants to play another round
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns>True if the player wants to play again, false otherwise.</returns>
         private static bool WantToContinueGame(string message)
         {
             Console.WriteLine(message);

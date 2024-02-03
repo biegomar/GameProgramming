@@ -9,6 +9,9 @@
             GameLoop.Run();
         }      
 
+        /// <summary>
+        /// Give some advise.
+        /// </summary>
         private static void PrintIntro() 
         { 
             Utils.PrintLogo();

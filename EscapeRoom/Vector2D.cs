@@ -3,5 +3,5 @@
     /// <summary>
     /// 2D coordinate for playground dimension, player position, ...
     /// </summary>
-    internal sealed record Coordinate(int X, int Y);
+    internal sealed record Vector2D(int X, int Y);
 }
