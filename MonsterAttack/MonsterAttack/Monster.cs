@@ -9,6 +9,10 @@ namespace MonsterAttack
     {
         private readonly IAttackStrategy attackStrategy;
 
+        /// <summary>
+        /// ctor.
+        /// </summary>
+        /// <param name="attackStrategy">The attack strategy to use in this game.</param>
         internal Monster(IAttackStrategy attackStrategy)
         {
             this.attackStrategy = attackStrategy;
@@ -51,22 +55,29 @@ namespace MonsterAttack
         internal void Attack(Monster villain)
         {
             Console.WriteLine();
-            Console.WriteLine($"Der {this.R} attackiert den {villain.R}!");
+            Console.WriteLine(Utils.WhoAttackedWhom, this.R, villain.R);
             
-            float damage = this.attackStrategy.Attack(this, villain);            
-            Console.WriteLine($"Der Angriff des {this.R} verursacht {damage} Schaden!");
+            var damage = this.attackStrategy.Attack(this, villain);            
+            Console.WriteLine(Utils.DamageDone, this.R, damage);
 
             villain.HP = Math.Max(0, villain.HP - damage);            
 
             if (villain.HP == 0)
             {
-                throw new KillException($"Der {villain.R} ist tot!");
+                throw new KillException(string.Format(Utils.VillainIsDead, villain.R));
             }
 
-            Console.WriteLine($"Uhh! Das war heftig! Der {villain.R} hat nur noch {villain.HP} Lebenspunkte!");
+            if (damage != 0)
+            {
+                Console.WriteLine(Utils.UuhThatWasHard, villain.R, villain.HP);
+            }
+            else
+            {
+                Console.WriteLine(Utils.HitNothing);
+            }
 
             Console.WriteLine();
-            Console.WriteLine("------ Nächste Runde -------");
+            Console.WriteLine(Utils.NextRound);
         }        
     }
 }

@@ -5,6 +5,10 @@
     /// </summary>
     internal class QuitException : Exception
     {
+        /// <summary>
+        /// ctor. 
+        /// </summary>
+        /// <param name="message"></param>
         internal QuitException(string message) : base(message)
         {
         }

@@ -86,9 +86,9 @@
         }
 
         /// <summary>
-        /// Maybe the player wants to play another round
+        /// Maybe the player wants to play another round?
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="message">This message will be presented to the player.</param>
         /// <returns>True if the player wants to play again, false otherwise.</returns>
         private static bool WantToContinueGame(string message)
         {

@@ -15,7 +15,7 @@ namespace TestMonsterAttack
             return villain.HP;
         }
 
-        public bool isFightPossible(Monster attacker, Monster villain)
+        public bool IsFightPossible(Monster attacker, Monster villain)
         {
             return true;
         }

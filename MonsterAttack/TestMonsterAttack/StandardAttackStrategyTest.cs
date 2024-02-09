@@ -2,8 +2,14 @@ using MonsterAttack;
 
 namespace TestMonsterAttack
 {
+    /// <summary>
+    /// Test the standard attack strategy.
+    /// </summary>
     public class StandardAttackStrategyTest
     {
+        /// <summary>
+        /// Test the attack.
+        /// </summary>
         [Fact]
         public void AttackTest()
         {
@@ -37,6 +43,9 @@ namespace TestMonsterAttack
 
         }
 
+        /// <summary>
+        /// The if the fight is possible. -> true
+        /// </summary>
         [Fact]
         public void IsFightPossibleTrueTest()
         {
@@ -63,13 +72,16 @@ namespace TestMonsterAttack
             var expected = true;
 
             //Act
-            var actual = sut.isFightPossible(monster1, monster2);
+            var actual = sut.IsFightPossible(monster1, monster2);
 
             //Assert
             Assert.Equal(expected, actual);
 
         }
 
+        /// <summary>
+        /// The if the fight is possible. -> false
+        /// </summary>
         [Fact]
         public void IsFightPossibleFalseTest()
         {
@@ -96,7 +108,7 @@ namespace TestMonsterAttack
             var expected = false;
 
             //Act
-            var actual = sut.isFightPossible(monster1, monster2);
+            var actual = sut.IsFightPossible(monster1, monster2);
 
             //Assert
             Assert.Equal(expected, actual);

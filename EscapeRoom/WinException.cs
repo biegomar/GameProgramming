@@ -5,6 +5,10 @@
     /// </summary>
     internal class WinException : Exception
     {
+        /// <summary>
+        /// ctor.
+        /// </summary>
+        /// <param name="message"></param>
         internal WinException(string message) : base(message)
         {
         }

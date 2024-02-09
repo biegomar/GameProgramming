@@ -19,6 +19,6 @@
         /// <param name="attacker">The attacker.</param>
         /// <param name="villain">The villain to attack.</param>
         /// <returns>true if fight is possible. Otherwise false.</returns>
-        bool isFightPossible(Monster attacker, Monster villain);
+        bool IsFightPossible(Monster attacker, Monster villain);
     }
 }

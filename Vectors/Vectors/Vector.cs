@@ -43,7 +43,7 @@
         /// Operator overload +.
         /// </summary>
         /// <param name="v1">The first vector to add.</param>
-        /// <param name="v2">The second vectore to add.</param>
+        /// <param name="v2">The second vector to add.</param>
         /// <returns>The resulting vector.</returns>
         public static Vector operator +(Vector v1, Vector v2)
         {
@@ -54,7 +54,7 @@
         /// Operator overload -.
         /// </summary>
         /// <param name="v1">The first vector to sub.</param>
-        /// <param name="v2">The second vectore to sub.</param>
+        /// <param name="v2">The second vector to sub.</param>
         /// <returns>The resulting vector.</returns>
         public static Vector operator -(Vector v1, Vector v2)
         {
@@ -75,8 +75,8 @@
         /// <summary>
         /// Operator overload * (scalar multiplication).
         /// </summary>
-        /// <param name="v1">The vector to scale.</param>
-        /// <param name="scalar">The scale factor.</param>
+        /// <param name="v1">The first vector.</param>
+        /// <param name="v2">The second vector.</param>
         /// <returns>The resulting vector.</returns>
         public static float operator *(Vector v1, Vector v2)
         {
@@ -87,17 +87,20 @@
         /// Operator overload == (equality).
         /// </summary>
         /// <param name="v1">The first vector to compare.</param>
-        /// <param name="v2">The second vectore to compare.</param>
+        /// <param name="v2">The second vector to compare.</param>
         /// <returns>The resulting vector.</returns>
         public static bool operator ==(Vector v1, Vector v2)
         {
+            var tolerance = .001f;
             if (ReferenceEquals(v1, v2))
                 return true;
 
             if (v1 is null || v2 is null)
                 return false;
 
-            return v1.X == v2.X && v1.Y == v2.Y && v1.Z == v2.Z;
+            return Math.Abs(v1.X - v2.X) < tolerance 
+                   && Math.Abs(v1.Y - v2.Y) < tolerance
+                   && Math.Abs(v1.Z - v2.Z) < tolerance;
         }
 
         /// <summary>
@@ -111,11 +114,7 @@
             return !(v1 == v2);
         }       
 
-        /// <summary>
-        /// Überschreiben der Equals-Methode für eine korrekte Verwendung mit Listen und Dictionaries.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             if (obj is Vector other)
@@ -126,6 +125,7 @@
             return false;
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             return HashCode.Combine(X, Y, Z);
@@ -220,6 +220,11 @@
             };
         }
 
+        /// <summary>
+        /// The power of 2.
+        /// </summary>
+        /// <param name="value">The number.</param>
+        /// <returns>The power of 2 of the number.</returns>
         private float PowerOfTwo(float value)
         {
             return value * value;

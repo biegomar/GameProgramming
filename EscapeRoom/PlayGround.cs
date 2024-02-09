@@ -86,9 +86,9 @@
             Console.CursorVisible = false;
             Console.SetCursorPosition(Utils.OriginalColumnPosition, Utils.OriginalRowPosition);
 
-            for (int row = 0; row < dimension.X; row++)                
+            for (int row = 0; row < dimension.Y; row++)                
             {
-                for (int column = 0; column < dimension.Y; column++)
+                for (int column = 0; column < dimension.X; column++)
                 {
                     SetItemColor(column, row);
                     Console.Write(room[column, row]);

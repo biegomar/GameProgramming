@@ -3,8 +3,14 @@
 namespace TestMonsterAttack
 {
     
+    /// <summary>
+    /// Tests for the monster class.
+    /// </summary>
     public class MonsterTest
     {
+        /// <summary>
+        /// Test the kill exception.
+        /// </summary>
         [Fact]
         public void AttackAndKillVillainTest()
         {
