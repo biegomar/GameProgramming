@@ -1,7 +1,11 @@
 ﻿namespace Sortings.Core;
 
+/// <summary>
+/// The bubble sort implementation
+/// </summary>
 public class BubbleSort : ISort
 {
+    /// <inheritdoc/>
     public ObservableArray<int> Sort(ObservableArray<int> input)
     {
         var bubbleArray = input.Clone();

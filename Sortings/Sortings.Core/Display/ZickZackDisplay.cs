@@ -1,12 +1,22 @@
 ﻿namespace Sortings.Core.Display;
 
+/// <summary>
+/// The zick-zack display.
+/// </summary>
+/// <typeparam name="T">The type.</typeparam>
 public class ZickZackDisplay<T> : IDisplay<T>
 {
+    /// <inheritdoc/>
     public string Display(T[] array)
     {
         return this.RecursiveDisplay(array);
     }
 
+    /// <summary>
+    /// The recursive approach.
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     private string RecursiveDisplay(T[] array)
     {
         var result = string.Empty;

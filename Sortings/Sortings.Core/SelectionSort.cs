@@ -4,6 +4,7 @@ namespace Sortings.Core;
 
 public class SelectionSort : ISort
 {
+    /// <inheritdoc/>
     public ObservableArray<int> Sort(ObservableArray<int> input)
     {
         var selectionArray = input.Clone();

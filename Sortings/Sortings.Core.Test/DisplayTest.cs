@@ -2,6 +2,9 @@ using Sortings.Core.Display;
 
 namespace Sortings.Core.Test;
 
+/// <summary>
+/// The display test suite.
+/// </summary>
 public class DisplayTest
 {
     private int[] sortedArrayEven = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };

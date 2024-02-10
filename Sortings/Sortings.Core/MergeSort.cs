@@ -4,6 +4,7 @@ namespace Sortings.Core;
 
 public class MergeSort : ISort
 {
+    /// <inheritdoc/>
     public ObservableArray<int> Sort(ObservableArray<int> input)
     {
         var mergeArray = input.Clone();
@@ -13,6 +14,11 @@ public class MergeSort : ISort
         return result;
     }
 
+    /// <summary>
+    /// The recursive part of merge sort. 
+    /// </summary>
+    /// <param name="input">The array.</param>
+    /// <returns>The resulting array.</returns>
     private ObservableArray<int>  MergeSortRecursive(ObservableArray<int>  input)
     {
         if (input.Length == 1)
@@ -32,6 +38,12 @@ public class MergeSort : ISort
         return Merge(left, right);
     }
 
+    /// <summary>
+    /// The merge part.
+    /// </summary>
+    /// <param name="left">The left part to merge.</param>
+    /// <param name="right">The right part to merge.</param>
+    /// <returns>The result of the merge.</returns>
     private ObservableArray<int> Merge(ObservableArray<int> left, ObservableArray<int> right)
     {
         var merged = new ObservableArray<int>(left.Length + right.Length);

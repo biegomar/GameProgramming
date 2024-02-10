@@ -11,6 +11,7 @@ public class SortDecorator : ISort
         this.decoratedSorter = decoratedSorter;
     }
     
+    /// <inheritdoc/>
     public ObservableArray<int> Sort(ObservableArray<int> input)
     {
         input.Swap(0,0);
