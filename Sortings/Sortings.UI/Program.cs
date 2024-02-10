@@ -1,20 +1,15 @@
 ﻿using Sortings.Core;
 using Sortings.Core.Display;
 
-//ObservableArray<int> array = new ObservableArray<int>(new []{ 5, 6, 4, 1, 8, 3, 2, 9, 7 });
-//ObservableArray<int> array = new ObservableArray<int>(new []{ 16, 10, 5, 11, 6, 4, 18, 17, 1, 8, 19, 3, 14, 2, 9, 15, 7, 12, 20, 13 });
-
-//array.Swapped += PlotArray;
-
-
 Console.WriteLine("Willkommen zum Beispiel für Sortieralgorithmen.");
+
 ConsoleKeyInfo key;
 do
 {
-    Console.Write("Möchtest Du die Zahlen zufällig erzeugen lassen (J/N)?");
+    Console.Write("Möchtest Du die Sortierung grafisch angezeigt bekommen (J/N)? Nein -> ursprünglicher Programmablauf.");
     key = Console.ReadKey();
     Console.WriteLine();
-} while ( !(key.Key is ConsoleKey.J or ConsoleKey.N or ConsoleKey.Q));
+} while (!(key.Key is ConsoleKey.J or ConsoleKey.N or ConsoleKey.Q));
 
 if (key.Key == ConsoleKey.Q)
 {
@@ -22,76 +17,127 @@ if (key.Key == ConsoleKey.Q)
     return;
 }
 
-int countOfNumbers;
-ObservableArray<int> array;
-
 if (key.Key == ConsoleKey.J)
 {
-    do
-    {
-        Console.Write("Ok. Wie viele Zahlen sollen generiert werden?");     
-    } while (!int.TryParse(Console.ReadLine(), out countOfNumbers));
-
-    Random rnd = new Random();
-    array = new ObservableArray<int>(Enumerable.Range(1, countOfNumbers).Select(_ => rnd.Next()).ToArray());    
+    PlotterFlow();
+    return;
 }
-else
+
+OriginalFlow();
+
+void OriginalFlow()
 {
+    ConsoleKeyInfo key;
     do
     {
-        Console.Write("Ok. Wie viele Zahlen sollen eingegeben werden?");
-    } while (!int.TryParse(Console.ReadLine(), out countOfNumbers));
+        Console.Write("Möchtest Du die Zahlen zufällig erzeugen lassen (J/N)?");
+        key = Console.ReadKey();
+        Console.WriteLine();
+    } while (!(key.Key is ConsoleKey.J or ConsoleKey.N or ConsoleKey.Q));
 
-    array = new ObservableArray<int>(countOfNumbers);
-    
-    for (int i = 0; i < countOfNumbers; i++)
+    if (key.Key == ConsoleKey.Q)
     {
-        int singleNumber;
-        
+        Console.WriteLine("Dann nicht...");
+        return;
+    }
+
+    int countOfNumbers;
+    ObservableArray<int> array;
+
+    if (key.Key == ConsoleKey.J)
+    {
         do
         {
-            Console.Write($"Gib die {i+1}. Zahl ein: ");
-        } while (!int.TryParse(Console.ReadLine(), out singleNumber));
+            Console.Write("Ok. Wie viele Zahlen sollen generiert werden? (Mehr als 20 werden allerdings nicht auf der Konsole ausgegeben.)");
+        } while (!int.TryParse(Console.ReadLine(), out countOfNumbers));
 
-        array[i] = singleNumber;
+        Random rnd = new Random();
+        array = new ObservableArray<int>(Enumerable.Range(1, countOfNumbers).Select(_ => rnd.Next()).ToArray());
     }
+    else
+    {
+        do
+        {
+            Console.Write("Ok. Wie viele Zahlen sollen eingegeben werden?");
+        } while (!int.TryParse(Console.ReadLine(), out countOfNumbers));
+
+        array = new ObservableArray<int>(countOfNumbers);
+
+        for (int i = 0; i < countOfNumbers; i++)
+        {
+            int singleNumber;
+
+            do
+            {
+                Console.Write($"Gib die {i + 1}. Zahl ein: ");
+            } while (!int.TryParse(Console.ReadLine(), out singleNumber));
+
+            array[i] = singleNumber;
+        }
+    }
+
+    DisplayArray(array, new AscendingDisplay<int>());
+
+    ConsoleKeyInfo sortAlgo;
+    do
+    {
+        Console.Write(
+            "Welcher Algorithmus soll benutzt werden (bitte Anfangsbuchstaben eintippen)? Mergesort, Bubblesort, Selectionsort?");
+        sortAlgo = Console.ReadKey();
+        Console.WriteLine();
+    } while (!(sortAlgo.Key is ConsoleKey.M or ConsoleKey.S or ConsoleKey.B));
+
+    var algo = sortAlgo.Key switch
+    {
+        ConsoleKey.B => new SortDecorator(new BubbleSort()),
+        ConsoleKey.S => new SortDecorator(new SelectionSort()),
+        ConsoleKey.M => new SortDecorator(new MergeSort())
+    };
+
+    var sortedArray = algo.Sort(array);
+
+    ConsoleKeyInfo howToDisplay;
+    do
+    {
+        Console.Write(
+            "Wie soll das sortierte Array angezeigt werden (bitte Anfangsbuchstaben eintippen)? Ascending, Descending, Zickzack?");
+        howToDisplay = Console.ReadKey();
+        Console.WriteLine();
+    } while (!(howToDisplay.Key is ConsoleKey.A or ConsoleKey.D or ConsoleKey.Z));
+
+    IDisplay<int> displayStrategy = howToDisplay.Key switch
+    {
+        ConsoleKey.A => new AscendingDisplay<int>(),
+        ConsoleKey.D => new DescendingDisplay<int>(),
+        ConsoleKey.Z => new ZickZackDisplay<int>()
+    };
+
+    DisplayArray(sortedArray, displayStrategy, false);
 }
 
-DisplayArray(array, new AscendingDisplay<int>());
-
-ConsoleKeyInfo sortAlgo;
-do
+void PlotterFlow()
 {
-    Console.Write("Welcher Algorithmus soll benutzt werden (bitte Anfangsbuchstaben eintippen)? Mergesort, Bubblesort, Selectionsort?");
-    sortAlgo = Console.ReadKey();
-    Console.WriteLine();
-} while ( !(sortAlgo.Key is ConsoleKey.M or ConsoleKey.S or ConsoleKey.B));
+    //ObservableArray<int> array = new ObservableArray<int>(new []{ 16, 10, 5, 11, 6, 4, 18, 17, 1, 8, 19, 3, 14, 2, 9, 15, 7, 12, 20, 13 });
+    ObservableArray<int> array = new ObservableArray<int>(new []{ 5, 6, 4, 1, 8, 3, 2, 9, 7 });
+    array.Swapped += PlotArray;
+    
+    ConsoleKeyInfo sortAlgo;
+    do
+    {
+        Console.Write(
+            "Welcher Algorithmus soll benutzt werden (bitte Anfangsbuchstaben eintippen)? Bubblesort, Selectionsort?");
+        sortAlgo = Console.ReadKey();
+        Console.WriteLine();
+    } while (!(sortAlgo.Key is ConsoleKey.S or ConsoleKey.B));
 
-var algo = sortAlgo.Key switch
-{
-    ConsoleKey.B => new SortDecorator(new BubbleSort()),
-    ConsoleKey.S => new SortDecorator(new SelectionSort()),
-    ConsoleKey.M => new SortDecorator(new MergeSort())
-};
+    var algo = sortAlgo.Key switch
+    {
+        ConsoleKey.B => new SortDecorator(new BubbleSort()),
+        ConsoleKey.S => new SortDecorator(new SelectionSort())
+    };
 
-var sortedArray = algo.Sort(array);
-
-ConsoleKeyInfo howToDisplay;
-do
-{
-    Console.Write("Wie soll das sortierte Array angezeigt werden (bitte Anfangsbuchstaben eintippen)? Ascending, Descending, Zickzack?");
-    howToDisplay = Console.ReadKey();
-    Console.WriteLine();
-} while ( !(howToDisplay.Key is ConsoleKey.A or ConsoleKey.D or ConsoleKey.Z));
-
-IDisplay<int> displayStrategy = howToDisplay.Key switch
-{
-    ConsoleKey.A => new AscendingDisplay<int>(),
-    ConsoleKey.D => new DescendingDisplay<int>(),
-    ConsoleKey.Z => new ZickZackDisplay<int>()
-};
-
-DisplayArray(sortedArray, displayStrategy,false);
+    var sortedArray = algo.Sort(array);
+}
 
 void DisplayArray(ObservableArray<int> input, IDisplay<int> displayStrategy, bool unsorted=true)
 {
