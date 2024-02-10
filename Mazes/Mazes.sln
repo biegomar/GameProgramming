@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mazes.Cli", "Mazes.Cli\Maze
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mazes.Contracts", "Mazes.Contracts\Mazes.Contracts.csproj", "{863B09C2-74F5-48BB-885C-273325777BB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BinareTreeMaze", "BinareTreeMaze\BinareTreeMaze.csproj", "{9CEA6582-E86B-46E6-938C-FB10163A5BAF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mazes.BinaryTreeMaze", "Mazes.BinaryTreeMaze\Mazes.BinaryTreeMaze.csproj", "{9CEA6582-E86B-46E6-938C-FB10163A5BAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

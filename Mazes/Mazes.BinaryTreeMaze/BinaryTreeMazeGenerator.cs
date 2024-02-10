@@ -1,8 +1,8 @@
 ﻿using Mazes.Contracts;
 
-namespace BinareTreeMaze
+namespace Mazes.BinaryTreeMaze
 {
-    public class BinareTreeMazeGenerator : IMazeGenerator
+    public class BinaryTreeMazeGenerator : IMazeGenerator
     {
         public Cell[,] Generate(Cell[,] rawMaze)
         {

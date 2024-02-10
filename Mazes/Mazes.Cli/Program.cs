@@ -1,4 +1,4 @@
-﻿using BinareTreeMaze;
+﻿using Mazes.BinaryTreeMaze;
 using Mazes.Contracts;
 
 namespace Mazes.Cli
@@ -7,7 +7,7 @@ namespace Mazes.Cli
     {
         static void Main(string[] args)
         {
-            var maze = new Maze(new BinareTreeMazeGenerator(), 10, 10);
+            var maze = new Maze(new BinaryTreeMazeGenerator(), 10, 10);
 
             Console.WriteLine(maze);
         }
