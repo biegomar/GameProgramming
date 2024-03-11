@@ -1,8 +1,8 @@
 ﻿using Mazes.Contracts;
 
-namespace Mazes.BinaryTreeMaze
+namespace BinareTreeMaze
 {
-    public class BinaryTreeMazeGenerator : IMazeGenerator
+    public class BinareTreeMazeGenerator : IMazeGenerator
     {
         public Cell[,] Generate(Cell[,] rawMaze)
         {
@@ -10,11 +10,11 @@ namespace Mazes.BinaryTreeMaze
             var dimensionZeroLength = rawMaze.GetLength(0);
             var dimensionOneLength = rawMaze.GetLength(1);
 
-            for (int row = 0; row < dimensionZeroLength; row++)
+            for (int column = 0; column < dimensionZeroLength; column++)
             {
-                for (int column = 0; column < dimensionOneLength; column++)
+                for (int row = 0; row < dimensionOneLength; row++)
                 {
-                    var item = rawMaze[row, column];
+                    var item = rawMaze[column, row];
 
                     var choiceList = new List<Cell>();
                     if (item.NothernNeighbour != null)

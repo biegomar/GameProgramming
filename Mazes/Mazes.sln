@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mazes.Cli", "Mazes.Cli\Mazes.Cli.csproj", "{45F39963-062A-4F47-9403-DBF9316F65B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mazes.Cli", "Mazes.Cli\Mazes.Cli.csproj", "{45F39963-062A-4F47-9403-DBF9316F65B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mazes.Contracts", "Mazes.Contracts\Mazes.Contracts.csproj", "{863B09C2-74F5-48BB-885C-273325777BB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mazes.Contracts", "Mazes.Contracts\Mazes.Contracts.csproj", "{863B09C2-74F5-48BB-885C-273325777BB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mazes.BinaryTreeMaze", "Mazes.BinaryTreeMaze\Mazes.BinaryTreeMaze.csproj", "{9CEA6582-E86B-46E6-938C-FB10163A5BAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinareTreeMaze", "BinareTreeMaze\BinareTreeMaze.csproj", "{9CEA6582-E86B-46E6-938C-FB10163A5BAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SideWinderMaze", "SideWinderMaze\SideWinderMaze.csproj", "{71F28A68-E75F-4895-83CD-C7B5C8982836}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{9CEA6582-E86B-46E6-938C-FB10163A5BAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CEA6582-E86B-46E6-938C-FB10163A5BAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CEA6582-E86B-46E6-938C-FB10163A5BAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71F28A68-E75F-4895-83CD-C7B5C8982836}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71F28A68-E75F-4895-83CD-C7B5C8982836}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71F28A68-E75F-4895-83CD-C7B5C8982836}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71F28A68-E75F-4895-83CD-C7B5C8982836}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

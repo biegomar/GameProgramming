@@ -37,25 +37,25 @@ namespace Mazes.Contracts
 
         private void InitializeMaze()
         {
-            for (int row = 0; row < cells.GetLength(0); row++)           
+            for (int column = 0; column < cells.GetLength(0); column++)           
             {
-                for(int column = 0; column < cells.GetLength(1); column++)
+                for(int row = 0; row < cells.GetLength(1); row++)
                 {
-                    this.cells[row, column] = new Cell();
+                    this.cells[column, row] = new Cell();
                 }
             }
         }
 
         private void LinkCellsInMaze()
         {            
-            for (int row = 0; row < dimensionZeroLength; row++)
+            for (int column = 0; column < dimensionZeroLength; column++)
             {
-                for (int column = 0; column < dimensionOneLength; column++)
+                for (int row = 0; row < dimensionOneLength; row++)
                 {
-                    this.cells[row, column].NothernNeighbour = row - 1 < 0 ? null : this.cells[row - 1, column];
-                    this.cells[row, column].EasternNeighbour = column + 1 >= dimensionOneLength ? null : this.cells[row, column + 1];
-                    this.cells[row, column].SouthernNeighbour = row + 1 >= dimensionZeroLength ? null : this.cells[row + 1, column];
-                    this.cells[row, column].WesternNeighbour = column - 1 < 0 ? null : this.cells[row, column - 1];
+                    this.cells[column, row].NothernNeighbour = row - 1 < 0 ? null : this.cells[column, row - 1];
+                    this.cells[column, row].EasternNeighbour = column + 1 >= dimensionZeroLength ? null : this.cells[column + 1, row];
+                    this.cells[column, row].SouthernNeighbour = row + 1 >= dimensionOneLength ? null : this.cells[column, row + 1];
+                    this.cells[column, row].WesternNeighbour = column - 1 < 0 ? null : this.cells[column - 1, row];
                 }
             }
         }
@@ -68,18 +68,18 @@ namespace Mazes.Contracts
             var segment = CornerStone + CellHorizontal;
             result.Append(string.Join("", Enumerable.Repeat(segment, dimensionZeroLength)));
             result.AppendLine(CornerStone);
-
-            for (int row = 0; row < dimensionZeroLength; row++)
+            
+            for (int row = 0; row < dimensionOneLength; row++)
             {                
                 var bodyRow = new StringBuilder();
                 var bottomRow = new StringBuilder();
 
                 bodyRow.Append(CellVertical);
 
-                for (int column = 0; column < dimensionOneLength; column++)
+                for (int column = 0; column < dimensionZeroLength; column++)
                 {
-                    bodyRow.Append(EmptyFloor).Append(this.cells[row, column].LinkedCells.Contains(this.cells[row, column].EasternNeighbour) ? LinkToEasternCell : CellVertical);
-                    bottomRow.Append(CornerStone).Append(this.cells[row, column].LinkedCells.Contains(this.cells[row, column].SouthernNeighbour) ? LinkToSouthernCell : CellHorizontal);
+                    bodyRow.Append(EmptyFloor).Append(this.cells[column, row].LinkedCells.Contains(this.cells[column, row].EasternNeighbour) ? LinkToEasternCell : CellVertical);
+                    bottomRow.Append(CornerStone).Append(this.cells[column, row].LinkedCells.Contains(this.cells[column, row].SouthernNeighbour) ? LinkToSouthernCell : CellHorizontal);
                 }
                 
                 bottomRow.Append(CornerStone);

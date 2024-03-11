@@ -1,5 +1,6 @@
-﻿using Mazes.BinaryTreeMaze;
+﻿using BinareTreeMaze;
 using Mazes.Contracts;
+using SideWinderMaze;
 
 namespace Mazes.Cli
 {
@@ -7,9 +8,13 @@ namespace Mazes.Cli
     {
         static void Main(string[] args)
         {
-            var maze = new Maze(new BinaryTreeMazeGenerator(), 10, 10);
-
+            var maze = new Maze(new BinareTreeMazeGenerator(), 10, 10);
+            var maze2 = new Maze(new SideWinderMazeGenerator(), 10, 10);
+            
+            Console.WriteLine("Binary Tree");
             Console.WriteLine(maze);
+            Console.WriteLine("Sidewinder");
+            Console.WriteLine(maze2);
         }
     }
 }
