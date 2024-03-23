@@ -7,7 +7,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Mazes.Contracts
 {
-    public class Maze
+    public class Maze : IPrintSubsystem
     {
         private const string CornerStone = "+";
         private const string CellHorizontal = "---";
@@ -90,6 +90,24 @@ namespace Mazes.Contracts
            
 
             return result.ToString();
+        }
+
+        public void PrintMazeAtColumn(string header, int column)
+        {
+            var (left, top) = Console.GetCursorPosition();
+            Console.SetCursorPosition(column, 0);
+            Console.WriteLine(header);
+            
+            string[] lines = this.ToString().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+
+            var newTop = 3;
+            foreach (var line in lines)
+            {
+                var newLeft = column >= left ? column : left;
+                Console.SetCursorPosition(newLeft,newTop);
+                Console.WriteLine(line);
+                newTop = Math.Min(newTop + 1, Console.BufferHeight - 1);
+            }
         }
     }
 }
