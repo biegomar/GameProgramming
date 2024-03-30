@@ -8,18 +8,19 @@ namespace Mazes.Cli
     {
         static void Main(string[] args)
         {
-            var maze = new Maze(new BinareTreeMazeGenerator(), 10, 10);
-            var maze2 = new Maze(new SideWinderMazeGenerator(), 10, 10);
-            var maze3 = new Maze(new EmptyMazeGenerator(), 10, 10);
-            var maze4 = new Maze(new FullMazeGenerator(), 10, 10);
+            var dimension = new MazeVector(10, 10, 0);
+            var maze = new Maze(new BinareTreeMazeGenerator(), dimension, "Binary Tree");
+            var maze2 = new Maze(new SideWinderMazeGenerator(), dimension, "Sidewinder");
+            var maze3 = new Maze(new EmptyMazeGenerator(), dimension, "Empty");
+            var maze4 = new Maze(new FullMazeGenerator(), dimension, "Full");
             
             maze3.SetCellItem(new CellItem('I', 4,4));
             
             Console.Clear();
-            maze.DrawMaze("Binary Tree", 0);
-            maze2.DrawMaze("Sidewinder", 45);
-            maze3.DrawMaze("Empty", 90);
-            maze4.DrawMaze("Full", 135);
+            maze.DrawMaze(new MazeVector());
+            maze2.DrawMaze(new MazeVector(45));
+            maze3.DrawMaze(new MazeVector(90));
+            maze4.DrawMaze(new MazeVector(135));
 
             Console.ReadKey();
             
