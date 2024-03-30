@@ -2,6 +2,6 @@
 
 public interface IMazePrinter
 {
-    void DrawMaze(MazeVector startMazeVector);
-    void RedrawMaze();
+    void DrawMaze(Maze maze, MazeVector startMazeVector);
+    void DrawCellItems(Maze maze);
 }
