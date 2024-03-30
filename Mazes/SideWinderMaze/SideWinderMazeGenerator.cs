@@ -24,33 +24,7 @@ namespace SideWinderMaze
                     {
                         item.LinkCell(item.WesternNeighbour);   
                     }
-
-                    //var choiceList = new List<Cell>();
-                    //if (item.EasternNeighbour != null)
-                    //{
-                    //    choiceList.Add(item.EasternNeighbour!);
-                    //}
-                    //if (item.NothernNeighbour != null)
-                    //{
-                    //    choiceList.Add(item.NothernNeighbour!);
-                    //}                  
-
-                    //if (choiceList.Count == 1)
-                    //{
-                    //    choiceList.First().LinkCell(item);
-                    //}
-                    //else if (choiceList.Count == 2)
-                    //{
-                    //    var choice = randomGenerator.Next(0, 2);
-                    //    if (choice == 1)
-                    //    {
-                    //        choiceList.First().LinkCell(item);
-                    //    }
-                    //    else
-                    //    {
-                    //        choiceList.Last().LinkCell(item);
-                    //    }
-                    //}
+                    
                     var choice = randomGenerator.Next(0, 2);
                     
                     if (choice == 1 && item.NothernNeighbour != null || item.EasternNeighbour == null)

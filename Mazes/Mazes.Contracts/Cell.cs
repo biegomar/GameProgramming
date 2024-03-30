@@ -11,6 +11,8 @@ namespace Mazes.Contracts
         private readonly IDictionary<Directions, Cell?> Neighbours = new Dictionary<Directions, Cell?>();
         private readonly IList<Cell> linkedCells = new List<Cell>();
 
+        public char? Item { get; set; }
+        
         public Cell? NothernNeighbour
         {
             get => Neighbours[Directions.North];

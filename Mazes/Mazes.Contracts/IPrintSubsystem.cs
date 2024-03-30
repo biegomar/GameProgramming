@@ -2,5 +2,6 @@
 
 public interface IPrintSubsystem
 {
-    void PrintMazeAtColumn(string header, int column);
+    void DrawMaze(string header, int column);
+    void RedrawMaze();
 }
