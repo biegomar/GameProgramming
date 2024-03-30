@@ -13,6 +13,7 @@ namespace Mazes.Contracts
         private const string CellHorizontal = "---";
         private const string CellVertical = "|";
         private const string EmptyFloor = "   ";
+        private const string FloorWithItem = " {0} ";
         private const string LinkToSouthernCell = "   ";
         private const string LinkToEasternCell = " ";
 
@@ -20,6 +21,8 @@ namespace Mazes.Contracts
         private readonly IMazeGenerator mazeGenerator;
         private readonly int dimensionZeroLength;
         private readonly int dimensionOneLength;
+
+        private int drawColumn;
 
         public Maze(IMazeGenerator mazeGenerator, int width, int height)
         {
@@ -60,6 +63,12 @@ namespace Mazes.Contracts
             }
         }
 
+        public void SetCellItem(CellItem cellItem)
+        {
+            this.cells[cellItem.posX, cellItem.posY].Item = cellItem.item;
+        }
+        
+
         public override string ToString()
         {
             var result = new StringBuilder();
@@ -78,7 +87,8 @@ namespace Mazes.Contracts
 
                 for (int column = 0; column < dimensionZeroLength; column++)
                 {
-                    bodyRow.Append(EmptyFloor).Append(this.cells[column, row].LinkedCells.Contains(this.cells[column, row].EasternNeighbour) ? LinkToEasternCell : CellVertical);
+                    var floorItem = this.cells[column, row].Item != null ? string.Format(FloorWithItem, this.cells[column, row].Item) : EmptyFloor;
+                    bodyRow.Append(floorItem).Append(this.cells[column, row].LinkedCells.Contains(this.cells[column, row].EasternNeighbour) ? LinkToEasternCell : CellVertical);
                     bottomRow.Append(CornerStone).Append(this.cells[column, row].LinkedCells.Contains(this.cells[column, row].SouthernNeighbour) ? LinkToSouthernCell : CellHorizontal);
                 }
                 
@@ -92,8 +102,10 @@ namespace Mazes.Contracts
             return result.ToString();
         }
 
-        public void PrintMazeAtColumn(string header, int column)
+        public void DrawMaze(string header, int column)
         {
+            this.drawColumn = column;
+            
             var (left, top) = Console.GetCursorPosition();
             Console.SetCursorPosition(column, 0);
             Console.WriteLine(header);
@@ -108,6 +120,26 @@ namespace Mazes.Contracts
                 Console.WriteLine(line);
                 newTop = Math.Min(newTop + 1, Console.BufferHeight - 1);
             }
+        }
+
+        public void RedrawMaze()
+        {
+            var (oldScreenPositionX, oldScreenPositionY) = Console.GetCursorPosition();
+            for (int column = 0; column < dimensionZeroLength; column++)
+            {
+                for (int row = 0; row < dimensionOneLength; row++)
+                {
+                    if (this.cells[column,row].Item != null)
+                    {
+                        var screenPositionX = this.drawColumn + 2 + (column) * 4;
+                        var screenPositionY = (row + 2) * 2;
+                        Console.SetCursorPosition(screenPositionX, screenPositionY);
+                        Console.Write(this.cells[column, row].Item);
+                    }
+                }
+            }
+            
+            Console.SetCursorPosition(oldScreenPositionX, oldScreenPositionY);
         }
     }
 }

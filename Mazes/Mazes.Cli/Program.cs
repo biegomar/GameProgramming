@@ -13,11 +13,17 @@ namespace Mazes.Cli
             var maze3 = new Maze(new EmptyMazeGenerator(), 10, 10);
             var maze4 = new Maze(new FullMazeGenerator(), 10, 10);
             
+            maze3.SetCellItem(new CellItem('I', 4,4));
+            
             Console.Clear();
-            maze.PrintMazeAtColumn("Binary Tree", 0);
-            maze2.PrintMazeAtColumn("Sidewinder", 45);
-            maze3.PrintMazeAtColumn("Empty", 90);
-            maze4.PrintMazeAtColumn("Full", 135);
+            maze.DrawMaze("Binary Tree", 0);
+            maze2.DrawMaze("Sidewinder", 45);
+            maze3.DrawMaze("Empty", 90);
+            maze4.DrawMaze("Full", 135);
+
+            Console.ReadKey();
+            
+            maze3.RedrawMaze();
         }
     }
 }
