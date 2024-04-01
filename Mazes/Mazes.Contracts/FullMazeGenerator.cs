@@ -1,9 +1,10 @@
-﻿namespace Mazes.Contracts;
-
-public class FullMazeGenerator: IMazeGenerator
+﻿namespace Mazes.Contracts
 {
-    public Cell[,] Generate(Cell[,] rawMaze)
+    public class FullMazeGenerator: IMazeGenerator
     {
-        return rawMaze;
+        public Cell[,] Generate(Cell[,] rawMaze)
+        {
+            return rawMaze;
+        }
     }
 }

@@ -1,3 +1,16 @@
-﻿namespace Mazes.Contracts;
+﻿namespace Mazes.Contracts
+{
+    public class MazeVector
+    {
+        public int X { get; }
+        public int Y { get; }
+        public int Z { get; }
 
-public record MazeVector(int X = 0, int Y = 0, int Z = 0);
+        public MazeVector(int x, int y, int z)
+        {
+            this.X = x;
+            this.Y = y;
+            this.Z = z;
+        }
+    }
+}

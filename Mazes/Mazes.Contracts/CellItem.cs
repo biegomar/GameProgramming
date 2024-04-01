@@ -1,3 +1,14 @@
-﻿namespace Mazes.Contracts;
+﻿namespace Mazes.Contracts
+{
+    public class CellItem
+    {
+        public char Item { get;  }
+        public MazeVector Position { get;  }
 
-public record CellItem(char Item, MazeVector Position);
+        public CellItem(char item, MazeVector position) 
+        {
+            this.Item = item;
+            this.Position = position;
+        }
+    }    
+}
