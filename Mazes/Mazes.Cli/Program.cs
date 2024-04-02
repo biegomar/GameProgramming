@@ -1,4 +1,4 @@
-﻿using BinareTreeMaze;
+﻿using BinaryTreeMaze;
 using Mazes.Contracts;
 using SideWinderMaze;
 
@@ -8,22 +8,29 @@ namespace Mazes.Cli
     {
         static void Main(string[] args)
         {
-            var maze = new Maze(new BinareTreeMazeGenerator(), 10, 10);
-            var maze2 = new Maze(new SideWinderMazeGenerator(), 10, 10);
-            var maze3 = new Maze(new EmptyMazeGenerator(), 10, 10);
-            var maze4 = new Maze(new FullMazeGenerator(), 10, 10);
+            var dimension = new MazeVector(10, 10, 0);
+            var maze = new Maze(dimension, new BinaryTreeMazeGenerator(), new ConsoleMazePrinter(), "Binary Tree");
+            var maze2 = new Maze(dimension, new SideWinderMazeGenerator(), new ConsoleMazePrinter(), "Sidewinder");
+            var maze3 = new Maze(dimension, new EmptyMazeGenerator(), new ConsoleMazePrinter(), "Empty");
+            var maze4 = new Maze(dimension, new FullMazeGenerator(), new ConsoleMazePrinter(), "Full");
             
-            maze3.SetCellItem(new CellItem('I', 4,4));
+            maze.SetCellItem(new CellItem('X', new MazeVector(1,1,0)));
+            maze2.SetCellItem(new CellItem('B', new MazeVector(0,0,0)));
+            maze3.SetCellItem(new CellItem('O', new MazeVector(9,9,0)));
+            maze4.SetCellItem(new CellItem('I', new MazeVector(4,5,0)));
+            
             
             Console.Clear();
-            maze.DrawMaze("Binary Tree", 0);
-            maze2.DrawMaze("Sidewinder", 45);
-            maze3.DrawMaze("Empty", 90);
-            maze4.DrawMaze("Full", 135);
-
-            Console.ReadKey();
             
-            maze3.RedrawMaze();
+            maze.Draw(new MazeVector(0,0,0));
+            maze2.Draw(new MazeVector(45,0,0));
+            maze3.Draw(new MazeVector(90,0,0));
+            maze4.Draw(new MazeVector(135,0,0));
+            
+            maze.DrawCellItems();
+            maze2.DrawCellItems();
+            maze3.DrawCellItems();
+            maze4.DrawCellItems();
         }
     }
 }

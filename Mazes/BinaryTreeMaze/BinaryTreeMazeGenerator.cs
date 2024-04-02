@@ -1,8 +1,11 @@
-﻿using Mazes.Contracts;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Mazes.Contracts;
 
-namespace BinareTreeMaze
+namespace BinaryTreeMaze
 {
-    public class BinareTreeMazeGenerator : IMazeGenerator
+    public class BinaryTreeMazeGenerator : IMazeGenerator
     {
         public Cell[,] Generate(Cell[,] rawMaze)
         {

@@ -1,32 +1,35 @@
-﻿namespace Mazes.Contracts;
+﻿using System.Collections.Generic;
 
-public class EmptyMazeGenerator: IMazeGenerator
+namespace Mazes.Contracts
 {
-    public Cell[,] Generate(Cell[,] rawMaze)
+    public class EmptyMazeGenerator: IMazeGenerator
     {
-        var dimensionZeroLength = rawMaze.GetLength(0);
-        var dimensionOneLength = rawMaze.GetLength(1);
-
-        IList<Cell> runOfCells = new List<Cell>();
-            
-        for (int row = dimensionOneLength - 1; row >= 0; row--)
+        public Cell[,] Generate(Cell[,] rawMaze)
         {
-            for (int column = 0; column < dimensionZeroLength; column++)
-            {
-                var item = rawMaze[column, row];
-                    
-                if (item.EasternNeighbour != null)
-                {
-                    item.LinkCell(item.EasternNeighbour);   
-                }
+            var dimensionZeroLength = rawMaze.GetLength(0);
+            var dimensionOneLength = rawMaze.GetLength(1);
 
-                if (item.NothernNeighbour != null)
+            IList<Cell> runOfCells = new List<Cell>();
+            
+            for (int row = dimensionOneLength - 1; row >= 0; row--)
+            {
+                for (int column = 0; column < dimensionZeroLength; column++)
                 {
-                    item.LinkCell(item.NothernNeighbour);
+                    var item = rawMaze[column, row];
+                    
+                    if (item.EasternNeighbour != null)
+                    {
+                        item.LinkCell(item.EasternNeighbour);   
+                    }
+
+                    if (item.NothernNeighbour != null)
+                    {
+                        item.LinkCell(item.NothernNeighbour);
+                    }
                 }
             }
-        }
 
-        return rawMaze;
+            return rawMaze;
+        }
     }
 }

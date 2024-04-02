@@ -7,139 +7,76 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Mazes.Contracts
 {
-    public class Maze : IPrintSubsystem
+    public class Maze
     {
-        private const string CornerStone = "+";
-        private const string CellHorizontal = "---";
-        private const string CellVertical = "|";
-        private const string EmptyFloor = "   ";
-        private const string FloorWithItem = " {0} ";
-        private const string LinkToSouthernCell = "   ";
-        private const string LinkToEasternCell = " ";
-
-        private readonly Cell[,] cells;
         private readonly IMazeGenerator mazeGenerator;
-        private readonly int dimensionZeroLength;
-        private readonly int dimensionOneLength;
+        private readonly IMazePrinter mazePrinter;
 
-        private int drawColumn;
+        public int Width { get; }
+        public int Height { get; }
+        
+        public Cell[,] Cells { get; }
+        
+        public string Title { get; }
 
-        public Maze(IMazeGenerator mazeGenerator, int width, int height)
+        public Maze(MazeVector dimension, IMazeGenerator mazeGenerator, IMazePrinter mazePrinter) : this(dimension,mazeGenerator, mazePrinter, string.Empty)
+        {
+        }
+
+        public Maze(MazeVector dimension, IMazeGenerator mazeGenerator, IMazePrinter mazePrinter, string title)
         {
             this.mazeGenerator = mazeGenerator;
+            this.mazePrinter = mazePrinter;
 
-            this.cells = new Cell[width, height];
-            this.dimensionZeroLength = cells.GetLength(0);
-            this.dimensionOneLength = cells.GetLength(1);
+            this.Cells = new Cell[dimension.X, dimension.Y];
+            this.Width = Cells.GetLength(0);
+            this.Height = Cells.GetLength(1);
+            this.Title = title;
 
             InitializeMaze();
             LinkCellsInMaze();
 
-            this.cells = this.mazeGenerator.Generate(this.cells);
+            this.Cells = this.mazeGenerator.Generate(this.Cells);
+        }
+
+        public void Draw(MazeVector startMazeVector)
+        {
+            this.mazePrinter.DrawMaze(this, startMazeVector);
+        }
+
+        public void DrawCellItems()
+        {
+            this.mazePrinter.DrawCellItems(this);
         }
 
         private void InitializeMaze()
         {
-            for (int column = 0; column < cells.GetLength(0); column++)           
+            for (int column = 0; column < Cells.GetLength(0); column++)           
             {
-                for(int row = 0; row < cells.GetLength(1); row++)
+                for(int row = 0; row < Cells.GetLength(1); row++)
                 {
-                    this.cells[column, row] = new Cell();
+                    this.Cells[column, row] = new Cell();
                 }
             }
         }
 
         private void LinkCellsInMaze()
         {            
-            for (int column = 0; column < dimensionZeroLength; column++)
+            for (int column = 0; column < Width; column++)
             {
-                for (int row = 0; row < dimensionOneLength; row++)
+                for (int row = 0; row < Height; row++)
                 {
-                    this.cells[column, row].NothernNeighbour = row - 1 < 0 ? null : this.cells[column, row - 1];
-                    this.cells[column, row].EasternNeighbour = column + 1 >= dimensionZeroLength ? null : this.cells[column + 1, row];
-                    this.cells[column, row].SouthernNeighbour = row + 1 >= dimensionOneLength ? null : this.cells[column, row + 1];
-                    this.cells[column, row].WesternNeighbour = column - 1 < 0 ? null : this.cells[column - 1, row];
+                    this.Cells[column, row].NothernNeighbour = row - 1 < 0 ? null : this.Cells[column, row - 1];
+                    this.Cells[column, row].EasternNeighbour = column + 1 >= Width ? null : this.Cells[column + 1, row];
+                    this.Cells[column, row].SouthernNeighbour = row + 1 >= Height ? null : this.Cells[column, row + 1];
+                    this.Cells[column, row].WesternNeighbour = column - 1 < 0 ? null : this.Cells[column - 1, row];
                 }
             }
         }
 
         public void SetCellItem(CellItem cellItem)
         {
-            this.cells[cellItem.posX, cellItem.posY].Item = cellItem.item;
-        }
-        
-
-        public override string ToString()
-        {
-            var result = new StringBuilder();
-
-            //North wall
-            var segment = CornerStone + CellHorizontal;
-            result.Append(string.Join("", Enumerable.Repeat(segment, dimensionZeroLength)));
-            result.AppendLine(CornerStone);
-            
-            for (int row = 0; row < dimensionOneLength; row++)
-            {                
-                var bodyRow = new StringBuilder();
-                var bottomRow = new StringBuilder();
-
-                bodyRow.Append(CellVertical);
-
-                for (int column = 0; column < dimensionZeroLength; column++)
-                {
-                    var floorItem = this.cells[column, row].Item != null ? string.Format(FloorWithItem, this.cells[column, row].Item) : EmptyFloor;
-                    bodyRow.Append(floorItem).Append(this.cells[column, row].LinkedCells.Contains(this.cells[column, row].EasternNeighbour) ? LinkToEasternCell : CellVertical);
-                    bottomRow.Append(CornerStone).Append(this.cells[column, row].LinkedCells.Contains(this.cells[column, row].SouthernNeighbour) ? LinkToSouthernCell : CellHorizontal);
-                }
-                
-                bottomRow.Append(CornerStone);
-
-                result.AppendLine(bodyRow.ToString());
-                result.AppendLine(bottomRow.ToString());
-            }
-           
-
-            return result.ToString();
-        }
-
-        public void DrawMaze(string header, int column)
-        {
-            this.drawColumn = column;
-            
-            var (left, top) = Console.GetCursorPosition();
-            Console.SetCursorPosition(column, 0);
-            Console.WriteLine(header);
-            
-            string[] lines = this.ToString().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-
-            var newTop = 3;
-            foreach (var line in lines)
-            {
-                var newLeft = column >= left ? column : left;
-                Console.SetCursorPosition(newLeft,newTop);
-                Console.WriteLine(line);
-                newTop = Math.Min(newTop + 1, Console.BufferHeight - 1);
-            }
-        }
-
-        public void RedrawMaze()
-        {
-            var (oldScreenPositionX, oldScreenPositionY) = Console.GetCursorPosition();
-            for (int column = 0; column < dimensionZeroLength; column++)
-            {
-                for (int row = 0; row < dimensionOneLength; row++)
-                {
-                    if (this.cells[column,row].Item != null)
-                    {
-                        var screenPositionX = this.drawColumn + 2 + (column) * 4;
-                        var screenPositionY = (row + 2) * 2;
-                        Console.SetCursorPosition(screenPositionX, screenPositionY);
-                        Console.Write(this.cells[column, row].Item);
-                    }
-                }
-            }
-            
-            Console.SetCursorPosition(oldScreenPositionX, oldScreenPositionY);
+            this.Cells[cellItem.Position.X, cellItem.Position.Y].Item = cellItem.Item;
         }
     }
 }

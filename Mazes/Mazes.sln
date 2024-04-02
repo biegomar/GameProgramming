@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mazes.Cli", "Mazes.Cli\Maze
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mazes.Contracts", "Mazes.Contracts\Mazes.Contracts.csproj", "{863B09C2-74F5-48BB-885C-273325777BB6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinareTreeMaze", "BinareTreeMaze\BinareTreeMaze.csproj", "{9CEA6582-E86B-46E6-938C-FB10163A5BAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinaryTreeMaze", "BinaryTreeMaze\BinaryTreeMaze.csproj", "{9CEA6582-E86B-46E6-938C-FB10163A5BAF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SideWinderMaze", "SideWinderMaze\SideWinderMaze.csproj", "{71F28A68-E75F-4895-83CD-C7B5C8982836}"
 EndProject

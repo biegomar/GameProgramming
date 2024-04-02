@@ -1,4 +1,6 @@
-﻿using Mazes.Contracts;
+﻿using System;
+using System.Collections.Generic;
+using Mazes.Contracts;
 
 namespace SideWinderMaze
 {
