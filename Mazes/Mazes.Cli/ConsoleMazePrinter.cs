@@ -14,7 +14,7 @@ public class ConsoleMazePrinter: IMazePrinter
     
     private int drawColumn;
     
-    public void DrawMaze(Maze maze, MazeVector startMazeVector)
+    public void DrawMaze<T>(Maze<T> maze, MazeVector startMazeVector)
     {
         this.drawColumn = startMazeVector.X;
             
@@ -34,7 +34,7 @@ public class ConsoleMazePrinter: IMazePrinter
         }
     }
 
-    public void DrawCellItems(Maze maze)
+    public void DrawCellItems<T>(Maze<T> maze)
     {
         var (oldScreenPositionX, oldScreenPositionY) = Console.GetCursorPosition();
         for (int column = 0; column < maze.Width; column++)
@@ -54,7 +54,7 @@ public class ConsoleMazePrinter: IMazePrinter
         Console.SetCursorPosition(oldScreenPositionX, oldScreenPositionY);
     }
     
-    private string GetMazeStringRepresentation(Maze maze)
+    private string GetMazeStringRepresentation<T>(Maze<T> maze)
     {
         var result = new StringBuilder();
 

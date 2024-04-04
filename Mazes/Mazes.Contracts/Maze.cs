@@ -1,24 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-
-namespace Mazes.Contracts
+﻿namespace Mazes.Contracts
 {
-    public class Maze
+    public class Maze<T>
     {
-        private readonly IMazeGenerator mazeGenerator;
-        private readonly IMazePrinter mazePrinter;
-
         public int Width { get; }
         public int Height { get; }
         
-        public Cell[,] Cells { get; }
+        public Cell<T>[,] Cells { get; }
         
         public string Title { get; }
 
+        private readonly IMazeGenerator mazeGenerator;
+        private readonly IMazePrinter mazePrinter;
+        
         public Maze(MazeVector dimension, IMazeGenerator mazeGenerator, IMazePrinter mazePrinter) : this(dimension,mazeGenerator, mazePrinter, string.Empty)
         {
         }
@@ -27,12 +20,12 @@ namespace Mazes.Contracts
         {
             this.mazeGenerator = mazeGenerator;
             this.mazePrinter = mazePrinter;
-
-            this.Cells = new Cell[dimension.X, dimension.Y];
-            this.Width = Cells.GetLength(0);
-            this.Height = Cells.GetLength(1);
             this.Title = title;
 
+            this.Cells = new Cell<T>[dimension.X, dimension.Y];
+            this.Width = Cells.GetLength(0);
+            this.Height = Cells.GetLength(1);
+            
             InitializeMaze();
             LinkCellsInMaze();
 
@@ -55,7 +48,7 @@ namespace Mazes.Contracts
             {
                 for(int row = 0; row < Cells.GetLength(1); row++)
                 {
-                    this.Cells[column, row] = new Cell();
+                    this.Cells[column, row] = new Cell<T>();
                 }
             }
         }
@@ -74,7 +67,7 @@ namespace Mazes.Contracts
             }
         }
 
-        public void SetCellItem(CellItem cellItem)
+        public void SetCellItem(CellItem<T> cellItem)
         {
             this.Cells[cellItem.Position.X, cellItem.Position.Y].Item = cellItem.Item;
         }

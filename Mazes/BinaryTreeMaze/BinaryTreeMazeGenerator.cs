@@ -7,7 +7,7 @@ namespace BinaryTreeMaze
 {
     public class BinaryTreeMazeGenerator : IMazeGenerator
     {
-        public Cell[,] Generate(Cell[,] rawMaze)
+        public Cell<T>[,] Generate<T>(Cell<T>[,] rawMaze)
         {
             var randomGenerator = new Random();
             var dimensionZeroLength = rawMaze.GetLength(0);
@@ -19,7 +19,7 @@ namespace BinaryTreeMaze
                 {
                     var item = rawMaze[column, row];
 
-                    var choiceList = new List<Cell>();
+                    var choiceList = new List<Cell<T>>();
                     if (item.NothernNeighbour != null)
                     {
                         choiceList.Add(item.NothernNeighbour!);

@@ -2,7 +2,7 @@
 {
     public class FullMazeGenerator: IMazeGenerator
     {
-        public Cell[,] Generate(Cell[,] rawMaze)
+        public Cell<T>[,] Generate<T>(Cell<T>[,] rawMaze)
         {
             return rawMaze;
         }

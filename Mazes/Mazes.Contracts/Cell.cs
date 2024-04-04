@@ -6,40 +6,40 @@ using System.Threading.Tasks;
 
 namespace Mazes.Contracts
 {
-    public class Cell
+    public class Cell<T>
     {
-        private readonly IDictionary<Directions, Cell?> Neighbours = new Dictionary<Directions, Cell?>();
-        private readonly IList<Cell> linkedCells = new List<Cell>();
+        private readonly IDictionary<Directions, Cell<T>?> Neighbours = new Dictionary<Directions, Cell<T>?>();
+        private readonly IList<Cell<T>> linkedCells = new List<Cell<T>>();
 
-        public char? Item { get; set; }
+        public T Item { get; set; }
         
-        public Cell? NothernNeighbour
+        public Cell<T>? NothernNeighbour
         {
             get => Neighbours[Directions.North];
             set => Neighbours[Directions.North] = value;
         }
 
-        public Cell? EasternNeighbour
+        public Cell<T>? EasternNeighbour
         {
             get => Neighbours[Directions.East];
             set => Neighbours[Directions.East] = value;
         }
 
-        public Cell? SouthernNeighbour
+        public Cell<T>? SouthernNeighbour
         {
             get => Neighbours[Directions.South];
             set => Neighbours[Directions.South] = value;
         }
 
-        public Cell? WesternNeighbour
+        public Cell<T>? WesternNeighbour
         {
             get => Neighbours[Directions.West];
             set => Neighbours[Directions.West] = value;
         }
 
-        public IList<Cell> LinkedCells => linkedCells;
+        public IList<Cell<T>> LinkedCells => linkedCells;
 
-        public void LinkCell(Cell cellToLink)
+        public void LinkCell(Cell<T> cellToLink)
         {
             if (!this.LinkedCells.Contains(cellToLink))
             {
@@ -48,7 +48,7 @@ namespace Mazes.Contracts
             }
         }
 
-        public Cell(Cell? northernNeighbour = null, Cell? easternNeighbour = null, Cell? southernNeighbour = null, Cell? westernNeighbout = null)
+        public Cell(Cell<T>? northernNeighbour = null, Cell<T>? easternNeighbour = null, Cell<T>? southernNeighbour = null, Cell<T>? westernNeighbout = null)
         {
             Neighbours.Add(Directions.North, northernNeighbour);
             Neighbours.Add(Directions.East, easternNeighbour);

@@ -4,12 +4,12 @@ namespace Mazes.Contracts
 {
     public class EmptyMazeGenerator: IMazeGenerator
     {
-        public Cell[,] Generate(Cell[,] rawMaze)
+        public Cell<T>[,] Generate<T>(Cell<T>[,] rawMaze)
         {
             var dimensionZeroLength = rawMaze.GetLength(0);
             var dimensionOneLength = rawMaze.GetLength(1);
 
-            IList<Cell> runOfCells = new List<Cell>();
+            IList<Cell<T>> runOfCells = new List<Cell<T>>();
             
             for (int row = dimensionOneLength - 1; row >= 0; row--)
             {
