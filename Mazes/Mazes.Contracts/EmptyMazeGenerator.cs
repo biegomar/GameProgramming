@@ -4,10 +4,10 @@ namespace Mazes.Contracts
 {
     public class EmptyMazeGenerator: IMazeGenerator
     {
-        public Cell<T>[,] Generate<T>(Cell<T>[,] rawMaze)
+        public Cell<T>[,] Generate<T>(Cell<T>[,] cells)
         {
-            var dimensionZeroLength = rawMaze.GetLength(0);
-            var dimensionOneLength = rawMaze.GetLength(1);
+            var dimensionZeroLength = cells.GetLength(0);
+            var dimensionOneLength = cells.GetLength(1);
 
             IList<Cell<T>> runOfCells = new List<Cell<T>>();
             
@@ -15,7 +15,7 @@ namespace Mazes.Contracts
             {
                 for (int column = 0; column < dimensionZeroLength; column++)
                 {
-                    var item = rawMaze[column, row];
+                    var item = cells[column, row];
                     
                     if (item.EasternNeighbour != null)
                     {
@@ -29,7 +29,7 @@ namespace Mazes.Contracts
                 }
             }
 
-            return rawMaze;
+            return cells;
         }
     }
 }

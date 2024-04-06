@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AldousBroderMaze\AldousBroderMaze.csproj" />
     <ProjectReference Include="..\BinaryTreeMaze\BinaryTreeMaze.csproj" />
     <ProjectReference Include="..\Mazes.Contracts\Mazes.Contracts.csproj" />
     <ProjectReference Include="..\SideWinderMaze\SideWinderMaze.csproj" />

@@ -6,11 +6,11 @@ namespace SideWinderMaze
 {
     public class SideWinderMazeGenerator : IMazeGenerator
     {
-        public Cell<T>[,] Generate<T>(Cell<T>[,] rawMaze)
+        public Cell<T>[,] Generate<T>(Cell<T>[,] cells)
         {
             var randomGenerator = new Random();
-            var dimensionZeroLength = rawMaze.GetLength(0);
-            var dimensionOneLength = rawMaze.GetLength(1);
+            var dimensionZeroLength = cells.GetLength(0);
+            var dimensionOneLength = cells.GetLength(1);
 
             IList<Cell<T>> runOfCells = new List<Cell<T>>();
             
@@ -18,7 +18,7 @@ namespace SideWinderMaze
             {
                 for (int column = 0; column < dimensionZeroLength; column++)
                 {
-                    var item = rawMaze[column, row];
+                    var item = cells[column, row];
 
                     runOfCells.Add(item);
                     
@@ -42,7 +42,7 @@ namespace SideWinderMaze
                 }
             }
 
-            return rawMaze;
+            return cells;
         }
     }
 }

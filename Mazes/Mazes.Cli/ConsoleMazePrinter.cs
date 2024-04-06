@@ -13,16 +13,16 @@ public class ConsoleMazePrinter: IMazePrinter
     private const string LinkToEasternCell = " ";
     
     private int drawColumn;
-    
-    public void DrawMaze<T>(Maze<T> maze, MazeVector startMazeVector)
+
+    public void DrawMaze<T>(Cell<T>[,] cells, MazeVector startMazeVector, string title, bool drawItems = false)
     {
         this.drawColumn = startMazeVector.X;
             
         var (left, top) = Console.GetCursorPosition();
         Console.SetCursorPosition(this.drawColumn, 0);
-        Console.WriteLine(maze.Title);
+        Console.WriteLine(title);
             
-        string[] lines = GetMazeStringRepresentation(maze).Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+        string[] lines = GetMazeStringRepresentation(cells).Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
         var newTop = 3;
         foreach (var line in lines)
@@ -32,21 +32,29 @@ public class ConsoleMazePrinter: IMazePrinter
             Console.WriteLine(line);
             newTop = Math.Min(newTop + 1, Console.BufferHeight - 1);
         }
+
+        if (drawItems)
+        {
+            this.DrawCellItems(cells);
+        }
     }
 
-    public void DrawCellItems<T>(Maze<T> maze)
+    public void DrawCellItems<T>(Cell<T>[,] cells)
     {
+        var width = cells.GetLength(0);
+        var height = cells.GetLength(1);
+        
         var (oldScreenPositionX, oldScreenPositionY) = Console.GetCursorPosition();
-        for (int column = 0; column < maze.Width; column++)
+        for (int column = 0; column < width; column++)
         {
-            for (int row = 0; row < maze.Height; row++)
+            for (int row = 0; row < height; row++)
             {
-                if (maze.Cells[column,row].Item != null)
+                if (cells[column,row].Item != null)
                 {
                     var screenPositionX = this.drawColumn + 2 + (column) * 4;
                     var screenPositionY = (row + 2) * 2;
                     Console.SetCursorPosition(screenPositionX, screenPositionY);
-                    Console.Write(maze.Cells[column, row].Item);
+                    Console.Write(cells[column, row].Item);
                 }
             }
         }
@@ -54,26 +62,29 @@ public class ConsoleMazePrinter: IMazePrinter
         Console.SetCursorPosition(oldScreenPositionX, oldScreenPositionY);
     }
     
-    private string GetMazeStringRepresentation<T>(Maze<T> maze)
+    private string GetMazeStringRepresentation<T>(Cell<T>[,] cells)
     {
         var result = new StringBuilder();
+        
+        var width = cells.GetLength(0);
+        var height = cells.GetLength(1);
 
         //North wall
         var segment = CornerStone + CellHorizontal;
-        result.Append(string.Join("", Enumerable.Repeat(segment, maze.Width)));
+        result.Append(string.Join("", Enumerable.Repeat(segment, width)));
         result.AppendLine(CornerStone);
             
-        for (int row = 0; row < maze.Height; row++)
+        for (int row = 0; row < height; row++)
         {                
             var bodyRow = new StringBuilder();
             var bottomRow = new StringBuilder();
 
             bodyRow.Append(CellVertical);
 
-            for (int column = 0; column < maze.Width; column++)
+            for (int column = 0; column < width; column++)
             {
-                bodyRow.Append(EmptyFloor).Append(maze.Cells[column, row].LinkedCells.Contains(maze.Cells[column, row].EasternNeighbour) ? LinkToEasternCell : CellVertical);
-                bottomRow.Append(CornerStone).Append(maze.Cells[column, row].LinkedCells.Contains(maze.Cells[column, row].SouthernNeighbour) ? LinkToSouthernCell : CellHorizontal);
+                bodyRow.Append(EmptyFloor).Append(cells[column, row].LinkedCells.Contains(cells[column, row].EasternNeighbour) ? LinkToEasternCell : CellVertical);
+                bottomRow.Append(CornerStone).Append(cells[column, row].LinkedCells.Contains(cells[column, row].SouthernNeighbour) ? LinkToSouthernCell : CellHorizontal);
             }
                 
             bottomRow.Append(CornerStone);

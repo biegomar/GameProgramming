@@ -6,13 +6,14 @@
         public int Height { get; }
         
         public Cell<T>[,] Cells { get; }
-        
+
         public string Title { get; }
 
         private readonly IMazeGenerator mazeGenerator;
         private readonly IMazePrinter mazePrinter;
-        
-        public Maze(MazeVector dimension, IMazeGenerator mazeGenerator, IMazePrinter mazePrinter) : this(dimension,mazeGenerator, mazePrinter, string.Empty)
+
+        public Maze(MazeVector dimension, IMazeGenerator mazeGenerator, IMazePrinter mazePrinter) : this(dimension,
+            mazeGenerator, mazePrinter, string.Empty)
         {
         }
 
@@ -48,7 +49,7 @@
             {
                 for(int row = 0; row < Cells.GetLength(1); row++)
                 {
-                    this.Cells[column, row] = new Cell<T>();
+                    this.Cells[column, row] = new Cell<T>(column, row);
                 }
             }
         }
