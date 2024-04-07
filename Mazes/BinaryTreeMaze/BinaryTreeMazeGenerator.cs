@@ -5,9 +5,9 @@ using Mazes.Contracts;
 
 namespace BinaryTreeMaze
 {
-    public class BinaryTreeMazeGenerator : IMazeGenerator
+    public class BinaryTreeMazeGenerator<T> : IMazeGenerator<T>
     {
-        public Cell<T>[,] Generate<T>(Cell<T>[,] cells)
+        public Cell<T>?[,] Generate(Cell<T>?[,] cells)
         {
             var randomGenerator = new Random();
             var dimensionZeroLength = cells.GetLength(0);
@@ -19,7 +19,7 @@ namespace BinaryTreeMaze
                 {
                     var item = cells[column, row];
 
-                    var choiceList = new List<Cell<T>>();
+                    var choiceList = new List<Cell<T>?>();
                     if (item.NothernNeighbour != null)
                     {
                         choiceList.Add(item.NothernNeighbour!);

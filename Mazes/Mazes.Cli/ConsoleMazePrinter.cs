@@ -3,7 +3,7 @@ using Mazes.Contracts;
 
 namespace Mazes.Cli;
 
-public class ConsoleMazePrinter: IMazePrinter
+public class ConsoleMazePrinter<T>(IList<T>? printableItems = null) : IMazePrinter<T>
 {
     private const string CornerStone = "+";
     private const string CellHorizontal = "---";
@@ -14,8 +14,10 @@ public class ConsoleMazePrinter: IMazePrinter
     
     private int drawColumn;
 
-    public void DrawMaze<T>(Cell<T>[,] cells, MazeVector startMazeVector, string title, bool drawItems = false)
-    {
+    public IList<T>? Items { get; set; } = printableItems;
+
+    public void DrawMaze(Cell<T>?[,] cells, MazeVector startMazeVector, string title, bool drawItems = false)
+    { 
         this.drawColumn = startMazeVector.X;
             
         var (left, top) = Console.GetCursorPosition();
@@ -39,7 +41,7 @@ public class ConsoleMazePrinter: IMazePrinter
         }
     }
 
-    public void DrawCellItems<T>(Cell<T>[,] cells)
+    public void DrawCellItems(Cell<T>?[,] cells)
     {
         var width = cells.GetLength(0);
         var height = cells.GetLength(1);
@@ -61,8 +63,19 @@ public class ConsoleMazePrinter: IMazePrinter
             
         Console.SetCursorPosition(oldScreenPositionX, oldScreenPositionY);
     }
-    
-    private string GetMazeStringRepresentation<T>(Cell<T>[,] cells)
+
+    public void DrawItemAtPosition(Cell<T>?[,] cells, MazeVector position, T item)
+    {
+        int oldX = Console.CursorLeft;
+        int oldY = Console.CursorTop;
+        var screenPositionX = this.drawColumn + 2 + (position.X) * 4;
+        var screenPositionY = (position.Y + 2) * 2;
+        Console.SetCursorPosition(screenPositionX, screenPositionY);
+        Console.Write(item);
+        Console.SetCursorPosition(oldX, oldY);
+    }
+
+    private string GetMazeStringRepresentation<T>(Cell<T>?[,] cells)
     {
         var result = new StringBuilder();
         

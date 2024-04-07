@@ -4,9 +4,9 @@ using Mazes.Contracts;
 
 namespace SideWinderMaze
 {
-    public class SideWinderMazeGenerator : IMazeGenerator
+    public class SideWinderMazeGenerator<T> : IMazeGenerator<T>
     {
-        public Cell<T>[,] Generate<T>(Cell<T>[,] cells)
+        public Cell<T>?[,] Generate(Cell<T>?[,] cells)
         {
             var randomGenerator = new Random();
             var dimensionZeroLength = cells.GetLength(0);

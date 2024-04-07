@@ -1,7 +1,7 @@
 ﻿namespace Mazes.Contracts
 {
-    public interface IMazeGenerator
+    public interface IMazeGenerator<T>
     {
-        public Cell<T>[,] Generate<T>(Cell<T>[,] cells);
+        public Cell<T>?[,] Generate(Cell<T>?[,] cells);
     }
 }

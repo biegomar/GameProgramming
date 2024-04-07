@@ -5,19 +5,19 @@
         public int Width { get; }
         public int Height { get; }
         
-        public Cell<T>[,] Cells { get; }
+        public Cell<T>?[,] Cells { get; }
 
         public string Title { get; }
 
-        private readonly IMazeGenerator mazeGenerator;
-        private readonly IMazePrinter mazePrinter;
+        private readonly IMazeGenerator<T> mazeGenerator;
+        private readonly IMazePrinter<T> mazePrinter;
 
-        public Maze(MazeVector dimension, IMazeGenerator mazeGenerator, IMazePrinter mazePrinter) : this(dimension,
+        public Maze(MazeVector dimension, IMazeGenerator<T> mazeGenerator, IMazePrinter<T> mazePrinter) : this(dimension,
             mazeGenerator, mazePrinter, string.Empty)
         {
         }
 
-        public Maze(MazeVector dimension, IMazeGenerator mazeGenerator, IMazePrinter mazePrinter, string title)
+        public Maze(MazeVector dimension, IMazeGenerator<T> mazeGenerator, IMazePrinter<T> mazePrinter, string title)
         {
             this.mazeGenerator = mazeGenerator;
             this.mazePrinter = mazePrinter;

@@ -2,9 +2,9 @@
 
 namespace Mazes.Contracts
 {
-    public class EmptyMazeGenerator: IMazeGenerator
+    public class EmptyMazeGenerator<T>: IMazeGenerator<T>
     {
-        public Cell<T>[,] Generate<T>(Cell<T>[,] cells)
+        public Cell<T>?[,] Generate(Cell<T>?[,] cells)
         {
             var dimensionZeroLength = cells.GetLength(0);
             var dimensionOneLength = cells.GetLength(1);

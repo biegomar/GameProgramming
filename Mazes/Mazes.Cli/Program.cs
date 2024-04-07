@@ -12,13 +12,22 @@ namespace Mazes.Cli
             Console.Clear();
             
             var dimension = new MazeVector(10, 10, 0);
-            var maze = new Maze<char>(dimension, new BinaryTreeMazeGenerator(), new ConsoleMazePrinter(), "Binary Tree");
-            var maze2 = new Maze<char>(dimension, new SideWinderMazeGenerator(), new ConsoleMazePrinter(), "Sidewinder");
-            var maze3 = new Maze<char>(dimension, new EmptyMazeGenerator(), new ConsoleMazePrinter(), "Empty");
-            var maze4 = new Maze<char>(dimension, new FullMazeGenerator(), new ConsoleMazePrinter(), "Full");
-            var maze5 = new Maze<char>(dimension, new AldousBroderMazeGenerator(new ConsoleMazePrinter(), 4),
-                new ConsoleMazePrinter(), "AldousBroder");
+            var maze = new Maze<char>(dimension, new BinaryTreeMazeGenerator<char>(), new ConsoleMazePrinter<char>(), "Binary Tree");
+            var maze2 = new Maze<char>(dimension, new SideWinderMazeGenerator<char>(), new ConsoleMazePrinter<char>(), "Sidewinder");
+            var maze3 = new Maze<char>(dimension, new EmptyMazeGenerator<char>(), new ConsoleMazePrinter<char>(), "Empty");
+            var maze4 = new Maze<char>(dimension, new FullMazeGenerator<char>(), new ConsoleMazePrinter<char>(), "Full");
+
             
+            var numberOfAgents = 5;
+            var listOfItems = new List<char>();
+            for (int i = 0; i < numberOfAgents; i++)
+            {
+                listOfItems.Add(Convert.ToChar(i.ToString()));
+            }
+
+            var maze5 = new Maze<char>(dimension,
+                new AldousBroderMazeGenerator<char>(new ConsoleMazePrinter<char>(listOfItems), numberOfAgents),
+                new ConsoleMazePrinter<char>(), "AldousBroder");
             
             
             maze.SetCellItem(new CellItem<char>('A', new MazeVector(1,1,0)));
@@ -26,9 +35,9 @@ namespace Mazes.Cli
             maze3.SetCellItem(new CellItem<char>('O', new MazeVector(9,9,0)));
             maze4.SetCellItem(new CellItem<char>('I', new MazeVector(4,5,0)));
             
-            //Console.Clear();
+            Console.Clear();
             
-            //maze5.Draw(new MazeVector(0,0,0));
+            maze5.Draw(new MazeVector(0,0,0));
             
             // maze.Draw(new MazeVector(0,0,0));
             // maze2.Draw(new MazeVector(45,0,0));

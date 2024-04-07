@@ -53,7 +53,7 @@ namespace Mazes.Contracts
             Neighbours.Add(Directions.West, westernNeighbour);
         }
 
-        public void LinkCell(Cell<T> cellToLink)
+        public void LinkCell(Cell<T>? cellToLink)
         {
             if (!this.LinkedCells.Contains(cellToLink))
             {
