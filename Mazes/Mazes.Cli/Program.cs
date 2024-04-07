@@ -16,7 +16,7 @@ namespace Mazes.Cli
             var maze2 = new Maze<char>(dimension, new SideWinderMazeGenerator(), new ConsoleMazePrinter(), "Sidewinder");
             var maze3 = new Maze<char>(dimension, new EmptyMazeGenerator(), new ConsoleMazePrinter(), "Empty");
             var maze4 = new Maze<char>(dimension, new FullMazeGenerator(), new ConsoleMazePrinter(), "Full");
-            var maze5 = new Maze<char>(dimension, new AldousBroderMazeGenerator(new ConsoleMazePrinter()),
+            var maze5 = new Maze<char>(dimension, new AldousBroderMazeGenerator(new ConsoleMazePrinter(), 4),
                 new ConsoleMazePrinter(), "AldousBroder");
             
             
@@ -26,7 +26,7 @@ namespace Mazes.Cli
             maze3.SetCellItem(new CellItem<char>('O', new MazeVector(9,9,0)));
             maze4.SetCellItem(new CellItem<char>('I', new MazeVector(4,5,0)));
             
-            Console.Clear();
+            //Console.Clear();
             
             //maze5.Draw(new MazeVector(0,0,0));
             
