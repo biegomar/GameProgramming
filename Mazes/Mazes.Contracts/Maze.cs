@@ -43,6 +43,11 @@
             this.mazePrinter.DrawCellItems(this);
         }
 
+        public void DrawItemAtPosition(MazeVector position, T item)
+        {
+            this.mazePrinter.DrawItemAtPosition(this, position, item);
+        }
+
         private void InitializeMaze()
         {
             for (int column = 0; column < Cells.GetLength(0); column++)           

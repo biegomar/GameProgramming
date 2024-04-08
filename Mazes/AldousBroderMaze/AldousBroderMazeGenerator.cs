@@ -2,7 +2,7 @@
 
 namespace AldousBroderMaze;
 
-public class AldousBroderMazeGenerator<T>(IMazePrinter<T>? mazePrinter, int numberOfAgents=1) : IMazeGenerator<T>
+public class AldousBroderMazeGenerator<T>(IMazePrinter<T>? mazePrinter) : IMazeGenerator<T>
 {
     private Random randomGenerator = new Random();
     private int countOfCells;
@@ -33,87 +33,35 @@ public class AldousBroderMazeGenerator<T>(IMazePrinter<T>? mazePrinter, int numb
         var dimensionZeroLength = cells.GetLength(0);
         var dimensionOneLength = cells.GetLength(1);
 
-        List<Agent> agents = new List<Agent>();
-        // for (int i = 0; i < numberOfAgents; i++)
-        // {
-        //     var agent = new Agent<T>(randomGenerator.Next(0, dimensionZeroLength),
-        //         randomGenerator.Next(0, dimensionOneLength));
-        //     agent.ActualCell = cells[agent.StartPositionX, agent.StartPositionY];
-        //     agent.Item = Convert.ToChar(i.ToString());
-        //     
-        //     agents.Add(agent);
-        // }
-
-        {
-            Agent agent = new Agent(0,0);
-            agent.ActualCell = cells[0, 0];
-            agent.Item =
-                mazePrinter != null && mazePrinter.Items != null && mazePrinter.Items.Any() &&
-                mazePrinter.Items[0] != null
-                    ? mazePrinter.Items[0]
-                    : default; 
-            agents.Add(agent);
-            
-            Agent agent1 = new Agent(9,9);
-            agent1.ActualCell = cells[9, 9];
-            agent1.Item =
-                mazePrinter != null && mazePrinter.Items != null && mazePrinter.Items.Any() &&
-                mazePrinter.Items[1] != null
-                    ? mazePrinter.Items[1]
-                    : default; 
-            agents.Add(agent1);
-            
-            Agent agent2 = new Agent(0,9);
-            agent2.ActualCell = cells[0, 9];
-            agent2.Item = 
-                mazePrinter != null && mazePrinter.Items != null && mazePrinter.Items.Any() &&
-                mazePrinter.Items[2] != null
-                    ? mazePrinter.Items[2]
-                    : default; 
-            agents.Add(agent2);
-            
-            Agent agent3 = new Agent(9,0);
-            agent3.ActualCell = cells[9, 0];
-            agent3.Item =
-                mazePrinter != null && mazePrinter.Items != null && mazePrinter.Items.Any() &&
-                mazePrinter.Items[3] != null
-                    ? mazePrinter.Items[3]
-                    : default; 
-            agents.Add(agent3);
-            
-            Agent agent4 = new Agent(5,5);
-            agent4.ActualCell = cells[5, 5];
-            agent4.Item =
-                mazePrinter != null && mazePrinter.Items != null && mazePrinter.Items.Any() &&
-                mazePrinter.Items[4] != null
-                    ? mazePrinter.Items[4]
-                    : default; 
-            agents.Add(agent4);
-        }
+        Agent agent = new Agent(randomGenerator.Next(0, dimensionZeroLength),
+            randomGenerator.Next(0, dimensionOneLength));
+        agent.ActualCell = cells[agent.StartPositionX, agent.StartPositionY];
+        agent.Item =
+            mazePrinter != null && mazePrinter.Items != null && mazePrinter.Items.Any() &&
+            mazePrinter.Items[4] != null
+                ? mazePrinter.Items[4]
+                : default; 
         
-        countOfCells = cells.Length - agents.Count;
+        countOfCells = cells.Length - 1;
 
         stepCounter = 0;
             
         do
         {
-            foreach (var agent in agents)
+            agent.NextCell = this.GetNextCellCandidate(agent.ActualCell);
+                
+            if (!agent.ActualCell.LinkedCells.Contains(agent.NextCell))
             {
-                agent.NextCell = this.GetNextCellCandidate(agent.ActualCell);
-                
-                if (!agent.ActualCell.LinkedCells.Contains(agent.NextCell))
+                if (!agent.NextCell.LinkedCells.Any())
                 {
-                    if (!agent.NextCell.LinkedCells.Any())
-                    {
-                        countOfCells--;
-                        agent.ActualCell.LinkCell(agent.NextCell);
-                    }
+                    countOfCells--;
+                    agent.ActualCell.LinkCell(agent.NextCell);
                 }
-                
-                PrintDuringGeneration(cells, agents, agent);
-            
-                agent.ActualCell = agent.NextCell;
             }
+                
+            PrintDuringGeneration(cells, agent);
+            
+            agent.ActualCell = agent.NextCell;
 
             stepCounter++;
         } while (countOfCells > 0);
@@ -121,20 +69,18 @@ public class AldousBroderMazeGenerator<T>(IMazePrinter<T>? mazePrinter, int numb
         return cells;
     }
 
-    private void PrintDuringGeneration(Cell<T>?[,] rawMaze, List<Agent> agents, Agent actualAgent)
+    private void PrintDuringGeneration(Cell<T>?[,] rawMaze, Agent actualAgent)
     {
         if (mazePrinter != null)
         {
             mazePrinter.DrawMaze(rawMaze, new MazeVector(0,0,0), $"AldousBroder Cells left: {countOfCells} / steps: {stepCounter}      ");
 
-            foreach (var agent in agents)
+            if (actualAgent.Item != null)
             {
-                if (agent.Item != null)
-                {
-                    mazePrinter.DrawItemAtPosition(rawMaze, new MazeVector(agent.ActualCell.X, agent.ActualCell.Y, 0),
-                        agent.Item);
-                }
+                mazePrinter.DrawItemAtPosition(rawMaze, new MazeVector(actualAgent.ActualCell.X, actualAgent.ActualCell.Y, 0),
+                    actualAgent.Item);
             }
+            
             Thread.Sleep(10);   
         }
         

@@ -25,8 +25,11 @@ namespace Mazes.Cli
                 listOfItems.Add(Convert.ToChar(i.ToString()));
             }
 
-            var maze5 = new Maze<char>(dimension,
-                new AldousBroderMazeGenerator<char>(new ConsoleMazePrinter<char>(listOfItems), numberOfAgents),
+            // var maze5 = new Maze<char>(dimension,
+            //     new AldousBroderMazeGenerator<char>(new ConsoleMazePrinter<char>(listOfItems), numberOfAgents),
+            //     new ConsoleMazePrinter<char>(), "AldousBroder");
+
+            var maze5 = new Maze<char>(dimension, new AldousBroderMazeGenerator<char>(null),
                 new ConsoleMazePrinter<char>(), "AldousBroder");
             
             
@@ -34,20 +37,25 @@ namespace Mazes.Cli
             maze2.SetCellItem(new CellItem<char>('B', new MazeVector(0,0,0)));
             maze3.SetCellItem(new CellItem<char>('O', new MazeVector(9,9,0)));
             maze4.SetCellItem(new CellItem<char>('I', new MazeVector(4,5,0)));
+            maze5.SetCellItem(new CellItem<char>('X', new MazeVector(2,4,0)));
             
             Console.Clear();
             
-            maze5.Draw(new MazeVector(0,0,0));
+            //maze5.Draw(new MazeVector(0,0,0));
             
-            // maze.Draw(new MazeVector(0,0,0));
-            // maze2.Draw(new MazeVector(45,0,0));
-            // maze3.Draw(new MazeVector(90,0,0));
-            // maze4.Draw(new MazeVector(135,0,0));
-            //
-            // maze.DrawCellItems();
-            // maze2.DrawCellItems();
-            // maze3.DrawCellItems();
-            // maze4.DrawCellItems();
+            //maze5.DrawItemAtPosition(new MazeVector(0,0,0), 'X');
+            
+            maze.Draw(new MazeVector(0,0,0));
+            maze2.Draw(new MazeVector(45,0,0));
+            maze3.Draw(new MazeVector(90,0,0));
+            //maze4.Draw(new MazeVector(135,0,0));
+            maze5.Draw(new MazeVector(135,0,0));
+            
+            maze.DrawCellItems();
+            maze2.DrawCellItems();
+            maze3.DrawCellItems();
+            //maze4.DrawCellItems();
+            maze5.DrawCellItems();
         }
     }
 }
