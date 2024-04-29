@@ -45,17 +45,19 @@ namespace Mazes.Cli
             
             //maze5.DrawItemAtPosition(new MazeVector(0,0,0), 'X');
             
-            maze.Draw(new MazeVector(0,0,0));
-            maze2.Draw(new MazeVector(45,0,0));
-            maze3.Draw(new MazeVector(90,0,0));
+            //maze.Draw(new MazeVector(0,0,0));
+            //maze2.Draw(new MazeVector(45,0,0));
+            //maze3.Draw(new MazeVector(90,0,0));
             //maze4.Draw(new MazeVector(135,0,0));
-            maze5.Draw(new MazeVector(135,0,0));
+            maze5.Draw(new MazeVector(0,0,0));
             
             maze.DrawCellItems();
             maze2.DrawCellItems();
             maze3.DrawCellItems();
             //maze4.DrawCellItems();
             maze5.DrawCellItems();
+
+            Console.ReadKey();
         }
     }
 }
