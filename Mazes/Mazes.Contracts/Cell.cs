@@ -17,7 +17,7 @@ namespace Mazes.Contracts
 
         public T Item { get; set; }
         
-        public Cell<T>? NothernNeighbour
+        public Cell<T>? NorthernNeighbour
         {
             get => Neighbours[Directions.North];
             set => Neighbours[Directions.North] = value;

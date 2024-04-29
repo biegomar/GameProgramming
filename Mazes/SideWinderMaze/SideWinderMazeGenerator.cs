@@ -29,13 +29,13 @@ namespace SideWinderMaze
                     
                     var choice = randomGenerator.Next(0, 2);
                     
-                    if (choice == 1 && item.NothernNeighbour != null || item.EasternNeighbour == null)
+                    if (choice == 1 && item.NorthernNeighbour != null || item.EasternNeighbour == null)
                     {
                         var choiceNorth = randomGenerator.Next(0, runOfCells.Count);
                         var itemToLink = runOfCells[choiceNorth];
-                        if (itemToLink.NothernNeighbour != null)
+                        if (itemToLink.NorthernNeighbour != null)
                         {
-                            itemToLink.LinkCell(itemToLink.NothernNeighbour!);
+                            itemToLink.LinkCell(itemToLink.NorthernNeighbour!);
                         }
                         runOfCells.Clear();
                     }

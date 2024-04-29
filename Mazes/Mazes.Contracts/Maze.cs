@@ -65,7 +65,7 @@
             {
                 for (int row = 0; row < Height; row++)
                 {
-                    this.Cells[column, row].NothernNeighbour = row - 1 < 0 ? null : this.Cells[column, row - 1];
+                    this.Cells[column, row].NorthernNeighbour = row - 1 < 0 ? null : this.Cells[column, row - 1];
                     this.Cells[column, row].EasternNeighbour = column + 1 >= Width ? null : this.Cells[column + 1, row];
                     this.Cells[column, row].SouthernNeighbour = row + 1 >= Height ? null : this.Cells[column, row + 1];
                     this.Cells[column, row].WesternNeighbour = column - 1 < 0 ? null : this.Cells[column - 1, row];

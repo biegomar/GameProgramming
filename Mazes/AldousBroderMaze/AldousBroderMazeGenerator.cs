@@ -102,9 +102,9 @@ public class AldousBroderMazeGenerator<T>(IMazePrinter<T>? mazePrinter) : IMazeG
             result.Add(cell.WesternNeighbour);
         }
         
-        if (cell.NothernNeighbour != null)
+        if (cell.NorthernNeighbour != null)
         {
-            result.Add(cell.NothernNeighbour);
+            result.Add(cell.NorthernNeighbour);
         }
         
         if (cell.SouthernNeighbour != null)

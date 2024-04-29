@@ -22,9 +22,9 @@ namespace Mazes.Contracts
                         item.LinkCell(item.EasternNeighbour);   
                     }
 
-                    if (item.NothernNeighbour != null)
+                    if (item.NorthernNeighbour != null)
                     {
-                        item.LinkCell(item.NothernNeighbour);
+                        item.LinkCell(item.NorthernNeighbour);
                     }
                 }
             }

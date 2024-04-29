@@ -20,9 +20,9 @@ namespace BinaryTreeMaze
                     var item = cells[column, row];
 
                     var choiceList = new List<Cell<T>?>();
-                    if (item.NothernNeighbour != null)
+                    if (item.NorthernNeighbour != null)
                     {
-                        choiceList.Add(item.NothernNeighbour!);
+                        choiceList.Add(item.NorthernNeighbour!);
                     }
                     if (item.EasternNeighbour != null)
                     {
