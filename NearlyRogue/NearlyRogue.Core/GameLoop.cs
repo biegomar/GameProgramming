@@ -7,16 +7,16 @@ using NearlyRogue.Core.Weapons;
 
 namespace NearlyRogue.Core;
 
-public class GameLoop
+public class GameLoop<T>
 {
     private readonly Random random = new ();
-    private readonly MonsterFactory monsterFactory = new ();
+    private readonly MonsterFactory<T> monsterFactory = new ();
     private readonly WeaponFactory weaponFactory = new();
     private readonly ArmorFactory armorFactory = new();
     
-    private Player player;
-    private Monster monster;
-    private FightSystem fightSystem;
+    private Player<T> player;
+    private Monster<T> monster;
+    private FightSystem<T> fightSystem;
     
     public void Run()
     {
@@ -34,10 +34,10 @@ public class GameLoop
     {
         this.player = CreatePlayer();
         this.monster = monsterFactory.CreateMonster(MonsterRace.Kestrel);
-        this.fightSystem = new FightSystem();
+        this.fightSystem = new FightSystem<T>();
     }
 
-    private Player CreatePlayer()
+    private Player<T> CreatePlayer()
     {
         DiceThrow diceThrow = new(1, new Dice(DiceType.D4));
         var mace = this.weaponFactory.CreateWeapon(WeaponType.Mace);
@@ -56,7 +56,7 @@ public class GameLoop
         var armor = this.armorFactory.CreateArmor(ArmorType.RingMail);
         armor.AmorClass -= 1;
         
-        return new Player(new ExperienceCalculator())
+        return new (new ExperienceCalculator<T>())
         {
             Name = "atogeib",
             Strength = 16,

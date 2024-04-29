@@ -2,7 +2,7 @@
 
 namespace NearlyRogue.Core.Monsters;
 
-public class MonsterFactory
+public class MonsterFactory<T>
 {
     private readonly Dice D0 = new (DiceType.D0);
     private readonly Dice D2 = new (DiceType.D2);
@@ -14,7 +14,7 @@ public class MonsterFactory
     private readonly Dice D10 = new (DiceType.D10);
     private readonly Dice D12 = new (DiceType.D12);
 
-    public Monster CreateMonster(MonsterRace monsterRace)
+    public Monster<T> CreateMonster(MonsterRace monsterRace)
     {
         return monsterRace switch
         {
@@ -48,7 +48,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetZombie()
+    private Monster<T> GetZombie()
     {
         byte expLevel = 2;
         DiceThrow diceThrow = new(1, D8);
@@ -67,7 +67,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetYeti()
+    private Monster<T> GetYeti()
     {
         byte expLevel = 4;
         DiceThrow diceThrow = new(1, D6);
@@ -85,7 +85,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetXeroc()
+    private Monster<T> GetXeroc()
     {
         byte expLevel = 7;
         DiceThrow diceThrow = new(3, D4);
@@ -103,7 +103,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetWraith()
+    private Monster<T> GetWraith()
     {
         byte expLevel = 5;
         DiceThrow diceThrow = new(1, D6);
@@ -121,7 +121,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetVampire()
+    private Monster<T> GetVampire()
     {
         byte expLevel = 8;
         DiceThrow diceThrow = new(1, D10);
@@ -140,7 +140,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetUrvile()
+    private Monster<T> GetUrvile()
     {
         byte expLevel = 7;
         DiceThrow diceThrowD3 = new(1, D3);
@@ -160,7 +160,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetTroll()
+    private Monster<T> GetTroll()
     {
         byte expLevel = 6;
         DiceThrow diceThrowD6 = new(2, D6);
@@ -180,7 +180,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetSnake()
+    private Monster<T> GetSnake()
     {
         byte expLevel = 2;
         DiceThrow diceThrow = new(1, D3);
@@ -199,7 +199,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetRattlesnake()
+    private Monster<T> GetRattlesnake()
     {
         byte expLevel = 2;
         DiceThrow diceThrow = new(1, D6);
@@ -218,7 +218,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetQuagga()
+    private Monster<T> GetQuagga()
     {
         byte expLevel = 3;
         DiceThrow diceThrowD2 = new(1, D2);
@@ -238,7 +238,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetPhantom()
+    private Monster<T> GetPhantom()
     {
         byte expLevel = 8;
         DiceThrow diceThrow = new(4, D4);
@@ -257,7 +257,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetOrc()
+    private Monster<T> GetOrc()
     {
         byte expLevel = 1;
         DiceThrow diceThrow = new(1, D8);
@@ -276,7 +276,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetNymph()
+    private Monster<T> GetNymph()
     {
         byte expLevel = 3;
         DiceThrow diceThrow = new(0, D0);
@@ -294,7 +294,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetMedusa()
+    private Monster<T> GetMedusa()
     {
         byte expLevel = 8;
         DiceThrow diceThrowD4 = new(3, D4);
@@ -314,7 +314,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetLeprechaun()
+    private Monster<T> GetLeprechaun()
     {
         byte expLevel = 3;
         DiceThrow diceThrow = new(1, D2);
@@ -333,7 +333,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetKestrel()
+    private Monster<T> GetKestrel()
     {
         byte expLevel = 1;
         DiceThrow diceThrow = new(1, D4);
@@ -352,7 +352,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetJabberwock()
+    private Monster<T> GetJabberwock()
     {
         byte expLevel = 15;
         DiceThrow diceThrowD4 = new(2, D4);
@@ -371,7 +371,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetIceMonster()
+    private Monster<T> GetIceMonster()
     {
         byte expLevel = 1;
         DiceThrow diceThrow = new(1, D2);
@@ -390,7 +390,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetHobgoblin()
+    private Monster<T> GetHobgoblin()
     {
         byte expLevel = 1;
         DiceThrow diceThrow = new(1, D8);
@@ -409,7 +409,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetGriffin()
+    private Monster<T> GetGriffin()
     {
         byte expLevel = 13;
         DiceThrow diceThrowD3 = new(4, D3);
@@ -429,7 +429,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetVenusFlytrap()
+    private Monster<T> GetVenusFlytrap()
     {
         //special behaviour needed.
         
@@ -450,7 +450,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetEmu()
+    private Monster<T> GetEmu()
     {
         byte expLevel = 1;
         DiceThrow diceThrow = new(1, D2);
@@ -469,7 +469,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetDragon()
+    private Monster<T> GetDragon()
     {
         byte expLevel = 10;
         DiceThrow diceThrowD8 = new(1, D8);
@@ -489,7 +489,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetCentaur()
+    private Monster<T> GetCentaur()
     {
         byte expLevel = 4;
         DiceThrow diceThrow = new(1, D6);
@@ -507,7 +507,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetBat()
+    private Monster<T> GetBat()
     {
         byte expLevel = 1;
         DiceThrow diceThrow = new(1, D2);
@@ -526,7 +526,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetAquator()
+    private Monster<T> GetAquator()
     {
         byte expLevel = 5;
         DiceThrow diceThrow = new(0, D0);

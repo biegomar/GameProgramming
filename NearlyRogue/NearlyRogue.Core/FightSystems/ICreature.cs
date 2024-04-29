@@ -2,7 +2,7 @@
 
 namespace NearlyRogue.Core.FightSystems;
 
-public interface ICreature
+public interface ICreature<T>
 {
     public ushort Experience { get; set; }
     public byte ExperienceLevel { get; set; }
@@ -11,4 +11,6 @@ public interface ICreature
     public ushort Strength { get; set; }
     public sbyte AmorClass { get; set; }
     public IList<DiceThrow> Damage { get; init; }
+
+    public T Icon { get; set; }
 }

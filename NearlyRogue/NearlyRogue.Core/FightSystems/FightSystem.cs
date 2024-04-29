@@ -3,16 +3,16 @@ using NearlyRogue.Core.Players;
 
 namespace NearlyRogue.Core.FightSystems;
 
-public class FightSystem
+public class FightSystem<T>
 {
     private readonly Random random = new Random();
     private byte additionalDamage;
     private byte additionalHit;
     private IList<DiceThrow> damage = new List<DiceThrow>();
     
-    public void BattleOneRound(ICreature attacker, ICreature defender)
+    public void BattleOneRound(ICreature<T> attacker, ICreature<T> defender)
     {
-        if (attacker is Player player)
+        if (attacker is Player<T> player)
         {
             this.SetAdditionalDamageAndHit(player);
         }
@@ -61,7 +61,7 @@ public class FightSystem
         return add;
     }
     
-    private bool DoesSwingHit(ICreature attacker, ICreature defender, byte attackerHitBonus)
+    private bool DoesSwingHit(ICreature<T> attacker, ICreature<T> defender, byte attackerHitBonus)
     {
         var res = this.random.Next(1,21);
         var need = 20 - attacker.ExperienceLevel - defender.AmorClass;
@@ -69,7 +69,7 @@ public class FightSystem
         return res + attackerHitBonus >= need;
     }
 
-    private void SetAdditionalDamageAndHit(Player attacker)
+    private void SetAdditionalDamageAndHit(Player<T> attacker)
     {
         if (attacker.ActiveWeapon != null)
         {

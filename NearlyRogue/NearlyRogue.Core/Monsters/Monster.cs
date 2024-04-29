@@ -3,7 +3,7 @@ using NearlyRogue.Core.FightSystems;
 
 namespace NearlyRogue.Core.Monsters;
 
-public class Monster : ICreature
+public class Monster<T> : ICreature<T>
 {
     public MonsterRace Race { get; init; }
     public string Name => Race.ToString();
@@ -16,6 +16,12 @@ public class Monster : ICreature
     public ushort Strength { get; set; }
     public sbyte AmorClass { get; set; }
     public IList<DiceThrow> Damage { get; init; }
-    
+    public T Icon { get; set; }
+
     public ushort Range { get; set; }
+
+    public override string ToString()
+    {
+        return this.Icon.ToString();
+    }
 }
