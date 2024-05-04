@@ -1,6 +1,6 @@
 ﻿namespace Mazes.Contracts
 {
-    internal enum Directions
+    public enum Directions
     {
         North,
         East,

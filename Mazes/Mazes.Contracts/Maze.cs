@@ -75,7 +75,12 @@
 
         public void SetCellItem(CellItem<T> cellItem)
         {
-            this.Cells[cellItem.Position.X, cellItem.Position.Y].Item = cellItem.Item;
+            this.Cells[cellItem.Position.X, cellItem.Position.Y]!.Item = cellItem.Item;
+        }
+
+        public void ClearCellItem(MazeVector position)
+        {
+            this.Cells[position.X, position.Y]!.Item = default!;
         }
     }
 }

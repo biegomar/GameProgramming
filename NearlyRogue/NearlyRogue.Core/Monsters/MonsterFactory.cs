@@ -14,6 +14,13 @@ public class MonsterFactory<T>
     private readonly Dice D10 = new (DiceType.D10);
     private readonly Dice D12 = new (DiceType.D12);
 
+    private readonly IDictionary<MonsterRace, T> icons;
+    
+    public MonsterFactory(IDictionary<MonsterRace, T> icons)
+    {
+        this.icons = icons;
+    }
+
     public Monster<T> CreateMonster(MonsterRace monsterRace)
     {
         return monsterRace switch
@@ -63,7 +70,8 @@ public class MonsterFactory<T>
             AmorClass = 8,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Zombie]
         };
     }
 
@@ -81,7 +89,8 @@ public class MonsterFactory<T>
             AmorClass = 6,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow, diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow, diceThrow},
+            Icon = this.icons[MonsterRace.Yeti]
         };
     }
 
@@ -99,7 +108,8 @@ public class MonsterFactory<T>
             AmorClass = 7,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Xeroc]
         };
     }
 
@@ -117,7 +127,8 @@ public class MonsterFactory<T>
             AmorClass = 4,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Wraith]
         };
     }
 
@@ -136,7 +147,8 @@ public class MonsterFactory<T>
             AmorClass = 1,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Vampire]
         };
     }
 
@@ -156,7 +168,8 @@ public class MonsterFactory<T>
             AmorClass = -2,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrowD3, diceThrowD3, diceThrowD3, diceThrowD6}
+            Damage = new List<DiceThrow>() {diceThrowD3, diceThrowD3, diceThrowD3, diceThrowD6},
+            Icon = this.icons[MonsterRace.Urvile]
         };
     }
 
@@ -176,7 +189,8 @@ public class MonsterFactory<T>
             AmorClass = 4,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrowD8, diceThrowD8, diceThrowD6}
+            Damage = new List<DiceThrow>() {diceThrowD8, diceThrowD8, diceThrowD6},
+            Icon = this.icons[MonsterRace.Troll]
         };
     }
 
@@ -195,7 +209,8 @@ public class MonsterFactory<T>
             AmorClass = 8,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Snake]
         };
     }
 
@@ -214,7 +229,8 @@ public class MonsterFactory<T>
             AmorClass = 3,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Rattlesnake]
         };
     }
 
@@ -234,7 +250,8 @@ public class MonsterFactory<T>
             AmorClass = 2,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrowD2, diceThrowD2, diceThrowD4}
+            Damage = new List<DiceThrow>() {diceThrowD2, diceThrowD2, diceThrowD4},
+            Icon = this.icons[MonsterRace.Quagga]
         };
     }
 
@@ -253,7 +270,8 @@ public class MonsterFactory<T>
             AmorClass = 3,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Phantom]
         };
     }
 
@@ -272,7 +290,8 @@ public class MonsterFactory<T>
             AmorClass = 6,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Orc]
         };
     }
 
@@ -290,7 +309,8 @@ public class MonsterFactory<T>
             AmorClass = 9,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Nymph]
         };
     }
 
@@ -310,7 +330,8 @@ public class MonsterFactory<T>
             AmorClass = 2,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrowD4, diceThrowD4, diceThrowD5}
+            Damage = new List<DiceThrow>() {diceThrowD4, diceThrowD4, diceThrowD5},
+            Icon = this.icons[MonsterRace.Medusa]
         };
     }
 
@@ -329,7 +350,8 @@ public class MonsterFactory<T>
             AmorClass = 8,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Leprechaun]
         };
     }
 
@@ -348,7 +370,8 @@ public class MonsterFactory<T>
             AmorClass = 7,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Kestrel]
         };
     }
 
@@ -367,7 +390,8 @@ public class MonsterFactory<T>
             AmorClass = 6,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrowD12, diceThrowD4}
+            Damage = new List<DiceThrow>() {diceThrowD12, diceThrowD4},
+            Icon = this.icons[MonsterRace.Jabberwock]
         };
     }
 
@@ -386,7 +410,8 @@ public class MonsterFactory<T>
             AmorClass = 9,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.IceMonster]
         };
     }
 
@@ -405,7 +430,8 @@ public class MonsterFactory<T>
             AmorClass = 5,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Hobgoblin]
         };
     }
 
@@ -425,7 +451,8 @@ public class MonsterFactory<T>
             AmorClass = 2,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrowD3, diceThrowD5, diceThrowD3}
+            Damage = new List<DiceThrow>() {diceThrowD3, diceThrowD5, diceThrowD3},
+            Icon = this.icons[MonsterRace.Griffin]
         };
     }
 
@@ -446,7 +473,8 @@ public class MonsterFactory<T>
             AmorClass = 3,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.VenusFlytrap]
         };
     }
 
@@ -465,7 +493,8 @@ public class MonsterFactory<T>
             AmorClass = 7,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Emu]
         };
     }
 
@@ -485,7 +514,8 @@ public class MonsterFactory<T>
             AmorClass = -1,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrowD8, diceThrowD8, diceThrowD10}
+            Damage = new List<DiceThrow>() {diceThrowD8, diceThrowD8, diceThrowD10},
+            Icon = this.icons[MonsterRace.Dragon]
         };
     }
 
@@ -503,7 +533,8 @@ public class MonsterFactory<T>
             AmorClass = 4,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow, diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow, diceThrow},
+            Icon = this.icons[MonsterRace.Centaur]
         };
     }
 
@@ -522,7 +553,8 @@ public class MonsterFactory<T>
             AmorClass = 3,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Bat]
         };
     }
 
@@ -541,7 +573,8 @@ public class MonsterFactory<T>
             AmorClass = 2,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow, diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow, diceThrow},
+            Icon = this.icons[MonsterRace.Aquator]
         };
     }
 }

@@ -9,7 +9,7 @@ namespace Mazes.Contracts
 {
     public class Cell<T>
     {
-        private readonly IDictionary<Directions, Cell<T>?> Neighbours = new Dictionary<Directions, Cell<T>?>();
+        private readonly IDictionary<Directions, Cell<T>?> neighbours = new Dictionary<Directions, Cell<T>?>();
         private readonly IList<Cell<T>> linkedCells = new List<Cell<T>>();
         
         public int X { get; }
@@ -19,38 +19,40 @@ namespace Mazes.Contracts
         
         public Cell<T>? NorthernNeighbour
         {
-            get => Neighbours[Directions.North];
-            set => Neighbours[Directions.North] = value;
+            get => neighbours[Directions.North];
+            set => neighbours[Directions.North] = value;
         }
 
         public Cell<T>? EasternNeighbour
         {
-            get => Neighbours[Directions.East];
-            set => Neighbours[Directions.East] = value;
+            get => neighbours[Directions.East];
+            set => neighbours[Directions.East] = value;
         }
 
         public Cell<T>? SouthernNeighbour
         {
-            get => Neighbours[Directions.South];
-            set => Neighbours[Directions.South] = value;
+            get => neighbours[Directions.South];
+            set => neighbours[Directions.South] = value;
         }
 
         public Cell<T>? WesternNeighbour
         {
-            get => Neighbours[Directions.West];
-            set => Neighbours[Directions.West] = value;
+            get => neighbours[Directions.West];
+            set => neighbours[Directions.West] = value;
         }
 
-        public IList<Cell<T>> LinkedCells => linkedCells;
+        public IList<Cell<T>> LinkedCells => this.linkedCells;
+
+        public IDictionary<Directions, Cell<T>?> Neighbours => this.neighbours;
         
         public Cell(int x = 0, int y = 0, Cell<T>? northernNeighbour = null, Cell<T>? easternNeighbour = null, Cell<T>? southernNeighbour = null, Cell<T>? westernNeighbour = null)
         {
             this.X = x;
             this.Y = y;
-            Neighbours.Add(Directions.North, northernNeighbour);
-            Neighbours.Add(Directions.East, easternNeighbour);
-            Neighbours.Add(Directions.South, southernNeighbour);
-            Neighbours.Add(Directions.West, westernNeighbour);
+            neighbours.Add(Directions.North, northernNeighbour);
+            neighbours.Add(Directions.East, easternNeighbour);
+            neighbours.Add(Directions.South, southernNeighbour);
+            neighbours.Add(Directions.West, westernNeighbour);
         }
 
         public void LinkCell(Cell<T>? cellToLink)

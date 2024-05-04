@@ -2,6 +2,8 @@
 using NearlyRogue.Core.Amors;
 using NearlyRogue.Core.Dices;
 using NearlyRogue.Core.FightSystems;
+using NearlyRogue.Core.Movement;
+using NearlyRogue.Core.Numerics;
 using NearlyRogue.Core.Weapons;
 
 namespace NearlyRogue.Core.Players;

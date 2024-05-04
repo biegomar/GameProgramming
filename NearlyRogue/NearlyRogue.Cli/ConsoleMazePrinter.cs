@@ -51,12 +51,17 @@ public class ConsoleMazePrinter<T>(IList<T>? printableItems = null) : IMazePrint
         {
             for (int row = 0; row < height; row++)
             {
+                var screenPositionX = this.drawColumn + 2 + (column) * 4;
+                var screenPositionY = (row + 2) * 2;
+                Console.SetCursorPosition(screenPositionX, screenPositionY);
+                
                 if (cells[column,row].Item != null)
                 {
-                    var screenPositionX = this.drawColumn + 2 + (column) * 4;
-                    var screenPositionY = (row + 2) * 2;
-                    Console.SetCursorPosition(screenPositionX, screenPositionY);
                     Console.Write(cells[column, row].Item);
+                }
+                else
+                {
+                   Console.Write(' '); 
                 }
             }
         }
