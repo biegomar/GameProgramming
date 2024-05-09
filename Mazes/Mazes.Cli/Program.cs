@@ -1,6 +1,8 @@
 ﻿using AldousBroderMaze;
 using BinaryTreeMaze;
+using MazePathFinder;
 using Mazes.Contracts;
+using Mazes.Contracts.PathFinding;
 using SideWinderMaze;
 
 namespace Mazes.Cli
@@ -51,11 +53,22 @@ namespace Mazes.Cli
             //maze4.Draw(new MazeVector(135,0,0));
             maze5.Draw(new MazeVector(0,0,0));
             
-            maze.DrawCellItems();
-            maze2.DrawCellItems();
-            maze3.DrawCellItems();
+            //maze.DrawCellItems();
+            //maze2.DrawCellItems();
+            //maze3.DrawCellItems();
             //maze4.DrawCellItems();
+            
+
+            var pathFinder = new PathFinderForMaze<char>(maze5);
+            var path = pathFinder.GetShortestPath(new MazeVector(2, 3, 0), new MazeVector(8, 9, 0));
+
+            foreach (var vector in path)
+            {
+                maze5.SetCellItem(new CellItem<char>(vector.Z.ToString("X1").ToCharArray()[0], vector));
+            }
             maze5.DrawCellItems();
+            
+            Console.Write(string.Join(", ", path));
 
             Console.ReadKey();
         }

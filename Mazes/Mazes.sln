@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SideWinderMaze", "SideWinde
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AldousBroderMaze", "AldousBroderMaze\AldousBroderMaze.csproj", "{75C6DBAD-DCC7-4E7E-9C02-C88081A848A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MazePathFinder", "MazePathFinder\MazePathFinder.csproj", "{1268B88E-40A7-4163-A157-5FC437235C1C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{75C6DBAD-DCC7-4E7E-9C02-C88081A848A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75C6DBAD-DCC7-4E7E-9C02-C88081A848A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75C6DBAD-DCC7-4E7E-9C02-C88081A848A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1268B88E-40A7-4163-A157-5FC437235C1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1268B88E-40A7-4163-A157-5FC437235C1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1268B88E-40A7-4163-A157-5FC437235C1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1268B88E-40A7-4163-A157-5FC437235C1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

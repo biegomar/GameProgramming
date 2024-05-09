@@ -10,12 +10,18 @@ namespace Mazes.Contracts
     public class Cell<T>
     {
         private readonly IDictionary<Directions, Cell<T>?> neighbours = new Dictionary<Directions, Cell<T>?>();
-        private readonly IList<Cell<T>> linkedCells = new List<Cell<T>>();
+        protected readonly IList<Cell<T>> linkedCells = new List<Cell<T>>();
         
         public int X { get; }
         public int Y { get; }
 
         public T Item { get; set; }
+
+        public bool IsVisited { get; set; }
+
+        public int PathCount { get; set; }
+
+        public Cell<T> Predecessor { get; set; }
         
         public Cell<T>? NorthernNeighbour
         {
