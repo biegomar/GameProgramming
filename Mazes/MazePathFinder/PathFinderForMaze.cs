@@ -17,6 +17,8 @@ namespace MazePathFinder
 
         public IList<MazeVector> GetShortestPath(MazeVector startPoint, MazeVector endPoint)
         {
+            ResetMazeCells();
+            
             var startCell = Cells[startPoint.X, startPoint.Y]!;
             var endCell = Cells[endPoint.X, endPoint.Y]!;
             var queue = new Queue<Cell<T>>();
@@ -76,6 +78,16 @@ namespace MazePathFinder
             }
 
             return linkedCells;
+        }
+
+        private void ResetMazeCells()
+        {
+            foreach (var cell in Cells)
+            {
+                cell.IsVisited = false;
+                cell.PathCount = 0;
+                cell.Predecessor = null;
+            }
         }
     }
 }

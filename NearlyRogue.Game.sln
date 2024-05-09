@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AldousBroderMaze", "Mazes\A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NearlyRogue.Cli", "NearlyRogue\NearlyRogue.Cli\NearlyRogue.Cli.csproj", "{7970269E-AC3B-46A1-849F-BCC51C551977}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MazePathFinder", "Mazes\MazePathFinder\MazePathFinder.csproj", "{31BF3B74-107D-4014-8B46-FCF75902C8B7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{7970269E-AC3B-46A1-849F-BCC51C551977}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7970269E-AC3B-46A1-849F-BCC51C551977}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7970269E-AC3B-46A1-849F-BCC51C551977}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31BF3B74-107D-4014-8B46-FCF75902C8B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31BF3B74-107D-4014-8B46-FCF75902C8B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31BF3B74-107D-4014-8B46-FCF75902C8B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31BF3B74-107D-4014-8B46-FCF75902C8B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

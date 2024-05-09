@@ -1,5 +1,8 @@
-﻿using FiniteStateMachine.EventArgs;
+﻿using System.Diagnostics;
+using FiniteStateMachine.EventArgs;
+using MazePathFinder;
 using Mazes.Contracts;
+using Mazes.Contracts.PathFinding;
 using NearlyRogue.Core.FightSystems;
 using NearlyRogue.Core.Movement;
 using NearlyRogue.Core.Numerics;
@@ -15,6 +18,8 @@ public class MonsterAI: IMovement<ICreature<char>>
     private Random random = new ();
     private ICreature<char> item;
     private FiniteStateMachine fsm;
+    private IPathFinder<ICreature<char>> pathFinder;
+    private bool Attack;
     
     public Vector ActualPosition { get; set; }
     
@@ -23,6 +28,9 @@ public class MonsterAI: IMovement<ICreature<char>>
         this.maze = maze;
         this.item = monster;
         this.ActualPosition = monsterPosition;
+        this.pathFinder = new PathFinderForMaze<ICreature<char>>(this.maze);
+        this.Attack = false;
+        
         this.SetAndDrawItem();
         
         InitializeStateMachine();
@@ -35,13 +43,19 @@ public class MonsterAI: IMovement<ICreature<char>>
         var seekState = new State();
         seekState.Update += SeekPlayerUpdate;
         
-        var attackState = new State(); 
-            
-        bool shouldChangeToAttackState = true;
+        var attackState = new State();
+        attackState.Enter += EnterAttack;
+        attackState.Update += UpdateAttack;
 
         var transitToSeekState = new Transition(this.IsPlayerInReach, seekState);
-        var transitToAttackState = new Transition(() => shouldChangeToAttackState, attackState);
         idleState.AddTransition(transitToSeekState);
+        
+        var transitToAttackState = new Transition(() => Attack, attackState);
+        seekState.AddTransition(transitToAttackState);
+
+        var transitFromAttackToSeekState = new Transition(() => !this.Attack, seekState);
+        attackState.AddTransition(transitFromAttackToSeekState);
+        
         
         fsm = new FiniteStateMachine(idleState);
         fsm.AddState(seekState);
@@ -80,17 +94,66 @@ public class MonsterAI: IMovement<ICreature<char>>
     
     private void SeekPlayerUpdate(object? sender, UpdateEventArgs eventArgs)
     {
-        var cell = this.maze.Cells[this.ActualPosition.X, this.ActualPosition.Y]!;
-        if (cell.LinkedCells.Any())
+        var playerPosition = GetPlayerPosition();
+        var path = this.pathFinder.GetShortestPath(new MazeVector(this.ActualPosition.X, this.ActualPosition.Y, 0),
+            playerPosition);
+        if (path.Count > 1)
         {
-            var randomCellIndex = this.random.Next(0, cell.LinkedCells.Count);
-            var randomCell = cell.LinkedCells[randomCellIndex];
+            var nextCell = path[1];
+            if (nextCell.X == playerPosition.X && nextCell.Y == playerPosition.Y)
+            {
+                this.Attack = true;
+            }
+            else
+            {
+                this.maze.ClearCellItem(new MazeVector(this.ActualPosition.X, this.ActualPosition.Y, 0));
             
-            this.maze.ClearCellItem(new MazeVector(this.ActualPosition.X, this.ActualPosition.Y, 0));
-            this.ActualPosition = new Vector(randomCell.X, randomCell.Y, 0);
-        
+                this.ActualPosition = new Vector(nextCell.X, nextCell.Y, 0);
+            }
+            
             SetAndDrawItem();
         }
-        
+    }
+
+    private void EnterAttack(object? sender, EnterEventArgs eventArgs)
+    {
+        Debug.WriteLine("Enter Attack!");
+    }
+
+    private void UpdateAttack(object? sender, UpdateEventArgs eventArgs)
+    {
+        var playerPosition = GetPlayerPosition();
+        var path = this.pathFinder.GetShortestPath(new MazeVector(this.ActualPosition.X, this.ActualPosition.Y, 0),
+            playerPosition);
+
+        if (path.Count > 1)
+        {
+            var nextCell = path[1];
+            if (nextCell.X != playerPosition.X || nextCell.Y != playerPosition.Y)
+            {
+                this.Attack = false;
+            }
+            else
+            {
+                Debug.WriteLine("Update Attack!");
+            }
+        }
+        else
+        {
+            this.Attack = false;
+        }
+    }
+
+    private MazeVector GetPlayerPosition()
+    {
+        var playerCell = this.maze.Cells.Cast<Cell<ICreature<char>>>().FirstOrDefault(c => c.Item is Player<char>);
+        if (playerCell != null)
+        {
+            return new MazeVector(playerCell.X, playerCell.Y, 0);
+        }
+        else
+        {
+            return null;
+        }
     }
 }

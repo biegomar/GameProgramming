@@ -39,6 +39,8 @@ public class GameLoop
                 this.playerMovement.MoveTo(GetInput());
                 this.monsterMovement.MoveTo(default);
             } while (!isGameFinished);
+
+            this.playAnotherGame = this.isGameFinished;
         } while (playAnotherGame);
     }
 

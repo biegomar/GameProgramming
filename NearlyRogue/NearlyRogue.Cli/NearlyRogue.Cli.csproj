@@ -11,6 +11,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\FiniteStateMachineSolution\FiniteStateMachine\FiniteStateMachine.csproj" />
       <ProjectReference Include="..\..\Mazes\AldousBroderMaze\AldousBroderMaze.csproj" />
+      <ProjectReference Include="..\..\Mazes\MazePathFinder\MazePathFinder.csproj" />
       <ProjectReference Include="..\..\Mazes\Mazes.Contracts\Mazes.Contracts.csproj" />
       <ProjectReference Include="..\NearlyRogue.Core\NearlyRogue.Core.csproj" />
     </ItemGroup>
