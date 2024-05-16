@@ -12,5 +12,10 @@
             this.Y = y;
             this.Z = z;
         }
+
+        public override string ToString()
+        {
+            return $"[{this.X}, {this.Y}, {this.Z}]";
+        }
     }
 }

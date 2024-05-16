@@ -2,12 +2,17 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <LangVersion>12</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\FiniteStateMachineSolution\FiniteStateMachine\FiniteStateMachine.csproj" />
+      <ProjectReference Include="..\..\Mazes\AldousBroderMaze\AldousBroderMaze.csproj" />
+      <ProjectReference Include="..\..\Mazes\MazePathFinder\MazePathFinder.csproj" />
+      <ProjectReference Include="..\..\Mazes\Mazes.Contracts\Mazes.Contracts.csproj" />
       <ProjectReference Include="..\NearlyRogue.Core\NearlyRogue.Core.csproj" />
     </ItemGroup>
 

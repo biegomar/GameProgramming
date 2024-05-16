@@ -5,24 +5,24 @@ using Mazes.Contracts;
 
 namespace BinaryTreeMaze
 {
-    public class BinaryTreeMazeGenerator : IMazeGenerator
+    public class BinaryTreeMazeGenerator<T> : IMazeGenerator<T>
     {
-        public Cell[,] Generate(Cell[,] rawMaze)
+        public Cell<T>?[,] Generate(Cell<T>?[,] cells)
         {
             var randomGenerator = new Random();
-            var dimensionZeroLength = rawMaze.GetLength(0);
-            var dimensionOneLength = rawMaze.GetLength(1);
+            var dimensionZeroLength = cells.GetLength(0);
+            var dimensionOneLength = cells.GetLength(1);
 
             for (int column = 0; column < dimensionZeroLength; column++)
             {
                 for (int row = 0; row < dimensionOneLength; row++)
                 {
-                    var item = rawMaze[column, row];
+                    var item = cells[column, row];
 
-                    var choiceList = new List<Cell>();
-                    if (item.NothernNeighbour != null)
+                    var choiceList = new List<Cell<T>?>();
+                    if (item.NorthernNeighbour != null)
                     {
-                        choiceList.Add(item.NothernNeighbour!);
+                        choiceList.Add(item.NorthernNeighbour!);
                     }
                     if (item.EasternNeighbour != null)
                     {
@@ -48,7 +48,7 @@ namespace BinaryTreeMaze
                 }
             }
 
-            return rawMaze;
+            return cells;
         }
     }
 }

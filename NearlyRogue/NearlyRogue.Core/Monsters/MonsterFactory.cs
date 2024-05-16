@@ -2,7 +2,7 @@
 
 namespace NearlyRogue.Core.Monsters;
 
-public class MonsterFactory
+public class MonsterFactory<T>
 {
     private readonly Dice D0 = new (DiceType.D0);
     private readonly Dice D2 = new (DiceType.D2);
@@ -14,7 +14,14 @@ public class MonsterFactory
     private readonly Dice D10 = new (DiceType.D10);
     private readonly Dice D12 = new (DiceType.D12);
 
-    public Monster CreateMonster(MonsterRace monsterRace)
+    private readonly IDictionary<MonsterRace, T> icons;
+    
+    public MonsterFactory(IDictionary<MonsterRace, T> icons)
+    {
+        this.icons = icons;
+    }
+
+    public Monster<T> CreateMonster(MonsterRace monsterRace)
     {
         return monsterRace switch
         {
@@ -48,7 +55,7 @@ public class MonsterFactory
         };
     }
 
-    private Monster GetZombie()
+    private Monster<T> GetZombie()
     {
         byte expLevel = 2;
         DiceThrow diceThrow = new(1, D8);
@@ -63,11 +70,12 @@ public class MonsterFactory
             AmorClass = 8,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Zombie]
         };
     }
 
-    private Monster GetYeti()
+    private Monster<T> GetYeti()
     {
         byte expLevel = 4;
         DiceThrow diceThrow = new(1, D6);
@@ -81,11 +89,12 @@ public class MonsterFactory
             AmorClass = 6,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow, diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow, diceThrow},
+            Icon = this.icons[MonsterRace.Yeti]
         };
     }
 
-    private Monster GetXeroc()
+    private Monster<T> GetXeroc()
     {
         byte expLevel = 7;
         DiceThrow diceThrow = new(3, D4);
@@ -99,11 +108,12 @@ public class MonsterFactory
             AmorClass = 7,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Xeroc]
         };
     }
 
-    private Monster GetWraith()
+    private Monster<T> GetWraith()
     {
         byte expLevel = 5;
         DiceThrow diceThrow = new(1, D6);
@@ -117,11 +127,12 @@ public class MonsterFactory
             AmorClass = 4,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Wraith]
         };
     }
 
-    private Monster GetVampire()
+    private Monster<T> GetVampire()
     {
         byte expLevel = 8;
         DiceThrow diceThrow = new(1, D10);
@@ -136,11 +147,12 @@ public class MonsterFactory
             AmorClass = 1,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Vampire]
         };
     }
 
-    private Monster GetUrvile()
+    private Monster<T> GetUrvile()
     {
         byte expLevel = 7;
         DiceThrow diceThrowD3 = new(1, D3);
@@ -156,11 +168,12 @@ public class MonsterFactory
             AmorClass = -2,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrowD3, diceThrowD3, diceThrowD3, diceThrowD6}
+            Damage = new List<DiceThrow>() {diceThrowD3, diceThrowD3, diceThrowD3, diceThrowD6},
+            Icon = this.icons[MonsterRace.Urvile]
         };
     }
 
-    private Monster GetTroll()
+    private Monster<T> GetTroll()
     {
         byte expLevel = 6;
         DiceThrow diceThrowD6 = new(2, D6);
@@ -176,11 +189,12 @@ public class MonsterFactory
             AmorClass = 4,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrowD8, diceThrowD8, diceThrowD6}
+            Damage = new List<DiceThrow>() {diceThrowD8, diceThrowD8, diceThrowD6},
+            Icon = this.icons[MonsterRace.Troll]
         };
     }
 
-    private Monster GetSnake()
+    private Monster<T> GetSnake()
     {
         byte expLevel = 2;
         DiceThrow diceThrow = new(1, D3);
@@ -195,11 +209,12 @@ public class MonsterFactory
             AmorClass = 8,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Snake]
         };
     }
 
-    private Monster GetRattlesnake()
+    private Monster<T> GetRattlesnake()
     {
         byte expLevel = 2;
         DiceThrow diceThrow = new(1, D6);
@@ -214,11 +229,12 @@ public class MonsterFactory
             AmorClass = 3,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Rattlesnake]
         };
     }
 
-    private Monster GetQuagga()
+    private Monster<T> GetQuagga()
     {
         byte expLevel = 3;
         DiceThrow diceThrowD2 = new(1, D2);
@@ -234,11 +250,12 @@ public class MonsterFactory
             AmorClass = 2,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrowD2, diceThrowD2, diceThrowD4}
+            Damage = new List<DiceThrow>() {diceThrowD2, diceThrowD2, diceThrowD4},
+            Icon = this.icons[MonsterRace.Quagga]
         };
     }
 
-    private Monster GetPhantom()
+    private Monster<T> GetPhantom()
     {
         byte expLevel = 8;
         DiceThrow diceThrow = new(4, D4);
@@ -253,11 +270,12 @@ public class MonsterFactory
             AmorClass = 3,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Phantom]
         };
     }
 
-    private Monster GetOrc()
+    private Monster<T> GetOrc()
     {
         byte expLevel = 1;
         DiceThrow diceThrow = new(1, D8);
@@ -272,11 +290,12 @@ public class MonsterFactory
             AmorClass = 6,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Orc]
         };
     }
 
-    private Monster GetNymph()
+    private Monster<T> GetNymph()
     {
         byte expLevel = 3;
         DiceThrow diceThrow = new(0, D0);
@@ -290,11 +309,12 @@ public class MonsterFactory
             AmorClass = 9,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Nymph]
         };
     }
 
-    private Monster GetMedusa()
+    private Monster<T> GetMedusa()
     {
         byte expLevel = 8;
         DiceThrow diceThrowD4 = new(3, D4);
@@ -310,11 +330,12 @@ public class MonsterFactory
             AmorClass = 2,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrowD4, diceThrowD4, diceThrowD5}
+            Damage = new List<DiceThrow>() {diceThrowD4, diceThrowD4, diceThrowD5},
+            Icon = this.icons[MonsterRace.Medusa]
         };
     }
 
-    private Monster GetLeprechaun()
+    private Monster<T> GetLeprechaun()
     {
         byte expLevel = 3;
         DiceThrow diceThrow = new(1, D2);
@@ -329,11 +350,12 @@ public class MonsterFactory
             AmorClass = 8,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Leprechaun]
         };
     }
 
-    private Monster GetKestrel()
+    private Monster<T> GetKestrel()
     {
         byte expLevel = 1;
         DiceThrow diceThrow = new(1, D4);
@@ -348,11 +370,12 @@ public class MonsterFactory
             AmorClass = 7,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Kestrel]
         };
     }
 
-    private Monster GetJabberwock()
+    private Monster<T> GetJabberwock()
     {
         byte expLevel = 15;
         DiceThrow diceThrowD4 = new(2, D4);
@@ -367,11 +390,12 @@ public class MonsterFactory
             AmorClass = 6,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrowD12, diceThrowD4}
+            Damage = new List<DiceThrow>() {diceThrowD12, diceThrowD4},
+            Icon = this.icons[MonsterRace.Jabberwock]
         };
     }
 
-    private Monster GetIceMonster()
+    private Monster<T> GetIceMonster()
     {
         byte expLevel = 1;
         DiceThrow diceThrow = new(1, D2);
@@ -386,11 +410,12 @@ public class MonsterFactory
             AmorClass = 9,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.IceMonster]
         };
     }
 
-    private Monster GetHobgoblin()
+    private Monster<T> GetHobgoblin()
     {
         byte expLevel = 1;
         DiceThrow diceThrow = new(1, D8);
@@ -405,11 +430,12 @@ public class MonsterFactory
             AmorClass = 5,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Hobgoblin]
         };
     }
 
-    private Monster GetGriffin()
+    private Monster<T> GetGriffin()
     {
         byte expLevel = 13;
         DiceThrow diceThrowD3 = new(4, D3);
@@ -425,11 +451,12 @@ public class MonsterFactory
             AmorClass = 2,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrowD3, diceThrowD5, diceThrowD3}
+            Damage = new List<DiceThrow>() {diceThrowD3, diceThrowD5, diceThrowD3},
+            Icon = this.icons[MonsterRace.Griffin]
         };
     }
 
-    private Monster GetVenusFlytrap()
+    private Monster<T> GetVenusFlytrap()
     {
         //special behaviour needed.
         
@@ -446,11 +473,12 @@ public class MonsterFactory
             AmorClass = 3,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.VenusFlytrap]
         };
     }
 
-    private Monster GetEmu()
+    private Monster<T> GetEmu()
     {
         byte expLevel = 1;
         DiceThrow diceThrow = new(1, D2);
@@ -465,11 +493,12 @@ public class MonsterFactory
             AmorClass = 7,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Emu]
         };
     }
 
-    private Monster GetDragon()
+    private Monster<T> GetDragon()
     {
         byte expLevel = 10;
         DiceThrow diceThrowD8 = new(1, D8);
@@ -485,11 +514,12 @@ public class MonsterFactory
             AmorClass = -1,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrowD8, diceThrowD8, diceThrowD10}
+            Damage = new List<DiceThrow>() {diceThrowD8, diceThrowD8, diceThrowD10},
+            Icon = this.icons[MonsterRace.Dragon]
         };
     }
 
-    private Monster GetCentaur()
+    private Monster<T> GetCentaur()
     {
         byte expLevel = 4;
         DiceThrow diceThrow = new(1, D6);
@@ -503,11 +533,12 @@ public class MonsterFactory
             AmorClass = 4,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow, diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow, diceThrow},
+            Icon = this.icons[MonsterRace.Centaur]
         };
     }
 
-    private Monster GetBat()
+    private Monster<T> GetBat()
     {
         byte expLevel = 1;
         DiceThrow diceThrow = new(1, D2);
@@ -522,11 +553,12 @@ public class MonsterFactory
             AmorClass = 3,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow},
+            Icon = this.icons[MonsterRace.Bat]
         };
     }
 
-    private Monster GetAquator()
+    private Monster<T> GetAquator()
     {
         byte expLevel = 5;
         DiceThrow diceThrow = new(0, D0);
@@ -541,7 +573,8 @@ public class MonsterFactory
             AmorClass = 2,
             Strength = 10,
             HitPoints = D8.Roll(expLevel),
-            Damage = new List<DiceThrow>() {diceThrow, diceThrow}
+            Damage = new List<DiceThrow>() {diceThrow, diceThrow},
+            Icon = this.icons[MonsterRace.Aquator]
         };
     }
 }

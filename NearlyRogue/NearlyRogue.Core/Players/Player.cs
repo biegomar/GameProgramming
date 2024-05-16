@@ -2,11 +2,13 @@
 using NearlyRogue.Core.Amors;
 using NearlyRogue.Core.Dices;
 using NearlyRogue.Core.FightSystems;
+using NearlyRogue.Core.Movement;
+using NearlyRogue.Core.Numerics;
 using NearlyRogue.Core.Weapons;
 
 namespace NearlyRogue.Core.Players;
 
-public class Player : ICreature
+public class Player<T> : ICreature<T>
 {
     public required string Name { get; init; }
     public uint Gold { get; set; }
@@ -22,13 +24,19 @@ public class Player : ICreature
     public Armor? ActiveArmor { get; set; }
     public IList<Armor> Armors { get; set; }
     public required IList<DiceThrow> Damage { get; init; }
-    
-    private readonly IExperienceCalculator experienceCalculator;
+    public T Icon { get; set; }
 
-    public Player(IExperienceCalculator experienceCalculator)
+    private readonly IExperienceCalculator<T> experienceCalculator;
+
+    public Player(IExperienceCalculator<T> experienceCalculator)
     {
         this.experienceCalculator = experienceCalculator;
         this.Weapons = new List<Weapon>();
         this.Armors = new List<Armor>();
+    }
+    
+    public override string ToString()
+    {
+        return this.Icon.ToString();
     }
 }

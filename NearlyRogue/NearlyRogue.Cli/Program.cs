@@ -1,3 +1,11 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-Console.WriteLine("Hello, World!");
+
+using NearlyRogue.Cli;
+
+Console.Clear();
+
+var gameLoop = new GameLoop();
+
+gameLoop.Run();
+

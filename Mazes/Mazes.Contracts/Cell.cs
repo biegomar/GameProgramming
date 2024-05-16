@@ -1,59 +1,73 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Mazes.Contracts
 {
-    public class Cell
+    public class Cell<T>
     {
-        private readonly IDictionary<Directions, Cell?> Neighbours = new Dictionary<Directions, Cell?>();
-        private readonly IList<Cell> linkedCells = new List<Cell>();
-
-        public char? Item { get; set; }
+        private readonly IDictionary<Directions, Cell<T>?> neighbours = new Dictionary<Directions, Cell<T>?>();
+        protected readonly IList<Cell<T>> linkedCells = new List<Cell<T>>();
         
-        public Cell? NothernNeighbour
+        public int X { get; }
+        public int Y { get; }
+
+        public T Item { get; set; }
+
+        public bool IsVisited { get; set; }
+
+        public int PathCount { get; set; }
+
+        public Cell<T> Predecessor { get; set; }
+        
+        public Cell<T>? NorthernNeighbour
         {
-            get => Neighbours[Directions.North];
-            set => Neighbours[Directions.North] = value;
+            get => neighbours[Directions.North];
+            set => neighbours[Directions.North] = value;
         }
 
-        public Cell? EasternNeighbour
+        public Cell<T>? EasternNeighbour
         {
-            get => Neighbours[Directions.East];
-            set => Neighbours[Directions.East] = value;
+            get => neighbours[Directions.East];
+            set => neighbours[Directions.East] = value;
         }
 
-        public Cell? SouthernNeighbour
+        public Cell<T>? SouthernNeighbour
         {
-            get => Neighbours[Directions.South];
-            set => Neighbours[Directions.South] = value;
+            get => neighbours[Directions.South];
+            set => neighbours[Directions.South] = value;
         }
 
-        public Cell? WesternNeighbour
+        public Cell<T>? WesternNeighbour
         {
-            get => Neighbours[Directions.West];
-            set => Neighbours[Directions.West] = value;
+            get => neighbours[Directions.West];
+            set => neighbours[Directions.West] = value;
         }
 
-        public IList<Cell> LinkedCells => linkedCells;
+        public IList<Cell<T>> LinkedCells => this.linkedCells;
 
-        public void LinkCell(Cell cellToLink)
+        public IDictionary<Directions, Cell<T>?> Neighbours => this.neighbours;
+        
+        public Cell(int x = 0, int y = 0, Cell<T>? northernNeighbour = null, Cell<T>? easternNeighbour = null, Cell<T>? southernNeighbour = null, Cell<T>? westernNeighbour = null)
+        {
+            this.X = x;
+            this.Y = y;
+            neighbours.Add(Directions.North, northernNeighbour);
+            neighbours.Add(Directions.East, easternNeighbour);
+            neighbours.Add(Directions.South, southernNeighbour);
+            neighbours.Add(Directions.West, westernNeighbour);
+        }
+
+        public void LinkCell(Cell<T>? cellToLink)
         {
             if (!this.LinkedCells.Contains(cellToLink))
             {
                 this.LinkedCells.Add(cellToLink);
                 cellToLink.LinkCell(this);
             }
-        }
-
-        public Cell(Cell? northernNeighbour = null, Cell? easternNeighbour = null, Cell? southernNeighbour = null, Cell? westernNeighbout = null)
-        {
-            Neighbours.Add(Directions.North, northernNeighbour);
-            Neighbours.Add(Directions.East, easternNeighbour);
-            Neighbours.Add(Directions.South, southernNeighbour);
-            Neighbours.Add(Directions.West, westernNeighbout);
         }
     }
 }

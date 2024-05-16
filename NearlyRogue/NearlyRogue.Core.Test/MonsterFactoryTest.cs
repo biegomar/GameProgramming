@@ -34,7 +34,7 @@ public class MonsterFactoryTest
     public void CreateAllMonsterShouldWork(MonsterRace monsterRace, byte level, sbyte amor, ushort experience, byte treasurePercentage, MonsterFlags? flags)
     {
         //arrange
-        var sut = new MonsterFactory();
+        var sut = new MonsterFactory<char>();
         
         //act
         var actual = sut.CreateMonster(monsterRace);

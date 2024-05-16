@@ -2,7 +2,7 @@
 
 namespace NearlyRogue.Core.Players;
 
-public interface IExperienceCalculator
+public interface IExperienceCalculator<T>
 {
-    ushort GainExperience(Monster monster);
+    ushort GainExperience(Monster<T> monster);
 }

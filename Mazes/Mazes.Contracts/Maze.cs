@@ -1,38 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-
-namespace Mazes.Contracts
+﻿namespace Mazes.Contracts
 {
-    public class Maze
+    public class Maze<T>
     {
-        private readonly IMazeGenerator mazeGenerator;
-        private readonly IMazePrinter mazePrinter;
-
         public int Width { get; }
         public int Height { get; }
         
-        public Cell[,] Cells { get; }
-        
+        public Cell<T>?[,] Cells { get; }
+
         public string Title { get; }
 
-        public Maze(MazeVector dimension, IMazeGenerator mazeGenerator, IMazePrinter mazePrinter) : this(dimension,mazeGenerator, mazePrinter, string.Empty)
+        private readonly IMazeGenerator<T> mazeGenerator;
+        private readonly IMazePrinter<T> mazePrinter;
+
+        public Maze(MazeVector dimension, IMazeGenerator<T> mazeGenerator, IMazePrinter<T> mazePrinter) : this(dimension,
+            mazeGenerator, mazePrinter, string.Empty)
         {
         }
 
-        public Maze(MazeVector dimension, IMazeGenerator mazeGenerator, IMazePrinter mazePrinter, string title)
+        public Maze(MazeVector dimension, IMazeGenerator<T> mazeGenerator, IMazePrinter<T> mazePrinter, string title)
         {
             this.mazeGenerator = mazeGenerator;
             this.mazePrinter = mazePrinter;
-
-            this.Cells = new Cell[dimension.X, dimension.Y];
-            this.Width = Cells.GetLength(0);
-            this.Height = Cells.GetLength(1);
             this.Title = title;
 
+            this.Cells = new Cell<T>[dimension.X, dimension.Y];
+            this.Width = Cells.GetLength(0);
+            this.Height = Cells.GetLength(1);
+            
             InitializeMaze();
             LinkCellsInMaze();
 
@@ -49,13 +43,18 @@ namespace Mazes.Contracts
             this.mazePrinter.DrawCellItems(this);
         }
 
+        public void DrawItemAtPosition(MazeVector position, T item)
+        {
+            this.mazePrinter.DrawItemAtPosition(this, position, item);
+        }
+
         private void InitializeMaze()
         {
             for (int column = 0; column < Cells.GetLength(0); column++)           
             {
                 for(int row = 0; row < Cells.GetLength(1); row++)
                 {
-                    this.Cells[column, row] = new Cell();
+                    this.Cells[column, row] = new Cell<T>(column, row);
                 }
             }
         }
@@ -66,7 +65,7 @@ namespace Mazes.Contracts
             {
                 for (int row = 0; row < Height; row++)
                 {
-                    this.Cells[column, row].NothernNeighbour = row - 1 < 0 ? null : this.Cells[column, row - 1];
+                    this.Cells[column, row].NorthernNeighbour = row - 1 < 0 ? null : this.Cells[column, row - 1];
                     this.Cells[column, row].EasternNeighbour = column + 1 >= Width ? null : this.Cells[column + 1, row];
                     this.Cells[column, row].SouthernNeighbour = row + 1 >= Height ? null : this.Cells[column, row + 1];
                     this.Cells[column, row].WesternNeighbour = column - 1 < 0 ? null : this.Cells[column - 1, row];
@@ -74,9 +73,14 @@ namespace Mazes.Contracts
             }
         }
 
-        public void SetCellItem(CellItem cellItem)
+        public void SetCellItem(CellItem<T> cellItem)
         {
-            this.Cells[cellItem.Position.X, cellItem.Position.Y].Item = cellItem.Item;
+            this.Cells[cellItem.Position.X, cellItem.Position.Y]!.Item = cellItem.Item;
+        }
+
+        public void ClearCellItem(MazeVector position)
+        {
+            this.Cells[position.X, position.Y]!.Item = default!;
         }
     }
 }

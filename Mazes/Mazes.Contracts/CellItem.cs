@@ -1,11 +1,11 @@
 ﻿namespace Mazes.Contracts
 {
-    public class CellItem
+    public class CellItem<T>
     {
-        public char Item { get;  }
+        public T Item { get;  }
         public MazeVector Position { get;  }
 
-        public CellItem(char item, MazeVector position) 
+        public CellItem(T item, MazeVector position) 
         {
             this.Item = item;
             this.Position = position;
