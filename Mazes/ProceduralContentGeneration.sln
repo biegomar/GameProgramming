@@ -5,7 +5,7 @@ VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mazes.Cli", "Mazes.Cli\Mazes.Cli.csproj", "{45F39963-062A-4F47-9403-DBF9316F65B2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mazes.Contracts", "Mazes.Contracts\Mazes.Contracts.csproj", "{863B09C2-74F5-48BB-885C-273325777BB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProceduralContentGeneration.Contracts", "ProceduralContentGeneration.Contracts\ProceduralContentGeneration.Contracts.csproj", "{863B09C2-74F5-48BB-885C-273325777BB6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinaryTreeMaze", "BinaryTreeMaze\BinaryTreeMaze.csproj", "{9CEA6582-E86B-46E6-938C-FB10163A5BAF}"
 EndProject

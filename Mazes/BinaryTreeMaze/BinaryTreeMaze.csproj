@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Mazes.Contracts\Mazes.Contracts.csproj" />
+    <ProjectReference Include="..\ProceduralContentGeneration.Contracts\ProceduralContentGeneration.Contracts.csproj" />
   </ItemGroup>
 
 </Project>
