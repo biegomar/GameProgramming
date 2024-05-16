@@ -5,7 +5,7 @@ using Mazes.Contracts;
 
 namespace BinaryTreeMaze
 {
-    public class BinaryTreeMazeGenerator<T> : IMazeGenerator<T>
+    public class BinaryTreeMazeGenerator<T> : IProceduralContentGenerator<T>
     {
         public Cell<T>?[,] Generate(Cell<T>?[,] cells)
         {

@@ -2,7 +2,7 @@
 
 namespace Mazes.Contracts
 {
-    public class EmptyMazeGenerator<T>: IMazeGenerator<T>
+    public class EmptyMazeGenerator<T>: IProceduralContentGenerator<T>
     {
         public Cell<T>?[,] Generate(Cell<T>?[,] cells)
         {

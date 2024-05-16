@@ -9,17 +9,17 @@
 
         public string Title { get; }
 
-        private readonly IMazeGenerator<T> mazeGenerator;
+        private readonly IProceduralContentGenerator<T> _proceduralContentGenerator;
         private readonly IMazePrinter<T> mazePrinter;
 
-        public Maze(MazeVector dimension, IMazeGenerator<T> mazeGenerator, IMazePrinter<T> mazePrinter) : this(dimension,
-            mazeGenerator, mazePrinter, string.Empty)
+        public Maze(MazeVector dimension, IProceduralContentGenerator<T> proceduralContentGenerator, IMazePrinter<T> mazePrinter) : this(dimension,
+            proceduralContentGenerator, mazePrinter, string.Empty)
         {
         }
 
-        public Maze(MazeVector dimension, IMazeGenerator<T> mazeGenerator, IMazePrinter<T> mazePrinter, string title)
+        public Maze(MazeVector dimension, IProceduralContentGenerator<T> proceduralContentGenerator, IMazePrinter<T> mazePrinter, string title)
         {
-            this.mazeGenerator = mazeGenerator;
+            this._proceduralContentGenerator = proceduralContentGenerator;
             this.mazePrinter = mazePrinter;
             this.Title = title;
 
@@ -30,7 +30,7 @@
             InitializeMaze();
             LinkCellsInMaze();
 
-            this.Cells = this.mazeGenerator.Generate(this.Cells);
+            this.Cells = this._proceduralContentGenerator.Generate(this.Cells);
         }
 
         public void Draw(MazeVector startMazeVector)

@@ -4,7 +4,7 @@ using Mazes.Contracts;
 
 namespace SideWinderMaze
 {
-    public class SideWinderMazeGenerator<T> : IMazeGenerator<T>
+    public class SideWinderMazeGenerator<T> : IProceduralContentGenerator<T>
     {
         public Cell<T>?[,] Generate(Cell<T>?[,] cells)
         {
