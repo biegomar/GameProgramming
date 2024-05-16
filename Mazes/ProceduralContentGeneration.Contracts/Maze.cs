@@ -10,17 +10,17 @@
         public string Title { get; }
 
         private readonly IProceduralContentGenerator<T> _proceduralContentGenerator;
-        private readonly IMazePrinter<T> mazePrinter;
+        private readonly IContentPrinter<T> mazePrinter;
 
-        public Maze(MazeVector dimension, IProceduralContentGenerator<T> proceduralContentGenerator, IMazePrinter<T> mazePrinter) : this(dimension,
-            proceduralContentGenerator, mazePrinter, string.Empty)
+        public Maze(MazeVector dimension, IProceduralContentGenerator<T> proceduralContentGenerator, IContentPrinter<T> contentPrinter) : this(dimension,
+            proceduralContentGenerator, contentPrinter, string.Empty)
         {
         }
 
-        public Maze(MazeVector dimension, IProceduralContentGenerator<T> proceduralContentGenerator, IMazePrinter<T> mazePrinter, string title)
+        public Maze(MazeVector dimension, IProceduralContentGenerator<T> proceduralContentGenerator, IContentPrinter<T> contentPrinter, string title)
         {
             this._proceduralContentGenerator = proceduralContentGenerator;
-            this.mazePrinter = mazePrinter;
+            this.mazePrinter = contentPrinter;
             this.Title = title;
 
             this.Cells = new Cell<T>[dimension.X, dimension.Y];

@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace Mazes.Contracts
 {
-    public interface IMazePrinter<T>
+    public interface IContentPrinter<T>
     {
         public IList<T>? Items { get; set; }
         

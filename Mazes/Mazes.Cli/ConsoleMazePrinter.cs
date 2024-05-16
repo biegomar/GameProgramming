@@ -3,7 +3,7 @@ using Mazes.Contracts;
 
 namespace Mazes.Cli;
 
-public class ConsoleMazePrinter<T>(IList<T>? printableItems = null) : IMazePrinter<T>
+public class ConsoleMazePrinter<T>(IList<T>? printableItems = null) : IContentPrinter<T>
 {
     private const string CornerStone = "+";
     private const string CellHorizontal = "---";

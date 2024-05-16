@@ -2,7 +2,7 @@
 
 namespace AldousBroderMaze;
 
-public class AldousBroderMazeGenerator<T>(IMazePrinter<T>? mazePrinter) : IProceduralContentGenerator<T>
+public class AldousBroderMazeGenerator<T>(IContentPrinter<T>? mazePrinter) : IProceduralContentGenerator<T>
 {
     private Random randomGenerator = new Random();
     private int countOfCells;
