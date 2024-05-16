@@ -4,13 +4,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NearlyRogue.Core", "NearlyR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiniteStateMachine", "FiniteStateMachineSolution\FiniteStateMachine\FiniteStateMachine.csproj", "{7A8C0855-61F1-4C30-81A6-D3245322D19F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mazes.Contracts", "Mazes\Mazes.Contracts\Mazes.Contracts.csproj", "{F3D48966-00DD-4625-9FF8-0FC48E0D23AA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AldousBroderMaze", "Mazes\AldousBroderMaze\AldousBroderMaze.csproj", "{DD5A01C5-8C71-4B39-996F-7ACDD33EAF88}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NearlyRogue.Cli", "NearlyRogue\NearlyRogue.Cli\NearlyRogue.Cli.csproj", "{7970269E-AC3B-46A1-849F-BCC51C551977}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MazePathFinder", "Mazes\MazePathFinder\MazePathFinder.csproj", "{31BF3B74-107D-4014-8B46-FCF75902C8B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProceduralContentGeneration.Contracts", "Mazes\ProceduralContentGeneration.Contracts\ProceduralContentGeneration.Contracts.csproj", "{8D6726C7-6B04-453A-9339-D01629317C9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,10 +26,6 @@ Global
 		{7A8C0855-61F1-4C30-81A6-D3245322D19F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A8C0855-61F1-4C30-81A6-D3245322D19F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A8C0855-61F1-4C30-81A6-D3245322D19F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F3D48966-00DD-4625-9FF8-0FC48E0D23AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F3D48966-00DD-4625-9FF8-0FC48E0D23AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F3D48966-00DD-4625-9FF8-0FC48E0D23AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F3D48966-00DD-4625-9FF8-0FC48E0D23AA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DD5A01C5-8C71-4B39-996F-7ACDD33EAF88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DD5A01C5-8C71-4B39-996F-7ACDD33EAF88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD5A01C5-8C71-4B39-996F-7ACDD33EAF88}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -42,5 +38,9 @@ Global
 		{31BF3B74-107D-4014-8B46-FCF75902C8B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31BF3B74-107D-4014-8B46-FCF75902C8B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31BF3B74-107D-4014-8B46-FCF75902C8B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D6726C7-6B04-453A-9339-D01629317C9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D6726C7-6B04-453A-9339-D01629317C9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D6726C7-6B04-453A-9339-D01629317C9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D6726C7-6B04-453A-9339-D01629317C9F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
