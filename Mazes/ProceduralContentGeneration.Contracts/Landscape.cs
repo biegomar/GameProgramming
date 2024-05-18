@@ -1,11 +1,16 @@
-﻿namespace Mazes.Contracts
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace Mazes.Contracts
 {
     public class Landscape<T>
     {
         public int Width { get; }
         public int Height { get; }
         
-        public Cell<T>?[,] Cells { get; }
+        //public Cell<T>?[,] Cells { get; }
+
+        public IList<Cell<T>> Cells { get; set; }
 
         public string Title { get; }
 
@@ -23,9 +28,11 @@
             this.contentPrinter = contentPrinter;
             this.Title = title;
 
-            this.Cells = new Cell<T>[dimension.X, dimension.Y];
-            this.Width = Cells.GetLength(0);
-            this.Height = Cells.GetLength(1);
+            this.Cells = new List<Cell<T>>();
+            
+            //this.Cells = new Cell<T>[dimension.X, dimension.Y];
+            this.Width = dimension.X;
+            this.Height = dimension.Y;
             
             InitializeMaze();
             LinkCellsInMaze();
@@ -48,13 +55,14 @@
             this.contentPrinter.DrawItemAtPosition(this.Cells, position, item);
         }
 
-        private void InitializeMaze()
+        protected virtual void InitializeMaze()
         {
-            for (int column = 0; column < Cells.GetLength(0); column++)           
+            for (int column = 0; column < this.Width; column++)           
             {
-                for(int row = 0; row < Cells.GetLength(1); row++)
+                for(int row = 0; row < this.Height; row++)
                 {
-                    this.Cells[column, row] = new Cell<T>(column, row);
+                    
+                    this.Cells.Add(new Cell<T>(column, row));
                 }
             }
         }
@@ -65,22 +73,28 @@
             {
                 for (int row = 0; row < Height; row++)
                 {
-                    this.Cells[column, row].NorthernNeighbour = row - 1 < 0 ? null : this.Cells[column, row - 1];
-                    this.Cells[column, row].EasternNeighbour = column + 1 >= Width ? null : this.Cells[column + 1, row];
-                    this.Cells[column, row].SouthernNeighbour = row + 1 >= Height ? null : this.Cells[column, row + 1];
-                    this.Cells[column, row].WesternNeighbour = column - 1 < 0 ? null : this.Cells[column - 1, row];
+                    var cellToLink = GetCellByColumnAndRow(column, row);
+                    cellToLink.NorthernNeighbour = row - 1 < 0 ? null : GetCellByColumnAndRow(column, row - 1);
+                    cellToLink.EasternNeighbour = column + 1 >= Width ? null : GetCellByColumnAndRow(column + 1, row);
+                    cellToLink.SouthernNeighbour = row + 1 >= Height ? null : GetCellByColumnAndRow(column, row + 1);
+                    cellToLink.WesternNeighbour = column - 1 < 0 ? null : GetCellByColumnAndRow(column - 1, row);
                 }
             }
         }
 
         public void SetCellItem(CellItem<T> cellItem)
         {
-            this.Cells[cellItem.Position.X, cellItem.Position.Y]!.Item = cellItem.Item;
+            GetCellByColumnAndRow(cellItem.Position.X, cellItem.Position.Y).Item = cellItem.Item;
         }
 
         public void ClearCellItem(CellVector position)
         {
-            this.Cells[position.X, position.Y]!.Item = default!;
+            GetCellByColumnAndRow(position.X, position.Y).Item = default!;
+        }
+        
+        private Cell<T> GetCellByColumnAndRow(int column, int row)
+        {
+            return this.Cells.Single(cell => cell.X == column && cell.Y == row);
         }
     }
 }

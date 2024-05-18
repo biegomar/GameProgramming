@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Mazes.Contracts;
 
 namespace SideWinderMaze
 {
     public class SideWinderMazeGenerator<T> : IProceduralContentGenerator<T>
     {
-        public Cell<T>?[,] Generate(Cell<T>?[,] cells)
+        public IList<Cell<T>> Generate(IList<Cell<T>> cells)
         {
             var randomGenerator = new Random();
-            var dimensionZeroLength = cells.GetLength(0);
-            var dimensionOneLength = cells.GetLength(1);
+            var dimensionZeroLength = cells.Max(cell => cell.X) + 1;
+            var dimensionOneLength = cells.Max(cell => cell.Y) + 1;
 
             IList<Cell<T>> runOfCells = new List<Cell<T>>();
             
@@ -18,7 +19,7 @@ namespace SideWinderMaze
             {
                 for (int column = 0; column < dimensionZeroLength; column++)
                 {
-                    var item = cells[column, row];
+                    var item = GetCellByColumnAndRow(cells, column, row);
 
                     runOfCells.Add(item);
                     
@@ -43,6 +44,11 @@ namespace SideWinderMaze
             }
 
             return cells;
+        }
+        
+        private Cell<T> GetCellByColumnAndRow(IList<Cell<T>> cells, int column, int row)
+        {
+            return cells.Single(cell => cell.X == column && cell.Y == row);
         }
     }
 }

@@ -16,7 +16,7 @@ public class ConsoleMazePrinter<T>(IList<T>? printableItems = null) : IContentPr
 
     public IList<T>? Items { get; set; } = printableItems;
 
-    public void DrawCells(Cell<T>?[,] cells, CellVector startCellVector, string title, bool drawItems = false)
+    public void DrawCells(IList<Cell<T>> cells, CellVector startCellVector, string title, bool drawItems = false)
     { 
         this.drawColumn = startCellVector.X;
             
@@ -41,22 +41,22 @@ public class ConsoleMazePrinter<T>(IList<T>? printableItems = null) : IContentPr
         }
     }
 
-    public void DrawCellItems(Cell<T>?[,] cells)
+    public void DrawCellItems(IList<Cell<T>> cells)
     {
-        var width = cells.GetLength(0);
-        var height = cells.GetLength(1);
+        var width = cells.Max(cell => cell.X) + 1;
+        var height = cells.Max(cell => cell.Y) + 1;
         
         var (oldScreenPositionX, oldScreenPositionY) = Console.GetCursorPosition();
         for (int column = 0; column < width; column++)
         {
             for (int row = 0; row < height; row++)
             {
-                if (cells[column,row].Item != null)
+                if (GetCellByColumnAndRow(cells, column,row).Item != null)
                 {
                     var screenPositionX = this.drawColumn + 2 + (column) * 4;
                     var screenPositionY = (row + 2) * 2;
                     Console.SetCursorPosition(screenPositionX, screenPositionY);
-                    Console.Write(cells[column, row].Item);
+                    Console.Write(GetCellByColumnAndRow(cells, column,row).Item);
                 }
             }
         }
@@ -64,7 +64,7 @@ public class ConsoleMazePrinter<T>(IList<T>? printableItems = null) : IContentPr
         Console.SetCursorPosition(oldScreenPositionX, oldScreenPositionY);
     }
 
-    public void DrawItemAtPosition(Cell<T>?[,] cells, CellVector position, T item)
+    public void DrawItemAtPosition(IList<Cell<T>> cells, CellVector position, T item)
     {
         int oldX = Console.CursorLeft;
         int oldY = Console.CursorTop;
@@ -75,12 +75,12 @@ public class ConsoleMazePrinter<T>(IList<T>? printableItems = null) : IContentPr
         Console.SetCursorPosition(oldX, oldY);
     }
 
-    private string GetMazeStringRepresentation<T>(Cell<T>?[,] cells)
+    private string GetMazeStringRepresentation(IList<Cell<T>> cells)
     {
         var result = new StringBuilder();
         
-        var width = cells.GetLength(0);
-        var height = cells.GetLength(1);
+        var width = cells.Max(cell => cell.X) + 1;
+        var height = cells.Max(cell => cell.Y) + 1;
 
         //North wall
         var segment = CornerStone + CellHorizontal;
@@ -96,8 +96,9 @@ public class ConsoleMazePrinter<T>(IList<T>? printableItems = null) : IContentPr
 
             for (int column = 0; column < width; column++)
             {
-                bodyRow.Append(EmptyFloor).Append(cells[column, row].LinkedCells.Contains(cells[column, row].EasternNeighbour) ? LinkToEasternCell : CellVertical);
-                bottomRow.Append(CornerStone).Append(cells[column, row].LinkedCells.Contains(cells[column, row].SouthernNeighbour) ? LinkToSouthernCell : CellHorizontal);
+                var singleCell = GetCellByColumnAndRow(cells, column, row);
+                bodyRow.Append(EmptyFloor).Append(singleCell.LinkedCells.Contains(singleCell.EasternNeighbour) ? LinkToEasternCell : CellVertical);
+                bottomRow.Append(CornerStone).Append(singleCell.LinkedCells.Contains(singleCell.SouthernNeighbour) ? LinkToSouthernCell : CellHorizontal);
             }
                 
             bottomRow.Append(CornerStone);
@@ -108,5 +109,10 @@ public class ConsoleMazePrinter<T>(IList<T>? printableItems = null) : IContentPr
            
 
         return result.ToString();
+    }
+    
+    private Cell<T> GetCellByColumnAndRow(IList<Cell<T>> cells, int column, int row)
+    {
+        return cells.Single(cell => cell.X == column && cell.Y == row);
     }
 }

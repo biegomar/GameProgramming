@@ -1,8 +1,10 @@
-﻿namespace Mazes.Contracts
+﻿using System.Collections.Generic;
+
+namespace Mazes.Contracts
 {
     public class FullMazeGenerator<T>: IProceduralContentGenerator<T>
     {
-        public Cell<T>?[,] Generate(Cell<T>?[,] cells)
+        public IList<Cell<T>> Generate(IList<Cell<T>> cells)
         {
             return cells;
         }

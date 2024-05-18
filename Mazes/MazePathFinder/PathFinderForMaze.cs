@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Mazes.Contracts;
 using Mazes.Contracts.PathFinding;
 
@@ -7,7 +8,7 @@ namespace MazePathFinder
     public class PathFinderForMaze<T> : IPathFinder<T>
     {
         private readonly Landscape<T> _landscape;
-        private readonly Cell<T>?[,] Cells;
+        private readonly IList<Cell<T>> Cells;
         
         public PathFinderForMaze(Landscape<T> landscape)
         {
@@ -19,8 +20,8 @@ namespace MazePathFinder
         {
             ResetMazeCells();
             
-            var startCell = Cells[startPoint.X, startPoint.Y]!;
-            var endCell = Cells[endPoint.X, endPoint.Y]!;
+            var startCell = GetCellByColumnAndRow(startPoint.X, startPoint.Y);
+            var endCell = GetCellByColumnAndRow(endPoint.X, endPoint.Y);
             var queue = new Queue<Cell<T>>();
             queue.Enqueue(startCell);
             startCell.IsVisited = true;
@@ -88,6 +89,11 @@ namespace MazePathFinder
                 cell.PathCount = 0;
                 cell.Predecessor = null;
             }
+        }
+        
+        private Cell<T> GetCellByColumnAndRow(int column, int row)
+        {
+            return this.Cells.Single(cell => cell.X == column && cell.Y == row);
         }
     }
 }

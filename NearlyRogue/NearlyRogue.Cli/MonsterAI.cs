@@ -80,7 +80,7 @@ public class MonsterAI: IMovement<ICreature<char>>
 
     private bool IsPlayerInReach()
     {
-        var cell = this.landscape.Cells[this.ActualPosition.X, this.ActualPosition.Y]!;
+        var cell = GetCellByColumnAndRow(this.ActualPosition.X, this.ActualPosition.Y);
         foreach (var neighbour in cell.Neighbours.Values.Where(x => x?.Item != null))
         {
             if (neighbour?.Item is Player<char> player)
@@ -155,5 +155,10 @@ public class MonsterAI: IMovement<ICreature<char>>
         {
             return null;
         }
+    }
+    
+    private Cell<ICreature<char>> GetCellByColumnAndRow(int column, int row)
+    {
+        return this.landscape.Cells.Single(cell => cell.X == column && cell.Y == row);
     }
 }

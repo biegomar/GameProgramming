@@ -28,21 +28,21 @@ public class AldousBroderMazeGenerator<T>(IContentPrinter<T>? mazePrinter) : IPr
         }
     }
     
-    public Cell<T>?[,] Generate(Cell<T>?[,] cells)
+    public IList<Cell<T>> Generate(IList<Cell<T>> cells)
     {
-        var dimensionZeroLength = cells.GetLength(0);
-        var dimensionOneLength = cells.GetLength(1);
+        var dimensionZeroLength = cells.Max(cell => cell.X) + 1;
+        var dimensionOneLength = cells.Max(cell => cell.Y) + 1;
 
         Agent agent = new Agent(randomGenerator.Next(0, dimensionZeroLength),
             randomGenerator.Next(0, dimensionOneLength));
-        agent.ActualCell = cells[agent.StartPositionX, agent.StartPositionY];
+        agent.ActualCell = GetCellByColumnAndRow(cells, agent.StartPositionX, agent.StartPositionY);
         agent.Item =
             mazePrinter != null && mazePrinter.Items != null && mazePrinter.Items.Any() &&
             mazePrinter.Items[4] != null
                 ? mazePrinter.Items[4]
                 : default; 
         
-        countOfCells = cells.Length - 1;
+        countOfCells = cells.Count - 1;
 
         stepCounter = 0;
             
@@ -69,7 +69,7 @@ public class AldousBroderMazeGenerator<T>(IContentPrinter<T>? mazePrinter) : IPr
         return cells;
     }
 
-    private void PrintDuringGeneration(Cell<T>?[,] rawMaze, Agent actualAgent)
+    private void PrintDuringGeneration(IList<Cell<T>> rawMaze, Agent actualAgent)
     {
         if (mazePrinter != null)
         {
@@ -122,5 +122,10 @@ public class AldousBroderMazeGenerator<T>(IContentPrinter<T>? mazePrinter) : IPr
         var result = allNeighbours[this.randomGenerator.Next(0, allNeighbours.Length)];
 
         return result;
+    }
+    
+    private Cell<T> GetCellByColumnAndRow(IList<Cell<T>> cells, int column, int row)
+    {
+        return cells.Single(cell => cell.X == column && cell.Y == row);
     }
 }

@@ -49,9 +49,9 @@ namespace Mazes.Cli
             
             //maze.Draw(new MazeVector(0,0,0));
             //maze2.Draw(new MazeVector(45,0,0));
-            //maze3.Draw(new MazeVector(90,0,0));
-            //maze4.Draw(new MazeVector(135,0,0));
-            maze5.Draw(new CellVector(0,0,0));
+            maze3.Draw(CellVector.Zero);
+            //maze4.Draw(CellVector.Zero);
+            //maze5.Draw(new CellVector(0,0,0));
             
             //maze.DrawCellItems();
             //maze2.DrawCellItems();
@@ -59,7 +59,7 @@ namespace Mazes.Cli
             //maze4.DrawCellItems();
             
 
-            var pathFinder = new PathFinderForMaze<char>(maze5);
+            var pathFinder = new PathFinderForMaze<char>(maze3);
             var path = pathFinder.GetShortestPath(new CellVector(2, 3, 0), new CellVector(8, 9, 0));
 
             foreach (var vector in path)

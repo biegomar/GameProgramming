@@ -29,9 +29,9 @@ public class PlayerMovement : IMovement<ICreature<char>>
                                   newPosition.Y < this.landscape.Height;
 
 
-        var isNewCellLinked = isNewPositionInGrid && (this.landscape.Cells[this.ActualPosition.X, this.ActualPosition.Y]!
+        var isNewCellLinked = isNewPositionInGrid && (GetCellByColumnAndRow(this.ActualPosition.X, this.ActualPosition.Y)
             .LinkedCells
-            .Contains(this.landscape.Cells[newPosition.X, newPosition.Y]!));
+            .Contains(GetCellByColumnAndRow(newPosition.X, newPosition.Y)));
         
         if (isNewPositionInGrid && isNewCellLinked)
         {
@@ -51,5 +51,10 @@ public class PlayerMovement : IMovement<ICreature<char>>
                 this.ActualPosition.X,
                 this.ActualPosition.Y,0)));
         landscape.DrawCellItems();
+    }
+    
+    private Cell<ICreature<char>> GetCellByColumnAndRow(int column, int row)
+    {
+        return this.landscape.Cells.Single(cell => cell.X == column && cell.Y == row);
     }
 }
