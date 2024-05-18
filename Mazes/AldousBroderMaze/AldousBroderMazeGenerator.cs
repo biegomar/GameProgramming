@@ -73,7 +73,7 @@ public class AldousBroderMazeGenerator<T>(IContentPrinter<T>? mazePrinter) : IPr
     {
         if (mazePrinter != null)
         {
-            mazePrinter.DrawMaze(rawMaze, new MazeVector(0,0,0), $"AldousBroder Cells left: {countOfCells} / steps: {stepCounter}      ");
+            mazePrinter.DrawCells(rawMaze, new MazeVector(0,0,0), $"AldousBroder Cells left: {countOfCells} / steps: {stepCounter}      ");
 
             if (actualAgent.Item != null)
             {

@@ -9,7 +9,7 @@
 
         public string Title { get; }
 
-        private readonly IProceduralContentGenerator<T> _proceduralContentGenerator;
+        private readonly IProceduralContentGenerator<T> proceduralContentGenerator;
         private readonly IContentPrinter<T> mazePrinter;
 
         public Maze(MazeVector dimension, IProceduralContentGenerator<T> proceduralContentGenerator, IContentPrinter<T> contentPrinter) : this(dimension,
@@ -19,7 +19,7 @@
 
         public Maze(MazeVector dimension, IProceduralContentGenerator<T> proceduralContentGenerator, IContentPrinter<T> contentPrinter, string title)
         {
-            this._proceduralContentGenerator = proceduralContentGenerator;
+            this.proceduralContentGenerator = proceduralContentGenerator;
             this.mazePrinter = contentPrinter;
             this.Title = title;
 
@@ -30,22 +30,22 @@
             InitializeMaze();
             LinkCellsInMaze();
 
-            this.Cells = this._proceduralContentGenerator.Generate(this.Cells);
+            this.Cells = this.proceduralContentGenerator.Generate(this.Cells);
         }
 
         public void Draw(MazeVector startMazeVector)
         {
-            this.mazePrinter.DrawMaze(this, startMazeVector);
+            this.mazePrinter.DrawCells(this.Cells, startMazeVector, this.Title, false);
         }
 
         public void DrawCellItems()
         {
-            this.mazePrinter.DrawCellItems(this);
+            this.mazePrinter.DrawCellItems(this.Cells);
         }
 
         public void DrawItemAtPosition(MazeVector position, T item)
         {
-            this.mazePrinter.DrawItemAtPosition(this, position, item);
+            this.mazePrinter.DrawItemAtPosition(this.Cells, position, item);
         }
 
         private void InitializeMaze()

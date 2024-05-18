@@ -40,7 +40,7 @@ public class GameLoop
                 this.monsterMovement.MoveTo(default);
             } while (!isGameFinished);
 
-            this.playAnotherGame = this.isGameFinished;
+            this.playAnotherGame = false;
         } while (playAnotherGame);
     }
 

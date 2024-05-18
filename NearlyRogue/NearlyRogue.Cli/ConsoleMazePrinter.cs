@@ -16,7 +16,7 @@ public class ConsoleMazePrinter<T>(IList<T>? printableItems = null) : IContentPr
 
     public IList<T>? Items { get; set; } = printableItems;
 
-    public void DrawMaze(Cell<T>?[,] cells, MazeVector startMazeVector, string title, bool drawItems = false)
+    public void DrawCells(Cell<T>?[,] cells, MazeVector startMazeVector, string title, bool drawItems = false)
     { 
         this.drawColumn = startMazeVector.X;
             
