@@ -12,12 +12,12 @@
         private readonly IProceduralContentGenerator<T> proceduralContentGenerator;
         private readonly IContentPrinter<T> mazePrinter;
 
-        public Maze(MazeVector dimension, IProceduralContentGenerator<T> proceduralContentGenerator, IContentPrinter<T> contentPrinter) : this(dimension,
+        public Maze(CellVector dimension, IProceduralContentGenerator<T> proceduralContentGenerator, IContentPrinter<T> contentPrinter) : this(dimension,
             proceduralContentGenerator, contentPrinter, string.Empty)
         {
         }
 
-        public Maze(MazeVector dimension, IProceduralContentGenerator<T> proceduralContentGenerator, IContentPrinter<T> contentPrinter, string title)
+        public Maze(CellVector dimension, IProceduralContentGenerator<T> proceduralContentGenerator, IContentPrinter<T> contentPrinter, string title)
         {
             this.proceduralContentGenerator = proceduralContentGenerator;
             this.mazePrinter = contentPrinter;
@@ -33,9 +33,9 @@
             this.Cells = this.proceduralContentGenerator.Generate(this.Cells);
         }
 
-        public void Draw(MazeVector startMazeVector)
+        public void Draw(CellVector startCellVector)
         {
-            this.mazePrinter.DrawCells(this.Cells, startMazeVector, this.Title, false);
+            this.mazePrinter.DrawCells(this.Cells, startCellVector, this.Title, false);
         }
 
         public void DrawCellItems()
@@ -43,7 +43,7 @@
             this.mazePrinter.DrawCellItems(this.Cells);
         }
 
-        public void DrawItemAtPosition(MazeVector position, T item)
+        public void DrawItemAtPosition(CellVector position, T item)
         {
             this.mazePrinter.DrawItemAtPosition(this.Cells, position, item);
         }
@@ -78,7 +78,7 @@
             this.Cells[cellItem.Position.X, cellItem.Position.Y]!.Item = cellItem.Item;
         }
 
-        public void ClearCellItem(MazeVector position)
+        public void ClearCellItem(CellVector position)
         {
             this.Cells[position.X, position.Y]!.Item = default!;
         }

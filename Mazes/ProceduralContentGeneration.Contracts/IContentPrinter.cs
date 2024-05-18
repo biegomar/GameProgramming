@@ -7,10 +7,10 @@ namespace Mazes.Contracts
     {
         public IList<T>? Items { get; set; }
         
-        public void DrawCells(Cell<T>?[,] cells, MazeVector startMazeVector, string title, bool drawItems = false);
+        public void DrawCells(Cell<T>?[,] cells, CellVector startCellVector, string title, bool drawItems = false);
 
         public void DrawCellItems(Cell<T>?[,] cells);
 
-        public void DrawItemAtPosition(Cell<T>?[,] cells, MazeVector position, T item);
+        public void DrawItemAtPosition(Cell<T>?[,] cells, CellVector position, T item);
     }
 }

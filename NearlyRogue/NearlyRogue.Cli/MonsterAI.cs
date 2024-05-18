@@ -72,7 +72,7 @@ public class MonsterAI: IMovement<ICreature<char>>
     private void SetAndDrawItem()
     {
         maze.SetCellItem(new CellItem<ICreature<char>>(this.item, 
-            new MazeVector(
+            new CellVector(
                 this.ActualPosition.X,
                 this.ActualPosition.Y,0)));
         maze.DrawCellItems();
@@ -95,7 +95,7 @@ public class MonsterAI: IMovement<ICreature<char>>
     private void SeekPlayerUpdate(object? sender, UpdateEventArgs eventArgs)
     {
         var playerPosition = GetPlayerPosition();
-        var path = this.pathFinder.GetShortestPath(new MazeVector(this.ActualPosition.X, this.ActualPosition.Y, 0),
+        var path = this.pathFinder.GetShortestPath(new CellVector(this.ActualPosition.X, this.ActualPosition.Y, 0),
             playerPosition);
         if (path.Count > 1)
         {
@@ -106,7 +106,7 @@ public class MonsterAI: IMovement<ICreature<char>>
             }
             else
             {
-                this.maze.ClearCellItem(new MazeVector(this.ActualPosition.X, this.ActualPosition.Y, 0));
+                this.maze.ClearCellItem(new CellVector(this.ActualPosition.X, this.ActualPosition.Y, 0));
             
                 this.ActualPosition = new Vector(nextCell.X, nextCell.Y, 0);
             }
@@ -123,7 +123,7 @@ public class MonsterAI: IMovement<ICreature<char>>
     private void UpdateAttack(object? sender, UpdateEventArgs eventArgs)
     {
         var playerPosition = GetPlayerPosition();
-        var path = this.pathFinder.GetShortestPath(new MazeVector(this.ActualPosition.X, this.ActualPosition.Y, 0),
+        var path = this.pathFinder.GetShortestPath(new CellVector(this.ActualPosition.X, this.ActualPosition.Y, 0),
             playerPosition);
 
         if (path.Count > 1)
@@ -144,12 +144,12 @@ public class MonsterAI: IMovement<ICreature<char>>
         }
     }
 
-    private MazeVector GetPlayerPosition()
+    private CellVector GetPlayerPosition()
     {
         var playerCell = this.maze.Cells.Cast<Cell<ICreature<char>>>().FirstOrDefault(c => c.Item is Player<char>);
         if (playerCell != null)
         {
-            return new MazeVector(playerCell.X, playerCell.Y, 0);
+            return new CellVector(playerCell.X, playerCell.Y, 0);
         }
         else
         {

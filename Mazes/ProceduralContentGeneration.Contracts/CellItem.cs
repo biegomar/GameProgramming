@@ -3,9 +3,9 @@
     public class CellItem<T>
     {
         public T Item { get;  }
-        public MazeVector Position { get;  }
+        public CellVector Position { get;  }
 
-        public CellItem(T item, MazeVector position) 
+        public CellItem(T item, CellVector position) 
         {
             this.Item = item;
             this.Position = position;

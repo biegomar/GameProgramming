@@ -13,7 +13,7 @@ namespace Mazes.Cli
         {
             Console.Clear();
             
-            var dimension = new MazeVector(10, 10, 0);
+            var dimension = new CellVector(10, 10, 0);
             var maze = new Maze<char>(dimension, new BinaryTreeMazeGenerator<char>(), new ConsoleMazePrinter<char>(), "Binary Tree");
             var maze2 = new Maze<char>(dimension, new SideWinderMazeGenerator<char>(), new ConsoleMazePrinter<char>(), "Sidewinder");
             var maze3 = new Maze<char>(dimension, new EmptyMazeGenerator<char>(), new ConsoleMazePrinter<char>(), "Empty");
@@ -35,11 +35,11 @@ namespace Mazes.Cli
                 new ConsoleMazePrinter<char>(), "AldousBroder");
             
             
-            maze.SetCellItem(new CellItem<char>('A', new MazeVector(1,1,0)));
-            maze2.SetCellItem(new CellItem<char>('B', new MazeVector(0,0,0)));
-            maze3.SetCellItem(new CellItem<char>('O', new MazeVector(9,9,0)));
-            maze4.SetCellItem(new CellItem<char>('I', new MazeVector(4,5,0)));
-            maze5.SetCellItem(new CellItem<char>('X', new MazeVector(2,4,0)));
+            maze.SetCellItem(new CellItem<char>('A', new CellVector(1,1,0)));
+            maze2.SetCellItem(new CellItem<char>('B', CellVector.Zero));
+            maze3.SetCellItem(new CellItem<char>('O', new CellVector(9,9,0)));
+            maze4.SetCellItem(new CellItem<char>('I', new CellVector(4,5,0)));
+            maze5.SetCellItem(new CellItem<char>('X', new CellVector(2,4,0)));
             
             Console.Clear();
             
@@ -51,7 +51,7 @@ namespace Mazes.Cli
             //maze2.Draw(new MazeVector(45,0,0));
             //maze3.Draw(new MazeVector(90,0,0));
             //maze4.Draw(new MazeVector(135,0,0));
-            maze5.Draw(new MazeVector(0,0,0));
+            maze5.Draw(new CellVector(0,0,0));
             
             //maze.DrawCellItems();
             //maze2.DrawCellItems();
@@ -60,7 +60,7 @@ namespace Mazes.Cli
             
 
             var pathFinder = new PathFinderForMaze<char>(maze5);
-            var path = pathFinder.GetShortestPath(new MazeVector(2, 3, 0), new MazeVector(8, 9, 0));
+            var path = pathFinder.GetShortestPath(new CellVector(2, 3, 0), new CellVector(8, 9, 0));
 
             foreach (var vector in path)
             {

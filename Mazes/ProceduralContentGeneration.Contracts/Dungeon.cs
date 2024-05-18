@@ -26,9 +26,9 @@ namespace Mazes.Contracts
             this.Title = title;
         }
         
-        public void Draw(MazeVector startMazeVector)
+        public void Draw(CellVector startCellVector)
         {
-            this.dungeonPrinter.DrawCells(this.Cells, startMazeVector, this.Title, false);
+            this.dungeonPrinter.DrawCells(this.Cells, startCellVector, this.Title, false);
         }
 
         public void DrawCellItems()
@@ -36,7 +36,7 @@ namespace Mazes.Contracts
             this.dungeonPrinter.DrawCellItems(this.Cells);
         }
 
-        public void DrawItemAtPosition(MazeVector position, T item)
+        public void DrawItemAtPosition(CellVector position, T item)
         {
             this.dungeonPrinter.DrawItemAtPosition(this.Cells, position, item);
         }

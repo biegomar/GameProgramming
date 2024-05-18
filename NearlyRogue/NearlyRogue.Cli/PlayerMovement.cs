@@ -35,7 +35,7 @@ public class PlayerMovement : IMovement<ICreature<char>>
         
         if (isNewPositionInGrid && isNewCellLinked)
         {
-            this.maze.ClearCellItem(new MazeVector(this.ActualPosition.X, this.ActualPosition.Y, 0));
+            this.maze.ClearCellItem(new CellVector(this.ActualPosition.X, this.ActualPosition.Y, 0));
             
             this.ActualPosition = new Vector(this.ActualPosition.X + position.X, this.ActualPosition.Y + position.Y,
                 this.ActualPosition.Z + position.Z);
@@ -47,7 +47,7 @@ public class PlayerMovement : IMovement<ICreature<char>>
     private void SetAndDrawItem()
     {
         maze.SetCellItem(new CellItem<ICreature<char>>(this.item, 
-            new MazeVector(
+            new CellVector(
                 this.ActualPosition.X,
                 this.ActualPosition.Y,0)));
         maze.DrawCellItems();

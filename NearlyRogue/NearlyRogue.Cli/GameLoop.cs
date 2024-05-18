@@ -48,7 +48,7 @@ public class GameLoop
     {
         int dimX = 10;
         int dimY = 10;
-        var dimension = new MazeVector(dimX, dimY, 0);
+        var dimension = new CellVector(dimX, dimY, 0);
         this.maze = new Maze<ICreature<char>>(dimension, new AldousBroderMazeGenerator<ICreature<char>>(null),
             new ConsoleMazePrinter<ICreature<char>>(), "AldousBroder");
         
@@ -65,7 +65,7 @@ public class GameLoop
         
         this.fightSystem = new FightSystem<char>();
         
-        maze.Draw(new MazeVector(0,0,0));
+        maze.Draw(CellVector.Zero);
         
         maze.DrawCellItems();
     }

@@ -1,12 +1,12 @@
 ﻿namespace Mazes.Contracts
 {
-    public class MazeVector
+    public class CellVector
     {
         public int X { get; }
         public int Y { get; }
         public int Z { get; }
 
-        public MazeVector(int x, int y, int z)
+        public CellVector(int x, int y, int z)
         {
             this.X = x;
             this.Y = y;
@@ -17,5 +17,7 @@
         {
             return $"[{this.X}, {this.Y}, {this.Z}]";
         }
+
+        public static CellVector Zero => new CellVector(0, 0, 0);
     }
 }

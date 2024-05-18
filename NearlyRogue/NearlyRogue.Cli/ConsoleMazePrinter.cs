@@ -16,7 +16,7 @@ public class ConsoleMazePrinter<T>(IList<T>? printableItems = null) : IContentPr
 
     public IList<T>? Items { get; set; } = printableItems;
 
-    public void DrawCells(Cell<T>?[,] cells, MazeVector startMazeVector, string title, bool drawItems = false)
+    public void DrawCells(Cell<T>?[,] cells, CellVector startMazeVector, string title, bool drawItems = false)
     { 
         this.drawColumn = startMazeVector.X;
             
@@ -69,7 +69,7 @@ public class ConsoleMazePrinter<T>(IList<T>? printableItems = null) : IContentPr
         Console.SetCursorPosition(oldScreenPositionX, oldScreenPositionY);
     }
 
-    public void DrawItemAtPosition(Cell<T>?[,] cells, MazeVector position, T item)
+    public void DrawItemAtPosition(Cell<T>?[,] cells, CellVector position, T item)
     {
         int oldX = Console.CursorLeft;
         int oldY = Console.CursorTop;

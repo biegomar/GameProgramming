@@ -15,7 +15,7 @@ namespace MazePathFinder
             this.Cells = maze.Cells;
         }
 
-        public IList<MazeVector> GetShortestPath(MazeVector startPoint, MazeVector endPoint)
+        public IList<CellVector> GetShortestPath(CellVector startPoint, CellVector endPoint)
         {
             ResetMazeCells();
             
@@ -43,21 +43,21 @@ namespace MazePathFinder
                 }
             }
 
-            return new List<MazeVector>();
+            return new List<CellVector>();
         }
         
-        private List<MazeVector> ReconstructPath(Cell<T> start, Cell<T> end)
+        private List<CellVector> ReconstructPath(Cell<T> start, Cell<T> end)
         {
-            var path = new List<MazeVector>();
+            var path = new List<CellVector>();
             var currentCell = end;
 
             while (currentCell != start)
             {
-                path.Add(new MazeVector(currentCell.X, currentCell.Y, currentCell.PathCount));
+                path.Add(new CellVector(currentCell.X, currentCell.Y, currentCell.PathCount));
                 currentCell = currentCell.Predecessor!;
             }
             
-            path.Add(new MazeVector(start.X, start.Y, 0));
+            path.Add(new CellVector(start.X, start.Y, 0));
 
             path.Reverse();
             return path;
