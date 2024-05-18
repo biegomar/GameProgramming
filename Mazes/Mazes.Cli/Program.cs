@@ -14,10 +14,10 @@ namespace Mazes.Cli
             Console.Clear();
             
             var dimension = new CellVector(10, 10, 0);
-            var maze = new Maze<char>(dimension, new BinaryTreeMazeGenerator<char>(), new ConsoleMazePrinter<char>(), "Binary Tree");
-            var maze2 = new Maze<char>(dimension, new SideWinderMazeGenerator<char>(), new ConsoleMazePrinter<char>(), "Sidewinder");
-            var maze3 = new Maze<char>(dimension, new EmptyMazeGenerator<char>(), new ConsoleMazePrinter<char>(), "Empty");
-            var maze4 = new Maze<char>(dimension, new FullMazeGenerator<char>(), new ConsoleMazePrinter<char>(), "Full");
+            var maze = new Landscape<char>(dimension, new BinaryTreeMazeGenerator<char>(), new ConsoleMazePrinter<char>(), "Binary Tree");
+            var maze2 = new Landscape<char>(dimension, new SideWinderMazeGenerator<char>(), new ConsoleMazePrinter<char>(), "Sidewinder");
+            var maze3 = new Landscape<char>(dimension, new EmptyMazeGenerator<char>(), new ConsoleMazePrinter<char>(), "Empty");
+            var maze4 = new Landscape<char>(dimension, new FullMazeGenerator<char>(), new ConsoleMazePrinter<char>(), "Full");
 
             
             var numberOfAgents = 5;
@@ -31,7 +31,7 @@ namespace Mazes.Cli
             //     new AldousBroderMazeGenerator<char>(new ConsoleMazePrinter<char>(listOfItems), numberOfAgents),
             //     new ConsoleMazePrinter<char>(), "AldousBroder");
 
-            var maze5 = new Maze<char>(dimension, new AldousBroderMazeGenerator<char>(null),
+            var maze5 = new Landscape<char>(dimension, new AldousBroderMazeGenerator<char>(null),
                 new ConsoleMazePrinter<char>(), "AldousBroder");
             
             

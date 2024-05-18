@@ -10,7 +10,7 @@ namespace NearlyRogue.Cli;
 
 public static class Preparations
 {
-    public static Player<char> CreatePlayer(Maze<ICreature<char>> maze)
+    public static Player<char> CreatePlayer(Landscape<ICreature<char>> landscape)
     {
         Random random = new ();
         WeaponFactory weaponFactory = new();

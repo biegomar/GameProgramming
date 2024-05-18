@@ -7,12 +7,12 @@ namespace NearlyRogue.Cli;
 
 public class PlayerMovement : IMovement<ICreature<char>>
 {
-    private readonly Maze<ICreature<char>> maze;
+    private readonly Landscape<ICreature<char>> landscape;
     private ICreature<char> item;
     
-    public PlayerMovement(Maze<ICreature<char>> maze, ICreature<char> player, Vector playerPosition)
+    public PlayerMovement(Landscape<ICreature<char>> landscape, ICreature<char> player, Vector playerPosition)
     {
-        this.maze = maze;
+        this.landscape = landscape;
         this.item = player;
         this.ActualPosition = playerPosition;
         SetAndDrawItem();
@@ -25,17 +25,17 @@ public class PlayerMovement : IMovement<ICreature<char>>
         var newPosition = new Vector(this.ActualPosition.X + position.X, this.ActualPosition.Y + position.Y,
             this.ActualPosition.Z + position.Z);
 
-        var isNewPositionInGrid = newPosition.X >= 0 && newPosition.X < this.maze.Width && newPosition.Y >= 0 &&
-                                  newPosition.Y < this.maze.Height;
+        var isNewPositionInGrid = newPosition.X >= 0 && newPosition.X < this.landscape.Width && newPosition.Y >= 0 &&
+                                  newPosition.Y < this.landscape.Height;
 
 
-        var isNewCellLinked = isNewPositionInGrid && (this.maze.Cells[this.ActualPosition.X, this.ActualPosition.Y]!
+        var isNewCellLinked = isNewPositionInGrid && (this.landscape.Cells[this.ActualPosition.X, this.ActualPosition.Y]!
             .LinkedCells
-            .Contains(this.maze.Cells[newPosition.X, newPosition.Y]!));
+            .Contains(this.landscape.Cells[newPosition.X, newPosition.Y]!));
         
         if (isNewPositionInGrid && isNewCellLinked)
         {
-            this.maze.ClearCellItem(new CellVector(this.ActualPosition.X, this.ActualPosition.Y, 0));
+            this.landscape.ClearCellItem(new CellVector(this.ActualPosition.X, this.ActualPosition.Y, 0));
             
             this.ActualPosition = new Vector(this.ActualPosition.X + position.X, this.ActualPosition.Y + position.Y,
                 this.ActualPosition.Z + position.Z);
@@ -46,10 +46,10 @@ public class PlayerMovement : IMovement<ICreature<char>>
 
     private void SetAndDrawItem()
     {
-        maze.SetCellItem(new CellItem<ICreature<char>>(this.item, 
+        landscape.SetCellItem(new CellItem<ICreature<char>>(this.item, 
             new CellVector(
                 this.ActualPosition.X,
                 this.ActualPosition.Y,0)));
-        maze.DrawCellItems();
+        landscape.DrawCellItems();
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Mazes.Contracts
 {
-    public class Maze<T>
+    public class Landscape<T>
     {
         public int Width { get; }
         public int Height { get; }
@@ -10,17 +10,17 @@
         public string Title { get; }
 
         private readonly IProceduralContentGenerator<T> proceduralContentGenerator;
-        private readonly IContentPrinter<T> mazePrinter;
+        private readonly IContentPrinter<T> contentPrinter;
 
-        public Maze(CellVector dimension, IProceduralContentGenerator<T> proceduralContentGenerator, IContentPrinter<T> contentPrinter) : this(dimension,
+        public Landscape(CellVector dimension, IProceduralContentGenerator<T> proceduralContentGenerator, IContentPrinter<T> contentPrinter) : this(dimension,
             proceduralContentGenerator, contentPrinter, string.Empty)
         {
         }
 
-        public Maze(CellVector dimension, IProceduralContentGenerator<T> proceduralContentGenerator, IContentPrinter<T> contentPrinter, string title)
+        public Landscape(CellVector dimension, IProceduralContentGenerator<T> proceduralContentGenerator, IContentPrinter<T> contentPrinter, string title)
         {
             this.proceduralContentGenerator = proceduralContentGenerator;
-            this.mazePrinter = contentPrinter;
+            this.contentPrinter = contentPrinter;
             this.Title = title;
 
             this.Cells = new Cell<T>[dimension.X, dimension.Y];
@@ -35,17 +35,17 @@
 
         public void Draw(CellVector startCellVector)
         {
-            this.mazePrinter.DrawCells(this.Cells, startCellVector, this.Title, false);
+            this.contentPrinter.DrawCells(this.Cells, startCellVector, this.Title, false);
         }
 
         public void DrawCellItems()
         {
-            this.mazePrinter.DrawCellItems(this.Cells);
+            this.contentPrinter.DrawCellItems(this.Cells);
         }
 
         public void DrawItemAtPosition(CellVector position, T item)
         {
-            this.mazePrinter.DrawItemAtPosition(this.Cells, position, item);
+            this.contentPrinter.DrawItemAtPosition(this.Cells, position, item);
         }
 
         private void InitializeMaze()

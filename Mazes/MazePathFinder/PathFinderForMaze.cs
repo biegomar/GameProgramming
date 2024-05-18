@@ -6,13 +6,13 @@ namespace MazePathFinder
 {
     public class PathFinderForMaze<T> : IPathFinder<T>
     {
-        private readonly Maze<T> maze;
+        private readonly Landscape<T> _landscape;
         private readonly Cell<T>?[,] Cells;
         
-        public PathFinderForMaze(Maze<T> maze)
+        public PathFinderForMaze(Landscape<T> landscape)
         {
-            this.maze = maze;
-            this.Cells = maze.Cells;
+            this._landscape = landscape;
+            this.Cells = landscape.Cells;
         }
 
         public IList<CellVector> GetShortestPath(CellVector startPoint, CellVector endPoint)

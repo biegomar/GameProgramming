@@ -21,7 +21,7 @@ public class GameLoop
     private Player<char> player;
     private IList<Monster<char>> monsters;
     private FightSystem<char> fightSystem;
-    private Maze<ICreature<char>> maze;
+    private Landscape<ICreature<char>> landscape;
     private PlayerMovement playerMovement;
     private MonsterAI monsterMovement;
 
@@ -49,25 +49,25 @@ public class GameLoop
         int dimX = 10;
         int dimY = 10;
         var dimension = new CellVector(dimX, dimY, 0);
-        this.maze = new Maze<ICreature<char>>(dimension, new AldousBroderMazeGenerator<ICreature<char>>(null),
+        this.landscape = new Landscape<ICreature<char>>(dimension, new AldousBroderMazeGenerator<ICreature<char>>(null),
             new ConsoleMazePrinter<ICreature<char>>(), "AldousBroder");
         
         
-        this.player = Preparations.CreatePlayer(maze);
-        this.playerMovement = new PlayerMovement(this.maze, player, new Vector(8, 8, 0));
+        this.player = Preparations.CreatePlayer(landscape);
+        this.playerMovement = new PlayerMovement(this.landscape, player, new Vector(8, 8, 0));
 
         this.monsters = new List<Monster<char>>();
         var monster = monsterFactory.CreateMonster(MonsterRace.Kestrel);
         var x = this.random.Next(0, dimX);
         var y = this.random.Next(0, dimY);
-        this.monsterMovement = new MonsterAI(this.maze, monster, new Vector(x, y, 0));
+        this.monsterMovement = new MonsterAI(this.landscape, monster, new Vector(x, y, 0));
         this.monsters.Add(monster);
         
         this.fightSystem = new FightSystem<char>();
         
-        maze.Draw(CellVector.Zero);
+        landscape.Draw(CellVector.Zero);
         
-        maze.DrawCellItems();
+        landscape.DrawCellItems();
     }
 
     private Vector GetInput()

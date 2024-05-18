@@ -14,7 +14,7 @@ using FiniteStateMachine;
 
 public class MonsterAI: IMovement<ICreature<char>>
 {
-    private readonly Maze<ICreature<char>> maze;
+    private readonly Landscape<ICreature<char>> landscape;
     private Random random = new ();
     private ICreature<char> item;
     private FiniteStateMachine fsm;
@@ -23,12 +23,12 @@ public class MonsterAI: IMovement<ICreature<char>>
     
     public Vector ActualPosition { get; set; }
     
-    public MonsterAI(Maze<ICreature<char>> maze, ICreature<char> monster, Vector monsterPosition)
+    public MonsterAI(Landscape<ICreature<char>> landscape, ICreature<char> monster, Vector monsterPosition)
     {
-        this.maze = maze;
+        this.landscape = landscape;
         this.item = monster;
         this.ActualPosition = monsterPosition;
-        this.pathFinder = new PathFinderForMaze<ICreature<char>>(this.maze);
+        this.pathFinder = new PathFinderForMaze<ICreature<char>>(this.landscape);
         this.Attack = false;
         
         this.SetAndDrawItem();
@@ -71,16 +71,16 @@ public class MonsterAI: IMovement<ICreature<char>>
     
     private void SetAndDrawItem()
     {
-        maze.SetCellItem(new CellItem<ICreature<char>>(this.item, 
+        landscape.SetCellItem(new CellItem<ICreature<char>>(this.item, 
             new CellVector(
                 this.ActualPosition.X,
                 this.ActualPosition.Y,0)));
-        maze.DrawCellItems();
+        landscape.DrawCellItems();
     }
 
     private bool IsPlayerInReach()
     {
-        var cell = this.maze.Cells[this.ActualPosition.X, this.ActualPosition.Y]!;
+        var cell = this.landscape.Cells[this.ActualPosition.X, this.ActualPosition.Y]!;
         foreach (var neighbour in cell.Neighbours.Values.Where(x => x?.Item != null))
         {
             if (neighbour?.Item is Player<char> player)
@@ -106,7 +106,7 @@ public class MonsterAI: IMovement<ICreature<char>>
             }
             else
             {
-                this.maze.ClearCellItem(new CellVector(this.ActualPosition.X, this.ActualPosition.Y, 0));
+                this.landscape.ClearCellItem(new CellVector(this.ActualPosition.X, this.ActualPosition.Y, 0));
             
                 this.ActualPosition = new Vector(nextCell.X, nextCell.Y, 0);
             }
@@ -146,7 +146,7 @@ public class MonsterAI: IMovement<ICreature<char>>
 
     private CellVector GetPlayerPosition()
     {
-        var playerCell = this.maze.Cells.Cast<Cell<ICreature<char>>>().FirstOrDefault(c => c.Item is Player<char>);
+        var playerCell = this.landscape.Cells.Cast<Cell<ICreature<char>>>().FirstOrDefault(c => c.Item is Player<char>);
         if (playerCell != null)
         {
             return new CellVector(playerCell.X, playerCell.Y, 0);
