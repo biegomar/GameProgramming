@@ -9,68 +9,81 @@ namespace Mazes.Cli
 {
     internal class Program
     {
+        private static IDictionary<int, char> pathSigns = new Dictionary<int, char>();
+
         static void Main(string[] args)
         {
+            FillPathSigns();
+            
             Console.Clear();
             
             var dimension = new CellVector(10, 10, 0);
-            var maze = new Landscape<char>(dimension, new BinaryTreeMazeGenerator<char>(), new ConsoleMazePrinter<char>(), "Binary Tree");
-            var maze2 = new Landscape<char>(dimension, new SideWinderMazeGenerator<char>(), new ConsoleMazePrinter<char>(), "Sidewinder");
-            var maze3 = new Landscape<char>(dimension, new EmptyMazeGenerator<char>(), new ConsoleMazePrinter<char>(), "Empty");
-            var maze4 = new Landscape<char>(dimension, new FullMazeGenerator<char>(), new ConsoleMazePrinter<char>(), "Full");
 
+            Landscape<char> maze;
+
+            // maze = GenerateMaze(new BinaryTreeMazeGenerator<char>(), dimension, CellVector.Zero,
+            //     new CellItem<char>('A', new CellVector(1, 1, 0)), "BinaryTree");
             
-            var numberOfAgents = 5;
-            var listOfItems = new List<char>();
-            for (int i = 0; i < numberOfAgents; i++)
+            // maze = GenerateMaze(new SideWinderMazeGenerator<char>(), dimension, CellVector.Zero,
+            //     new CellItem<char>('B', CellVector.Zero), "Sidewinder");
+            
+            // maze = GenerateMaze(new EmptyMazeGenerator<char>(), dimension, CellVector.Zero,
+            //     new CellItem<char>('O', new CellVector(9,9,0)), "Empty");
+            
+            // maze = GenerateMaze(new FullMazeGenerator<char>(), dimension, CellVector.Zero,
+            //     new CellItem<char>('I', new CellVector(4,5,0)), "Full");
+            
+            maze = GenerateMaze(new AldousBroderMazeGenerator<char>(null), dimension, CellVector.Zero,
+                new CellItem<char>('X', new CellVector(2,4,0)), "AldousBroder");
+            
+            FindPath(maze);
+
+            Console.ReadKey();
+        }
+
+        private static void FillPathSigns()
+        {
+            int key = 0;
+            for (int value = 48; value <= 57; value++)
             {
-                listOfItems.Add(Convert.ToChar(i.ToString()));
+                pathSigns.Add(key, (char)value);
+                key++;
             }
+            for (int value = 65; value <= 90; value++)
+            {
+                pathSigns.Add(key, (char)value);
+                key++;
+            }
+            for (int value = 97; value <= 122; value++)
+            {
+                pathSigns.Add(key, (char)value);
+                key++;
+            }
+        }
 
-            // var maze5 = new Maze<char>(dimension,
-            //     new AldousBroderMazeGenerator<char>(new ConsoleMazePrinter<char>(listOfItems), numberOfAgents),
-            //     new ConsoleMazePrinter<char>(), "AldousBroder");
-
-            var maze5 = new Landscape<char>(dimension, new AldousBroderMazeGenerator<char>(null),
-                new ConsoleMazePrinter<char>(), "AldousBroder");
-            
-            
-            maze.SetCellItem(new CellItem<char>('A', new CellVector(1,1,0)));
-            maze2.SetCellItem(new CellItem<char>('B', CellVector.Zero));
-            maze3.SetCellItem(new CellItem<char>('O', new CellVector(9,9,0)));
-            maze4.SetCellItem(new CellItem<char>('I', new CellVector(4,5,0)));
-            maze5.SetCellItem(new CellItem<char>('X', new CellVector(2,4,0)));
-            
-            Console.Clear();
-            
-            //maze5.Draw(new MazeVector(0,0,0));
-            
-            //maze5.DrawItemAtPosition(new MazeVector(0,0,0), 'X');
-            
-            //maze.Draw(new MazeVector(0,0,0));
-            //maze2.Draw(new MazeVector(45,0,0));
-            maze3.Draw(CellVector.Zero);
-            //maze4.Draw(CellVector.Zero);
-            //maze5.Draw(new CellVector(0,0,0));
-            
-            //maze.DrawCellItems();
-            //maze2.DrawCellItems();
-            //maze3.DrawCellItems();
-            //maze4.DrawCellItems();
-            
-
-            var pathFinder = new PathFinderForMaze<char>(maze3);
+        private static void FindPath(Landscape<char> maze)
+        {
+            var pathFinder = new PathFinderForMaze<char>(maze);
             var path = pathFinder.GetShortestPath(new CellVector(2, 3, 0), new CellVector(8, 9, 0));
 
             foreach (var vector in path)
             {
-                maze5.SetCellItem(new CellItem<char>(vector.Z.ToString("X1").ToCharArray()[0], vector));
+                maze.SetCellItem(new CellItem<char>(pathSigns[vector.Z], vector));
             }
-            maze5.DrawCellItems();
+            maze.DrawCellItems();
             
             Console.Write(string.Join(", ", path));
+        }
 
-            Console.ReadKey();
+        private static Landscape<char> GenerateMaze(IProceduralContentGenerator<char> generator, CellVector dimension, CellVector screenPosition, CellItem<char> item, string title)
+        {
+            var maze = new Landscape<char>(dimension, generator, new ConsoleMazePrinter<char>(), title);
+            maze.SetCellItem(item);
+            Console.Clear();
+            maze.Draw(screenPosition);
+            maze.DrawCellItems();
+
+            return maze;
         }
     }
 }
