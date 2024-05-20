@@ -5,9 +5,9 @@ using Mazes.Contracts;
 
 namespace BinaryTreeMaze
 {
-    public class BinaryTreeMazeGenerator<T> : IProceduralContentGenerator<T>
+    public class BinaryTreeMazeGenerator<T> : BaseMazeGenerator<T>
     {
-        public IList<Cell<T>> Generate(IList<Cell<T>> cells)
+        public override IList<Cell<T>> Generate(IList<Cell<T>> cells)
         {
             var randomGenerator = new Random();
             var dimensionZeroLength = cells.Max(cell => cell.X) + 1;
@@ -49,11 +49,6 @@ namespace BinaryTreeMaze
             }
 
             return cells;
-        }
-        
-        private Cell<T> GetCellByColumnAndRow(IList<Cell<T>> cells, int column, int row)
-        {
-            return cells.Single(cell => cell.X == column && cell.Y == row);
         }
     }
 }

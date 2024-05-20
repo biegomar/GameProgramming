@@ -7,10 +7,8 @@ namespace Mazes.Contracts
     {
         public int Width { get; }
         public int Height { get; }
-        
-        //public Cell<T>?[,] Cells { get; }
 
-        public IList<Cell<T>> Cells { get; set; }
+        public IList<Cell<T>> Cells { get; private set; }
 
         public string Title { get; }
 
@@ -30,12 +28,10 @@ namespace Mazes.Contracts
 
             this.Cells = new List<Cell<T>>();
             
-            //this.Cells = new Cell<T>[dimension.X, dimension.Y];
             this.Width = dimension.X;
             this.Height = dimension.Y;
             
-            InitializeMaze();
-            LinkCellsInMaze();
+            this.InitializeStructure();
 
             this.Cells = this.proceduralContentGenerator.Generate(this.Cells);
         }
@@ -55,33 +51,6 @@ namespace Mazes.Contracts
             this.contentPrinter.DrawItemAtPosition(this.Cells, position, item);
         }
 
-        protected virtual void InitializeMaze()
-        {
-            for (int column = 0; column < this.Width; column++)           
-            {
-                for(int row = 0; row < this.Height; row++)
-                {
-                    
-                    this.Cells.Add(new Cell<T>(column, row));
-                }
-            }
-        }
-
-        private void LinkCellsInMaze()
-        {            
-            for (int column = 0; column < Width; column++)
-            {
-                for (int row = 0; row < Height; row++)
-                {
-                    var cellToLink = GetCellByColumnAndRow(column, row);
-                    cellToLink.NorthernNeighbour = row - 1 < 0 ? null : GetCellByColumnAndRow(column, row - 1);
-                    cellToLink.EasternNeighbour = column + 1 >= Width ? null : GetCellByColumnAndRow(column + 1, row);
-                    cellToLink.SouthernNeighbour = row + 1 >= Height ? null : GetCellByColumnAndRow(column, row + 1);
-                    cellToLink.WesternNeighbour = column - 1 < 0 ? null : GetCellByColumnAndRow(column - 1, row);
-                }
-            }
-        }
-
         public void SetCellItem(CellItem<T> cellItem)
         {
             GetCellByColumnAndRow(cellItem.Position.X, cellItem.Position.Y).Item = cellItem.Item;
@@ -90,6 +59,22 @@ namespace Mazes.Contracts
         public void ClearCellItem(CellVector position)
         {
             GetCellByColumnAndRow(position.X, position.Y).Item = default!;
+        }
+        
+        private void InitializeCells()
+        {
+            this.Cells = proceduralContentGenerator.InitializeCells(this.Cells);
+        }
+        
+        private void LinkCells()
+        {
+            this.Cells = proceduralContentGenerator.LinkCells(this.Cells);
+        }
+        
+        private void InitializeStructure()
+        {
+            InitializeCells();
+            LinkCells();
         }
         
         private Cell<T> GetCellByColumnAndRow(int column, int row)

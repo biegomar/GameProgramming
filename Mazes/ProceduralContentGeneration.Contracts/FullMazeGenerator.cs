@@ -2,9 +2,9 @@
 
 namespace Mazes.Contracts
 {
-    public class FullMazeGenerator<T>: IProceduralContentGenerator<T>
+    public class FullMazeGenerator<T>: BaseMazeGenerator<T>
     {
-        public IList<Cell<T>> Generate(IList<Cell<T>> cells)
+        public override IList<Cell<T>> Generate(IList<Cell<T>> cells)
         {
             return cells;
         }

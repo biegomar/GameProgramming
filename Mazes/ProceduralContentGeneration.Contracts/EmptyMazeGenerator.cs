@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace Mazes.Contracts
 {
-    public class EmptyMazeGenerator<T>: IProceduralContentGenerator<T>
+    public class EmptyMazeGenerator<T>: BaseMazeGenerator<T>
     {
-        public IList<Cell<T>> Generate(IList<Cell<T>> cells)
+        public override IList<Cell<T>> Generate(IList<Cell<T>> cells)
         {
             var dimensionZeroLength = cells.Max(cell => cell.X) + 1;
             var dimensionOneLength = cells.Max(cell => cell.Y) + 1;
@@ -31,11 +31,6 @@ namespace Mazes.Contracts
             }
 
             return cells;
-        }
-        
-        private Cell<T> GetCellByColumnAndRow(IList<Cell<T>> cells, int column, int row)
-        {
-            return cells.Single(cell => cell.X == column && cell.Y == row);
         }
     }
 }
