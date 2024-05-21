@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using AldousBroderMaze;
 using Mazes.Contracts;
+using Mazes.Contracts.Cells;
 using NearlyRogue.Core.Amors;
 using NearlyRogue.Core.Dices;
 using NearlyRogue.Core.FightSystems;

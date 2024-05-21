@@ -1,4 +1,4 @@
-﻿namespace Mazes.Contracts
+﻿namespace Mazes.Contracts.Cells
 {
     public enum Directions
     {

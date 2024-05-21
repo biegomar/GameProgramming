@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Mazes.Contracts.Cells;
 
 namespace Mazes.Contracts.PathFinding
 {

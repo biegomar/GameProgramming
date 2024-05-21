@@ -2,6 +2,7 @@
 using BinaryTreeMaze;
 using MazePathFinder;
 using Mazes.Contracts;
+using Mazes.Contracts.Cells;
 using Mazes.Contracts.PathFinding;
 using SideWinderMaze;
 

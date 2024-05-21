@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using Mazes.Contracts.Cells;
 
-namespace Mazes.Contracts
+namespace Mazes.Contracts.Dungeons
 {
     public class DungeonOfDoomGenerator<T> : BaseDungeonGenerator<T>
     {

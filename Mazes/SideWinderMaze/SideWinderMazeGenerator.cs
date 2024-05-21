@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Mazes.Contracts;
+using Mazes.Contracts.Cells;
+using Mazes.Contracts.Mazes;
 
 namespace SideWinderMaze
 {

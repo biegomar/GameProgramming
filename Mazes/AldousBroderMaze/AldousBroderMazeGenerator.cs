@@ -1,4 +1,7 @@
 ﻿using Mazes.Contracts;
+using Mazes.Contracts.Cells;
+using Mazes.Contracts.Mazes;
+using Mazes.Contracts.Printing;
 
 namespace AldousBroderMaze;
 

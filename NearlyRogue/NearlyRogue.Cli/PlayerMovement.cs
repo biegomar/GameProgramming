@@ -1,4 +1,5 @@
 ﻿using Mazes.Contracts;
+using Mazes.Contracts.Cells;
 using NearlyRogue.Core.FightSystems;
 using NearlyRogue.Core.Movement;
 using NearlyRogue.Core.Numerics;

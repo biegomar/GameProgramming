@@ -1,5 +1,7 @@
 ﻿using System.Text;
 using Mazes.Contracts;
+using Mazes.Contracts.Cells;
+using Mazes.Contracts.Printing;
 
 namespace NearlyRogue.Cli;
 

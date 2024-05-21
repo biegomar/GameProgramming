@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using Mazes.Contracts.Cells;
 
-namespace Mazes.Contracts
+namespace Mazes.Contracts.Printing
 {
     public interface IContentPrinter<T>
     {
