@@ -8,10 +8,10 @@ namespace Mazes.Contracts.Mazes
     {
         public abstract IList<Cell<T>> Generate(IList<Cell<T>> cells);
 
-        public IList<Cell<T>> InitializeCells(IList<Cell<T>> cells)
+        public IList<Cell<T>> InitializeCells(IList<Cell<T>> cells, CellVector dimension)
         {
-            var width = cells.Max(cell => cell.X) + 1;
-            var height = cells.Max(cell => cell.Y) + 1;
+            var width = dimension.X;
+            var height = dimension.Y;
             
             for (int column = 0; column < width; column++)           
             {

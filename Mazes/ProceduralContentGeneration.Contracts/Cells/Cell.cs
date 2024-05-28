@@ -12,6 +12,8 @@ namespace Mazes.Contracts.Cells
 
         public T Item { get; set; }
 
+        public bool IsVisible { get; set; }
+        
         public bool IsVisited { get; set; }
 
         public int PathCount { get; set; }

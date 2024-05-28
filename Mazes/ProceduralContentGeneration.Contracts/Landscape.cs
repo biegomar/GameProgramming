@@ -7,8 +7,9 @@ namespace Mazes.Contracts
 {
     public class Landscape<T>
     {
-        public int Width { get; }
-        public int Height { get; }
+        private CellVector dimension;
+        public int Width => this.dimension.X;
+        public int Height => this.dimension.Y;
 
         public IList<Cell<T>> Cells { get; private set; }
 
@@ -29,9 +30,8 @@ namespace Mazes.Contracts
             this.Title = title;
 
             this.Cells = new List<Cell<T>>();
-            
-            this.Width = dimension.X;
-            this.Height = dimension.Y;
+
+            this.dimension = dimension;
             
             this.InitializeStructure();
 
@@ -65,7 +65,7 @@ namespace Mazes.Contracts
         
         private void InitializeCells()
         {
-            this.Cells = proceduralContentGenerator.InitializeCells(this.Cells);
+            this.Cells = proceduralContentGenerator.InitializeCells(this.Cells, this.dimension);
         }
         
         private void LinkCells()
