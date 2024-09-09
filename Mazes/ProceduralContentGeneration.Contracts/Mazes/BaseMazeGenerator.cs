@@ -7,6 +7,10 @@ namespace Mazes.Contracts.Mazes
     public abstract class BaseMazeGenerator<T> : IProceduralContentGenerator<T>
     {
         public abstract IList<Cell<T>> Generate(IList<Cell<T>> cells);
+        public IList<Room<T>> GenerateDungeon(IList<Cell<T>> cells)
+        {
+            throw new System.NotSupportedException();
+        }
 
         public IList<Cell<T>> InitializeCells(IList<Cell<T>> cells, CellVector dimension)
         {
@@ -44,6 +48,7 @@ namespace Mazes.Contracts.Mazes
 
             return cells;
         }
+
         protected Cell<T> GetCellByColumnAndRow(IList<Cell<T>> cells, int column, int row)
         {
             return cells.Single(cell => cell.X == column && cell.Y == row);

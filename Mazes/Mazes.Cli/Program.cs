@@ -78,9 +78,10 @@ namespace Mazes.Cli
 
         private static Landscape<char> GenerateMaze(IProceduralContentGenerator<char> generator, CellVector dimension, CellVector screenPosition, CellItem<char> item, string title)
         {
+            Console.Clear();
+            
             var maze = new Landscape<char>(dimension, generator, new ConsoleMazePrinter<char>(), title);
             maze.SetCellItem(item);
-            Console.Clear();
             maze.Draw(screenPosition);
             maze.DrawCellItems();
 

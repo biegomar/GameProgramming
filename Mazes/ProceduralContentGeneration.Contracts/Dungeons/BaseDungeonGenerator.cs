@@ -7,7 +7,7 @@ namespace Mazes.Contracts.Dungeons
     public abstract class BaseDungeonGenerator<T> : IProceduralContentGenerator<T>
     {
         public abstract IList<Cell<T>> Generate(IList<Cell<T>> cells);
-
+        
         public IList<Cell<T>> InitializeCells(IList<Cell<T>> cells, CellVector dimension)
         {
             var width = dimension.X;
@@ -48,6 +48,11 @@ namespace Mazes.Contracts.Dungeons
         protected Cell<T> GetCellByColumnAndRow(IList<Cell<T>> cells, int column, int row)
         {
             return cells.Single(cell => cell.X == column && cell.Y == row);
+        }
+        
+        protected Room<T>? GetRoomByColumnAndRow(IList<Room<T>> rooms, int column, int row)
+        {
+            return rooms.SingleOrDefault(r => r.X == column && r.Y == row);
         }
     }
 }
