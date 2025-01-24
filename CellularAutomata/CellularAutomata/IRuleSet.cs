@@ -2,7 +2,5 @@
 
 public interface IRuleSet<T>
 {
-    public PlayGround<T> PlayGround { get; init; }
-    
-    public T ApplyRules(Vector position);
+    public T ApplyRules(PlayGround<T> playGround, Vector position);
 }

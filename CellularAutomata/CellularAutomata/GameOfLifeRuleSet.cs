@@ -4,35 +4,26 @@ namespace CellularAutomata;
 
 public class GameOfLifeRuleSet : IRuleSet<bool>
 {
-    public PlayGround<bool> PlayGround { get; init; }
-
-    public GameOfLifeRuleSet(PlayGround<bool> playGround)
+    public bool ApplyRules(PlayGround<bool> playGround, Vector position)
     {
-        this.PlayGround = playGround;
-    }
-    
-    public bool ApplyRules(Vector position)
-    {
-        var isAlive = this.PlayGround[position];
+        var isAlive = playGround[position];
         
-        var liveNeighbors = CountLiveNeighbors(position);
+        var liveNeighbors = CountLiveNeighbors(playGround, position);
         
-        // Game of Life Rules
-        if (isAlive)
+        if (isAlive && liveNeighbors is 2 or 3)
         {
-            // Dies due to underpopulation (<2) or overpopulation (>3)
-            if (liveNeighbors < 2 || liveNeighbors > 3)
-                return false; // Cell dies
-            return true; // Cell stays alive
+            return true; 
         }
 
-        // Rebirth with exactly 3 neighbors alive
-        if (liveNeighbors == 3)
-            return true; // Cell comes to life
-        return false; // Cell remains dead
+        if (!isAlive && liveNeighbors == 3)
+        {
+            return true; 
+        }
+        
+        return false;
     }
     
-    private int CountLiveNeighbors(Vector position)
+    private int CountLiveNeighbors(PlayGround<bool> playGround, Vector position)
     {
         var neighbors = new List<Vector>
         {
@@ -47,15 +38,15 @@ public class GameOfLifeRuleSet : IRuleSet<bool>
         };
         
         return neighbors.Count(vec =>
-            IsWithinBounds(vec) &&
-            this.PlayGround[vec] 
+            IsWithinBounds(playGround.Dimension,vec) &&
+            playGround[vec] 
         );
     }
     
-    private bool IsWithinBounds(Vector position)
+    private bool IsWithinBounds(Vector dimension, Vector position)
     {
         return position.X >= 0 && position.Y >= 0 &&
-               position.X < this.PlayGround.Dimension.X &&
-               position.Y < this.PlayGround.Dimension.Y;
+               position.X < dimension.X &&
+               position.Y < dimension.Y;
     }
 }
