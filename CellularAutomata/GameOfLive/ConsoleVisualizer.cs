@@ -33,6 +33,57 @@ public static class ConsoleVisualizer
         
         Console.SetCursorPosition(actualX, actualY);
     }
+
+    public static void RenderWithColors<T>(PlayGround<T> playGround, Func<T, ConsoleColor> stateToColor)
+    {
+        Console.SetCursorPosition(0, 0);
+        Console.Write($"Generation {counter++}");
+
+        var startX = 0;
+        var startY = 2;
+
+        var (actualX, actualY) = Console.GetCursorPosition();
+
+        for (int y = 0; y < playGround.Dimension.Y; y++)
+        {
+            var currentColor = ConsoleColor.Black;
+            var lineBuilder = new StringBuilder();
+
+            for (int x = 0; x < playGround.Dimension.X; x++)
+            {
+                var positionToCheck = new Vector(x, y, 0);
+                var cellColor = stateToColor(playGround[positionToCheck]);
+
+                // Wenn es ein neuer Farbbereich ist, wird die bisherige Farbe ausgegeben
+                if (lineBuilder.Length > 0 && cellColor != currentColor)
+                {
+                    PrintColoredLine(lineBuilder.ToString(), startX + (x - lineBuilder.Length), startY + y,
+                        currentColor);
+                    lineBuilder.Clear();
+                }
+                
+                currentColor = cellColor;
+                lineBuilder.Append(' ');
+            }
+            
+            if (lineBuilder.Length > 0)
+            {
+                PrintColoredLine(lineBuilder.ToString(), startX + ((int)playGround.Dimension.X - lineBuilder.Length),
+                    startY + y, currentColor);
+            }
+        }
+        
+        Console.ResetColor();
+        Console.SetCursorPosition(actualX, actualY);
+    }
+    
+    private static void PrintColoredLine(string line, int x, int y, ConsoleColor color)
+    {
+        Console.SetCursorPosition(x, y);
+        Console.BackgroundColor = color;
+        Console.Write(line);
+        Console.ResetColor();
+    }
     
     public static void SetConsoleSize(Vector dimension)
     {

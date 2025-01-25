@@ -8,11 +8,12 @@ var screenSize = new Vector(dimension.X + 5, dimension.Y + 5, 0);
 var playGround = new PlayGround<bool>(dimension);
 var ruleSet = new GameOfLifeRuleSet();
 
-GameOfLifeInitializer.Randomize(playGround, 0.15);
+GameOfLifeInitializer.Randomize(playGround, 0.2);
 
-GameOfLifeInitializer.AddGlider(playGround, new Vector(20, 20, 0));
-GameOfLifeInitializer.AddToad(playGround, new Vector(50, 20, 0));
-GameOfLifeInitializer.AddBlinker(playGround, new Vector(10, 10, 0));
+//GameOfLifeInitializer.AddGlider(playGround, new Vector(4, 4, 0));
+//GameOfLifeInitializer.AddToad(playGround, new Vector(50, 15, 0));
+//GameOfLifeInitializer.AddBlinker(playGround, new Vector(40, 15, 0));
+//GameOfLifeInitializer.AddBeacon(playGround, new Vector(70, 30, 0));
 
 ConsoleVisualizer.SetConsoleSize(screenSize);
 
@@ -21,7 +22,8 @@ Console.CursorVisible = false;
 
 do
 {
-    ConsoleVisualizer.Render(playGround, x => x ? 'X' : ' ');
+    //ConsoleVisualizer.Render(playGround, x => x ? 'X' : ' ');
+    ConsoleVisualizer.RenderWithColors(playGround, x => x ? ConsoleColor.Green : ConsoleColor.Black);
     playGround = Automata<bool>.NextGeneration(playGround, ruleSet);
     Thread.Sleep(250);
     
