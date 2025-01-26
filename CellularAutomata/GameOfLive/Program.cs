@@ -15,7 +15,7 @@ GameOfLifeInitializer.Randomize(playGround, 0.2);
 //GameOfLifeInitializer.AddBlinker(playGround, new Vector(40, 15, 0));
 //GameOfLifeInitializer.AddBeacon(playGround, new Vector(70, 30, 0));
 
-ConsoleVisualizer.SetConsoleSize(screenSize);
+ConsoleVisualizer<bool>.SetConsoleSize(screenSize);
 
 Console.Clear();
 Console.CursorVisible = false;
@@ -23,7 +23,7 @@ Console.CursorVisible = false;
 do
 {
     //ConsoleVisualizer.Render(playGround, x => x ? 'X' : ' ');
-    ConsoleVisualizer.RenderWithColors(playGround, x => x ? ConsoleColor.Green : ConsoleColor.Black);
+    ConsoleVisualizer<bool>.RenderWithColors(playGround, x => x ? ConsoleColor.Green : ConsoleColor.Black);
     playGround = Automata<bool>.NextGeneration(playGround, ruleSet);
     Thread.Sleep(250);
     

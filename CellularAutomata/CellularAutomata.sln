@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CellularAutomata", "Cellula
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameOfLive", "GameOfLive\GameOfLive.csproj", "{0F460E5B-BFE4-45C5-A6AD-0915CE451C4C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkiasGameOfLive", "SkiasGameOfLive\SkiasGameOfLive.csproj", "{7C812797-6DD5-4188-A8FE-65B35165A766}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{0F460E5B-BFE4-45C5-A6AD-0915CE451C4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F460E5B-BFE4-45C5-A6AD-0915CE451C4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F460E5B-BFE4-45C5-A6AD-0915CE451C4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C812797-6DD5-4188-A8FE-65B35165A766}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C812797-6DD5-4188-A8FE-65B35165A766}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C812797-6DD5-4188-A8FE-65B35165A766}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C812797-6DD5-4188-A8FE-65B35165A766}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
