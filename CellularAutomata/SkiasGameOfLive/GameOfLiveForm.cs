@@ -5,34 +5,31 @@ namespace SkiasGameOfLive;
 
 public partial class GameOfLiveForm : Form
 {
-    private readonly Vector dimension;
-    private readonly Vector screenSize;
-    private readonly GameOfLifeRuleSet ruleSet;
+    private static readonly Vector cellSize = new Vector(8, 8, 0);
     
+    private Vector dimension;
+    private GameOfLifeRuleSet ruleSet;
     private PlayGround<bool> playGround;
-    private Bitmap? bitmap;
     
     private CancellationTokenSource? cancellationTokenSource;
     
     private int generation = 0;
-
     private int systemSpeed => (int)(systemSpeedSelector.Maximum - systemSpeedSelector.Value);
+    private Vector bitmapSize => new Vector(this.GameOfLiveView.Width, this.GameOfLiveView.Height, 0);
     
     public GameOfLiveForm()
     {
         InitializeComponent();
-        
-        dimension = new Vector(100,40,0);
-        screenSize = new Vector(dimension.X + 5, dimension.Y + 5, 0);
-        playGround = new PlayGround<bool>(dimension);
-        ruleSet = new GameOfLifeRuleSet();
-        
         InitializePlayGroundWithRandomValues((double)probabilitySelector.Value);
         RenderPlaygroundAndDisplayGeneration();
     }
 
     private void InitializePlayGroundWithRandomValues(double probability)
     {
+        dimension = new Vector((int)(bitmapSize.X / cellSize.X), (int)(bitmapSize.Y / cellSize.Y), 0);
+        playGround = new PlayGround<bool>(dimension);
+        ruleSet = new GameOfLifeRuleSet();
+        
         GameOfLifeInitializer.Randomize(playGround, probability);
     }
 
@@ -66,7 +63,7 @@ public partial class GameOfLiveForm : Form
 
     private void RenderPlaygroundAndDisplayGeneration()
     {
-        SkiaVisualizer<bool>.Render(playGround, 20, this.GameOfLiveView, b => b ? SKColors.Chartreuse : SKColors.Black);
+        SkiaVisualizer<bool>.Render(playGround, cellSize, this.GameOfLiveView, b => b ? SKColors.Chartreuse : SKColors.Black);
         this.DisplayGeneration();
     }
 

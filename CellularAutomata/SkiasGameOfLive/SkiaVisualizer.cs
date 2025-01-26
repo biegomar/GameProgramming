@@ -6,13 +6,13 @@ using SkiaSharp;
 
 public static class SkiaVisualizer<T>
 {
-    public static void Render(PlayGround<T> playGround, int cellSize, PictureBox pictureBox, Func<T, SKColor> stateToColor)
+    public static void Render(PlayGround<T> playGround, Vector cellSize, PictureBox pictureBox, Func<T, SKColor> stateToColor)
     {
         using (var surface = SKSurface.Create(new SKImageInfo(pictureBox.Width, pictureBox.Height)))
         {
             SKCanvas canvas = surface.Canvas;
             canvas.Clear(SKColors.Black); 
-            RenderPlayGround(playGround, canvas, stateToColor);
+            RenderPlayGround(playGround, cellSize, canvas, stateToColor);
 
             using (SKImage imageFromSnapshot = surface.Snapshot())
             using (SKData data = imageFromSnapshot.Encode())
@@ -24,9 +24,8 @@ public static class SkiaVisualizer<T>
         }
     }
     
-    private static void RenderPlayGround(PlayGround<T> playGround, SKCanvas canvas, Func<T, SKColor> stateToColor)
+    private static void RenderPlayGround(PlayGround<T> playGround, Vector cellSize, SKCanvas canvas, Func<T, SKColor> stateToColor)
     {
-        int cellSize = 20;
         for (int y = 0; y < playGround.Dimension.Y; y++)
         {
             for (int x = 0; x < playGround.Dimension.X; x++)
@@ -35,7 +34,7 @@ public static class SkiaVisualizer<T>
                 
                 SKColor cellColor = stateToColor(playGround[positionToCheck]);
                 
-                var rect = new SKRect(x * cellSize, y * cellSize, (x + 1) * cellSize, (y + 1) * cellSize);
+                var rect = new SKRect(x * cellSize.X, y * cellSize.Y, (x + 1) * cellSize.X, (y + 1) * cellSize.Y);
                 using (var paint = new SKPaint { Color = cellColor, Style = SKPaintStyle.Fill })
                 {
                     canvas.DrawRect(rect, paint);
