@@ -29,29 +29,31 @@ partial class GameOfLiveForm
     /// </summary>
     private void InitializeComponent()
     {
-        button1 = new System.Windows.Forms.Button();
+        btnStart = new System.Windows.Forms.Button();
         GameOfLiveView = new System.Windows.Forms.PictureBox();
         statusLabel = new System.Windows.Forms.Label();
-        btnPause = new System.Windows.Forms.Button();
-        btnStopReset = new System.Windows.Forms.Button();
+        btnStop = new System.Windows.Forms.Button();
         probabilitySelector = new System.Windows.Forms.NumericUpDown();
         lblProbability = new System.Windows.Forms.Label();
         lblSpeed = new System.Windows.Forms.Label();
         systemSpeedSelector = new System.Windows.Forms.NumericUpDown();
+        cbPattern = new System.Windows.Forms.ComboBox();
+        lblPattern = new System.Windows.Forms.Label();
+        btnReset = new System.Windows.Forms.Button();
         ((System.ComponentModel.ISupportInitialize)GameOfLiveView).BeginInit();
         ((System.ComponentModel.ISupportInitialize)probabilitySelector).BeginInit();
         ((System.ComponentModel.ISupportInitialize)systemSpeedSelector).BeginInit();
         SuspendLayout();
         // 
-        // button1
+        // btnStart
         // 
-        button1.Location = new System.Drawing.Point(838, 49);
-        button1.Name = "button1";
-        button1.Size = new System.Drawing.Size(92, 23);
-        button1.TabIndex = 0;
-        button1.Text = "Start";
-        button1.UseVisualStyleBackColor = true;
-        button1.Click += startGameOfLive_Click;
+        btnStart.Location = new System.Drawing.Point(838, 48);
+        btnStart.Name = "btnStart";
+        btnStart.Size = new System.Drawing.Size(92, 23);
+        btnStart.TabIndex = 0;
+        btnStart.Text = "Start";
+        btnStart.UseVisualStyleBackColor = true;
+        btnStart.Click += startGameOfLive_Click;
         // 
         // GameOfLiveView
         // 
@@ -69,25 +71,15 @@ partial class GameOfLiveForm
         statusLabel.TabIndex = 2;
         statusLabel.Text = "Generation";
         // 
-        // btnPause
+        // btnStop
         // 
-        btnPause.Location = new System.Drawing.Point(838, 78);
-        btnPause.Name = "btnPause";
-        btnPause.Size = new System.Drawing.Size(92, 23);
-        btnPause.TabIndex = 3;
-        btnPause.Text = "Pause";
-        btnPause.UseVisualStyleBackColor = true;
-        btnPause.Click += btnPause_Click;
-        // 
-        // btnStopReset
-        // 
-        btnStopReset.Location = new System.Drawing.Point(838, 138);
-        btnStopReset.Name = "btnStopReset";
-        btnStopReset.Size = new System.Drawing.Size(92, 23);
-        btnStopReset.TabIndex = 4;
-        btnStopReset.Text = "Stop && Reset";
-        btnStopReset.UseVisualStyleBackColor = true;
-        btnStopReset.Click += btnStopReset_Click;
+        btnStop.Location = new System.Drawing.Point(838, 78);
+        btnStop.Name = "btnStop";
+        btnStop.Size = new System.Drawing.Size(92, 23);
+        btnStop.TabIndex = 4;
+        btnStop.Text = "Stop";
+        btnStop.UseVisualStyleBackColor = true;
+        btnStop.Click += btnStop_Click;
         // 
         // probabilitySelector
         // 
@@ -125,21 +117,51 @@ partial class GameOfLiveForm
         systemSpeedSelector.TabIndex = 7;
         systemSpeedSelector.Value = new decimal(new int[] { 100, 0, 0, 0 });
         // 
+        // cbPattern
+        // 
+        cbPattern.FormattingEnabled = true;
+        cbPattern.Items.AddRange(new object[] { "Random", "Schachbrett", "Free Style" });
+        cbPattern.Location = new System.Drawing.Point(1059, 138);
+        cbPattern.Name = "cbPattern";
+        cbPattern.Size = new System.Drawing.Size(119, 23);
+        cbPattern.TabIndex = 9;
+        cbPattern.Text = "Random";
+        // 
+        // lblPattern
+        // 
+        lblPattern.Location = new System.Drawing.Point(954, 138);
+        lblPattern.Name = "lblPattern";
+        lblPattern.Size = new System.Drawing.Size(99, 23);
+        lblPattern.TabIndex = 10;
+        lblPattern.Text = "Muster";
+        // 
+        // btnReset
+        // 
+        btnReset.Location = new System.Drawing.Point(838, 138);
+        btnReset.Name = "btnReset";
+        btnReset.Size = new System.Drawing.Size(92, 23);
+        btnReset.TabIndex = 11;
+        btnReset.Text = "Reset";
+        btnReset.UseVisualStyleBackColor = true;
+        btnReset.Click += btnReset_Click;
+        // 
         // GameOfLiveForm
         // 
         AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         BackColor = System.Drawing.SystemColors.Control;
         ClientSize = new System.Drawing.Size(1264, 681);
+        Controls.Add(btnReset);
+        Controls.Add(lblPattern);
+        Controls.Add(cbPattern);
         Controls.Add(lblSpeed);
         Controls.Add(systemSpeedSelector);
         Controls.Add(lblProbability);
         Controls.Add(probabilitySelector);
-        Controls.Add(btnStopReset);
-        Controls.Add(btnPause);
+        Controls.Add(btnStop);
         Controls.Add(statusLabel);
         Controls.Add(GameOfLiveView);
-        Controls.Add(button1);
+        Controls.Add(btnStart);
         Location = new System.Drawing.Point(15, 15);
         MaximumSize = new System.Drawing.Size(1280, 720);
         MinimumSize = new System.Drawing.Size(1280, 720);
@@ -149,20 +171,23 @@ partial class GameOfLiveForm
         ResumeLayout(false);
     }
 
+    private System.Windows.Forms.Button btnReset;
+
+    private System.Windows.Forms.ComboBox cbPattern;
+    private System.Windows.Forms.Label lblPattern;
+
     private System.Windows.Forms.Label lblProbability;
     private System.Windows.Forms.Label lblSpeed;
     private System.Windows.Forms.NumericUpDown systemSpeedSelector;
 
     private System.Windows.Forms.NumericUpDown probabilitySelector;
 
-    private System.Windows.Forms.Button btnStopReset;
-
-    private System.Windows.Forms.Button btnPause;
+    private System.Windows.Forms.Button btnStop;
 
     private System.Windows.Forms.PictureBox GameOfLiveView;
     private System.Windows.Forms.Label statusLabel;
 
-    private System.Windows.Forms.Button button1;
+    private System.Windows.Forms.Button btnStart;
 
     #endregion
 }

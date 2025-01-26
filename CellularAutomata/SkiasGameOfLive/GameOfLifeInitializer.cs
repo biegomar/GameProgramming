@@ -16,6 +16,43 @@ public static class GameOfLifeInitializer
             }
         }
     }
+
+    public static void AddCheckerboard(PlayGround<bool> playground)
+    {
+        for (int y = 0; y < playground.Dimension.Y; y++)
+        {
+            AddCheckerLine(playground, y);
+        }
+    }
+    
+    private static void AddCheckerLine(PlayGround<bool> playground, int row)
+    {
+        for (int x = 0; x < playground.Dimension.X; x++)
+        {
+            playground[new Vector(x, row, 0)] = int.IsEvenInteger(x) && int.IsEvenInteger(row) || int.IsOddInteger(x) && int.IsOddInteger(row);
+        } 
+    }
+
+    public static void AddSingleLineWithCellOnEveryXColumn(PlayGround<bool> playground, int distance, int row)
+    {
+        for (int x = 0; x < playground.Dimension.X; x++)
+        {
+            playground[new Vector(x, row, 0)] = x % distance == 0;
+        }
+    }
+
+    public static void AddSingleColumnWithCellOnEveryYRow(PlayGround<bool> playground, int distance, int column)
+    {
+        for (int y = 0; y < playground.Dimension.Y; y++)
+        {
+            playground[new Vector(column, y, 0)] = y % distance == 0;
+        }
+    }
+
+    public static void AddSingleCell(PlayGround<bool> playground, Vector position)
+    {
+        playground[position] = true;
+    }
     
     // **Muster 1: Blinker (kleiner Oszillator)**
     public static void AddBlinker(PlayGround<bool> playground, Vector startPosition)

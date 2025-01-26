@@ -17,6 +17,7 @@ GameOfLifeInitializer.Randomize(playGround, 0.2);
 
 ConsoleVisualizer<bool>.SetConsoleSize(screenSize);
 
+
 Console.Clear();
 Console.CursorVisible = false;
 

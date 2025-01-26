@@ -20,17 +20,35 @@ public partial class GameOfLiveForm : Form
     public GameOfLiveForm()
     {
         InitializeComponent();
-        InitializePlayGroundWithRandomValues((double)probabilitySelector.Value);
+        InitializePlayGround();
         RenderPlaygroundAndDisplayGeneration();
+        SetButtonState(false);
     }
 
-    private void InitializePlayGroundWithRandomValues(double probability)
+    private void InitializePlayGround()
     {
         dimension = new Vector((int)(bitmapSize.X / cellSize.X), (int)(bitmapSize.Y / cellSize.Y), 0);
         playGround = new PlayGround<bool>(dimension);
         ruleSet = new GameOfLifeRuleSet();
+
+        var probability = (double)probabilitySelector.Value;
+
+        switch (cbPattern.SelectedIndex)
+        {
+            case 0: // Random
+                GameOfLifeInitializer.Randomize(playGround, probability);
+                break;
+            case 1: // Checkerboard
+                GameOfLifeInitializer.AddCheckerboard(playGround);
+                break;
+            case 2: // Free Style
+                GameOfLifeInitializer.AddSingleLineWithCellOnEveryXColumn(playGround, 10, 10);
+                GameOfLifeInitializer.AddSingleColumnWithCellOnEveryYRow(playGround, 10, 10);
+                GameOfLifeInitializer.AddSingleCell(playGround, Vector.Zero);
+                GameOfLifeInitializer.AddSingleCell(playGround, new Vector(dimension.X - 1, dimension.Y - 1, 0));
+                break;
+        }
         
-        GameOfLifeInitializer.Randomize(playGround, probability);
     }
 
     private void startGameOfLive_Click(object sender, EventArgs e)
@@ -39,6 +57,8 @@ public partial class GameOfLiveForm : Form
         {
             NextGeneration();
         }
+        
+        SetButtonState(true);
     }
 
     private async void NextGeneration()
@@ -61,15 +81,18 @@ public partial class GameOfLiveForm : Form
         cancellationTokenSource = null;
     }
 
+    private void SetButtonState(bool isRunning)
+    {
+        btnStart.Enabled = !isRunning;
+        btnReset.Enabled = !isRunning;
+        
+        btnStop.Enabled = isRunning;
+    }
+
     private void RenderPlaygroundAndDisplayGeneration()
     {
         SkiaVisualizer<bool>.Render(playGround, cellSize, this.GameOfLiveView, b => b ? SKColors.Chartreuse : SKColors.Black);
         this.DisplayGeneration();
-    }
-
-    private void btnPause_Click(object sender, EventArgs e)
-    {
-        cancellationTokenSource?.Cancel();
     }
 
     private void DisplayGeneration()
@@ -77,14 +100,16 @@ public partial class GameOfLiveForm : Form
         statusLabel.Text = $"Generation: {generation++}";
     }
 
-    private void btnStopReset_Click(object sender, EventArgs e)
+    private void btnStop_Click(object sender, EventArgs e)
     {
         cancellationTokenSource?.Cancel();
-        
-        Thread.Sleep(100);
-        
+        SetButtonState(false);
+    }
+
+    private void btnReset_Click(object sender, EventArgs e)
+    {
         generation = 0;
-        InitializePlayGroundWithRandomValues((double)probabilitySelector.Value);
+        InitializePlayGround();
         RenderPlaygroundAndDisplayGeneration();
     }
 }
