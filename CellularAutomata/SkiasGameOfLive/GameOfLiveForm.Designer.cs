@@ -30,7 +30,6 @@ partial class GameOfLiveForm
     private void InitializeComponent()
     {
         btnStart = new System.Windows.Forms.Button();
-        GameOfLiveView = new System.Windows.Forms.PictureBox();
         statusLabel = new System.Windows.Forms.Label();
         btnStop = new System.Windows.Forms.Button();
         probabilitySelector = new System.Windows.Forms.NumericUpDown();
@@ -40,7 +39,8 @@ partial class GameOfLiveForm
         cbPattern = new System.Windows.Forms.ComboBox();
         lblPattern = new System.Windows.Forms.Label();
         btnReset = new System.Windows.Forms.Button();
-        ((System.ComponentModel.ISupportInitialize)GameOfLiveView).BeginInit();
+        skControl1 = new SkiaSharp.Views.Desktop.SKControl();
+        GameOfLiveView = new SkiaSharp.Views.Desktop.SKControl();
         ((System.ComponentModel.ISupportInitialize)probabilitySelector).BeginInit();
         ((System.ComponentModel.ISupportInitialize)systemSpeedSelector).BeginInit();
         SuspendLayout();
@@ -54,14 +54,6 @@ partial class GameOfLiveForm
         btnStart.Text = "Start";
         btnStart.UseVisualStyleBackColor = true;
         btnStart.Click += startGameOfLive_Click;
-        // 
-        // GameOfLiveView
-        // 
-        GameOfLiveView.Location = new System.Drawing.Point(13, 49);
-        GameOfLiveView.Name = "GameOfLiveView";
-        GameOfLiveView.Size = new System.Drawing.Size(800, 600);
-        GameOfLiveView.TabIndex = 1;
-        GameOfLiveView.TabStop = false;
         // 
         // statusLabel
         // 
@@ -145,12 +137,29 @@ partial class GameOfLiveForm
         btnReset.UseVisualStyleBackColor = true;
         btnReset.Click += btnReset_Click;
         // 
+        // skControl1
+        // 
+        skControl1.Location = new System.Drawing.Point(0, 0);
+        skControl1.Name = "skControl1";
+        skControl1.Size = new System.Drawing.Size(0, 0);
+        skControl1.TabIndex = 0;
+        // 
+        // GameOfLiveView
+        // 
+        GameOfLiveView.Location = new System.Drawing.Point(13, 49);
+        GameOfLiveView.Name = "GameOfLiveView";
+        GameOfLiveView.Size = new System.Drawing.Size(800, 600);
+        GameOfLiveView.TabIndex = 12;
+        GameOfLiveView.Text = "skControl2";
+        GameOfLiveView.PaintSurface += GameOfLiveView_PaintSurface;
+        // 
         // GameOfLiveForm
         // 
         AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         BackColor = System.Drawing.SystemColors.Control;
         ClientSize = new System.Drawing.Size(1264, 681);
+        Controls.Add(GameOfLiveView);
         Controls.Add(btnReset);
         Controls.Add(lblPattern);
         Controls.Add(cbPattern);
@@ -160,16 +169,18 @@ partial class GameOfLiveForm
         Controls.Add(probabilitySelector);
         Controls.Add(btnStop);
         Controls.Add(statusLabel);
-        Controls.Add(GameOfLiveView);
         Controls.Add(btnStart);
         Location = new System.Drawing.Point(15, 15);
         MaximumSize = new System.Drawing.Size(1280, 720);
         MinimumSize = new System.Drawing.Size(1280, 720);
-        ((System.ComponentModel.ISupportInitialize)GameOfLiveView).EndInit();
         ((System.ComponentModel.ISupportInitialize)probabilitySelector).EndInit();
         ((System.ComponentModel.ISupportInitialize)systemSpeedSelector).EndInit();
         ResumeLayout(false);
     }
+
+    private SkiaSharp.Views.Desktop.SKControl GameOfLiveView;
+
+    private SkiaSharp.Views.Desktop.SKControl skControl1;
 
     private System.Windows.Forms.Button btnReset;
 
@@ -184,7 +195,6 @@ partial class GameOfLiveForm
 
     private System.Windows.Forms.Button btnStop;
 
-    private System.Windows.Forms.PictureBox GameOfLiveView;
     private System.Windows.Forms.Label statusLabel;
 
     private System.Windows.Forms.Button btnStart;

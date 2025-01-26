@@ -1,11 +1,12 @@
 using CellularAutomata;
 using SkiaSharp;
+using SkiaSharp.Views.Desktop;
 
 namespace SkiasGameOfLive;
 
 public partial class GameOfLiveForm : Form
 {
-    private static readonly Vector cellSize = new Vector(8, 8, 0);
+    private static readonly Vector cellSize = new Vector(1, 1, 0);
     
     private Vector dimension;
     private GameOfLifeRuleSet ruleSet;
@@ -21,7 +22,6 @@ public partial class GameOfLiveForm : Form
     {
         InitializeComponent();
         InitializePlayGround();
-        RenderPlaygroundAndDisplayGeneration();
         SetButtonState(false);
     }
 
@@ -31,12 +31,10 @@ public partial class GameOfLiveForm : Form
         playGround = new PlayGround<bool>(dimension);
         ruleSet = new GameOfLifeRuleSet();
 
-        var probability = (double)probabilitySelector.Value;
-
         switch (cbPattern.SelectedIndex)
         {
             case 0: // Random
-                GameOfLifeInitializer.Randomize(playGround, probability);
+                GameOfLifeInitializer.Randomize(playGround, (double)probabilitySelector.Value);
                 break;
             case 1: // Checkerboard
                 GameOfLifeInitializer.AddCheckerboard(playGround);
@@ -48,7 +46,6 @@ public partial class GameOfLiveForm : Form
                 GameOfLifeInitializer.AddSingleCell(playGround, new Vector(dimension.X - 1, dimension.Y - 1, 0));
                 break;
         }
-        
     }
 
     private void startGameOfLive_Click(object sender, EventArgs e)
@@ -73,8 +70,11 @@ public partial class GameOfLiveForm : Form
                 this.Invoke(RenderPlaygroundAndDisplayGeneration);
                 
                 playGround = Automata<bool>.NextGeneration(playGround, ruleSet);
-                
-                Thread.Sleep(systemSpeed);
+
+                if (systemSpeed > 0)
+                {
+                    Thread.Sleep(systemSpeed);    
+                }
             }
         }, token);
         
@@ -91,7 +91,8 @@ public partial class GameOfLiveForm : Form
 
     private void RenderPlaygroundAndDisplayGeneration()
     {
-        SkiaVisualizer<bool>.Render(playGround, cellSize, this.GameOfLiveView, b => b ? SKColors.Chartreuse : SKColors.Black);
+        GameOfLiveView.Invalidate();
+        GameOfLiveView.Update();
         this.DisplayGeneration();
     }
 
@@ -111,5 +112,13 @@ public partial class GameOfLiveForm : Form
         generation = 0;
         InitializePlayGround();
         RenderPlaygroundAndDisplayGeneration();
+    }
+
+    private void GameOfLiveView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
+    {
+        SKCanvas canvas = e.Surface.Canvas;
+        canvas.Clear(SKColors.Black);
+        
+        SkiaVisualizer<bool>.Render(playGround, cellSize, canvas, b => b ? SKColors.Chartreuse : SKColors.Black);
     }
 }

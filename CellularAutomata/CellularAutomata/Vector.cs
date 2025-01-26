@@ -9,17 +9,17 @@
         /// <summary>
         /// X
         /// </summary>
-        public float X { get; init; }
+        public float X { get; set; }
         
         /// <summary>
         /// Y
         /// </summary>
-        public float Y { get; init; }
+        public float Y { get; set; }
         
         /// <summary>
         /// Z
         /// </summary>
-        public float Z { get; init; }
+        public float Z { get; set; }
 
         /// <summary>
         /// The base constructor.

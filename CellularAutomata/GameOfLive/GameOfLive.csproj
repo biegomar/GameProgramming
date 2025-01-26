@@ -11,4 +11,8 @@
       <ProjectReference Include="..\CellularAutomata\CellularAutomata.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="SkiaSharp.Views.Desktop.Common" Version="3.116.1" />
+    </ItemGroup>
+
 </Project>
