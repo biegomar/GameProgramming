@@ -6,7 +6,7 @@ namespace SkiasGameOfLive;
 
 public partial class GameOfLiveForm : Form
 {
-    private static readonly Vector cellSize = new Vector(1, 1, 0);
+    private Vector cellSize => new Vector((int)cellSizeSelector.Value, (int)cellSizeSelector.Value, 0);
     
     private Vector dimension;
     private GameOfLifeRuleSet ruleSet;
@@ -91,14 +91,14 @@ public partial class GameOfLiveForm : Form
 
     private void RenderPlaygroundAndDisplayGeneration()
     {
-        GameOfLiveView.Invalidate();
-        GameOfLiveView.Update();
         this.DisplayGeneration();
+        GameOfLiveView.Invalidate();
     }
 
     private void DisplayGeneration()
     {
         statusLabel.Text = $"Generation: {generation++}";
+        statusLabel.Update();
     }
 
     private void btnStop_Click(object sender, EventArgs e)

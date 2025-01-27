@@ -40,9 +40,12 @@ partial class GameOfLiveForm
         lblPattern = new System.Windows.Forms.Label();
         btnReset = new System.Windows.Forms.Button();
         skControl1 = new SkiaSharp.Views.Desktop.SKControl();
+        lblCellSize = new System.Windows.Forms.Label();
+        cellSizeSelector = new System.Windows.Forms.NumericUpDown();
         GameOfLiveView = new SkiaSharp.Views.Desktop.SKControl();
         ((System.ComponentModel.ISupportInitialize)probabilitySelector).BeginInit();
         ((System.ComponentModel.ISupportInitialize)systemSpeedSelector).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)cellSizeSelector).BeginInit();
         SuspendLayout();
         // 
         // btnStart
@@ -107,7 +110,7 @@ partial class GameOfLiveForm
         systemSpeedSelector.Name = "systemSpeedSelector";
         systemSpeedSelector.Size = new System.Drawing.Size(66, 23);
         systemSpeedSelector.TabIndex = 7;
-        systemSpeedSelector.Value = new decimal(new int[] { 100, 0, 0, 0 });
+        systemSpeedSelector.Value = new decimal(new int[] { 500, 0, 0, 0 });
         // 
         // cbPattern
         // 
@@ -144,12 +147,30 @@ partial class GameOfLiveForm
         skControl1.Size = new System.Drawing.Size(0, 0);
         skControl1.TabIndex = 0;
         // 
+        // lblCellSize
+        // 
+        lblCellSize.Location = new System.Drawing.Point(954, 173);
+        lblCellSize.Name = "lblCellSize";
+        lblCellSize.Size = new System.Drawing.Size(99, 23);
+        lblCellSize.TabIndex = 14;
+        lblCellSize.Text = "Zellgröße";
+        // 
+        // cellSizeSelector
+        // 
+        cellSizeSelector.Location = new System.Drawing.Point(1112, 173);
+        cellSizeSelector.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
+        cellSizeSelector.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+        cellSizeSelector.Name = "cellSizeSelector";
+        cellSizeSelector.Size = new System.Drawing.Size(66, 23);
+        cellSizeSelector.TabIndex = 13;
+        cellSizeSelector.Value = new decimal(new int[] { 4, 0, 0, 0 });
+        // 
         // GameOfLiveView
         // 
-        GameOfLiveView.Location = new System.Drawing.Point(13, 49);
+        GameOfLiveView.Location = new System.Drawing.Point(14, 54);
         GameOfLiveView.Name = "GameOfLiveView";
         GameOfLiveView.Size = new System.Drawing.Size(800, 600);
-        GameOfLiveView.TabIndex = 12;
+        GameOfLiveView.TabIndex = 15;
         GameOfLiveView.Text = "skControl2";
         GameOfLiveView.PaintSurface += GameOfLiveView_PaintSurface;
         // 
@@ -160,6 +181,8 @@ partial class GameOfLiveForm
         BackColor = System.Drawing.SystemColors.Control;
         ClientSize = new System.Drawing.Size(1264, 681);
         Controls.Add(GameOfLiveView);
+        Controls.Add(lblCellSize);
+        Controls.Add(cellSizeSelector);
         Controls.Add(btnReset);
         Controls.Add(lblPattern);
         Controls.Add(cbPattern);
@@ -175,10 +198,14 @@ partial class GameOfLiveForm
         MinimumSize = new System.Drawing.Size(1280, 720);
         ((System.ComponentModel.ISupportInitialize)probabilitySelector).EndInit();
         ((System.ComponentModel.ISupportInitialize)systemSpeedSelector).EndInit();
+        ((System.ComponentModel.ISupportInitialize)cellSizeSelector).EndInit();
         ResumeLayout(false);
     }
 
     private SkiaSharp.Views.Desktop.SKControl GameOfLiveView;
+
+    private System.Windows.Forms.Label lblCellSize;
+    private System.Windows.Forms.NumericUpDown cellSizeSelector;
 
     private SkiaSharp.Views.Desktop.SKControl skControl1;
 

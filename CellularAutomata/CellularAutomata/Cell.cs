@@ -1,6 +1,6 @@
 ﻿namespace CellularAutomata;
 
-public class Cell<T>
+public record Cell<T>
 {
     public T State { get; set; }
     
