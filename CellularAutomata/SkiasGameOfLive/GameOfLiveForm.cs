@@ -91,8 +91,8 @@ public partial class GameOfLiveForm : Form
 
     private void RenderPlaygroundAndDisplayGeneration()
     {
-        this.DisplayGeneration();
         GameOfLiveView.Invalidate();
+        this.DisplayGeneration();
     }
 
     private void DisplayGeneration()
