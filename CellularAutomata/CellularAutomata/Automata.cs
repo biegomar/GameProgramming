@@ -8,16 +8,26 @@ public static class Automata<T>
         var dimensionX = (int)initialPlayGround.Dimension.X;
         var dimensionY = (int)initialPlayGround.Dimension.Y;
         var position = Vector.Zero;
+
+        // foreach (var cell in initialPlayGround.cells)
+        // {
+        //     newPlayGround[cell.Key] = ruleSet.ApplyRules(initialPlayGround, cell.Key); 
+        // }
         
-        for (var x = 0; x < dimensionX; x++)
+        Parallel.ForEach(initialPlayGround.cells, cell =>
         {
-            position.X = x;
-            for (var y = 0; y < dimensionY; y++)
-            {
-                position.Y = y;
-                newPlayGround[position] = ruleSet.ApplyRules(initialPlayGround, position);
-            }
-        }
+            newPlayGround[cell.Key] = ruleSet.ApplyRules(initialPlayGround, cell.Key); 
+        });
+        
+        // for (var x = 0; x < dimensionX; x++)
+        // {
+        //     position.X = x;
+        //     for (var y = 0; y < dimensionY; y++)
+        //     {
+        //         position.Y = y;
+        //         newPlayGround[position] = ruleSet.ApplyRules(initialPlayGround, position);
+        //     }
+        // }
         
         return newPlayGround;
     }

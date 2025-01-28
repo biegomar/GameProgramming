@@ -2,7 +2,7 @@
 
 public class PlayGround<T>
 {
-    private readonly Dictionary<Vector, Cell<T>> cells = new();
+    public Dictionary<Vector, Cell<T>> cells = new();
 
     public PlayGround(Vector dimension)
     {
