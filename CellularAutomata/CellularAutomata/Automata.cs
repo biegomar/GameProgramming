@@ -9,15 +9,17 @@ public static class Automata<T>
         var dimensionY = (int)initialPlayGround.Dimension.Y;
         var position = Vector.Zero;
 
-        // foreach (var cell in initialPlayGround.cells)
-        // {
-        //     newPlayGround[cell.Key] = ruleSet.ApplyRules(initialPlayGround, cell.Key); 
-        // }
-        
-        Parallel.ForEach(initialPlayGround.cells, cell =>
+        foreach (var cell in initialPlayGround.cells)
         {
             newPlayGround[cell.Key] = ruleSet.ApplyRules(initialPlayGround, cell.Key); 
-        });
+        }
+        
+        var resultPlayGround = ruleSet.ApplySpawnRules(newPlayGround);
+        
+        // Parallel.ForEach(initialPlayGround.cells, cell =>
+        // {
+        //     newPlayGround[cell.Key] = ruleSet.ApplyRules(initialPlayGround, cell.Key); 
+        // });
         
         // for (var x = 0; x < dimensionX; x++)
         // {
@@ -29,6 +31,6 @@ public static class Automata<T>
         //     }
         // }
         
-        return newPlayGround;
+        return resultPlayGround;
     }
 }

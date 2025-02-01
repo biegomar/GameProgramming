@@ -89,8 +89,10 @@
         /// <param name="v1">The first vector to compare.</param>
         /// <param name="v2">The second vector to compare.</param>
         /// <returns>The resulting vector.</returns>
-        public static bool operator ==(Vector v1, Vector v2)
+        public static bool operator ==(Vector? v1, Vector? v2)
         {
+            if (ReferenceEquals(v1, v2)) return true;
+            
             var tolerance = .001f;
             if (ReferenceEquals(v1, v2))
                 return true;
@@ -109,7 +111,7 @@
         /// <param name="v1">The first vector to compare.</param>
         /// <param name="v2">The second vector to compare.</param>
         /// <returns>The resulting vector.</returns>
-        public static bool operator !=(Vector v1, Vector v2)
+        public static bool operator !=(Vector? v1, Vector? v2)
         {
             return !(v1 == v2);
         }       

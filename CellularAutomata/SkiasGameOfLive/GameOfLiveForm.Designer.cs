@@ -43,6 +43,8 @@ partial class GameOfLiveForm
         lblCellSize = new System.Windows.Forms.Label();
         cellSizeSelector = new System.Windows.Forms.NumericUpDown();
         GameOfLiveView = new SkiaSharp.Views.Desktop.SKControl();
+        lblRuleSet = new System.Windows.Forms.Label();
+        cbRuleSet = new System.Windows.Forms.ComboBox();
         ((System.ComponentModel.ISupportInitialize)probabilitySelector).BeginInit();
         ((System.ComponentModel.ISupportInitialize)systemSpeedSelector).BeginInit();
         ((System.ComponentModel.ISupportInitialize)cellSizeSelector).BeginInit();
@@ -116,7 +118,7 @@ partial class GameOfLiveForm
         // 
         cbPattern.FormattingEnabled = true;
         cbPattern.Items.AddRange(new object[] { "Random", "Schachbrett", "Free Style" });
-        cbPattern.Location = new System.Drawing.Point(1059, 138);
+        cbPattern.Location = new System.Drawing.Point(1059, 174);
         cbPattern.Name = "cbPattern";
         cbPattern.Size = new System.Drawing.Size(119, 23);
         cbPattern.TabIndex = 9;
@@ -124,7 +126,7 @@ partial class GameOfLiveForm
         // 
         // lblPattern
         // 
-        lblPattern.Location = new System.Drawing.Point(954, 138);
+        lblPattern.Location = new System.Drawing.Point(954, 174);
         lblPattern.Name = "lblPattern";
         lblPattern.Size = new System.Drawing.Size(99, 23);
         lblPattern.TabIndex = 10;
@@ -149,7 +151,7 @@ partial class GameOfLiveForm
         // 
         // lblCellSize
         // 
-        lblCellSize.Location = new System.Drawing.Point(954, 173);
+        lblCellSize.Location = new System.Drawing.Point(954, 209);
         lblCellSize.Name = "lblCellSize";
         lblCellSize.Size = new System.Drawing.Size(99, 23);
         lblCellSize.TabIndex = 14;
@@ -157,7 +159,7 @@ partial class GameOfLiveForm
         // 
         // cellSizeSelector
         // 
-        cellSizeSelector.Location = new System.Drawing.Point(1112, 173);
+        cellSizeSelector.Location = new System.Drawing.Point(1112, 209);
         cellSizeSelector.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
         cellSizeSelector.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
         cellSizeSelector.Name = "cellSizeSelector";
@@ -174,12 +176,33 @@ partial class GameOfLiveForm
         GameOfLiveView.Text = "skControl2";
         GameOfLiveView.PaintSurface += GameOfLiveView_PaintSurface;
         // 
+        // lblRuleSet
+        // 
+        lblRuleSet.Location = new System.Drawing.Point(954, 138);
+        lblRuleSet.Name = "lblRuleSet";
+        lblRuleSet.Size = new System.Drawing.Size(99, 23);
+        lblRuleSet.TabIndex = 17;
+        lblRuleSet.Text = "Regeln";
+        // 
+        // cbRuleSet
+        // 
+        cbRuleSet.FormattingEnabled = true;
+        cbRuleSet.Items.AddRange(new object[] { "Game of Life", "Sand" });
+        cbRuleSet.Location = new System.Drawing.Point(1059, 138);
+        cbRuleSet.Name = "cbRuleSet";
+        cbRuleSet.Size = new System.Drawing.Size(119, 23);
+        cbRuleSet.TabIndex = 16;
+        cbRuleSet.Text = "Game of Life";
+        cbRuleSet.SelectedValueChanged += cbRuleSet_SelectedValueChanged;
+        // 
         // GameOfLiveForm
         // 
         AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         BackColor = System.Drawing.SystemColors.Control;
         ClientSize = new System.Drawing.Size(1264, 681);
+        Controls.Add(lblRuleSet);
+        Controls.Add(cbRuleSet);
         Controls.Add(GameOfLiveView);
         Controls.Add(lblCellSize);
         Controls.Add(cellSizeSelector);
@@ -201,6 +224,9 @@ partial class GameOfLiveForm
         ((System.ComponentModel.ISupportInitialize)cellSizeSelector).EndInit();
         ResumeLayout(false);
     }
+
+    private System.Windows.Forms.Label lblRuleSet;
+    private System.Windows.Forms.ComboBox cbRuleSet;
 
     private SkiaSharp.Views.Desktop.SKControl GameOfLiveView;
 

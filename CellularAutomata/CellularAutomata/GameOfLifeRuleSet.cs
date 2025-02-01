@@ -22,7 +22,12 @@ public class GameOfLifeRuleSet : IRuleSet<bool>
         
         return false;
     }
-    
+
+    public PlayGround<bool> ApplySpawnRules(PlayGround<bool> playGround)
+    {
+        return playGround;
+    }
+
     private int CountLiveNeighbors(PlayGround<bool> playGround, Vector position)
     {
         var neighbors = new List<Vector>

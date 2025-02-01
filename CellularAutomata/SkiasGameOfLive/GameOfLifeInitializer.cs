@@ -17,6 +17,11 @@ public static class GameOfLifeInitializer
         }
     }
 
+    public static void AddSingleCell(PlayGround<bool> playground, int x, int y)
+    {
+        playground[new Vector(x, y, 0)] = true;
+    }
+
     public static void AddCheckerboard(PlayGround<bool> playground)
     {
         for (int y = 0; y < playground.Dimension.Y; y++)

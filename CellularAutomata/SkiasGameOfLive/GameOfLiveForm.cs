@@ -9,8 +9,10 @@ public partial class GameOfLiveForm : Form
     private Vector cellSize => new Vector((int)cellSizeSelector.Value, (int)cellSizeSelector.Value, 0);
     
     private Vector dimension;
-    private GameOfLifeRuleSet ruleSet;
+    private IRuleSet<bool> ruleSet;
     private PlayGround<bool> playGround;
+    private SKColor aliveColor = SKColors.Chartreuse;
+    private SKColor emptyColor = SKColors.Black;
     
     private CancellationTokenSource? cancellationTokenSource;
     
@@ -29,23 +31,53 @@ public partial class GameOfLiveForm : Form
     {
         dimension = new Vector((int)(bitmapSize.X / cellSize.X), (int)(bitmapSize.Y / cellSize.Y), 0);
         playGround = new PlayGround<bool>(dimension);
-        ruleSet = new GameOfLifeRuleSet();
+        ruleSet = GetRuleSetFromSelection();
 
+        cbPattern.Enabled = false;
+        if (ruleSet is GameOfLifeRuleSet)
+        {
+            cbPattern.Enabled = true;
+            InitializeForGameOfLive();
+        }
+        else if (ruleSet is SandRuleSet)
+        {
+            InitializeForSand();
+        }
+    }
+
+    private void InitializeForSand()
+    {
+        aliveColor = SKColors.Bisque;
+       GameOfLifeInitializer.AddSingleCell(playGround, new Vector(playGround.Dimension.X / 2, 0, 0)); 
+    }
+    
+    private void InitializeForGameOfLive()
+    {
+        aliveColor = SKColors.Chartreuse;
         switch (cbPattern.SelectedIndex)
         {
-            case 0: // Random
+            case 0: 
                 GameOfLifeInitializer.Randomize(playGround, (double)probabilitySelector.Value);
                 break;
-            case 1: // Checkerboard
+            case 1: 
                 GameOfLifeInitializer.AddCheckerboard(playGround);
                 break;
-            case 2: // Free Style
+            case 2: 
                 GameOfLifeInitializer.AddSingleLineWithCellOnEveryXColumn(playGround, 10, 10);
                 GameOfLifeInitializer.AddSingleColumnWithCellOnEveryYRow(playGround, 10, 10);
                 GameOfLifeInitializer.AddSingleCell(playGround, Vector.Zero);
                 GameOfLifeInitializer.AddSingleCell(playGround, new Vector(dimension.X - 1, dimension.Y - 1, 0));
                 break;
         }
+    }
+
+    private IRuleSet<bool> GetRuleSetFromSelection()
+    {
+        return cbRuleSet.SelectedIndex switch
+        {
+            1 => new SandRuleSet(),        
+            _ => new GameOfLifeRuleSet(),
+        };
     }
 
     private void startGameOfLive_Click(object sender, EventArgs e)
@@ -117,8 +149,17 @@ public partial class GameOfLiveForm : Form
     private void GameOfLiveView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
     {
         SKCanvas canvas = e.Surface.Canvas;
-        canvas.Clear(SKColors.Black);
+        canvas.Clear(emptyColor);
         
-        SkiaVisualizer<bool>.Render(playGround, cellSize, canvas, b => b ? SKColors.Chartreuse : SKColors.Black);
+        SkiaVisualizer<bool>.Render(playGround, cellSize, canvas, b => b ? this.aliveColor : emptyColor);
+    }
+
+    private void cbRuleSet_SelectedValueChanged(object sender, EventArgs e)
+    {
+        cbPattern.Enabled = true;
+        if (cbRuleSet.SelectedIndex == 1)
+        {
+            cbPattern.Enabled = false;
+        }
     }
 }
