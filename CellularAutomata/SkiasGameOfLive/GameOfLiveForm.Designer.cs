@@ -178,6 +178,7 @@ partial class GameOfLiveForm
         GameOfLiveView.TabIndex = 15;
         GameOfLiveView.Text = "skControl2";
         GameOfLiveView.PaintSurface += GameOfLiveView_PaintSurface;
+        GameOfLiveView.MouseClick += GameOfLiveView_MouseClick;
         // 
         // lblRuleSet
         // 

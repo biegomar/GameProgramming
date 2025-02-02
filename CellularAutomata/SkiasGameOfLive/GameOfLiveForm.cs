@@ -1,6 +1,7 @@
 using CellularAutomata;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
+using Timer = System.Windows.Forms.Timer;
 
 namespace SkiasGameOfLive;
 
@@ -18,6 +19,10 @@ public partial class GameOfLiveForm : Form
     private Vector dimension;
     private SKColor aliveColor = SKColors.Chartreuse;
     private SKColor emptyColor = SKColors.Black;
+    
+    private ToolTip toolTip = new ToolTip();
+    private Timer toolTipTimer = new Timer();
+
 
     private IPlayGround playGround;
     private IBaseRuleSet ruleSet;
@@ -33,6 +38,18 @@ public partial class GameOfLiveForm : Form
         InitializeComponent();
         InitializePlayGround();
         SetButtonState(false);
+        InitializeTimer();
+    }
+
+    private void InitializeTimer()
+    {
+        toolTipTimer.Interval = 3000; 
+        toolTipTimer.Tick += (s, e) =>
+        {
+            toolTip.Hide(GameOfLiveView);
+            toolTipTimer.Stop(); 
+        };
+
     }
 
     private void InitializePlayGround()
@@ -247,5 +264,30 @@ public partial class GameOfLiveForm : Form
     private void cellSizeSelector_ValueChanged(object sender, EventArgs e)
     {
         InitializePlayGround();
+    }
+
+    private void GameOfLiveView_MouseClick(object sender, MouseEventArgs e)
+    {
+        float viewWidth = GameOfLiveView.Width;
+        float viewHeight = GameOfLiveView.Height;
+        
+        float mouseX = e.Location.X;
+        float mouseY = e.Location.Y;
+        
+        int cellX = (int)(mouseX / viewWidth * dimension.X);
+        int cellY = (int)(mouseY / viewHeight * dimension.Y);
+        
+        if (cellX >= dimension.X || cellY >= dimension.Y || cellX < 0 || cellY < 0)
+        {
+            toolTip.Hide(GameOfLiveView);
+            return;
+        }
+        
+        string toolTipText = $"Zelle: [{cellX}, {cellY}]";
+        
+        toolTip.Show(toolTipText, GameOfLiveView, e.Location);
+        
+        toolTipTimer.Start();
+
     }
 }
