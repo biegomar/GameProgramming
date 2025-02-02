@@ -45,6 +45,7 @@ partial class GameOfLiveForm
         GameOfLiveView = new SkiaSharp.Views.Desktop.SKControl();
         lblRuleSet = new System.Windows.Forms.Label();
         cbRuleSet = new System.Windows.Forms.ComboBox();
+        btnSingleStep = new System.Windows.Forms.Button();
         ((System.ComponentModel.ISupportInitialize)probabilitySelector).BeginInit();
         ((System.ComponentModel.ISupportInitialize)systemSpeedSelector).BeginInit();
         ((System.ComponentModel.ISupportInitialize)cellSizeSelector).BeginInit();
@@ -70,7 +71,7 @@ partial class GameOfLiveForm
         // 
         // btnStop
         // 
-        btnStop.Location = new System.Drawing.Point(838, 78);
+        btnStop.Location = new System.Drawing.Point(838, 77);
         btnStop.Name = "btnStop";
         btnStop.Size = new System.Drawing.Size(92, 23);
         btnStop.TabIndex = 4;
@@ -118,7 +119,7 @@ partial class GameOfLiveForm
         // 
         cbPattern.FormattingEnabled = true;
         cbPattern.Items.AddRange(new object[] { "Random", "Schachbrett", "Free Style" });
-        cbPattern.Location = new System.Drawing.Point(1059, 174);
+        cbPattern.Location = new System.Drawing.Point(1059, 164);
         cbPattern.Name = "cbPattern";
         cbPattern.Size = new System.Drawing.Size(119, 23);
         cbPattern.TabIndex = 9;
@@ -126,7 +127,7 @@ partial class GameOfLiveForm
         // 
         // lblPattern
         // 
-        lblPattern.Location = new System.Drawing.Point(954, 174);
+        lblPattern.Location = new System.Drawing.Point(954, 164);
         lblPattern.Name = "lblPattern";
         lblPattern.Size = new System.Drawing.Size(99, 23);
         lblPattern.TabIndex = 10;
@@ -134,7 +135,7 @@ partial class GameOfLiveForm
         // 
         // btnReset
         // 
-        btnReset.Location = new System.Drawing.Point(838, 138);
+        btnReset.Location = new System.Drawing.Point(838, 135);
         btnReset.Name = "btnReset";
         btnReset.Size = new System.Drawing.Size(92, 23);
         btnReset.TabIndex = 11;
@@ -151,7 +152,7 @@ partial class GameOfLiveForm
         // 
         // lblCellSize
         // 
-        lblCellSize.Location = new System.Drawing.Point(954, 209);
+        lblCellSize.Location = new System.Drawing.Point(954, 193);
         lblCellSize.Name = "lblCellSize";
         lblCellSize.Size = new System.Drawing.Size(99, 23);
         lblCellSize.TabIndex = 14;
@@ -159,7 +160,7 @@ partial class GameOfLiveForm
         // 
         // cellSizeSelector
         // 
-        cellSizeSelector.Location = new System.Drawing.Point(1112, 209);
+        cellSizeSelector.Location = new System.Drawing.Point(1112, 193);
         cellSizeSelector.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
         cellSizeSelector.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
         cellSizeSelector.Name = "cellSizeSelector";
@@ -178,7 +179,7 @@ partial class GameOfLiveForm
         // 
         // lblRuleSet
         // 
-        lblRuleSet.Location = new System.Drawing.Point(954, 138);
+        lblRuleSet.Location = new System.Drawing.Point(954, 135);
         lblRuleSet.Name = "lblRuleSet";
         lblRuleSet.Size = new System.Drawing.Size(99, 23);
         lblRuleSet.TabIndex = 17;
@@ -188,12 +189,22 @@ partial class GameOfLiveForm
         // 
         cbRuleSet.FormattingEnabled = true;
         cbRuleSet.Items.AddRange(new object[] { "Game of Life", "Sand" });
-        cbRuleSet.Location = new System.Drawing.Point(1059, 138);
+        cbRuleSet.Location = new System.Drawing.Point(1059, 135);
         cbRuleSet.Name = "cbRuleSet";
         cbRuleSet.Size = new System.Drawing.Size(119, 23);
         cbRuleSet.TabIndex = 16;
         cbRuleSet.Text = "Game of Life";
         cbRuleSet.SelectedValueChanged += cbRuleSet_SelectedValueChanged;
+        // 
+        // btnSingleStep
+        // 
+        btnSingleStep.Location = new System.Drawing.Point(838, 106);
+        btnSingleStep.Name = "btnSingleStep";
+        btnSingleStep.Size = new System.Drawing.Size(92, 23);
+        btnSingleStep.TabIndex = 18;
+        btnSingleStep.Text = "Next Step";
+        btnSingleStep.UseVisualStyleBackColor = true;
+        btnSingleStep.Click += btnSingleStep_Click;
         // 
         // GameOfLiveForm
         // 
@@ -201,6 +212,7 @@ partial class GameOfLiveForm
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         BackColor = System.Drawing.SystemColors.Control;
         ClientSize = new System.Drawing.Size(1264, 681);
+        Controls.Add(btnSingleStep);
         Controls.Add(lblRuleSet);
         Controls.Add(cbRuleSet);
         Controls.Add(GameOfLiveView);
@@ -224,6 +236,8 @@ partial class GameOfLiveForm
         ((System.ComponentModel.ISupportInitialize)cellSizeSelector).EndInit();
         ResumeLayout(false);
     }
+
+    private System.Windows.Forms.Button btnSingleStep;
 
     private System.Windows.Forms.Label lblRuleSet;
     private System.Windows.Forms.ComboBox cbRuleSet;

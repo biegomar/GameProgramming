@@ -99,9 +99,9 @@ public partial class GameOfLiveForm : Form
         {
             while (!token.IsCancellationRequested)
             {
-                this.Invoke(RenderPlaygroundAndDisplayGeneration);
-                
                 playGround = Automata<bool>.NextGeneration(playGround, ruleSet);
+                
+                this.Invoke(RenderPlaygroundAndDisplayGeneration);
 
                 if (systemSpeed > 0)
                 {
@@ -117,6 +117,7 @@ public partial class GameOfLiveForm : Form
     {
         btnStart.Enabled = !isRunning;
         btnReset.Enabled = !isRunning;
+        btnSingleStep.Enabled = !isRunning;
         
         btnStop.Enabled = isRunning;
     }
@@ -161,5 +162,12 @@ public partial class GameOfLiveForm : Form
         {
             cbPattern.Enabled = false;
         }
+    }
+
+    private void btnSingleStep_Click(object sender, EventArgs e)
+    {
+        playGround = Automata<bool>.NextGeneration(playGround, ruleSet);
+                
+        this.Invoke(RenderPlaygroundAndDisplayGeneration);
     }
 }

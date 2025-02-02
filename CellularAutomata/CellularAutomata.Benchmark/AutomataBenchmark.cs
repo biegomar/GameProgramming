@@ -5,12 +5,13 @@ using BenchmarkDotNet.Running;
 
 public class AutomataBenchmark
 {
-    private static Vector dimension = new Vector(100,40,0);
+    private const int Iterations = 10;
+    private static Vector dimension = new Vector(800,600,0);
     private Vector screenSize = new Vector(dimension.X + 5, dimension.Y + 5, 0);
     PlayGround<bool> playGround = new PlayGround<bool>(dimension);
     GameOfLifeRuleSet ruleSet = new GameOfLifeRuleSet();
     
-    public void Initialize()
+    public AutomataBenchmark()
     {
         GameOfLifeInitializer.Randomize(playGround, 0.2);
     }
@@ -18,6 +19,27 @@ public class AutomataBenchmark
     [Benchmark]
     public void Run()
     {
-        playGround = Automata<bool>.NextGeneration(playGround, ruleSet);
+        for (int i = 0; i < Iterations; i++)
+        {
+            playGround = Automata<bool>.NextGeneration(playGround, ruleSet);    
+        }
+    }
+    
+    [Benchmark]
+    public void RunParallel()
+    {
+        for (int i = 0; i < Iterations; i++)
+        {
+            playGround = Automata<bool>.NextGenerationParallel(playGround, ruleSet);    
+        }
+    }
+    
+    [Benchmark(Baseline = true)]
+    public void RunForLoop()
+    {
+        for (int i = 0; i < Iterations; i++)
+        {
+            playGround = Automata<bool>.NextGenerationForLoop(playGround, ruleSet);    
+        }
     }
 }
