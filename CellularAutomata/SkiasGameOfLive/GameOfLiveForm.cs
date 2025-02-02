@@ -148,7 +148,7 @@ public partial class GameOfLiveForm : Form
 
     private void GameOfLiveView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
     {
-        SKCanvas canvas = e.Surface.Canvas;
+        var canvas = e.Surface.Canvas;
         canvas.Clear(emptyColor);
         
         SkiaVisualizer<bool>.Render(playGround, cellSize, canvas, b => b ? this.aliveColor : emptyColor);
