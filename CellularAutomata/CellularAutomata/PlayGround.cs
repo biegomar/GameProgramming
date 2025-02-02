@@ -1,6 +1,6 @@
 ﻿namespace CellularAutomata;
 
-public class PlayGround<T>
+public class PlayGround<T> : IPlayGround
 {
     public Dictionary<Vector, Cell<T>> cells = new();
 

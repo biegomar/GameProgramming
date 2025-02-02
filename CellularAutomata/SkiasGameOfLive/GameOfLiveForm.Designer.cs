@@ -124,6 +124,7 @@ partial class GameOfLiveForm
         cbPattern.Size = new System.Drawing.Size(119, 23);
         cbPattern.TabIndex = 9;
         cbPattern.Text = "Random";
+        cbPattern.SelectedValueChanged += cbPattern_SelectedValueChanged;
         // 
         // lblPattern
         // 
@@ -167,6 +168,7 @@ partial class GameOfLiveForm
         cellSizeSelector.Size = new System.Drawing.Size(66, 23);
         cellSizeSelector.TabIndex = 13;
         cellSizeSelector.Value = new decimal(new int[] { 4, 0, 0, 0 });
+        cellSizeSelector.ValueChanged += cellSizeSelector_ValueChanged;
         // 
         // GameOfLiveView
         // 

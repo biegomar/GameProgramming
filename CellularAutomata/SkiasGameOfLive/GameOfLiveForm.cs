@@ -6,13 +6,21 @@ namespace SkiasGameOfLive;
 
 public partial class GameOfLiveForm : Form
 {
+    private enum RuleSetType
+    {
+        Sand,
+        GameOfLife
+    }
+
+    
     private Vector cellSize => new Vector((int)cellSizeSelector.Value, (int)cellSizeSelector.Value, 0);
     
     private Vector dimension;
-    private IRuleSet<bool> ruleSet;
-    private PlayGround<bool> playGround;
     private SKColor aliveColor = SKColors.Chartreuse;
     private SKColor emptyColor = SKColors.Black;
+
+    private IPlayGround playGround;
+    private IBaseRuleSet ruleSet;
     
     private CancellationTokenSource? cancellationTokenSource;
     
@@ -29,54 +37,77 @@ public partial class GameOfLiveForm : Form
 
     private void InitializePlayGround()
     {
+        generation = 0;
         dimension = new Vector((int)(bitmapSize.X / cellSize.X), (int)(bitmapSize.Y / cellSize.Y), 0);
-        playGround = new PlayGround<bool>(dimension);
-        ruleSet = GetRuleSetFromSelection();
 
-        cbPattern.Enabled = false;
-        if (ruleSet is GameOfLifeRuleSet)
+        switch (GetTypeFromSelection())
         {
-            cbPattern.Enabled = true;
-            InitializeForGameOfLive();
+            case RuleSetType.Sand:
+                InitializeForSand();
+                break;
+            case RuleSetType.GameOfLife:
+                InitializeForGameOfLive();
+                break;
         }
-        else if (ruleSet is SandRuleSet)
-        {
-            InitializeForSand();
-        }
+        
+        RenderPlaygroundAndDisplayGeneration();
     }
 
     private void InitializeForSand()
     {
+        playGround = new PlayGround<SandCellState>(dimension);
+        var sandPlayGround = (playGround as PlayGround<SandCellState>)!;
+
+        ruleSet = new SandRuleSet();
+
+        var middle = (int)(sandPlayGround.Dimension.X / 2);
+        cbPattern.Enabled = false;
         aliveColor = SKColors.Bisque;
-       GameOfLifeInitializer.AddSingleCell(playGround, new Vector(playGround.Dimension.X / 2, 0, 0)); 
+        GameOfLifeInitializer.AddSandCellStateToCell(sandPlayGround, new Vector(middle, 0, 0), SandCellState.Sand);
+
+
+        // add some terrain
+        GameOfLifeInitializer.AddSandCellStateToCell(sandPlayGround, new Vector(middle + 1, 10, 0), SandCellState.Solid);
+        GameOfLifeInitializer.AddSandCellStateToCell(sandPlayGround, new Vector(middle , 11, 0), SandCellState.Solid);
+        GameOfLifeInitializer.AddSandCellStateToCell(sandPlayGround, new Vector(middle - 1, 12, 0), SandCellState.Solid);
+        
+        GameOfLifeInitializer.AddSandCellStateToCell(sandPlayGround, new Vector(middle, 20, 0), SandCellState.Solid);
+        GameOfLifeInitializer.AddSandCellStateToCell(sandPlayGround, new Vector(middle -1 , 19, 0), SandCellState.Solid);
+        GameOfLifeInitializer.AddSandCellStateToCell(sandPlayGround, new Vector(middle - 2, 18, 0), SandCellState.Solid);
     }
-    
+
     private void InitializeForGameOfLive()
     {
+        playGround = new PlayGround<bool>(dimension);
+        var gamePlayGround = (playGround as PlayGround<bool>)!;
+        
+        ruleSet = new GameOfLifeRuleSet();
+        
+        cbPattern.Enabled = true;
         aliveColor = SKColors.Chartreuse;
         switch (cbPattern.SelectedIndex)
         {
             case 0: 
-                GameOfLifeInitializer.Randomize(playGround, (double)probabilitySelector.Value);
+                GameOfLifeInitializer.Randomize(gamePlayGround, (double)probabilitySelector.Value);
                 break;
             case 1: 
-                GameOfLifeInitializer.AddCheckerboard(playGround);
+                GameOfLifeInitializer.AddCheckerboard(gamePlayGround);
                 break;
             case 2: 
-                GameOfLifeInitializer.AddSingleLineWithCellOnEveryXColumn(playGround, 10, 10);
-                GameOfLifeInitializer.AddSingleColumnWithCellOnEveryYRow(playGround, 10, 10);
-                GameOfLifeInitializer.AddSingleCell(playGround, Vector.Zero);
-                GameOfLifeInitializer.AddSingleCell(playGround, new Vector(dimension.X - 1, dimension.Y - 1, 0));
+                GameOfLifeInitializer.AddSingleLineWithCellOnEveryXColumn(gamePlayGround, 10, 10);
+                GameOfLifeInitializer.AddSingleColumnWithCellOnEveryYRow(gamePlayGround, 10, 10);
+                GameOfLifeInitializer.AddSingleCell(gamePlayGround, Vector.Zero);
+                GameOfLifeInitializer.AddSingleCell(gamePlayGround, new Vector(dimension.X - 1, dimension.Y - 1, 0));
                 break;
         }
     }
-
-    private IRuleSet<bool> GetRuleSetFromSelection()
+    
+    private RuleSetType GetTypeFromSelection() 
     {
         return cbRuleSet.SelectedIndex switch
         {
-            1 => new SandRuleSet(),        
-            _ => new GameOfLifeRuleSet(),
+            1 => RuleSetType.Sand,        
+            _ => RuleSetType.GameOfLife,
         };
     }
 
@@ -84,22 +115,23 @@ public partial class GameOfLiveForm : Form
     {
         if (cancellationTokenSource == null)
         {
-            NextGeneration();
+            ProcessNextGeneration();
         }
         
         SetButtonState(true);
     }
 
-    private async void NextGeneration()
+    private async Task ProcessNextGeneration()
     {
         cancellationTokenSource = new CancellationTokenSource();
         CancellationToken token = cancellationTokenSource.Token;
         
         await Task.Run(() =>
         {
+            var type = GetTypeFromSelection();
             while (!token.IsCancellationRequested)
             {
-                playGround = Automata<bool>.NextGeneration(playGround, ruleSet);
+                GenerateNextPlaygroundState(type);
                 
                 this.Invoke(RenderPlaygroundAndDisplayGeneration);
 
@@ -111,6 +143,18 @@ public partial class GameOfLiveForm : Form
         }, token);
         
         cancellationTokenSource = null;
+    }
+
+    private void GenerateNextPlaygroundState(RuleSetType type)
+    {
+        playGround = type switch
+        {
+            RuleSetType.Sand => Automata<SandCellState>.NextGenerationParallel((playGround as PlayGround<SandCellState>)!,
+                (ruleSet as SandRuleSet)!),
+            RuleSetType.GameOfLife => Automata<bool>.NextGenerationParallel((playGround as PlayGround<bool>)!,
+                (ruleSet as GameOfLifeRuleSet)!),
+            _ => playGround
+        };
     }
 
     private void SetButtonState(bool isRunning)
@@ -142,17 +186,38 @@ public partial class GameOfLiveForm : Form
 
     private void btnReset_Click(object sender, EventArgs e)
     {
-        generation = 0;
         InitializePlayGround();
-        RenderPlaygroundAndDisplayGeneration();
     }
 
     private void GameOfLiveView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
     {
-        var canvas = e.Surface.Canvas;
+        VisualizerRender(GetTypeFromSelection(), e.Surface.Canvas);
+    }
+
+    private void VisualizerRender(RuleSetType type, SKCanvas canvas)
+    {
         canvas.Clear(emptyColor);
         
-        SkiaVisualizer<bool>.Render(playGround, cellSize, canvas, b => b ? this.aliveColor : emptyColor);
+        switch (type)
+        {
+            case RuleSetType.Sand:
+                SkiaVisualizer<SandCellState>.Render((playGround as PlayGround<SandCellState>)!, cellSize, canvas, b =>
+                {
+                    return b switch
+                    {
+                        SandCellState.Empty => this.emptyColor,
+                        SandCellState.Sand => this.aliveColor,
+                        SandCellState.Solid => SKColors.Brown,
+                        _ => this.emptyColor
+                    };
+                });
+                break;
+            case RuleSetType.GameOfLife:
+                SkiaVisualizer<bool>.Render((playGround as PlayGround<bool>)!, cellSize, canvas, b => b ? this.aliveColor : emptyColor);
+                break;
+            default:
+                break;
+        }
     }
 
     private void cbRuleSet_SelectedValueChanged(object sender, EventArgs e)
@@ -162,12 +227,25 @@ public partial class GameOfLiveForm : Form
         {
             cbPattern.Enabled = false;
         }
+        
+        InitializePlayGround();
     }
 
     private void btnSingleStep_Click(object sender, EventArgs e)
     {
-        playGround = Automata<bool>.NextGeneration(playGround, ruleSet);
+        var type = GetTypeFromSelection();
+        GenerateNextPlaygroundState(type);
                 
         this.Invoke(RenderPlaygroundAndDisplayGeneration);
+    }
+
+    private void cbPattern_SelectedValueChanged(object sender, EventArgs e)
+    {
+        InitializePlayGround();
+    }
+
+    private void cellSizeSelector_ValueChanged(object sender, EventArgs e)
+    {
+        InitializePlayGround();
     }
 }

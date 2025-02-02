@@ -59,6 +59,11 @@ public static class GameOfLifeInitializer
         playground[position] = true;
     }
     
+    public static void AddSandCellStateToCell(PlayGround<SandCellState> playground, Vector position, SandCellState state)
+    {
+        playground[position] = state;
+    }
+    
     // **Muster 1: Blinker (kleiner Oszillator)**
     public static void AddBlinker(PlayGround<bool> playground, Vector startPosition)
     {

@@ -24,7 +24,7 @@ public static class Automata<T>
         {
             newPlayGround[cell.Key] = ruleSet.ApplyRules(initialPlayGround, cell.Key); 
         });
-        
+
         var resultPlayGround = ruleSet.ApplySpawnRules(newPlayGround);
         
         return resultPlayGround;
