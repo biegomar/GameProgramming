@@ -117,4 +117,87 @@ public static class GameOfLifeInitializer
         playground[new Vector(startPosition.X + 2, startPosition.Y + 3, 0)] = true;
         playground[new Vector(startPosition.X + 3, startPosition.Y + 3, 0)] = true;
     }
+    
+    public static void GenerateSandHourglass(PlayGround<SandCellState> playground)
+    {
+        var dimension = playground.Dimension;
+        var width = (int)dimension.X;
+        var height = (int)dimension.Y;
+
+        // if (width < 5 || height < 5 || width % 2 == 0 || height % 2 == 0)
+        // {
+        //     throw new ArgumentException("Dimensionen der Sanduhr müssen ungerade Zahlen und mindestens 5x5 sein.");
+        // }
+
+        int midX = width / 2; // Mitte der Breite
+        int midY = height / 2; // Mitte der Höhe
+
+        // Sanduhr von oben nach unten aufbauen
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                if (IsOutline(x, y, width, height) && !IsConnection(x, y, midX, midY))
+                {
+                    playground[new Vector(x, y, 0)] = SandCellState.Solid;
+                }
+                else if (IsTopSand(x, y, midX, midY))
+                {
+                    playground[new Vector(x, y, 0)] = SandCellState.Sand;
+                }
+                else if (IsConnection(x, y, midX, midY))
+                {
+                    playground[new Vector(x, y, 0)] = SandCellState.Sand;
+                }
+                else if (IsBottomEmpty(x, y, midX, midY))
+                {
+                    playground[new Vector(x, y, 0)] = SandCellState.Empty;
+                }
+            }
+        }
+    }
+
+    // Überprüft, ob die Zelle Teil des äußeren Rahmens ist
+    private static bool IsOutline(int x, int y, int width, int height)
+    {
+        int midX = width / 2;
+        int midY = height / 2;
+
+        // Obere Hälfte (Sanduhr-Umrandung für oberen Kolben)
+        if (y <= midY && Math.Abs(x - midX) == (midY - y))
+        {
+            return true; // Rand für Top (triangular)
+        }
+
+        // Untere Hälfte (Sanduhr-Umrandung für unteren Kolben)
+        if (y >= midY && Math.Abs(x - midX) == (y - midY))
+        {
+            return true; // Rand für Bottom (inverted triangular)
+        }
+
+        // Kein Rand
+        return false;
+    }
+
+
+    // Überprüft, ob die Zelle zum oberen (gefüllten) Sand passt
+    private static bool IsTopSand(int x, int y, int midX, int midY)
+    {
+        return y < midY && Math.Abs(x - midX) <= (midY - y - 1);
+    }
+
+    // Überprüft, ob die Zelle die Verbindung (einen Punkt breit) zwischen den Kolben ist
+    private static bool IsConnection(int x, int y, int midX, int midY)
+    {
+        // Genau die Mitte der Sanduhr (1 Zelle)
+        return y == midY && x == midX;
+
+    }
+
+    // Überprüft, ob die Zelle im unteren Kolben (leer) liegt
+    private static bool IsBottomEmpty(int x, int y, int midX, int midY)
+    {
+        return y > midY && Math.Abs(x - midX) <= (y - midY - 1);
+    }
+
 }

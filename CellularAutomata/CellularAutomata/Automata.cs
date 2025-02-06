@@ -2,7 +2,7 @@
 
 public static class Automata<T>
 {
-    public static PlayGround<T> NextGeneration(PlayGround<T> initialPlayGround, IRuleSet<T> ruleSet)
+    public static PlayGround<T> NextGeneration(PlayGround<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn)
     {
         var newPlayGround = new PlayGround<T>(initialPlayGround.Dimension);
 
@@ -11,12 +11,12 @@ public static class Automata<T>
             newPlayGround[cell.Key] = ruleSet.ApplyRules(initialPlayGround, cell.Key); 
         }
         
-        var resultPlayGround = ruleSet.ApplySpawnRules(newPlayGround);
+        var resultPlayGround = ruleSet.ApplySpawnRules(newPlayGround, isSpawn);
         
         return resultPlayGround;
     }
 
-    public static PlayGround<T> NextGenerationParallel(PlayGround<T> initialPlayGround, IRuleSet<T> ruleSet)
+    public static PlayGround<T> NextGenerationParallel(PlayGround<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn)
     {
         var newPlayGround = new PlayGround<T>(initialPlayGround.Dimension);
         
@@ -25,12 +25,12 @@ public static class Automata<T>
             newPlayGround[cell.Key] = ruleSet.ApplyRules(initialPlayGround, cell.Key); 
         });
 
-        var resultPlayGround = ruleSet.ApplySpawnRules(newPlayGround);
+        var resultPlayGround = ruleSet.ApplySpawnRules(newPlayGround, isSpawn);
         
         return resultPlayGround;
     }
     
-    public static PlayGround<T> NextGenerationForLoop(PlayGround<T> initialPlayGround, IRuleSet<T> ruleSet)
+    public static PlayGround<T> NextGenerationForLoop(PlayGround<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn)
     {
         var newPlayGround = new PlayGround<T>(initialPlayGround.Dimension);
         var dimensionX = (int)initialPlayGround.Dimension.X;
@@ -47,7 +47,7 @@ public static class Automata<T>
             }
         }
         
-        var resultPlayGround = ruleSet.ApplySpawnRules(newPlayGround);
+        var resultPlayGround = ruleSet.ApplySpawnRules(newPlayGround, isSpawn);
         
         return resultPlayGround;
     }

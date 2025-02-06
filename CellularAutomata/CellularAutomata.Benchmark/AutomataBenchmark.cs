@@ -21,7 +21,7 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGround = Automata<bool>.NextGeneration(playGround, ruleSet);    
+            playGround = Automata<bool>.NextGeneration(playGround, ruleSet, false);    
         }
     }
     
@@ -30,7 +30,7 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGround = Automata<bool>.NextGenerationParallel(playGround, ruleSet);    
+            playGround = Automata<bool>.NextGenerationParallel(playGround, ruleSet, false);    
         }
     }
     
@@ -39,7 +39,7 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGround = Automata<bool>.NextGenerationForLoop(playGround, ruleSet);    
+            playGround = Automata<bool>.NextGenerationForLoop(playGround, ruleSet, false);    
         }
     }
 }

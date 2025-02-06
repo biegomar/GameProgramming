@@ -25,7 +25,7 @@ do
 {
     //ConsoleVisualizer.Render(playGround, x => x ? 'X' : ' ');
     ConsoleVisualizer<bool>.RenderWithColors(playGround, x => x ? ConsoleColor.Green : ConsoleColor.Black);
-    playGround = Automata<bool>.NextGeneration(playGround, ruleSet);
+    playGround = Automata<bool>.NextGeneration(playGround, ruleSet, false);
     Thread.Sleep(250);
     
     if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)

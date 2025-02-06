@@ -23,7 +23,7 @@ public class GameOfLifeRuleSet : IRuleSet<bool>
         return false;
     }
 
-    public PlayGround<bool> ApplySpawnRules(PlayGround<bool> playGround)
+    public PlayGround<bool> ApplySpawnRules(PlayGround<bool> playGround, bool isSpawn)
     {
         return playGround;
     }
