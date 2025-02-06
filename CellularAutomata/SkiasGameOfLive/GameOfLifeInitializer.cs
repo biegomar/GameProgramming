@@ -117,7 +117,29 @@ public static class GameOfLifeInitializer
         playground[new Vector(startPosition.X + 2, startPosition.Y + 3, 0)] = true;
         playground[new Vector(startPosition.X + 3, startPosition.Y + 3, 0)] = true;
     }
-    
+
+    public static void TestCaseOne(PlayGround<SandCellState> playground)
+    {
+        playground[new Vector(0, 0, 0)] = SandCellState.Solid;
+        playground[new Vector(0, 1, 0)] = SandCellState.Solid;
+        playground[new Vector(0, 2, 0)] = SandCellState.Solid;
+        
+        playground[new Vector(4, 0, 0)] = SandCellState.Solid;
+        playground[new Vector(4, 1, 0)] = SandCellState.Solid;
+        playground[new Vector(4, 2, 0)] = SandCellState.Solid;
+        
+        playground[new Vector(1, 2, 0)] = SandCellState.Solid;
+        playground[new Vector(2, 2, 0)] = SandCellState.Solid;
+        playground[new Vector(3, 2, 0)] = SandCellState.Solid;
+        
+        playground[new Vector(1, 0, 0)] = SandCellState.Sand;
+        playground[new Vector(1, 1, 0)] = SandCellState.Sand;
+        
+        playground[new Vector(3, 0, 0)] = SandCellState.Sand;
+        playground[new Vector(3, 1, 0)] = SandCellState.Sand;
+        
+        
+    }
     public static void GenerateSandHourglass(PlayGround<SandCellState> playground)
     {
         var dimension = playground.Dimension;

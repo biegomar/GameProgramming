@@ -94,6 +94,7 @@ public partial class GameOfLiveForm : Form
         // GameOfLifeInitializer.AddSandCellStateToCell(sandPlayGround, new Vector(middle - 2, 18, 0), SandCellState.Solid);
         
         GameOfLifeInitializer.GenerateSandHourglass(sandPlayGround);
+        //GameOfLifeInitializer.TestCaseOne(sandPlayGround);
     }
 
     private void InitializeForGameOfLive()

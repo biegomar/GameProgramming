@@ -25,14 +25,16 @@ public class SandRuleSet : IRuleSet<SandCellState>
         }
 
         var cellNeighbors = GetNeighboursState(playGround, position);
+        var cellNeighborsFromLeft = GetNeighboursState(playGround, new Vector(position.X - 1, position.Y, 0));
         
         if (cellState == SandCellState.Sand)
         {
-            if (cellNeighbors is 
-                { Bottom: SandCellState.Empty } or 
-                { BottomRight: SandCellState.Empty, Right: SandCellState.Empty } or 
-                { BottomLeft: SandCellState.Empty, Left: SandCellState.Empty }
-                && position.Y < playGround.Dimension.Y - 1)
+            if (
+                (cellNeighbors.Bottom == SandCellState.Empty ||
+                (cellNeighbors.BottomRight == SandCellState.Empty && cellNeighbors.Right == SandCellState.Empty) ||
+                (cellNeighbors.BottomLeft == SandCellState.Empty && cellNeighbors.Left == SandCellState.Empty && cellNeighborsFromLeft.Left == SandCellState.Empty))
+                && position.Y < playGround.Dimension.Y - 1
+               )
             {
                 return SandCellState.Empty;
             }
