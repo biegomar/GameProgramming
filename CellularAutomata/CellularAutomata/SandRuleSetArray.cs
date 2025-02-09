@@ -1,6 +1,6 @@
 ﻿namespace CellularAutomata;
 
-public class SandRuleSet : IRuleSet<SandCellState>
+public class SandRuleSetArray : IRuleSet<SandCellState>
 {
     private record CellNeighbors(
         SandCellState TopLeft,
@@ -14,8 +14,12 @@ public class SandRuleSet : IRuleSet<SandCellState>
     );
 
 
-    
     public SandCellState ApplyRules(PlayGround<SandCellState> playGround, Vector position)
+    {
+        return this.ApplyRules((PlayGroundArray<SandCellState>)playGround, ((int)position.X, (int)position.Y, (int)position.Z));
+    }
+
+    public SandCellState ApplyRules(PlayGroundArray<SandCellState> playGround, (int X, int Y, int Z) position)
     {
         var cellState = playGround[position];
 
@@ -25,7 +29,7 @@ public class SandRuleSet : IRuleSet<SandCellState>
         }
 
         var cellNeighbors = GetNeighboursState(playGround, position);
-        var cellNeighborsFromLeft = GetNeighboursState(playGround, new Vector(position.X - 1, position.Y, 0));
+        var cellNeighborsFromLeft = GetNeighboursState(playGround, (position.X - 1, position.Y, 0));
         
         if (cellState == SandCellState.Sand)
         {
@@ -55,7 +59,7 @@ public class SandRuleSet : IRuleSet<SandCellState>
         }
 
         // Prio 3: grain to the top right, but only if its Prio 1 and Prio 2 is blocked.
-        var cellNeighborsFromRight = GetNeighboursState(playGround, new Vector(position.X + 1, position.Y, 0));
+        var cellNeighborsFromRight = GetNeighboursState(playGround, (position.X + 1, position.Y, 0));
         if (cellNeighbors is { TopRight: SandCellState.Sand, Top: SandCellState.Empty, Right: SandCellState.Sand or SandCellState.Solid }
             && (cellNeighborsFromRight is { Right : SandCellState.Sand or SandCellState.Solid} || (cellNeighborsFromRight.Right == SandCellState.Empty && cellNeighborsFromRight.TopRight != SandCellState.Empty)))
         {
@@ -65,16 +69,16 @@ public class SandRuleSet : IRuleSet<SandCellState>
         return SandCellState.Empty;
     }
 
-    public SandCellState ApplyRules(PlayGroundArray<SandCellState> playGround, (int X, int Y, int Z) position)
+    public PlayGround<SandCellState> ApplySpawnRules(PlayGround<SandCellState> playGround, bool isSpawn)
     {
-        return ApplyRules(playGround, new Vector(position.X, position.Y, position.Z));
+        return this.ApplySpawnRules((PlayGroundArray<SandCellState>)playGround, isSpawn);
     }
 
-    public PlayGround<SandCellState> ApplySpawnRules(PlayGround<SandCellState> playGround, bool isSpawn)
+    public PlayGroundArray<SandCellState> ApplySpawnRules(PlayGroundArray<SandCellState> playGround, bool isSpawn)
     {
         if (isSpawn)
         {
-            var position = new Vector(playGround.Dimension.X / 2, 0, 0);
+            var position = ((int)playGround.Dimension.X / 2, 0, 0);
             var cellNeighbors = GetNeighboursState(playGround, position);
 
             if (cellNeighbors.Bottom == SandCellState.Empty)
@@ -86,21 +90,16 @@ public class SandRuleSet : IRuleSet<SandCellState>
         return playGround;
     }
 
-    public PlayGroundArray<SandCellState> ApplySpawnRules(PlayGroundArray<SandCellState> playGround, bool isSpawn)
+    private CellNeighbors GetNeighboursState(PlayGroundArray<SandCellState> playGround, (int X, int Y, int Z) position)
     {
-        return (PlayGroundArray<SandCellState>)this.ApplySpawnRules((PlayGround<SandCellState>)playGround, isSpawn);
-    }
-
-    private CellNeighbors GetNeighboursState(PlayGround<SandCellState> playGround, Vector position)
-    {
-        var topLeft = new Vector(position.X - 1, position.Y - 1, 0);
-        var top = new Vector(position.X, position.Y - 1, 0);
-        var topRight = new Vector(position.X + 1, position.Y - 1, 0);
-        var left = new Vector(position.X - 1, position.Y, 0);
-        var right = new Vector(position.X + 1, position.Y, 0);
-        var bottomLeft = new Vector(position.X - 1, position.Y + 1, 0);
-        var bottom = new Vector(position.X, position.Y + 1, 0);
-        var bottomRight = new Vector(position.X + 1, position.Y + 1, 0);
+        var topLeft = (position.X - 1, position.Y - 1, 0);
+        var top = (position.X, position.Y - 1, 0);
+        var topRight = (position.X + 1, position.Y - 1, 0);
+        var left = (position.X - 1, position.Y, 0);
+        var right = (position.X + 1, position.Y, 0);
+        var bottomLeft = (position.X - 1, position.Y + 1, 0);
+        var bottom = (position.X, position.Y + 1, 0);
+        var bottomRight = (position.X + 1, position.Y + 1, 0);
         
         return new CellNeighbors(
             TopLeft: IsWithinBounds(playGround.Dimension, topLeft) ? playGround[topLeft] : SandCellState.Empty,
@@ -115,7 +114,7 @@ public class SandRuleSet : IRuleSet<SandCellState>
     }
 
     
-    private bool IsWithinBounds(Vector dimension, Vector position)
+    private bool IsWithinBounds(Vector dimension, (int X, int Y, int Z) position)
     {
         return position.X >= 0 && position.Y >= 0 &&
                position.X < dimension.X &&

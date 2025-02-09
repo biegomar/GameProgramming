@@ -9,11 +9,23 @@ public class AutomataBenchmark
     private static Vector dimension = new Vector(800,600,0);
     private Vector screenSize = new Vector(dimension.X + 5, dimension.Y + 5, 0);
     PlayGround<bool> playGround = new PlayGround<bool>(dimension);
+    PlayGroundArray<bool> playGroundArray = new PlayGroundArray<bool>(dimension);
     GameOfLifeRuleSet ruleSet = new GameOfLifeRuleSet();
+    GameOfLifeRuleSetArray ruleSetArray = new GameOfLifeRuleSetArray();
     
     public AutomataBenchmark()
     {
         GameOfLifeInitializer.Randomize(playGround, 0.2);
+        GameOfLifeInitializer.Randomize(playGroundArray, 0.2);
+    }
+    
+    [Benchmark(Baseline = true)]
+    public void RunBaseline()
+    {
+        for (int i = 0; i < Iterations; i++)
+        {
+            playGround = Automata<bool>.NextGenerationForLoop(playGround, ruleSet, false);    
+        }
     }
     
     [Benchmark]
@@ -34,12 +46,21 @@ public class AutomataBenchmark
         }
     }
     
-    [Benchmark(Baseline = true)]
-    public void RunForLoop()
+    [Benchmark]
+    public void RunArray()
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGround = Automata<bool>.NextGenerationForLoop(playGround, ruleSet, false);    
+            playGroundArray = AutomataArray<bool>.NextGeneration(playGroundArray, ruleSetArray, false);    
+        }
+    }
+    
+    [Benchmark]
+    public void RunParallelArray()
+    {
+        for (int i = 0; i < Iterations; i++)
+        {
+            playGround = AutomataArray<bool>.NextGenerationParallel(playGroundArray, ruleSetArray, false);    
         }
     }
 }

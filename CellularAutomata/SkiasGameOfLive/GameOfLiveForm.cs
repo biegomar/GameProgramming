@@ -13,14 +13,14 @@ public partial class GameOfLiveForm : Form
         GameOfLife
     }
     
-    private Vector cellSize => new Vector((int)cellSizeSelector.Value, (int)cellSizeSelector.Value, 0);
+    private Vector cellSize => new ((int)cellSizeSelector.Value, (int)cellSizeSelector.Value, 0);
     
     private Vector dimension;
     private SKColor aliveColor = SKColors.Chartreuse;
     private SKColor emptyColor = SKColors.Black;
     
-    private ToolTip toolTip = new ToolTip();
-    private Timer toolTipTimer = new Timer();
+    private ToolTip toolTip = new ();
+    private Timer toolTipTimer = new ();
 
 
     private IPlayGround playGround;
@@ -31,7 +31,7 @@ public partial class GameOfLiveForm : Form
     
     private int generation = 0;
     private int systemSpeed => (int)(systemSpeedSelector.Maximum - systemSpeedSelector.Value);
-    private Vector bitmapSize => new Vector(this.GameOfLiveView.Width, this.GameOfLiveView.Height, 0);
+    private Vector bitmapSize => new (this.GameOfLiveView.Width, this.GameOfLiveView.Height, 0);
     
     public GameOfLiveForm()
     {
@@ -169,7 +169,7 @@ public partial class GameOfLiveForm : Form
     {
         playGround = type switch
         {
-            RuleSetType.Sand => Automata<SandCellState>.NextGeneration((playGround as PlayGround<SandCellState>)!,
+            RuleSetType.Sand => Automata<SandCellState>.NextGenerationParallel((playGround as PlayGround<SandCellState>)!,
                 (ruleSet as SandRuleSet)!, false),
             RuleSetType.GameOfLife => Automata<bool>.NextGenerationParallel((playGround as PlayGround<bool>)!,
                 (ruleSet as GameOfLifeRuleSet)!, false),

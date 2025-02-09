@@ -23,9 +23,19 @@ public class GameOfLifeRuleSet : IRuleSet<bool>
         return false;
     }
 
+    public bool ApplyRules(PlayGroundArray<bool> playGround, (int X, int Y, int Z) position)
+    {
+        return this.ApplyRules(playGround, new Vector(position.X, position.Y, position.Z));
+    }
+
     public PlayGround<bool> ApplySpawnRules(PlayGround<bool> playGround, bool isSpawn)
     {
         return playGround;
+    }
+
+    public PlayGroundArray<bool> ApplySpawnRules(PlayGroundArray<bool> playGround, bool isSpawn)
+    {
+        throw new NotImplementedException();
     }
 
     private int CountLiveNeighbors(PlayGround<bool> playGround, Vector position)
