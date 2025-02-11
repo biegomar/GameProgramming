@@ -115,18 +115,13 @@ public static class SkiaVisualizer<T>
     private static void RenderPixel(PlayGroundArray<T> playGround, SKCanvas canvas, Func<T, SKColor> stateToColor)
     {
         using var paint = new SKPaint { Style = SKPaintStyle.Fill };
-
-        var positionToCheck = Vector.Zero;
-
+        
         for (int y = 0; y < playGround.Dimension.Y; y++)
         {
             for (int x = 0; x < playGround.Dimension.X; x++)
             {
-                positionToCheck.X = x;
-                positionToCheck.Y = y;
-
                 var point = new SKPoint(x,y);
-                SKColor color = stateToColor(playGround[positionToCheck]);
+                SKColor color = stateToColor(playGround[(x,y,0)]);
                 canvas.DrawPoint(point, color);
             }
         }
@@ -135,56 +130,81 @@ public static class SkiaVisualizer<T>
     private static void RenderAsRectangles(PlayGround<T> playGround, Vector cellSize, SKCanvas canvas, Func<T, SKColor> stateToColor)
     {
         using var paint = new SKPaint { Style = SKPaintStyle.Fill };
-        float cellWidth = cellSize.X;
-        float cellHeight = cellSize.Y;
-
-        var positionToCheck = Vector.Zero;
-
-        for (int y = 0; y < playGround.Dimension.Y; y++)
+        var cellWidth = (int)cellSize.X;
+        var cellHeight = (int)cellSize.Y;
+        
+        foreach (var cell in playGround.Cells)
         {
-            float top = y * cellHeight;
-            float bottom = top + cellHeight;
-
-            for (int x = 0; x < playGround.Dimension.X; x++)
-            {
-                float left = x * cellWidth;
-                float right = left + cellWidth;
-
-                positionToCheck.X = x;
-                positionToCheck.Y = y;
-                paint.Color = stateToColor(playGround[positionToCheck]);
-
-                var rect = new SKRect(left, top, right, bottom);
-                canvas.DrawRect(rect, paint);
-            }
+            var top = cell.Key.Y * cellHeight;
+            var bottom = top + cellHeight;
+            var left = cell.Key.X * cellWidth;
+            var right = left + cellWidth;
+            
+            paint.Color = stateToColor(cell.Value.State);
+            
+            var rect = new SKRect(left, top, right, bottom);
+        
+            canvas.DrawRect(rect, paint);
         }
+        
+        // var positionToCheck = Vector.Zero;
+        //
+        //  for (var y = 0; y < playGround.Dimension.Y; y++)
+        //  {
+        //      var top = y * cellHeight;
+        //      var bottom = top + cellHeight;
+        //
+        //      for (var x = 0; x < playGround.Dimension.X; x++)
+        //      {
+        //          var left = x * cellWidth;
+        //          var right = left + cellWidth;
+        //
+        //          positionToCheck.X = x;
+        //          positionToCheck.Y = y;
+        //          paint.Color = stateToColor(playGround[positionToCheck]);
+        //
+        //          var rect = new SKRect(left, top, right, bottom);
+        //
+        //          canvas.DrawRect(rect, paint);
+        //      }
+        //  }
     }
     
     private static void RenderAsRectangles(PlayGroundArray<T> playGround, Vector cellSize, SKCanvas canvas, Func<T, SKColor> stateToColor)
     {
         using var paint = new SKPaint { Style = SKPaintStyle.Fill };
-        float cellWidth = cellSize.X;
-        float cellHeight = cellSize.Y;
+        var cellWidth = (int)cellSize.X;
+        var cellHeight = (int)cellSize.Y;
 
-        var positionToCheck = Vector.Zero;
-
-        for (int y = 0; y < playGround.Dimension.Y; y++)
+        foreach (var cell in playGround.Cells)
         {
-            float top = y * cellHeight;
-            float bottom = top + cellHeight;
-
-            for (int x = 0; x < playGround.Dimension.X; x++)
-            {
-                float left = x * cellWidth;
-                float right = left + cellWidth;
-
-                positionToCheck.X = x;
-                positionToCheck.Y = y;
-                paint.Color = stateToColor(playGround[positionToCheck]);
-
-                var rect = new SKRect(left, top, right, bottom);
-                canvas.DrawRect(rect, paint);
-            }
+            var top = cell.Position.Y * cellHeight;
+            var bottom = top + cellHeight;
+            var left = cell.Position.X * cellWidth;
+            var right = left + cellWidth;
+            
+            paint.Color = stateToColor(cell.State);
+            
+            var rect = new SKRect(left, top, right, bottom);
+        
+            canvas.DrawRect(rect, paint);
         }
+        
+        // for (var y = 0; y < playGround.Dimension.Y; y++)
+        // {
+        //     var top = y * cellHeight;
+        //     var bottom = top + cellHeight;
+        //
+        //     for (var x = 0; x < playGround.Dimension.X; x++)
+        //     {
+        //         var left = x * cellWidth;
+        //         var right = left + cellWidth;
+        //         
+        //         paint.Color = stateToColor(playGround[(x,y,0)]);
+        //
+        //         var rect = new SKRect(left, top, right, bottom);
+        //         canvas.DrawRect(rect, paint);
+        //     }
+        // }
     }
 }

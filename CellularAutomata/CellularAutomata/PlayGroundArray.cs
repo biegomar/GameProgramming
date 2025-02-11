@@ -26,7 +26,16 @@ public class PlayGroundArray<T> : IPlayGround<T>
     public PlayGroundArray(Vector dimension)
     {
         Dimension = dimension;
-        Cells = new Cell<T>[(int)dimension.X + 1, (int)dimension.Y + 1, (int)dimension.Z + 1];
+        if (dimension.Z == 0)
+        {
+            Cells = new Cell<T>[(int)dimension.X, (int)dimension.Y, 1];
+        }
+        else
+        {
+            Cells = new Cell<T>[(int)dimension.X, (int)dimension.Y, (int)dimension.Z];
+        }
+
+        //Cells = new Cell<T>[(int)dimension.X, (int)dimension.Y, (int)dimension.Z];
         Initialize();
     }
     
@@ -52,7 +61,7 @@ public class PlayGroundArray<T> : IPlayGround<T>
             {
                 for (var z = 0; z <= this.Dimension.Z; z++)
                 {
-                    this.Cells[x, y, z] = new Cell<T>(default!);
+                    this.Cells[x, y, z] = new Cell<T>(default!, (x, y, z));
                     
                     if (this.Dimension.Z == 0) break;
                 } 

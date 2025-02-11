@@ -322,14 +322,14 @@ public partial class GameOfLiveForm : Form
         playGroundBool = type switch
         {
             RuleSetType.GameOfLife => Automata<bool>.NextGenerationParallel((playGroundBool as PlayGround<bool>)!, (ruleSet as GameOfLifeRuleSet)!, false),
-            RuleSetType.GameOfLifeArray => AutomataArray<bool>.NextGeneration((playGroundBool as PlayGroundArray<bool>)!,(ruleSet as GameOfLifeRuleSetArray)!, false),
+            RuleSetType.GameOfLifeArray => AutomataArray<bool>.NextGenerationParallel((playGroundBool as PlayGroundArray<bool>)!,(ruleSet as GameOfLifeRuleSetArray)!, false),
             _ => playGroundBool
         };
         
         playGroundSand = type switch
         {
             RuleSetType.Sand => Automata<SandCellState>.NextGenerationParallel((playGroundSand as PlayGround<SandCellState>)!, (ruleSet as SandRuleSet)!, false),
-            RuleSetType.SandArray => AutomataArray<SandCellState>.NextGeneration((playGroundSand as PlayGroundArray<SandCellState>)!,(ruleSet as SandRuleSetArray)!, false),
+            RuleSetType.SandArray => AutomataArray<SandCellState>.NextGenerationParallel((playGroundSand as PlayGroundArray<SandCellState>)!,(ruleSet as SandRuleSetArray)!, false),
             _ => playGroundSand
         };
     }
@@ -383,21 +383,17 @@ public partial class GameOfLiveForm : Form
     private void VisualizerRender(RuleSetType type, SKCanvas canvas)
     {
         canvas.Clear(emptyColor);
+        SKColor[] sandCellColors = [emptyColor, aliveColor, SKColors.Brown, emptyColor];
         
         switch (type)
         {
+            case RuleSetType.GameOfLifeArray:
+                PlayGroundArray<bool> localBoolPlayGroundArray = (playGroundBool as PlayGroundArray<bool>)!;
+                SkiaVisualizer<bool>.Render(localBoolPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, b => b ? this.aliveColor : emptyColor);
+                break;
             case RuleSetType.Sand:
                 PlayGround<SandCellState> localSandCellStatePlayGround = (playGroundSand as PlayGround<SandCellState>)!;
-                SkiaVisualizer<SandCellState>.Render(localSandCellStatePlayGround, cellSize, canvas, cbEngine.SelectedIndex, b =>
-                {
-                    return b switch
-                    {
-                        SandCellState.Empty => this.emptyColor,
-                        SandCellState.Sand => this.aliveColor,
-                        SandCellState.Solid => SKColors.Brown,
-                        _ => this.emptyColor
-                    };
-                });
+                SkiaVisualizer<SandCellState>.Render(localSandCellStatePlayGround, cellSize, canvas, cbEngine.SelectedIndex, b => (int)b < sandCellColors.Length ? sandCellColors[(int)b] : emptyColor);
                 break;
             case RuleSetType.GameOfLife:
                 PlayGround<bool> localBoolPlayGround = (playGroundBool as PlayGround<bool>)!;
@@ -405,20 +401,7 @@ public partial class GameOfLiveForm : Form
                 break;
             case RuleSetType.SandArray:
                 PlayGroundArray<SandCellState> localSandCellStatePlayGroundArray = (playGroundSand as PlayGroundArray<SandCellState>)!;
-                SkiaVisualizer<SandCellState>.Render(localSandCellStatePlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, b =>
-                {
-                    return b switch
-                    {
-                        SandCellState.Empty => this.emptyColor,
-                        SandCellState.Sand => this.aliveColor,
-                        SandCellState.Solid => SKColors.Brown,
-                        _ => this.emptyColor
-                    };
-                });
-                break;
-            case RuleSetType.GameOfLifeArray:
-                PlayGroundArray<bool> localBoolPlayGroundArray = (playGroundBool as PlayGroundArray<bool>)!;
-                SkiaVisualizer<bool>.Render(localBoolPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, b => b ? this.aliveColor : emptyColor);
+                SkiaVisualizer<SandCellState>.Render(localSandCellStatePlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, b => (int)b < sandCellColors.Length ? sandCellColors[(int)b] : emptyColor);
                 break;
             default:    
                 break;

@@ -49,7 +49,7 @@ public class PlayGround<T> : IPlayGround<T>
             {
                 for (var z = 0; z <= this.Dimension.Z; z++)
                 {
-                    this.Cells.Add(new Vector(x,y,z), new Cell<T>(default!));
+                    this.Cells.Add(new Vector(x,y,z), new Cell<T>(default!, (x, y, z)));
 
                     if (this.Dimension.Z == 0) break;
                 }
