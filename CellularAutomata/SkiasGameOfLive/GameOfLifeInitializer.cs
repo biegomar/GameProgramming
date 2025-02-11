@@ -4,25 +4,23 @@ namespace SkiasGameOfLive;
 
 public static class GameOfLifeInitializer
 {
-    public static void Randomize(PlayGround<bool> playground, double aliveProbability = 0.2)
+    public static void Randomize(IPlayGround<bool> playground, double aliveProbability = 0.2)
     {
         var random = new Random();
 
-        for (int x = 0; x < playground.Dimension.X; x++)
+        playground.ForEachCell(position =>
         {
-            for (int y = 0; y < playground.Dimension.Y; y++)
-            {
-                playground[new Vector(x, y, 0)] = random.NextDouble() < aliveProbability;
-            }
-        }
+            bool state = random.NextDouble() < aliveProbability;
+            playground[position] = state;
+        });
     }
 
-    public static void AddSingleCell(PlayGround<bool> playground, int x, int y)
+    public static void AddSingleCell(IPlayGround<bool> playground, int x, int y)
     {
-        playground[new Vector(x, y, 0)] = true;
+        playground[(x, y, 0)] = true;
     }
 
-    public static void AddCheckerboard(PlayGround<bool> playground)
+    public static void AddCheckerboard(IPlayGround<bool> playground)
     {
         for (int y = 0; y < playground.Dimension.Y; y++)
         {
@@ -30,42 +28,42 @@ public static class GameOfLifeInitializer
         }
     }
     
-    private static void AddCheckerLine(PlayGround<bool> playground, int row)
+    private static void AddCheckerLine(IPlayGround<bool> playground, int row)
     {
         for (int x = 0; x < playground.Dimension.X; x++)
         {
-            playground[new Vector(x, row, 0)] = int.IsEvenInteger(x) && int.IsEvenInteger(row) || int.IsOddInteger(x) && int.IsOddInteger(row);
+            playground[(x, row, 0)] = int.IsEvenInteger(x) && int.IsEvenInteger(row) || int.IsOddInteger(x) && int.IsOddInteger(row);
         } 
     }
 
-    public static void AddSingleLineWithCellOnEveryXColumn(PlayGround<bool> playground, int distance, int row)
+    public static void AddSingleLineWithCellOnEveryXColumn(IPlayGround<bool> playground, int distance, int row)
     {
         for (int x = 0; x < playground.Dimension.X; x++)
         {
-            playground[new Vector(x, row, 0)] = x % distance == 0;
-        }
+            playground[(x, row, 0)] = x % distance == 0;
+        } 
     }
 
-    public static void AddSingleColumnWithCellOnEveryYRow(PlayGround<bool> playground, int distance, int column)
+    public static void AddSingleColumnWithCellOnEveryYRow(IPlayGround<bool> playground, int distance, int column)
     {
         for (int y = 0; y < playground.Dimension.Y; y++)
         {
-            playground[new Vector(column, y, 0)] = y % distance == 0;
-        }
+            playground[(column, y, 0)] = y % distance == 0;
+        } 
     }
 
-    public static void AddSingleCell(PlayGround<bool> playground, Vector position)
+    public static void AddSingleCell(IPlayGround<bool> playground, Vector position)
     {
         playground[position] = true;
     }
     
-    public static void AddSandCellStateToCell(PlayGround<SandCellState> playground, Vector position, SandCellState state)
+    public static void AddSandCellStateToCell(IPlayGround<SandCellState> playground, Vector position, SandCellState state)
     {
-        playground[position] = state;
+        playground[position] = state; 
     }
     
     // **Muster 1: Blinker (kleiner Oszillator)**
-    public static void AddBlinker(PlayGround<bool> playground, Vector startPosition)
+    public static void AddBlinker(IPlayGround<bool> playground, Vector startPosition)
     {
         playground[new Vector(startPosition.X, startPosition.Y, 0)] = true;
         playground[new Vector(startPosition.X + 1, startPosition.Y, 0)] = true;
@@ -73,7 +71,7 @@ public static class GameOfLifeInitializer
     }
 
     // **Muster 2: Glider (bewegliches Muster)**
-    public static void AddGlider(PlayGround<bool> playground, Vector startPosition)
+    public static void AddGlider(IPlayGround<bool> playground, Vector startPosition)
     {
         playground[new Vector(startPosition.X + 2, startPosition.Y, 0)] = true;        // Zelle oben rechts
         playground[new Vector(startPosition.X, startPosition.Y + 1, 0)] = true;        // Zelle Mitte links
@@ -83,27 +81,27 @@ public static class GameOfLifeInitializer
     }
 
     // **Muster 3: Toad (größerer Oszillator)**
-    public static void AddToad(PlayGround<bool> playground, Vector startPosition)
+    public static void AddToad(IPlayGround<bool> playground, Vector startPosition)
     {
         playground[new Vector(startPosition.X + 1, startPosition.Y, 0)] = true;
         playground[new Vector(startPosition.X + 2, startPosition.Y, 0)] = true;
         playground[new Vector(startPosition.X + 3, startPosition.Y, 0)] = true;
         playground[new Vector(startPosition.X, startPosition.Y + 1, 0)] = true;
         playground[new Vector(startPosition.X + 1, startPosition.Y + 1, 0)] = true;
-        playground[new Vector(startPosition.X + 2, startPosition.Y + 1, 0)] = true;
+        playground[new Vector(startPosition.X + 2, startPosition.Y + 1, 0)] = true; 
     }
 
     // **Muster 4: Block (stabiler Zustand)**
-    public static void AddBlock(PlayGround<bool> playground, Vector startPosition)
+    public static void AddBlock(IPlayGround<bool> playground, Vector startPosition)
     {
         playground[new Vector(startPosition.X, startPosition.Y, 0)] = true;
         playground[new Vector(startPosition.X + 1, startPosition.Y, 0)] = true;
         playground[new Vector(startPosition.X, startPosition.Y + 1, 0)] = true;
-        playground[new Vector(startPosition.X + 1, startPosition.Y + 1, 0)] = true;
+        playground[new Vector(startPosition.X + 1, startPosition.Y + 1, 0)] = true; 
     }
 
     // **Muster 5: Beacon (kleiner oszillierender Zustand)**
-    public static void AddBeacon(PlayGround<bool> playground, Vector startPosition)
+    public static void AddBeacon(IPlayGround<bool> playground, Vector startPosition)
     {
         // Oberer linker Block
         playground[new Vector(startPosition.X, startPosition.Y, 0)] = true;
@@ -115,41 +113,14 @@ public static class GameOfLifeInitializer
         playground[new Vector(startPosition.X + 2, startPosition.Y + 2, 0)] = true;
         playground[new Vector(startPosition.X + 3, startPosition.Y + 2, 0)] = true;
         playground[new Vector(startPosition.X + 2, startPosition.Y + 3, 0)] = true;
-        playground[new Vector(startPosition.X + 3, startPosition.Y + 3, 0)] = true;
+        playground[new Vector(startPosition.X + 3, startPosition.Y + 3, 0)] = true;   
     }
-
-    public static void TestCaseOne(PlayGround<SandCellState> playground)
-    {
-        playground[new Vector(0, 0, 0)] = SandCellState.Solid;
-        playground[new Vector(0, 1, 0)] = SandCellState.Solid;
-        playground[new Vector(0, 2, 0)] = SandCellState.Solid;
-        
-        playground[new Vector(4, 0, 0)] = SandCellState.Solid;
-        playground[new Vector(4, 1, 0)] = SandCellState.Solid;
-        playground[new Vector(4, 2, 0)] = SandCellState.Solid;
-        
-        playground[new Vector(1, 2, 0)] = SandCellState.Solid;
-        playground[new Vector(2, 2, 0)] = SandCellState.Solid;
-        playground[new Vector(3, 2, 0)] = SandCellState.Solid;
-        
-        playground[new Vector(1, 0, 0)] = SandCellState.Sand;
-        playground[new Vector(1, 1, 0)] = SandCellState.Sand;
-        
-        playground[new Vector(3, 0, 0)] = SandCellState.Sand;
-        playground[new Vector(3, 1, 0)] = SandCellState.Sand;
-        
-        
-    }
-    public static void GenerateSandHourglass(PlayGround<SandCellState> playground)
+    
+    public static void GenerateSandHourglass(IPlayGround<SandCellState> playground)
     {
         var dimension = playground.Dimension;
         var width = (int)dimension.X;
         var height = (int)dimension.Y;
-
-        // if (width < 5 || height < 5 || width % 2 == 0 || height % 2 == 0)
-        // {
-        //     throw new ArgumentException("Dimensionen der Sanduhr müssen ungerade Zahlen und mindestens 5x5 sein.");
-        // }
 
         int midX = width / 2; // Mitte der Breite
         int midY = height / 2; // Mitte der Höhe

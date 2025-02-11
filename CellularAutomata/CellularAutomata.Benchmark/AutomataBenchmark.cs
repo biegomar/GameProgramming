@@ -60,7 +60,7 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGround = AutomataArray<bool>.NextGenerationParallel(playGroundArray, ruleSetArray, false);    
+            playGroundArray = AutomataArray<bool>.NextGenerationParallel(playGroundArray, ruleSetArray, false);    
         }
     }
 }

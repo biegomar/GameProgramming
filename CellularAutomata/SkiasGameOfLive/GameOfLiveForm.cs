@@ -1,3 +1,4 @@
+using System.Text;
 using CellularAutomata;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
@@ -10,7 +11,9 @@ public partial class GameOfLiveForm : Form
     private enum RuleSetType
     {
         Sand,
-        GameOfLife
+        GameOfLife,
+        SandArray,
+        GameOfLifeArray,
     }
     
     private Vector cellSize => new ((int)cellSizeSelector.Value, (int)cellSizeSelector.Value, 0);
@@ -23,7 +26,8 @@ public partial class GameOfLiveForm : Form
     private Timer toolTipTimer = new ();
 
 
-    private IPlayGround playGround;
+    private IPlayGround<bool> playGroundBool;
+    private IPlayGround<SandCellState> playGroundSand;
     private IBaseRuleSet ruleSet;
     private RuleSetType ruleSetType;
     
@@ -60,11 +64,17 @@ public partial class GameOfLiveForm : Form
 
         switch (ruleSetType)
         {
+            case RuleSetType.GameOfLife:
+                InitializeForGameOfLive();
+                break;
             case RuleSetType.Sand:
                 InitializeForSand();
                 break;
-            case RuleSetType.GameOfLife:
-                InitializeForGameOfLive();
+            case RuleSetType.GameOfLifeArray:
+                InitializeForGameOfLiveArray();
+                break;
+            case RuleSetType.SandArray:
+                InitializeForSandArray();
                 break;
         }
         
@@ -73,12 +83,11 @@ public partial class GameOfLiveForm : Form
 
     private void InitializeForSand()
     {
-        playGround = new PlayGround<SandCellState>(dimension);
-        var sandPlayGround = (playGround as PlayGround<SandCellState>)!;
+        playGroundSand = new PlayGround<SandCellState>(dimension);
 
         ruleSet = new SandRuleSet();
 
-        var middle = (int)(sandPlayGround.Dimension.X / 2);
+        var middle = (int)(playGroundSand.Dimension.X / 2);
         cbPattern.Enabled = false;
         aliveColor = SKColors.Bisque;
         // GameOfLifeInitializer.AddSandCellStateToCell(sandPlayGround, new Vector(middle, 0, 0), SandCellState.Sand);
@@ -93,14 +102,26 @@ public partial class GameOfLiveForm : Form
         // GameOfLifeInitializer.AddSandCellStateToCell(sandPlayGround, new Vector(middle -1 , 19, 0), SandCellState.Solid);
         // GameOfLifeInitializer.AddSandCellStateToCell(sandPlayGround, new Vector(middle - 2, 18, 0), SandCellState.Solid);
         
-        GameOfLifeInitializer.GenerateSandHourglass(sandPlayGround);
+        GameOfLifeInitializer.GenerateSandHourglass(playGroundSand);
         //GameOfLifeInitializer.TestCaseOne(sandPlayGround);
+    }
+    
+    private void InitializeForSandArray()
+    {
+        playGroundSand = new PlayGroundArray<SandCellState>(dimension);
+
+        ruleSet = new SandRuleSetArray();
+        
+        cbPattern.Enabled = false;
+        aliveColor = SKColors.Bisque;
+        
+        GameOfLifeInitializer.GenerateSandHourglass(playGroundSand);
     }
 
     private void InitializeForGameOfLive()
     {
-        playGround = new PlayGround<bool>(dimension);
-        var gamePlayGround = (playGround as PlayGround<bool>)!;
+        playGroundBool = new PlayGround<bool>(dimension);
+        var gamePlayGround = (playGroundBool as PlayGround<bool>)!;
         
         ruleSet = new GameOfLifeRuleSet();
         
@@ -123,11 +144,39 @@ public partial class GameOfLiveForm : Form
         }
     }
     
+    private void InitializeForGameOfLiveArray()
+    {
+        playGroundBool = new PlayGroundArray<bool>(dimension);
+        //var gamePlayGround = (playGround as PlayGroundArray<bool>)!;
+        
+        ruleSet = new GameOfLifeRuleSetArray();
+        
+        cbPattern.Enabled = true;
+        aliveColor = SKColors.Chartreuse;
+        switch (cbPattern.SelectedIndex)
+        {
+            case 0: 
+                GameOfLifeInitializer.Randomize(playGroundBool, (double)probabilitySelector.Value);
+                break;
+            case 1: 
+                GameOfLifeInitializer.AddCheckerboard(playGroundBool);
+                break;
+            case 2: 
+                GameOfLifeInitializer.AddSingleLineWithCellOnEveryXColumn(playGroundBool, 10, 10);
+                GameOfLifeInitializer.AddSingleColumnWithCellOnEveryYRow(playGroundBool, 10, 10);
+                GameOfLifeInitializer.AddSingleCell(playGroundBool, Vector.Zero);
+                GameOfLifeInitializer.AddSingleCell(playGroundBool, new Vector(dimension.X - 1, dimension.Y - 1, 0));
+                break;
+        }
+    }
     private RuleSetType GetTypeFromSelection() 
     {
         return cbRuleSet.SelectedIndex switch
         {
-            1 => RuleSetType.Sand,        
+            0 => RuleSetType.GameOfLife,
+            1 => RuleSetType.Sand,
+            2 => RuleSetType.GameOfLifeArray,
+            3 => RuleSetType.SandArray,
             _ => RuleSetType.GameOfLife,
         };
     }
@@ -147,13 +196,59 @@ public partial class GameOfLiveForm : Form
         cancellationTokenSource = new CancellationTokenSource();
         CancellationToken token = cancellationTokenSource.Token;
         
+        // Maximalanzahl der Schleifen (einstellbare Generationsgrenze)
+        var maxGenerations = (int)stopWatchCountSelector.Value;
+        
+        var timingEnabled = cbStopWatch.Checked;
+
+        // Listen zur Speicherung der Zeiten
+        var generationTimes = new long[maxGenerations];
+        var renderingTimes = new long[maxGenerations];
+
+
+        // Allgemeine Stoppuhren für kumulative Zeit
+        var totalStopwatch = new System.Diagnostics.Stopwatch();
+
+        // Stoppuhren für einzelne Durchläufe
+        var generationStopwatch = new System.Diagnostics.Stopwatch();
+        var renderingStopwatch = new System.Diagnostics.Stopwatch();
+
+        int currentGeneration = 0;
+
+        totalStopwatch.Start();
+        
         await Task.Run(() =>
         {
-            while (!token.IsCancellationRequested)
+            while (!token.IsCancellationRequested && currentGeneration < maxGenerations)
             {
+                if (timingEnabled)
+                {
+                    generationStopwatch.Restart();
+                }
+
                 GenerateNextPlaygroundState(ruleSetType);
                 
+                if (timingEnabled)
+                {
+                    generationStopwatch.Stop();
+                    generationTimes[currentGeneration] = generationStopwatch.ElapsedMilliseconds;
+                }
+
+                
+                if (timingEnabled)
+                {
+                    renderingStopwatch.Restart(); 
+                }
+
                 Invoke(RenderPlaygroundAndDisplayGeneration);
+                
+                if (timingEnabled)
+                {
+                    renderingStopwatch.Stop();
+                    renderingTimes[currentGeneration] = renderingStopwatch.ElapsedMilliseconds;
+                    
+                    currentGeneration++;
+                }
 
                 if (systemSpeed > 0)
                 {
@@ -162,18 +257,80 @@ public partial class GameOfLiveForm : Form
             }
         }, token);
         
+        totalStopwatch.Stop();
+        
+        if (timingEnabled)
+        {
+            var generationStats = CalculateStatistics(generationTimes, currentGeneration, "Generierung");
+            var renderingStats = CalculateStatistics(renderingTimes, currentGeneration, "Rendering");
+            var totalStats = new StringBuilder();
+            totalStats.AppendLine($"Simulation abgeschlossen nach {currentGeneration} Generationen:");
+            totalStats.AppendLine($"Gesamtzeit: {FormatTime(totalStopwatch.ElapsedMilliseconds)} m");
+            totalStats.AppendLine("");
+            totalStats.AppendLine(generationStats);
+            totalStats.AppendLine("");
+            totalStats.AppendLine(renderingStats);
+            
+            tbStopWatch.Text = totalStats.ToString();
+            
+            SetButtonState(false);
+        }
+
+
         cancellationTokenSource = null;
     }
+    
+    private string CalculateStatistics(long[] times, int count, string type)
+    {
+        if (count == 0)
+        {
+            return $"{type}-Statistik: Keine Messdaten vorhanden.";
+        }
+
+        var statistics = new StringBuilder();
+        
+        var total = times.Take(count).Sum();                // Gesamtzeit
+        var min = times.Take(count).Min();                  // Schnellste Zeit
+        var max = times.Take(count).Max();                  // Langsamste Zeit
+        var average = times.Take(count).Average();        // Durchschnittszeit
+
+        var totalFormatted = FormatTime(total);
+        var minFormatted = FormatTime(min);
+        var maxFormatted = FormatTime(max);
+        var averageFormatted = FormatTime((long)average);
+
+        // Ausgabe
+        statistics.AppendLine($"{type}-Statistik:");
+        statistics.AppendLine($"- Gesamtzeit: {totalFormatted} m");
+        statistics.AppendLine($"- Langsamste: {maxFormatted} m");
+        statistics.AppendLine($"- Schnellste: {minFormatted} m");
+        statistics.AppendLine($"- Durchschnitt: {averageFormatted} m");
+
+        
+        return statistics.ToString();
+    }
+
+    private string FormatTime(long milliseconds)
+    {
+        var timespan = TimeSpan.FromMilliseconds(milliseconds);
+        return $"{(int)timespan.TotalMinutes:D2}:{timespan.Seconds:D2}.{timespan.Milliseconds:D3}";
+    }
+
 
     private void GenerateNextPlaygroundState(RuleSetType type)
     {
-        playGround = type switch
+        playGroundBool = type switch
         {
-            RuleSetType.Sand => Automata<SandCellState>.NextGenerationParallel((playGround as PlayGround<SandCellState>)!,
-                (ruleSet as SandRuleSet)!, false),
-            RuleSetType.GameOfLife => Automata<bool>.NextGenerationParallel((playGround as PlayGround<bool>)!,
-                (ruleSet as GameOfLifeRuleSet)!, false),
-            _ => playGround
+            RuleSetType.GameOfLife => Automata<bool>.NextGenerationParallel((playGroundBool as PlayGround<bool>)!, (ruleSet as GameOfLifeRuleSet)!, false),
+            RuleSetType.GameOfLifeArray => AutomataArray<bool>.NextGeneration((playGroundBool as PlayGroundArray<bool>)!,(ruleSet as GameOfLifeRuleSetArray)!, false),
+            _ => playGroundBool
+        };
+        
+        playGroundSand = type switch
+        {
+            RuleSetType.Sand => Automata<SandCellState>.NextGenerationParallel((playGroundSand as PlayGround<SandCellState>)!, (ruleSet as SandRuleSet)!, false),
+            RuleSetType.SandArray => AutomataArray<SandCellState>.NextGeneration((playGroundSand as PlayGroundArray<SandCellState>)!,(ruleSet as SandRuleSetArray)!, false),
+            _ => playGroundSand
         };
     }
 
@@ -182,6 +339,15 @@ public partial class GameOfLiveForm : Form
         btnStart.Enabled = !isRunning;
         btnReset.Enabled = !isRunning;
         btnSingleStep.Enabled = !isRunning;
+        
+        cbStopWatch.Enabled = !isRunning;
+        cbPattern.Enabled = !isRunning;
+        cbRuleSet.Enabled = !isRunning;
+        
+        cellSizeSelector.Enabled = !isRunning;
+        stopWatchCountSelector.Enabled = !isRunning;
+        
+        cbEngine.Enabled = !isRunning && cellSizeSelector.Value == 1;
         
         btnStop.Enabled = isRunning;
     }
@@ -221,7 +387,8 @@ public partial class GameOfLiveForm : Form
         switch (type)
         {
             case RuleSetType.Sand:
-                SkiaVisualizer<SandCellState>.Render((playGround as PlayGround<SandCellState>)!, cellSize, canvas, b =>
+                PlayGround<SandCellState> localSandCellStatePlayGround = (playGroundSand as PlayGround<SandCellState>)!;
+                SkiaVisualizer<SandCellState>.Render(localSandCellStatePlayGround, cellSize, canvas, cbEngine.SelectedIndex, b =>
                 {
                     return b switch
                     {
@@ -233,9 +400,27 @@ public partial class GameOfLiveForm : Form
                 });
                 break;
             case RuleSetType.GameOfLife:
-                SkiaVisualizer<bool>.Render((playGround as PlayGround<bool>)!, cellSize, canvas, b => b ? this.aliveColor : emptyColor);
+                PlayGround<bool> localBoolPlayGround = (playGroundBool as PlayGround<bool>)!;
+                SkiaVisualizer<bool>.Render(localBoolPlayGround, cellSize, canvas, cbEngine.SelectedIndex, b => b ? this.aliveColor : emptyColor);
                 break;
-            default:
+            case RuleSetType.SandArray:
+                PlayGroundArray<SandCellState> localSandCellStatePlayGroundArray = (playGroundSand as PlayGroundArray<SandCellState>)!;
+                SkiaVisualizer<SandCellState>.Render(localSandCellStatePlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, b =>
+                {
+                    return b switch
+                    {
+                        SandCellState.Empty => this.emptyColor,
+                        SandCellState.Sand => this.aliveColor,
+                        SandCellState.Solid => SKColors.Brown,
+                        _ => this.emptyColor
+                    };
+                });
+                break;
+            case RuleSetType.GameOfLifeArray:
+                PlayGroundArray<bool> localBoolPlayGroundArray = (playGroundBool as PlayGroundArray<bool>)!;
+                SkiaVisualizer<bool>.Render(localBoolPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, b => b ? this.aliveColor : emptyColor);
+                break;
+            default:    
                 break;
         }
     }
@@ -267,6 +452,12 @@ public partial class GameOfLiveForm : Form
 
     private void cellSizeSelector_ValueChanged(object sender, EventArgs e)
     {
+        cbEngine.Enabled = cellSizeSelector.Value == 1;
+        if (cellSizeSelector.Value != 1)
+        {
+            cbEngine.SelectedIndex = 0;    
+        }
+        
         InitializePlayGround();
     }
 
@@ -293,5 +484,26 @@ public partial class GameOfLiveForm : Form
         
         toolTipTimer.Start();
 
+    }
+
+    private void cbStopWatch_CheckedChanged(object sender, EventArgs e)
+    {
+        paStopWatch.Visible = cbStopWatch.Checked;
+        stopWatchCountSelector.Enabled = cbStopWatch.Checked;
+    }
+
+    private void lblSum_Click(object sender, EventArgs e)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    private void cbRuleSet_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        
+    }
+
+    private void cbEngine_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        InitializePlayGround();
     }
 }

@@ -46,14 +46,23 @@ partial class GameOfLiveForm
         lblRuleSet = new System.Windows.Forms.Label();
         cbRuleSet = new System.Windows.Forms.ComboBox();
         btnSingleStep = new System.Windows.Forms.Button();
+        lblStopWatch = new System.Windows.Forms.Label();
+        stopWatchCountSelector = new System.Windows.Forms.NumericUpDown();
+        cbStopWatch = new System.Windows.Forms.CheckBox();
+        paStopWatch = new System.Windows.Forms.Panel();
+        tbStopWatch = new System.Windows.Forms.TextBox();
+        lblEngine = new System.Windows.Forms.Label();
+        cbEngine = new System.Windows.Forms.ComboBox();
         ((System.ComponentModel.ISupportInitialize)probabilitySelector).BeginInit();
         ((System.ComponentModel.ISupportInitialize)systemSpeedSelector).BeginInit();
         ((System.ComponentModel.ISupportInitialize)cellSizeSelector).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)stopWatchCountSelector).BeginInit();
+        paStopWatch.SuspendLayout();
         SuspendLayout();
         // 
         // btnStart
         // 
-        btnStart.Location = new System.Drawing.Point(838, 48);
+        btnStart.Location = new System.Drawing.Point(825, 48);
         btnStart.Name = "btnStart";
         btnStart.Size = new System.Drawing.Size(92, 23);
         btnStart.TabIndex = 0;
@@ -71,7 +80,7 @@ partial class GameOfLiveForm
         // 
         // btnStop
         // 
-        btnStop.Location = new System.Drawing.Point(838, 77);
+        btnStop.Location = new System.Drawing.Point(825, 77);
         btnStop.Name = "btnStop";
         btnStop.Size = new System.Drawing.Size(92, 23);
         btnStop.TabIndex = 4;
@@ -136,7 +145,7 @@ partial class GameOfLiveForm
         // 
         // btnReset
         // 
-        btnReset.Location = new System.Drawing.Point(838, 135);
+        btnReset.Location = new System.Drawing.Point(825, 135);
         btnReset.Name = "btnReset";
         btnReset.Size = new System.Drawing.Size(92, 23);
         btnReset.TabIndex = 11;
@@ -191,7 +200,7 @@ partial class GameOfLiveForm
         // cbRuleSet
         // 
         cbRuleSet.FormattingEnabled = true;
-        cbRuleSet.Items.AddRange(new object[] { "Game of Life", "Sand" });
+        cbRuleSet.Items.AddRange(new object[] { "Game of Life", "Sand", "Game of Life Array", "Sand Array" });
         cbRuleSet.Location = new System.Drawing.Point(1059, 135);
         cbRuleSet.Name = "cbRuleSet";
         cbRuleSet.Size = new System.Drawing.Size(119, 23);
@@ -201,7 +210,7 @@ partial class GameOfLiveForm
         // 
         // btnSingleStep
         // 
-        btnSingleStep.Location = new System.Drawing.Point(838, 106);
+        btnSingleStep.Location = new System.Drawing.Point(825, 106);
         btnSingleStep.Name = "btnSingleStep";
         btnSingleStep.Size = new System.Drawing.Size(92, 23);
         btnSingleStep.TabIndex = 18;
@@ -209,12 +218,84 @@ partial class GameOfLiveForm
         btnSingleStep.UseVisualStyleBackColor = true;
         btnSingleStep.Click += btnSingleStep_Click;
         // 
+        // lblStopWatch
+        // 
+        lblStopWatch.Location = new System.Drawing.Point(954, 273);
+        lblStopWatch.Name = "lblStopWatch";
+        lblStopWatch.Size = new System.Drawing.Size(99, 23);
+        lblStopWatch.TabIndex = 20;
+        lblStopWatch.Text = "Messdurchläufe";
+        // 
+        // stopWatchCountSelector
+        // 
+        stopWatchCountSelector.Location = new System.Drawing.Point(1112, 273);
+        stopWatchCountSelector.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
+        stopWatchCountSelector.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+        stopWatchCountSelector.Name = "stopWatchCountSelector";
+        stopWatchCountSelector.Size = new System.Drawing.Size(66, 23);
+        stopWatchCountSelector.TabIndex = 19;
+        stopWatchCountSelector.Value = new decimal(new int[] { 100, 0, 0, 0 });
+        // 
+        // cbStopWatch
+        // 
+        cbStopWatch.Checked = true;
+        cbStopWatch.CheckState = System.Windows.Forms.CheckState.Checked;
+        cbStopWatch.Location = new System.Drawing.Point(825, 270);
+        cbStopWatch.Name = "cbStopWatch";
+        cbStopWatch.Size = new System.Drawing.Size(123, 23);
+        cbStopWatch.TabIndex = 21;
+        cbStopWatch.Text = "Zeitmessung aktiv";
+        cbStopWatch.UseVisualStyleBackColor = true;
+        cbStopWatch.CheckedChanged += cbStopWatch_CheckedChanged;
+        // 
+        // paStopWatch
+        // 
+        paStopWatch.Controls.Add(tbStopWatch);
+        paStopWatch.Location = new System.Drawing.Point(825, 312);
+        paStopWatch.Name = "paStopWatch";
+        paStopWatch.Size = new System.Drawing.Size(353, 360);
+        paStopWatch.TabIndex = 22;
+        // 
+        // tbStopWatch
+        // 
+        tbStopWatch.Dock = System.Windows.Forms.DockStyle.Fill;
+        tbStopWatch.Location = new System.Drawing.Point(0, 0);
+        tbStopWatch.Multiline = true;
+        tbStopWatch.Name = "tbStopWatch";
+        tbStopWatch.Size = new System.Drawing.Size(353, 360);
+        tbStopWatch.TabIndex = 0;
+        // 
+        // lblEngine
+        // 
+        lblEngine.Location = new System.Drawing.Point(954, 226);
+        lblEngine.Name = "lblEngine";
+        lblEngine.Size = new System.Drawing.Size(99, 23);
+        lblEngine.TabIndex = 24;
+        lblEngine.Text = "Render-Engine";
+        // 
+        // cbEngine
+        // 
+        cbEngine.FormattingEnabled = true;
+        cbEngine.Items.AddRange(new object[] { "Rect", "Point", "PointOnBitmap" });
+        cbEngine.Location = new System.Drawing.Point(1059, 226);
+        cbEngine.Name = "cbEngine";
+        cbEngine.Size = new System.Drawing.Size(119, 23);
+        cbEngine.TabIndex = 23;
+        cbEngine.Text = "Rect";
+        cbEngine.SelectedIndexChanged += cbEngine_SelectedIndexChanged;
+        // 
         // GameOfLiveForm
         // 
         AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         BackColor = System.Drawing.SystemColors.Control;
         ClientSize = new System.Drawing.Size(1264, 681);
+        Controls.Add(lblEngine);
+        Controls.Add(cbEngine);
+        Controls.Add(paStopWatch);
+        Controls.Add(cbStopWatch);
+        Controls.Add(lblStopWatch);
+        Controls.Add(stopWatchCountSelector);
         Controls.Add(btnSingleStep);
         Controls.Add(lblRuleSet);
         Controls.Add(cbRuleSet);
@@ -237,8 +318,22 @@ partial class GameOfLiveForm
         ((System.ComponentModel.ISupportInitialize)probabilitySelector).EndInit();
         ((System.ComponentModel.ISupportInitialize)systemSpeedSelector).EndInit();
         ((System.ComponentModel.ISupportInitialize)cellSizeSelector).EndInit();
+        ((System.ComponentModel.ISupportInitialize)stopWatchCountSelector).EndInit();
+        paStopWatch.ResumeLayout(false);
+        paStopWatch.PerformLayout();
         ResumeLayout(false);
     }
+
+    private System.Windows.Forms.Label lblEngine;
+    private System.Windows.Forms.ComboBox cbEngine;
+
+    private System.Windows.Forms.TextBox tbStopWatch;
+
+    private System.Windows.Forms.Panel paStopWatch;
+
+    private System.Windows.Forms.Label lblStopWatch;
+    private System.Windows.Forms.NumericUpDown stopWatchCountSelector;
+    private System.Windows.Forms.CheckBox cbStopWatch;
 
     private System.Windows.Forms.Button btnSingleStep;
 

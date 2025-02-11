@@ -1,8 +1,8 @@
 ﻿namespace CellularAutomata;
 
-public class PlayGround<T> : IPlayGround
+public class PlayGround<T> : IPlayGround<T>
 {
-    public Dictionary<Vector, Cell<T>> cells = new();
+    public Dictionary<Vector, Cell<T>> Cells { get; init; } = new();
 
     public PlayGround(Vector dimension)
     {
@@ -12,7 +12,34 @@ public class PlayGround<T> : IPlayGround
 
     public Vector Dimension { get; init; }
     
-    public T this[Vector position] { get => this.cells[position].State; set => this.cells[position].State = value; }
+    public void ForEachCell(Action<Vector> action)
+    {
+        for (var x = 0; x < this.Dimension.X; x++)
+        {
+            for (var y = 0; y < this.Dimension.Y; y++)
+            {
+                for (var z = 0; z <= this.Dimension.Z; z++)
+                {
+                    action(new Vector(x, y, z));
+                    
+                    if (this.Dimension.Z == 0) break;
+                }
+            }
+        }
+    }
+
+    public T this[Vector position]
+    {
+        get => Cells[position].State;
+        set => Cells[position].State = value;
+    }
+
+    public T this[(int x, int y, int z) position]
+    {
+        get => Cells[new Vector(position.x, position.y, position.z)].State;
+        set => Cells[new Vector(position.x, position.y, position.z)].State = value;
+    }
+
 
     private void Initialize()
     {
@@ -20,7 +47,12 @@ public class PlayGround<T> : IPlayGround
         {
             for (var y = 0; y < this.Dimension.Y; y++)
             {
-                this.cells.Add(new Vector(x,y,0), new Cell<T>(default!));
+                for (var z = 0; z <= this.Dimension.Z; z++)
+                {
+                    this.Cells.Add(new Vector(x,y,z), new Cell<T>(default!));
+
+                    if (this.Dimension.Z == 0) break;
+                }
             }
         }
     }

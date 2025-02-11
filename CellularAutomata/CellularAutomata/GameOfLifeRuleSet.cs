@@ -4,38 +4,29 @@ namespace CellularAutomata;
 
 public class GameOfLifeRuleSet : IRuleSet<bool>
 {
-    public bool ApplyRules(PlayGround<bool> playGround, Vector position)
+    public bool ApplyRules(IPlayGround<bool> playGround, (int X, int Y, int Z) position)
     {
-        var isAlive = playGround[position];
+        return this.ApplyRules(playGround, new Vector(position.X, position.Y, position.Z));
+    }
+    
+    public bool ApplyRules(IPlayGround<bool> playGround, Vector position)
+    {
+        var localPlayGround = (PlayGround<bool>)playGround;
+        var cellState = localPlayGround[position];
         
-        var liveNeighbors = CountLiveNeighbors(playGround, position);
+        var liveNeighbors = CountLiveNeighbors(localPlayGround, position);
         
-        if (isAlive && liveNeighbors is 2 or 3)
+        if (cellState && liveNeighbors is 2 or 3)
         {
             return true; 
         }
 
-        if (!isAlive && liveNeighbors == 3)
+        if (!cellState && liveNeighbors == 3)
         {
             return true; 
         }
         
         return false;
-    }
-
-    public bool ApplyRules(PlayGroundArray<bool> playGround, (int X, int Y, int Z) position)
-    {
-        return this.ApplyRules(playGround, new Vector(position.X, position.Y, position.Z));
-    }
-
-    public PlayGround<bool> ApplySpawnRules(PlayGround<bool> playGround, bool isSpawn)
-    {
-        return playGround;
-    }
-
-    public PlayGroundArray<bool> ApplySpawnRules(PlayGroundArray<bool> playGround, bool isSpawn)
-    {
-        throw new NotImplementedException();
     }
 
     private int CountLiveNeighbors(PlayGround<bool> playGround, Vector position)
@@ -63,5 +54,10 @@ public class GameOfLifeRuleSet : IRuleSet<bool>
         return position.X >= 0 && position.Y >= 0 &&
                position.X < dimension.X &&
                position.Y < dimension.Y;
+    }
+
+    public IPlayGround<bool> ApplySpawnRules(IPlayGround<bool> playGround, bool isSpawn)
+    {
+        return playGround;
     }
 }

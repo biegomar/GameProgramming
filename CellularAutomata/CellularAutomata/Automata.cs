@@ -6,12 +6,12 @@ public static class Automata<T>
     {
         var newPlayGround = new PlayGround<T>(initialPlayGround.Dimension);
 
-        foreach (var cell in initialPlayGround.cells)
+        foreach (var cell in initialPlayGround.Cells)
         {
             newPlayGround[cell.Key] = ruleSet.ApplyRules(initialPlayGround, cell.Key); 
         }
         
-        var resultPlayGround = ruleSet.ApplySpawnRules(newPlayGround, isSpawn);
+        var resultPlayGround = (PlayGround<T>)ruleSet.ApplySpawnRules(newPlayGround, isSpawn);
         
         return resultPlayGround;
     }
@@ -20,12 +20,12 @@ public static class Automata<T>
     {
         var newPlayGround = new PlayGround<T>(initialPlayGround.Dimension);
         
-        Parallel.ForEach(initialPlayGround.cells, cell =>
+        Parallel.ForEach(initialPlayGround.Cells, cell =>
         {
             newPlayGround[cell.Key] = ruleSet.ApplyRules(initialPlayGround, cell.Key); 
         });
 
-        var resultPlayGround = ruleSet.ApplySpawnRules(newPlayGround, isSpawn);
+        var resultPlayGround = (PlayGround<T>)ruleSet.ApplySpawnRules(newPlayGround, isSpawn);
         
         return resultPlayGround;
     }
@@ -47,7 +47,7 @@ public static class Automata<T>
             }
         }
         
-        var resultPlayGround = ruleSet.ApplySpawnRules(newPlayGround, isSpawn);
+        var resultPlayGround = (PlayGround<T>)ruleSet.ApplySpawnRules(newPlayGround, isSpawn);
         
         return resultPlayGround;
     }

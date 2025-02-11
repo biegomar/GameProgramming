@@ -6,18 +6,21 @@ public static class AutomataArray<T>
     {
         var newPlayGround = new PlayGroundArray<T>(initialPlayGround.Dimension);
         
-        for (var x = 0; x < initialPlayGround.Dimension.X + 1; x++)
+        for (var x = 0; x < initialPlayGround.Dimension.X; x++)
         {
-            for (var y = 0; y < initialPlayGround.Dimension.Y + 1; y++)
+            for (var y = 0; y < initialPlayGround.Dimension.Y; y++)
             {
-                for (var z = 0; z < initialPlayGround.Dimension.Z + 1; z++)
+                for (var z = 0; z <= initialPlayGround.Dimension.Z; z++)
                 {
-                    newPlayGround[(x, y, z)] = ruleSet.ApplyRules(initialPlayGround, (x,y,z));
+                    newPlayGround[(x, y, z)] = ruleSet.ApplyRules(initialPlayGround, (x, y, z));
+                    
+                    if (initialPlayGround.Dimension.Z == 0) break;
                 }
             }
         }
+
         
-        var resultPlayGround = ruleSet.ApplySpawnRules(newPlayGround, isSpawn);
+        var resultPlayGround = (PlayGroundArray<T>)ruleSet.ApplySpawnRules(newPlayGround, isSpawn);
         
         return resultPlayGround;
     }
@@ -30,14 +33,16 @@ public static class AutomataArray<T>
         {
             for (var y = 0; y < initialPlayGround.Dimension.Y + 1; y++)
             {
-                for (var z = 0; z < initialPlayGround.Dimension.Z + 1; z++)
+                for (var z = 0; z <= initialPlayGround.Dimension.Z + 1; z++)
                 {
                     newPlayGround[(x, y, z)] = ruleSet.ApplyRules(initialPlayGround, (x, y, z));
+                    
+                    if (initialPlayGround.Dimension.Z == 0) break;
                 }
             }
         });
 
-        var resultPlayGround = ruleSet.ApplySpawnRules(newPlayGround, isSpawn);
+        var resultPlayGround = (PlayGroundArray<T>)ruleSet.ApplySpawnRules(newPlayGround, isSpawn);
 
         return resultPlayGround;
     }
