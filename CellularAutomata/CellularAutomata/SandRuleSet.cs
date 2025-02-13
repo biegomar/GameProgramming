@@ -2,6 +2,8 @@
 
 public class SandRuleSet : IRuleSet<SandCellState>
 {
+    public IDictionary<string, uint> RuleCounter { get; init; } = new Dictionary<string, uint>();
+    
     private record CellNeighbors(
         SandCellState TopLeft,
         SandCellState Top,

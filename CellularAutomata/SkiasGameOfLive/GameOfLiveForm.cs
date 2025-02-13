@@ -289,10 +289,10 @@ public partial class GameOfLiveForm : Form
 
         var statistics = new StringBuilder();
         
-        var total = times.Take(count).Sum();                // Gesamtzeit
-        var min = times.Take(count).Min();                  // Schnellste Zeit
-        var max = times.Take(count).Max();                  // Langsamste Zeit
-        var average = times.Take(count).Average();        // Durchschnittszeit
+        var total = times.Take(count).Sum();                
+        var min = times.Take(count).Min();                  
+        var max = times.Take(count).Max();                  
+        var average = times.Take(count).Average();        
 
         var totalFormatted = FormatTime(total);
         var minFormatted = FormatTime(min);
@@ -305,6 +305,11 @@ public partial class GameOfLiveForm : Form
         statistics.AppendLine($"- Langsamste: {maxFormatted} m");
         statistics.AppendLine($"- Schnellste: {minFormatted} m");
         statistics.AppendLine($"- Durchschnitt: {averageFormatted} m");
+        statistics.AppendLine("");
+        foreach (var ruleCount in ruleSet.RuleCounter)
+        {
+            statistics.AppendLine($"- {ruleCount.Key}: {ruleCount.Value}");
+        }
 
         
         return statistics.ToString();

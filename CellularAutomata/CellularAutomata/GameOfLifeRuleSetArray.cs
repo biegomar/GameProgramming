@@ -4,6 +4,12 @@ namespace CellularAutomata;
 
 public class GameOfLifeRuleSetArray : IRuleSet<bool>
 {
+    public IDictionary<string, uint> RuleCounter { get; init; } = new Dictionary<string, uint>
+    {
+        ["CellEmpty"] = 0,
+        ["CellAlive"] = 0
+    };
+    
     public bool ApplyRules(IPlayGround<bool> playGround, Vector position)
     {
         return this.ApplyRules(playGround, ((int)position.X, (int)position.Y, (int)position.Z));
@@ -16,37 +22,30 @@ public class GameOfLifeRuleSetArray : IRuleSet<bool>
         
         var liveNeighbors = CountLivingNeighbors(localPlayGround, position);
         
-        if (cellState && liveNeighbors is 2 or 3)
-        {
-            return true; 
-        }
-
-        if (!cellState && liveNeighbors == 3)
-        {
-            return true; 
-        }
-        
-        return false;
+        return liveNeighbors == 3 || (cellState && liveNeighbors == 2);
     }
-
+    
     private int CountLivingNeighbors(PlayGroundArray<bool> playGround, (int X, int Y, int Z) position)
     {
-        var neighbors = new List<(int X, int Y, int Z)>
-        {
-            (position.X - 1, position.Y - 1, 0), 
-            (position.X,     position.Y - 1, 0), 
-            (position.X + 1, position.Y - 1, 0), 
-            (position.X - 1, position.Y,     0), 
-            (position.X + 1, position.Y,     0), 
-            (position.X - 1, position.Y + 1, 0), 
-            (position.X,     position.Y + 1, 0), 
-            (position.X + 1, position.Y + 1, 0)  
-        };
+        int liveNeighbors = 0;
         
-        return neighbors.Count(vec =>
-            IsWithinBounds(playGround.Dimension,vec) &&
-            playGround[vec] 
-        );
+        for (int dx = -1; dx <= 1; dx++)
+        {
+            for (int dy = -1; dy <= 1; dy++)
+            {
+                if (dx == 0 && dy == 0)
+                    continue;
+                
+                var neighbor = (position.X + dx, position.Y + dy, 0);
+                
+                if (IsWithinBounds(playGround.Dimension, neighbor) && playGround[neighbor])
+                {
+                    liveNeighbors++;
+                }
+            }
+        }
+
+        return liveNeighbors;
     }
     
     private bool IsWithinBounds(Vector dimension, (int X, int Y, int Z) position)

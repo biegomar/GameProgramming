@@ -1,14 +1,10 @@
-﻿namespace CellularAutomata;
+﻿using System.Runtime.InteropServices;
 
-public record Cell<T>
+namespace CellularAutomata;
+
+[StructLayout(LayoutKind.Sequential)]
+public record Cell<T>(T State, (int X, int Y, int Z) Position)
 {
-    public T State { get; set; }
-
-    public (int X, int Y, int Z) Position { get; init; }
-    
-    public Cell(T state, (int X, int Y, int Z) position)
-    {
-        State = state;
-        Position = position;
-    }
+    public (int X, int Y, int Z) Position = Position;
+    public T State = State;
 }

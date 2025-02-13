@@ -31,7 +31,13 @@ public class PlayGround<T> : IPlayGround<T>
     public T this[Vector position]
     {
         get => Cells[position].State;
-        set => Cells[position].State = value;
+        set
+        {
+            var cell = Cells[position];
+            cell.State = value;
+            Cells[position] = cell;
+        }
+
     }
 
     public T this[(int x, int y, int z) position]

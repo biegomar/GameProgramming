@@ -234,7 +234,7 @@ partial class GameOfLiveForm
         stopWatchCountSelector.Name = "stopWatchCountSelector";
         stopWatchCountSelector.Size = new System.Drawing.Size(66, 23);
         stopWatchCountSelector.TabIndex = 19;
-        stopWatchCountSelector.Value = new decimal(new int[] { 100, 0, 0, 0 });
+        stopWatchCountSelector.Value = new decimal(new int[] { 50, 0, 0, 0 });
         // 
         // cbStopWatch
         // 
