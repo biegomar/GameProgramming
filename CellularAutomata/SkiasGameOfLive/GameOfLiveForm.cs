@@ -147,7 +147,6 @@ public partial class GameOfLiveForm : Form
     private void InitializeForGameOfLiveArray()
     {
         playGroundBool = new PlayGroundArray<bool>(dimension);
-        //var gamePlayGround = (playGround as PlayGroundArray<bool>)!;
         
         ruleSet = new GameOfLifeRuleSetArray();
         
@@ -185,7 +184,7 @@ public partial class GameOfLiveForm : Form
     {
         if (cancellationTokenSource == null)
         {
-            ProcessNextGeneration();
+            _ = ProcessNextGeneration();
         }
         
         SetButtonState(true);
@@ -213,6 +212,11 @@ public partial class GameOfLiveForm : Form
         var generationStopwatch = new System.Diagnostics.Stopwatch();
         var renderingStopwatch = new System.Diagnostics.Stopwatch();
 
+        // if (playGroundBool is PlayGroundArray<bool>)
+        // {
+        //     PlayGroundArray<bool>.GenerationTimes.Clear();
+        // }
+        
         int currentGeneration = 0;
 
         totalStopwatch.Start();
@@ -271,11 +275,17 @@ public partial class GameOfLiveForm : Form
             totalStats.AppendLine("");
             totalStats.AppendLine(renderingStats);
             
-            tbStopWatch.Text = totalStats.ToString();
+            // if (playGroundBool is PlayGroundArray<bool> playGroundWithStatistics)
+            // {
+            //     var initStatistics = CalculateStatistics(PlayGroundArray<bool>.GenerationTimes.ToArray(), currentGeneration, "Initialisierung");
+            //     totalStats.AppendLine("");
+            //     totalStats.AppendLine(initStatistics);
+            // }
             
-            SetButtonState(false);
+            tbStopWatch.Text = totalStats.ToString();
         }
 
+        SetButtonState(false);
 
         cancellationTokenSource = null;
     }

@@ -18,18 +18,19 @@ public class GameOfLifeRuleSet : IRuleSet<bool>
 
     public bool ApplyRules(IPlayGround<bool> playGround, Vector position)
     {
-        var localPlayGround = (PlayGround<bool>)playGround;
-        var cellState = localPlayGround[position];
-        
-        var liveNeighbors = CountLivingNeighbors(localPlayGround, position);
+        var cellState = playGround[position];
+
+        var liveNeighbors = CountLivingNeighbors(playGround, position);
         
         return liveNeighbors == 3 || (cellState && liveNeighbors == 2);
     }
     
-    private int CountLivingNeighbors(PlayGround<bool> playGround, Vector position)
+    private int CountLivingNeighbors(IPlayGround<bool> playGround, Vector position)
     {
         var liveNeighbors = 0;
 
+        bool shouldBreak = false;
+        
         for (int dx = -1; dx <= 1; dx++)
         {
             for (int dy = -1; dy <= 1; dy++)
@@ -42,8 +43,16 @@ public class GameOfLifeRuleSet : IRuleSet<bool>
                 if (IsWithinBounds(playGround.Dimension, neighbor) && playGround[neighbor])
                 {
                     liveNeighbors++;
+                    if (liveNeighbors == 4)
+                    {
+                        shouldBreak = true;
+                        break;
+
+                    }
                 }
             }
+            
+            if (shouldBreak) break;
         }
 
         return liveNeighbors;

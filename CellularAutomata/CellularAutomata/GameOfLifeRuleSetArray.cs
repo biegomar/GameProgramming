@@ -17,18 +17,19 @@ public class GameOfLifeRuleSetArray : IRuleSet<bool>
 
     public bool ApplyRules(IPlayGround<bool> playGround, (int X, int Y, int Z) position)
     {
-        var localPlayGround = (PlayGroundArray<bool>)playGround;
-        var cellState = localPlayGround[position];
+        var cellState = playGround[position];
         
-        var liveNeighbors = CountLivingNeighbors(localPlayGround, position);
+        var liveNeighbors = CountLivingNeighbors(playGround, position);
         
         return liveNeighbors == 3 || (cellState && liveNeighbors == 2);
     }
     
-    private int CountLivingNeighbors(PlayGroundArray<bool> playGround, (int X, int Y, int Z) position)
+    private int CountLivingNeighbors(IPlayGround<bool> playGround, (int X, int Y, int Z) position)
     {
         int liveNeighbors = 0;
         
+        bool shouldBreak = false;
+
         for (int dx = -1; dx <= 1; dx++)
         {
             for (int dy = -1; dy <= 1; dy++)
@@ -41,8 +42,17 @@ public class GameOfLifeRuleSetArray : IRuleSet<bool>
                 if (IsWithinBounds(playGround.Dimension, neighbor) && playGround[neighbor])
                 {
                     liveNeighbors++;
+                    if (liveNeighbors == 4)
+                    {
+                        shouldBreak = true;
+                        break;
+
+                    }
                 }
             }
+            
+            if (shouldBreak) break;
+
         }
 
         return liveNeighbors;

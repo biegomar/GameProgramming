@@ -2,59 +2,64 @@
 
 public static class AutomataArray<T>
 {
+    private static PlayGroundArray<T>? backupPlayGround;
+    private static PlayGroundArray<T>? nextGenerationPlayGround;
+
+    private static void InitBackupPlayGround(PlayGroundArray<T> initialPlayGround)
+    {
+        if (backupPlayGround == null || backupPlayGround.Dimension != initialPlayGround.Dimension)
+        {
+            backupPlayGround = new PlayGroundArray<T>(initialPlayGround.Dimension);
+        }
+    }
+
+    private static void InitNextGenerationPlayGround(PlayGroundArray<T> initialPlayGround)
+    {
+        if (nextGenerationPlayGround == null || nextGenerationPlayGround.Dimension != initialPlayGround.Dimension)
+        {
+            nextGenerationPlayGround = new PlayGroundArray<T>(initialPlayGround.Dimension);
+        }
+    }
+    
     public static PlayGroundArray<T> NextGeneration(PlayGroundArray<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn)
     {
-        var newPlayGround = new PlayGroundArray<T>(initialPlayGround.Dimension);
-
+        InitNextGenerationPlayGround(initialPlayGround);
+        InitBackupPlayGround(initialPlayGround);
+        
         foreach (var cell in initialPlayGround.Cells)
         {
-            newPlayGround[cell.Position] = ruleSet.ApplyRules(initialPlayGround, cell.Position); 
+            nextGenerationPlayGround[cell.Position] = ruleSet.ApplyRules(initialPlayGround, cell.Position); 
         }
         
-        // for (var x = 0; x < initialPlayGround.Dimension.X; x++)
-        // {
-        //     for (var y = 0; y < initialPlayGround.Dimension.Y; y++)
-        //     {
-        //         for (var z = 0; z <= initialPlayGround.Dimension.Z; z++)
-        //         {
-        //             newPlayGround[(x, y, z)] = ruleSet.ApplyRules(initialPlayGround, (x, y, z));
-        //             
-        //             if (initialPlayGround.Dimension.Z == 0) break;
-        //         }
-        //     }
-        // }
-
+        nextGenerationPlayGround = (PlayGroundArray<T>)ruleSet.ApplySpawnRules(nextGenerationPlayGround, isSpawn);
         
-        var resultPlayGround = (PlayGroundArray<T>)ruleSet.ApplySpawnRules(newPlayGround, isSpawn);
+        Swap(ref initialPlayGround, ref nextGenerationPlayGround);
         
-        return resultPlayGround;
+        return initialPlayGround;
     }
     
     public static PlayGroundArray<T> NextGenerationParallel(PlayGroundArray<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn)
     {
-        var newPlayGround = new PlayGroundArray<T>(initialPlayGround.Dimension);
+        InitNextGenerationPlayGround(initialPlayGround);
+        InitBackupPlayGround(initialPlayGround);
 
         Parallel.ForEach(initialPlayGround.Cells.Cast<Cell<T>>(), cell =>
         {
-            newPlayGround[cell.Position] = ruleSet.ApplyRules(initialPlayGround, cell.Position);
+            nextGenerationPlayGround[cell.Position] = ruleSet.ApplyRules(initialPlayGround, cell.Position);
         });
-
         
-        // Parallel.For(0, (int)initialPlayGround.Dimension.X , x =>
-        // {
-        //     for (var y = 0; y < initialPlayGround.Dimension.Y; y++)
-        //     {
-        //         for (var z = 0; z <= initialPlayGround.Dimension.Z; z++)
-        //         {
-        //             newPlayGround[(x, y, z)] = ruleSet.ApplyRules(initialPlayGround, (x, y, z));
-        //             
-        //             if (initialPlayGround.Dimension.Z == 0) break;
-        //         }
-        //     }
-        // });
-
-        var resultPlayGround = (PlayGroundArray<T>)ruleSet.ApplySpawnRules(newPlayGround, isSpawn);
-
-        return resultPlayGround;
+        nextGenerationPlayGround = (PlayGroundArray<T>)ruleSet.ApplySpawnRules(nextGenerationPlayGround, isSpawn);
+        
+        Swap(ref initialPlayGround, ref nextGenerationPlayGround);
+        
+        return initialPlayGround;
+    }
+    
+    static void Swap(ref PlayGroundArray<T> instanceOne, ref PlayGroundArray<T> instanceTwo)
+    { 
+        InitBackupPlayGround(instanceOne);
+        backupPlayGround = instanceOne;
+        instanceOne = instanceTwo;
+        instanceTwo = backupPlayGround;
     }
 }

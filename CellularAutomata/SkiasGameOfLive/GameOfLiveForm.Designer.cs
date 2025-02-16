@@ -262,6 +262,8 @@ partial class GameOfLiveForm
         tbStopWatch.Location = new System.Drawing.Point(0, 0);
         tbStopWatch.Multiline = true;
         tbStopWatch.Name = "tbStopWatch";
+        tbStopWatch.ReadOnly = true;
+        tbStopWatch.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
         tbStopWatch.Size = new System.Drawing.Size(353, 360);
         tbStopWatch.TabIndex = 0;
         // 

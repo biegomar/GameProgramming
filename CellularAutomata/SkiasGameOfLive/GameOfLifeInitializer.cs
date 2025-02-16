@@ -8,11 +8,23 @@ public static class GameOfLifeInitializer
     {
         var random = new Random();
 
-        playground.ForEachCell(position =>
+        if (playground is PlayGround<bool> playGroundBool)
         {
-            bool state = random.NextDouble() < aliveProbability;
-            playground[position] = state;
-        });
+            Parallel.ForEach(playGroundBool.Cells, cell =>
+            {
+                var state = random.NextDouble() < aliveProbability;
+                playground[cell.Key] = state;
+            });
+        }
+        else if (playground is PlayGroundArray<bool> playGroundArrayBool)
+        {
+            Parallel.ForEach(playGroundArrayBool.Cells.Cast<Cell<bool>>(), cell =>
+            {
+                var state = random.NextDouble() < aliveProbability;
+                playGroundArrayBool[cell.Position] = state;
+            });
+        }
+        
     }
 
     public static void AddSingleCell(IPlayGround<bool> playground, int x, int y)

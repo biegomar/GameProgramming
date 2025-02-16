@@ -5,23 +5,6 @@ public class PlayGroundArray<T> : IPlayGround<T>
     public Cell<T>[,,] Cells { get; init; }
     
     public Vector Dimension { get; init; }
-    
-    public void ForEachCell(Action<Vector> action)
-    {
-        for (var x = 0; x < this.Dimension.X; x++)
-        {
-            for (var y = 0; y < this.Dimension.Y; y++)
-            {
-                for (var z = 0; z <= this.Dimension.Z; z++)
-                {
-                    action(new Vector(x, y, z));
-                    
-                    if (this.Dimension.Z == 0) break;
-                }
-            }
-        }
-    }
-
 
     public PlayGroundArray(Vector dimension)
     {
@@ -34,8 +17,7 @@ public class PlayGroundArray<T> : IPlayGround<T>
         {
             Cells = new Cell<T>[(int)dimension.X, (int)dimension.Y, (int)dimension.Z];
         }
-
-        //Cells = new Cell<T>[(int)dimension.X, (int)dimension.Y, (int)dimension.Z];
+        
         Initialize();
     }
     
@@ -50,18 +32,18 @@ public class PlayGroundArray<T> : IPlayGround<T>
         get => Cells[position.x, position.y, position.z].State;
         set => Cells[position.x, position.y, position.z].State = value;
     }
-
-
-
+    
     private void Initialize()
     {
+        var defaultState = default(T)!;
+        
         for (var x = 0; x < this.Dimension.X; x++)
         {
             for (var y = 0; y < this.Dimension.Y; y++)
             {
                 for (var z = 0; z <= this.Dimension.Z; z++)
                 {
-                    this.Cells[x, y, z] = new Cell<T>(default!, (x, y, z));
+                    this.Cells[x, y, z] = new Cell<T>(defaultState, (x, y, z));
                     
                     if (this.Dimension.Z == 0) break;
                 } 
