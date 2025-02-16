@@ -26,6 +26,28 @@ public static class GameOfLifeInitializer
         }
         
     }
+    
+    public static void Randomize(IPlayGround<SandCellState> playground, double aliveProbability = 0.2)
+    {
+        var random = new Random();
+
+        if (playground is PlayGround<SandCellState> playGroundBool)
+        {
+            Parallel.ForEach(playGroundBool.Cells, cell =>
+            {
+                var state = random.NextDouble() < aliveProbability;
+                playground[cell.Key] = state ? SandCellState.Sand : SandCellState.Empty;
+            });
+        }
+        else if (playground is PlayGroundArray<SandCellState> playGroundArrayBool)
+        {
+            Parallel.ForEach(playGroundArrayBool.Cells.Cast<Cell<SandCellState>>(), cell =>
+            {
+                var state = random.NextDouble() < aliveProbability;
+                playGroundArrayBool[cell.Position] = state ? SandCellState.Sand : SandCellState.Empty;
+            });
+        }
+    }
 
     public static void AddSingleCell(IPlayGround<bool> playground, int x, int y)
     {

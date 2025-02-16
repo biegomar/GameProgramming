@@ -158,28 +158,6 @@ public static class SkiaVisualizer<T>
         
             canvas.DrawRect(rect, paint);
         }
-        
-        // var positionToCheck = Vector.Zero;
-        //
-        //  for (var y = 0; y < playGround.Dimension.Y; y++)
-        //  {
-        //      var top = y * cellHeight;
-        //      var bottom = top + cellHeight;
-        //
-        //      for (var x = 0; x < playGround.Dimension.X; x++)
-        //      {
-        //          var left = x * cellWidth;
-        //          var right = left + cellWidth;
-        //
-        //          positionToCheck.X = x;
-        //          positionToCheck.Y = y;
-        //          paint.Color = stateToColor(playGround[positionToCheck]);
-        //
-        //          var rect = new SKRect(left, top, right, bottom);
-        //
-        //          canvas.DrawRect(rect, paint);
-        //      }
-        //  }
     }
     
     private static void RenderAsRectangles(PlayGroundArray<T> playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)

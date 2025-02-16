@@ -17,16 +17,15 @@ public class SandRuleSet : IRuleSet<SandCellState>
     
     public SandCellState ApplyRules(IPlayGround<SandCellState> playGround, Vector position)
     {
-        var localPlayGround = (PlayGround<SandCellState>)playGround;
-        var cellState = localPlayGround[position];
+        var cellState = playGround[position];
 
         if (cellState == SandCellState.Solid)
         {
             return SandCellState.Solid;
         }
 
-        var cellNeighbors = GetNeighboursState(localPlayGround, position);
-        var cellNeighborsFromLeft = GetNeighboursState(localPlayGround, new Vector(position.X - 1, position.Y, 0));
+        var cellNeighbors = GetNeighboursState(playGround, position);
+        var cellNeighborsFromLeft = GetNeighboursState(playGround, new Vector(position.X - 1, position.Y, 0));
         
         if (cellState == SandCellState.Sand)
         {
@@ -34,7 +33,7 @@ public class SandRuleSet : IRuleSet<SandCellState>
                 (cellNeighbors.Bottom == SandCellState.Empty ||
                 (cellNeighbors.BottomRight == SandCellState.Empty && cellNeighbors.Right == SandCellState.Empty) ||
                 (cellNeighbors.BottomLeft == SandCellState.Empty && cellNeighbors.Left == SandCellState.Empty && cellNeighborsFromLeft.Left == SandCellState.Empty))
-                && position.Y < localPlayGround.Dimension.Y - 1
+                && position.Y < playGround.Dimension.Y - 1
                )
             {
                 return SandCellState.Empty;
@@ -56,7 +55,7 @@ public class SandRuleSet : IRuleSet<SandCellState>
         }
 
         // Prio 3: grain to the top right, but only if its Prio 1 and Prio 2 is blocked.
-        var cellNeighborsFromRight = GetNeighboursState(localPlayGround, new Vector(position.X + 1, position.Y, 0));
+        var cellNeighborsFromRight = GetNeighboursState(playGround, new Vector(position.X + 1, position.Y, 0));
         if (cellNeighbors is { TopRight: SandCellState.Sand, Top: SandCellState.Empty, Right: SandCellState.Sand or SandCellState.Solid }
             && (cellNeighborsFromRight is { Right : SandCellState.Sand or SandCellState.Solid} || (cellNeighborsFromRight.Right == SandCellState.Empty && cellNeighborsFromRight.TopRight != SandCellState.Empty)))
         {
@@ -90,7 +89,7 @@ public class SandRuleSet : IRuleSet<SandCellState>
         return localPlayGround;
     }
 
-    private CellNeighbors GetNeighboursState(PlayGround<SandCellState> playGround, Vector position)
+    private CellNeighbors GetNeighboursState(IPlayGround<SandCellState> playGround, Vector position)
     {
         var topLeft = new Vector(position.X - 1, position.Y - 1, 0);
         var top = new Vector(position.X, position.Y - 1, 0);

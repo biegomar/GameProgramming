@@ -40,11 +40,19 @@ public partial class GameOfLiveForm : Form
     public GameOfLiveForm()
     {
         InitializeComponent();
+        InitializeLayout();
         InitializePlayGround();
         SetButtonState(false);
         InitializeTimer();
     }
 
+    private void InitializeLayout()
+    {
+        cbPatternSand.Enabled = false;
+        cbPatternSand.Visible = false;
+        cbPatternSand.Location = cbPattern.Location;
+    }
+    
     private void InitializeTimer()
     {
         toolTipTimer.Interval = 3000; 
@@ -88,22 +96,29 @@ public partial class GameOfLiveForm : Form
         ruleSet = new SandRuleSet();
 
         var middle = (int)(playGroundSand.Dimension.X / 2);
-        cbPattern.Enabled = false;
         aliveColor = SKColors.Bisque;
-        // GameOfLifeInitializer.AddSandCellStateToCell(sandPlayGround, new Vector(middle, 0, 0), SandCellState.Sand);
-        //
-        //
-        // // add some terrain
-        // GameOfLifeInitializer.AddSandCellStateToCell(sandPlayGround, new Vector(middle + 1, 10, 0), SandCellState.Solid);
-        // GameOfLifeInitializer.AddSandCellStateToCell(sandPlayGround, new Vector(middle , 11, 0), SandCellState.Solid);
-        // GameOfLifeInitializer.AddSandCellStateToCell(sandPlayGround, new Vector(middle - 1, 12, 0), SandCellState.Solid);
-        //
-        // GameOfLifeInitializer.AddSandCellStateToCell(sandPlayGround, new Vector(middle, 20, 0), SandCellState.Solid);
-        // GameOfLifeInitializer.AddSandCellStateToCell(sandPlayGround, new Vector(middle -1 , 19, 0), SandCellState.Solid);
-        // GameOfLifeInitializer.AddSandCellStateToCell(sandPlayGround, new Vector(middle - 2, 18, 0), SandCellState.Solid);
-        
-        GameOfLifeInitializer.GenerateSandHourglass(playGroundSand);
-        //GameOfLifeInitializer.TestCaseOne(sandPlayGround);
+
+        switch (cbPatternSand.SelectedIndex)
+        {
+            case 0:
+                GameOfLifeInitializer.Randomize(playGroundSand, (double)probabilitySelector.Value);
+                break;
+            case 1:
+                GameOfLifeInitializer.GenerateSandHourglass(playGroundSand);
+                break;
+            case 2:
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 0, 0), SandCellState.Sand);
+
+                // add some terrain
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle + 1, 10, 0), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 11, 0), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 12, 0), SandCellState.Solid);
+
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 20, 0), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 19, 0), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 2, 18, 0), SandCellState.Solid);
+                break;
+        }
     }
     
     private void InitializeForSandArray()
@@ -112,10 +127,30 @@ public partial class GameOfLiveForm : Form
 
         ruleSet = new SandRuleSetArray();
         
-        cbPattern.Enabled = false;
+        var middle = (int)(playGroundSand.Dimension.X / 2);
         aliveColor = SKColors.Bisque;
         
-        GameOfLifeInitializer.GenerateSandHourglass(playGroundSand);
+        switch (cbPatternSand.SelectedIndex)
+        {
+            case 0:
+                GameOfLifeInitializer.Randomize(playGroundSand, (double)probabilitySelector.Value);
+                break;
+            case 1:
+                GameOfLifeInitializer.GenerateSandHourglass(playGroundSand);
+                break;
+            case 2:
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 0, 0), SandCellState.Sand);
+
+                // add some terrain
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle + 1, 10, 0), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 11, 0), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 12, 0), SandCellState.Solid);
+
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 20, 0), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 19, 0), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 2, 18, 0), SandCellState.Solid);
+                break;
+        }
     }
 
     private void InitializeForGameOfLive()
@@ -125,7 +160,6 @@ public partial class GameOfLiveForm : Form
         
         ruleSet = new GameOfLifeRuleSet();
         
-        cbPattern.Enabled = true;
         aliveColor = SKColors.Chartreuse;
         switch (cbPattern.SelectedIndex)
         {
@@ -150,7 +184,6 @@ public partial class GameOfLiveForm : Form
         
         ruleSet = new GameOfLifeRuleSetArray();
         
-        cbPattern.Enabled = true;
         aliveColor = SKColors.Chartreuse;
         switch (cbPattern.SelectedIndex)
         {
@@ -195,27 +228,17 @@ public partial class GameOfLiveForm : Form
         cancellationTokenSource = new CancellationTokenSource();
         CancellationToken token = cancellationTokenSource.Token;
         
-        // Maximalanzahl der Schleifen (einstellbare Generationsgrenze)
         var maxGenerations = (int)stopWatchCountSelector.Value;
         
         var timingEnabled = cbStopWatch.Checked;
-
-        // Listen zur Speicherung der Zeiten
+        
         var generationTimes = new long[maxGenerations];
         var renderingTimes = new long[maxGenerations];
-
-
-        // Allgemeine Stoppuhren für kumulative Zeit
+        
         var totalStopwatch = new System.Diagnostics.Stopwatch();
-
-        // Stoppuhren für einzelne Durchläufe
+        
         var generationStopwatch = new System.Diagnostics.Stopwatch();
         var renderingStopwatch = new System.Diagnostics.Stopwatch();
-
-        // if (playGroundBool is PlayGroundArray<bool>)
-        // {
-        //     PlayGroundArray<bool>.GenerationTimes.Clear();
-        // }
         
         int currentGeneration = 0;
 
@@ -408,7 +431,7 @@ public partial class GameOfLiveForm : Form
                 break;
             case RuleSetType.Sand:
                 PlayGround<SandCellState> localSandCellStatePlayGround = (playGroundSand as PlayGround<SandCellState>)!;
-                SkiaVisualizer<SandCellState>.Render(localSandCellStatePlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, b => (int)b < sandCellColors.Length ? sandCellColors[(int)b] : emptyColor);
+                SkiaVisualizer<SandCellState>.Render(localSandCellStatePlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, ChooseSandColor);
                 break;
             case RuleSetType.GameOfLife:
                 PlayGround<bool> localBoolPlayGround = (playGroundBool as PlayGround<bool>)!;
@@ -416,11 +439,37 @@ public partial class GameOfLiveForm : Form
                 break;
             case RuleSetType.SandArray:
                 PlayGroundArray<SandCellState> localSandCellStatePlayGroundArray = (playGroundSand as PlayGroundArray<SandCellState>)!;
-                SkiaVisualizer<SandCellState>.Render(localSandCellStatePlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, b => (int)b < sandCellColors.Length ? sandCellColors[(int)b] : emptyColor);
+                SkiaVisualizer<SandCellState>.Render(localSandCellStatePlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, ChooseSandColor);
                 break;
             default:    
                 break;
         }
+    }
+
+    private SKColor ChooseSandColor(SandCellState state)
+    {
+        if (state == SandCellState.Empty) return emptyColor;
+        if (state == SandCellState.Sand) return ChooseSandColor();
+        if (state == SandCellState.Solid) return SKColors.Brown;
+        
+        return emptyColor;
+    }
+    
+    private SKColor ChooseSandColor()
+    {
+        var colors = new SKColor[]
+        {
+            new SKColor(194, 178, 128), 
+            new SKColor(210, 180, 140), 
+            new SKColor(244, 164, 96),  
+            new SKColor(222, 184, 135)  
+        };
+        
+        var random = new Random();
+        int index = random.Next(0, colors.Length);
+        
+        return colors[index];
+
     }
 
     private void cbRuleSet_SelectedValueChanged(object sender, EventArgs e)
@@ -497,10 +546,30 @@ public partial class GameOfLiveForm : Form
 
     private void cbRuleSet_SelectedIndexChanged(object sender, EventArgs e)
     {
-        
+        if (cbRuleSet.SelectedIndex % 2 == 0)
+        {
+            FlipPatternBoxes(false);
+        }
+        else
+        {
+            FlipPatternBoxes(true);
+        }
+    }
+
+    private void FlipPatternBoxes(bool toSandPattern)
+    {
+        cbPattern.Visible = !toSandPattern;
+        cbPattern.Enabled = !toSandPattern;
+        cbPatternSand.Visible = toSandPattern;
+        cbPatternSand.Enabled = toSandPattern;
     }
 
     private void cbEngine_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        InitializePlayGround();
+    }
+
+    private void cbPatternSand_SelectedValueChanged(object sender, EventArgs e)
     {
         InitializePlayGround();
     }

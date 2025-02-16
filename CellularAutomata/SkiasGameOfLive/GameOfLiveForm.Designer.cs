@@ -53,6 +53,7 @@ partial class GameOfLiveForm
         tbStopWatch = new System.Windows.Forms.TextBox();
         lblEngine = new System.Windows.Forms.Label();
         cbEngine = new System.Windows.Forms.ComboBox();
+        cbPatternSand = new System.Windows.Forms.ComboBox();
         ((System.ComponentModel.ISupportInitialize)probabilitySelector).BeginInit();
         ((System.ComponentModel.ISupportInitialize)systemSpeedSelector).BeginInit();
         ((System.ComponentModel.ISupportInitialize)cellSizeSelector).BeginInit();
@@ -206,6 +207,7 @@ partial class GameOfLiveForm
         cbRuleSet.Size = new System.Drawing.Size(119, 23);
         cbRuleSet.TabIndex = 16;
         cbRuleSet.Text = "Game of Life";
+        cbRuleSet.SelectedIndexChanged += cbRuleSet_SelectedIndexChanged;
         cbRuleSet.SelectedValueChanged += cbRuleSet_SelectedValueChanged;
         // 
         // btnSingleStep
@@ -286,12 +288,24 @@ partial class GameOfLiveForm
         cbEngine.Text = "Rect";
         cbEngine.SelectedIndexChanged += cbEngine_SelectedIndexChanged;
         // 
+        // cbPatternSand
+        // 
+        cbPatternSand.FormattingEnabled = true;
+        cbPatternSand.Items.AddRange(new object[] { "Random", "Sanduhr", "Free Style" });
+        cbPatternSand.Location = new System.Drawing.Point(1139, 164);
+        cbPatternSand.Name = "cbPatternSand";
+        cbPatternSand.Size = new System.Drawing.Size(119, 23);
+        cbPatternSand.TabIndex = 25;
+        cbPatternSand.Text = "Random";
+        cbPatternSand.SelectedValueChanged += cbPatternSand_SelectedValueChanged;
+        // 
         // GameOfLiveForm
         // 
         AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         BackColor = System.Drawing.SystemColors.Control;
         ClientSize = new System.Drawing.Size(1264, 681);
+        Controls.Add(cbPatternSand);
         Controls.Add(lblEngine);
         Controls.Add(cbEngine);
         Controls.Add(paStopWatch);
@@ -325,6 +339,8 @@ partial class GameOfLiveForm
         paStopWatch.PerformLayout();
         ResumeLayout(false);
     }
+
+    private System.Windows.Forms.ComboBox cbPatternSand;
 
     private System.Windows.Forms.Label lblEngine;
     private System.Windows.Forms.ComboBox cbEngine;
