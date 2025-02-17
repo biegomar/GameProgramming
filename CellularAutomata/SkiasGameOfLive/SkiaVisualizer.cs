@@ -6,6 +6,7 @@ using SkiaSharp;
 
 public static class SkiaVisualizer<T>
 {
+    
     public static void Render(PlayGround<T> playGround, Vector cellSize, SKCanvas canvas, int renderEngineIndex, SKColor emptyColor, Func<T, SKColor> stateToColor)
     {
         switch (renderEngineIndex)
@@ -142,18 +143,17 @@ public static class SkiaVisualizer<T>
         var cellWidth = (int)cellSize.X;
         var cellHeight = (int)cellSize.Y;
         
-        foreach (var cell in playGround.Cells)
+        foreach (var cell in playGround.Cells.Values)
         {
-            var top = cell.Key.Y * cellHeight;
+            var top = cell.Position.Y * cellHeight;
             var bottom = top + cellHeight;
-            var left = cell.Key.X * cellWidth;
+            var left = cell.Position.X * cellWidth;
             var right = left + cellWidth;
             
-            var color = stateToColor(cell.Value.State);
+            var color = stateToColor(cell.State);
             if (color == emptyColor) continue;
             
             paint.Color = color;
-            
             var rect = new SKRect(left, top, right, bottom);
         
             canvas.DrawRect(rect, paint);
@@ -162,10 +162,11 @@ public static class SkiaVisualizer<T>
     
     private static void RenderAsRectangles(PlayGroundArray<T> playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
     {
-        using var paint = new SKPaint { Style = SKPaintStyle.Fill };
+        using var paint = new SKPaint();
+        paint.Style = SKPaintStyle.Fill;
         var cellWidth = (int)cellSize.X;
         var cellHeight = (int)cellSize.Y;
-
+        
         foreach (var cell in playGround.Cells)
         {
             var top = cell.Position.Y * cellHeight;
@@ -177,7 +178,6 @@ public static class SkiaVisualizer<T>
             if (color == emptyColor) continue;
             
             paint.Color = color;
-            
             var rect = new SKRect(left, top, right, bottom);
         
             canvas.DrawRect(rect, paint);

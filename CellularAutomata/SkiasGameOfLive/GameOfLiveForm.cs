@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using CellularAutomata;
 using SkiaSharp;
@@ -20,11 +22,21 @@ public partial class GameOfLiveForm : Form
     
     private Vector dimension;
     private SKColor aliveColor = SKColors.Chartreuse;
-    private SKColor emptyColor = SKColors.Black;
+    private readonly SKColor emptyColor = SKColors.Black;
     
-    private ToolTip toolTip = new ();
-    private Timer toolTipTimer = new ();
+    private readonly ToolTip toolTip = new ();
+    private readonly Timer toolTipTimer = new ();
 
+    private readonly IList<long> generationTimes = new List<long>();
+    private readonly IList<long> renderingTimes = new List<long>();
+    
+    private readonly Stopwatch generationStopwatch = new ();
+    private readonly Stopwatch renderingStopwatch = new ();
+    private readonly Stopwatch totalStopwatch = new ();
+    
+    private bool timingEnabled = true;
+    private int currentGeneration = 0;
+    private int generation = 0;
 
     private IPlayGround<bool> playGroundBool;
     private IPlayGround<SandCellState> playGroundSand;
@@ -33,7 +45,6 @@ public partial class GameOfLiveForm : Form
     
     private CancellationTokenSource? cancellationTokenSource;
     
-    private int generation = 0;
     private int systemSpeed => (int)(systemSpeedSelector.Maximum - systemSpeedSelector.Value);
     private Vector bitmapSize => new (this.GameOfLiveView.Width, this.GameOfLiveView.Height, 0);
     
@@ -230,19 +241,9 @@ public partial class GameOfLiveForm : Form
         
         var maxGenerations = (int)stopWatchCountSelector.Value;
         
-        var timingEnabled = cbStopWatch.Checked;
-        
-        var generationTimes = new long[maxGenerations];
-        var renderingTimes = new long[maxGenerations];
-        
-        var totalStopwatch = new System.Diagnostics.Stopwatch();
-        
-        var generationStopwatch = new System.Diagnostics.Stopwatch();
-        var renderingStopwatch = new System.Diagnostics.Stopwatch();
-        
-        int currentGeneration = 0;
+        currentGeneration = 0;
 
-        totalStopwatch.Start();
+        totalStopwatch.Restart();
         
         await Task.Run(() =>
         {
@@ -258,22 +259,13 @@ public partial class GameOfLiveForm : Form
                 if (timingEnabled)
                 {
                     generationStopwatch.Stop();
-                    generationTimes[currentGeneration] = generationStopwatch.ElapsedMilliseconds;
-                }
-
-                
-                if (timingEnabled)
-                {
-                    renderingStopwatch.Restart(); 
+                    generationTimes.Add(generationStopwatch.ElapsedMilliseconds);
                 }
 
                 Invoke(RenderPlaygroundAndDisplayGeneration);
                 
                 if (timingEnabled)
                 {
-                    renderingStopwatch.Stop();
-                    renderingTimes[currentGeneration] = renderingStopwatch.ElapsedMilliseconds;
-                    
                     currentGeneration++;
                 }
 
@@ -288,11 +280,14 @@ public partial class GameOfLiveForm : Form
         
         if (timingEnabled)
         {
-            var generationStats = CalculateStatistics(generationTimes, currentGeneration, "Generierung");
-            var renderingStats = CalculateStatistics(renderingTimes, currentGeneration, "Rendering");
             var totalStats = new StringBuilder();
             totalStats.AppendLine($"Simulation abgeschlossen nach {currentGeneration} Generationen:");
             totalStats.AppendLine($"Gesamtzeit: {FormatTime(totalStopwatch.ElapsedMilliseconds)} m");
+            totalStats.AppendLine($"Gesamtzeit der Einzelmessungen: {FormatTime(generationTimes.Sum() + renderingTimes.Sum())} m");
+            
+            var generationStats = CalculateStatistics(generationTimes, "Generierung");
+            var renderingStats = CalculateStatistics(renderingTimes, "Rendering");
+            
             totalStats.AppendLine("");
             totalStats.AppendLine(generationStats);
             totalStats.AppendLine("");
@@ -313,19 +308,14 @@ public partial class GameOfLiveForm : Form
         cancellationTokenSource = null;
     }
     
-    private string CalculateStatistics(long[] times, int count, string type)
+    private string CalculateStatistics(IList<long> times, string type)
     {
-        if (count == 0)
-        {
-            return $"{type}-Statistik: Keine Messdaten vorhanden.";
-        }
-
         var statistics = new StringBuilder();
         
-        var total = times.Take(count).Sum();                
-        var min = times.Take(count).Min();                  
-        var max = times.Take(count).Max();                  
-        var average = times.Take(count).Average();        
+        var total = times.Sum();                
+        var min = times.Min();                  
+        var max = times.Max();                  
+        var average = times.Average();        
 
         var totalFormatted = FormatTime(total);
         var minFormatted = FormatTime(min);
@@ -344,6 +334,7 @@ public partial class GameOfLiveForm : Form
             statistics.AppendLine($"- {ruleCount.Key}: {ruleCount.Value}");
         }
 
+        times.Clear();
         
         return statistics.ToString();
     }
@@ -420,6 +411,11 @@ public partial class GameOfLiveForm : Form
 
     private void VisualizerRender(RuleSetType type, SKCanvas canvas)
     {
+        if (timingEnabled)
+        {
+            renderingStopwatch.Restart(); 
+        }
+        
         canvas.Clear(emptyColor);
         SKColor[] sandCellColors = [emptyColor, aliveColor, SKColors.Brown, emptyColor];
         
@@ -443,6 +439,12 @@ public partial class GameOfLiveForm : Form
                 break;
             default:    
                 break;
+        }
+        
+        if (timingEnabled)
+        {
+            renderingStopwatch.Stop();
+            renderingTimes.Add(renderingStopwatch.ElapsedMilliseconds);
         }
     }
 
@@ -537,6 +539,7 @@ public partial class GameOfLiveForm : Form
     {
         paStopWatch.Visible = cbStopWatch.Checked;
         stopWatchCountSelector.Enabled = cbStopWatch.Checked;
+        timingEnabled = cbStopWatch.Checked;
     }
 
     private void lblSum_Click(object sender, EventArgs e)
