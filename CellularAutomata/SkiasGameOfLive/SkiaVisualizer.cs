@@ -1,4 +1,6 @@
-﻿using CellularAutomata;
+﻿using System.Collections.Concurrent;
+using System.Runtime.InteropServices;
+using CellularAutomata;
 
 namespace SkiasGameOfLive;
 
@@ -100,10 +102,9 @@ public static class SkiaVisualizer<T>
     
     private static void RenderPixel(PlayGround<T> playGround, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
     {
-        using var paint = new SKPaint { Style = SKPaintStyle.Fill };
-
         var positionToCheck = Vector.Zero;
 
+        using var paint = new SKPaint();
         for (int y = 0; y < playGround.Dimension.Y; y++)
         {
             for (int x = 0; x < playGround.Dimension.X; x++)
@@ -114,16 +115,15 @@ public static class SkiaVisualizer<T>
                 positionToCheck.X = x;
                 positionToCheck.Y = y;
 
-                var point = new SKPoint(x,y);
-                canvas.DrawPoint(point, color);
+                paint.Color = color;
+                canvas.DrawPoint(x, y, paint);
             }
         }
     }
     
     private static void RenderPixel(PlayGroundArray<T> playGround, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
     {
-        using var paint = new SKPaint { Style = SKPaintStyle.Fill };
-        
+        using var paint = new SKPaint();
         for (int y = 0; y < playGround.Dimension.Y; y++)
         {
             for (int x = 0; x < playGround.Dimension.X; x++)
@@ -131,15 +131,16 @@ public static class SkiaVisualizer<T>
                 var color = stateToColor(playGround[(x,y,0)]);
                 if (color == emptyColor) continue;
                 
-                var point = new SKPoint(x,y);
-                canvas.DrawPoint(point, color);
+                //var point = new SKPoint(x,y);
+                paint.Color = color;
+                canvas.DrawPoint(x, y, paint);
             }
         }
     }
     
     private static void RenderAsRectangles(PlayGround<T> playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
     {
-        using var paint = new SKPaint { Style = SKPaintStyle.Fill };
+        using var paint = new SKPaint();
         var cellWidth = (int)cellSize.X;
         var cellHeight = (int)cellSize.Y;
         
@@ -163,7 +164,6 @@ public static class SkiaVisualizer<T>
     private static void RenderAsRectangles(PlayGroundArray<T> playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
     {
         using var paint = new SKPaint();
-        paint.Style = SKPaintStyle.Fill;
         var cellWidth = (int)cellSize.X;
         var cellHeight = (int)cellSize.Y;
         

@@ -2,6 +2,11 @@
 
 public static class Automata<T>
 {
+    private static ParallelOptions parallelOptions = new()
+    {
+        MaxDegreeOfParallelism = Environment.ProcessorCount
+    };
+    
     public static PlayGround<T> NextGeneration(PlayGround<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn)
     {
         var newPlayGround = new PlayGround<T>(initialPlayGround.Dimension);
@@ -20,7 +25,7 @@ public static class Automata<T>
     {
         var newPlayGround = new PlayGround<T>(initialPlayGround.Dimension);
         
-        Parallel.ForEach(initialPlayGround.Cells, cell =>
+        Parallel.ForEach(initialPlayGround.Cells, parallelOptions, cell =>
         {
             newPlayGround[cell.Key] = ruleSet.ApplyRules(initialPlayGround, cell.Key); 
         });

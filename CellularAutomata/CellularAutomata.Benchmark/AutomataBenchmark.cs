@@ -5,7 +5,7 @@ using BenchmarkDotNet.Running;
 
 public class AutomataBenchmark
 {
-    private const int Iterations = 10;
+    private const int Iterations = 50;
     private static Vector dimension = new Vector(800,600,0);
     private Vector screenSize = new Vector(dimension.X + 5, dimension.Y + 5, 0);
     PlayGround<bool> playGround = new PlayGround<bool>(dimension);
@@ -56,11 +56,56 @@ public class AutomataBenchmark
     }
     
     [Benchmark]
+    public void RunParallelArrayHalf()
+    {
+        for (int i = 0; i < Iterations; i++)
+        {
+            playGroundArray = AutomataArray<bool>.NextGenerationParallel(playGroundArray, ruleSetArray, false, Environment.ProcessorCount / 2);    
+        }
+    }
+    
+    [Benchmark]
     public void RunParallelArray()
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGroundArray = AutomataArray<bool>.NextGenerationParallel(playGroundArray, ruleSetArray, false);    
+            playGroundArray = AutomataArray<bool>.NextGenerationParallel(playGroundArray, ruleSetArray, false, Environment.ProcessorCount);    
+        }
+    }
+    
+    [Benchmark]
+    public void RunParallelArray2()
+    {
+        for (int i = 0; i < Iterations; i++)
+        {
+            playGroundArray = AutomataArray<bool>.NextGenerationParallel(playGroundArray, ruleSetArray, false, 2);    
+        }
+    }
+    
+    [Benchmark]
+    public void RunParallelArray4()
+    {
+        for (int i = 0; i < Iterations; i++)
+        {
+            playGroundArray = AutomataArray<bool>.NextGenerationParallel(playGroundArray, ruleSetArray, false, 4);    
+        }
+    }
+    
+    [Benchmark]
+    public void RunParallelArray8()
+    {
+        for (int i = 0; i < Iterations; i++)
+        {
+            playGroundArray = AutomataArray<bool>.NextGenerationParallel(playGroundArray, ruleSetArray, false, 8);    
+        }
+    }
+    
+    [Benchmark]
+    public void RunParallelArray16()
+    {
+        for (int i = 0; i < Iterations; i++)
+        {
+            playGroundArray = AutomataArray<bool>.NextGenerationParallel(playGroundArray, ruleSetArray, false, 16);    
         }
     }
 }

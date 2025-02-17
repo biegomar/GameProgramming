@@ -281,7 +281,7 @@ public partial class GameOfLiveForm : Form
         if (timingEnabled)
         {
             var totalStats = new StringBuilder();
-            totalStats.AppendLine($"Simulation abgeschlossen nach {currentGeneration} Generationen:");
+            totalStats.AppendLine($"Simulation abgeschlossen nach {currentGeneration} Generationen auf {Environment.ProcessorCount} Kernen:");
             totalStats.AppendLine($"Gesamtzeit: {FormatTime(totalStopwatch.ElapsedMilliseconds)} m");
             totalStats.AppendLine($"Gesamtzeit der Einzelmessungen: {FormatTime(generationTimes.Sum() + renderingTimes.Sum())} m");
             
@@ -351,14 +351,14 @@ public partial class GameOfLiveForm : Form
         playGroundBool = type switch
         {
             RuleSetType.GameOfLife => Automata<bool>.NextGenerationParallel((playGroundBool as PlayGround<bool>)!, (ruleSet as GameOfLifeRuleSet)!, false),
-            RuleSetType.GameOfLifeArray => AutomataArray<bool>.NextGenerationParallel((playGroundBool as PlayGroundArray<bool>)!,(ruleSet as GameOfLifeRuleSetArray)!, false),
+            RuleSetType.GameOfLifeArray => AutomataArray<bool>.NextGenerationParallel((playGroundBool as PlayGroundArray<bool>)!,(ruleSet as GameOfLifeRuleSetArray)!, false, Environment.ProcessorCount),
             _ => playGroundBool
         };
         
         playGroundSand = type switch
         {
             RuleSetType.Sand => Automata<SandCellState>.NextGenerationParallel((playGroundSand as PlayGround<SandCellState>)!, (ruleSet as SandRuleSet)!, false),
-            RuleSetType.SandArray => AutomataArray<SandCellState>.NextGenerationParallel((playGroundSand as PlayGroundArray<SandCellState>)!,(ruleSet as SandRuleSetArray)!, false),
+            RuleSetType.SandArray => AutomataArray<SandCellState>.NextGenerationParallel((playGroundSand as PlayGroundArray<SandCellState>)!,(ruleSet as SandRuleSetArray)!, false, Environment.ProcessorCount),
             _ => playGroundSand
         };
     }

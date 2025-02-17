@@ -28,27 +28,32 @@ public static class AutomataArray<T>
         
         foreach (var cell in initialPlayGround.Cells)
         {
-            nextGenerationPlayGround[cell.Position] = ruleSet.ApplyRules(initialPlayGround, cell.Position); 
+            nextGenerationPlayGround![cell.Position] = ruleSet.ApplyRules(initialPlayGround, cell.Position); 
         }
         
-        nextGenerationPlayGround = (PlayGroundArray<T>)ruleSet.ApplySpawnRules(nextGenerationPlayGround, isSpawn);
+        nextGenerationPlayGround = (PlayGroundArray<T>)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn);
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
         
         return initialPlayGround;
     }
     
-    public static PlayGroundArray<T> NextGenerationParallel(PlayGroundArray<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn)
+    public static PlayGroundArray<T> NextGenerationParallel(PlayGroundArray<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn, int maxDegreeOfParallelism)
     {
         InitNextGenerationPlayGround(initialPlayGround);
         InitBackupPlayGround(initialPlayGround);
 
-        Parallel.ForEach(initialPlayGround.Cells.Cast<Cell<T>>(), cell =>
+        var parallelOptions = new ParallelOptions()
         {
-            nextGenerationPlayGround[cell.Position] = ruleSet.ApplyRules(initialPlayGround, cell.Position);
+            MaxDegreeOfParallelism = maxDegreeOfParallelism
+        };
+
+        Parallel.ForEach(initialPlayGround.Cells.Cast<Cell<T>>(), parallelOptions, cell =>
+        {
+            nextGenerationPlayGround![cell.Position] = ruleSet.ApplyRules(initialPlayGround, cell.Position);
         });
         
-        nextGenerationPlayGround = (PlayGroundArray<T>)ruleSet.ApplySpawnRules(nextGenerationPlayGround, isSpawn);
+        nextGenerationPlayGround = (PlayGroundArray<T>)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn);
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
         
