@@ -18,7 +18,7 @@ public partial class GameOfLiveForm : Form
         GameOfLifeArray,
     }
     
-    private Vector cellSize => new ((int)cellSizeSelector.Value, (int)cellSizeSelector.Value, 0);
+    private Vector cellSize => new ((int)cellSizeSelector.Value, (int)cellSizeSelector.Value);
     
     private Vector dimension;
     private SKColor aliveColor = SKColors.Chartreuse;
@@ -46,7 +46,7 @@ public partial class GameOfLiveForm : Form
     private CancellationTokenSource? cancellationTokenSource;
     
     private int systemSpeed => (int)(systemSpeedSelector.Maximum - systemSpeedSelector.Value);
-    private Vector bitmapSize => new (this.GameOfLiveView.Width, this.GameOfLiveView.Height, 0);
+    private Vector bitmapSize => new (this.GameOfLiveView.Width, this.GameOfLiveView.Height);
     
     public GameOfLiveForm()
     {
@@ -79,7 +79,7 @@ public partial class GameOfLiveForm : Form
     {
         ruleSetType = GetTypeFromSelection();
         generation = 0;
-        dimension = new Vector((int)(bitmapSize.X / cellSize.X), (int)(bitmapSize.Y / cellSize.Y), 0);
+        dimension = new Vector(bitmapSize.X / cellSize.X, bitmapSize.Y / cellSize.Y);
 
         switch (ruleSetType)
         {
@@ -106,7 +106,7 @@ public partial class GameOfLiveForm : Form
 
         ruleSet = new SandRuleSet();
 
-        var middle = (int)(playGroundSand.Dimension.X / 2);
+        var middle = playGroundSand.Dimension.X / 2;
         aliveColor = SKColors.Bisque;
 
         switch (cbPatternSand.SelectedIndex)
@@ -118,16 +118,16 @@ public partial class GameOfLiveForm : Form
                 GameOfLifeInitializer.GenerateSandHourglass(playGroundSand);
                 break;
             case 2:
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 0, 0), SandCellState.Sand);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 0), SandCellState.Sand);
 
                 // add some terrain
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle + 1, 10, 0), SandCellState.Solid);
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 11, 0), SandCellState.Solid);
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 12, 0), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle + 1, 10), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 11), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 12), SandCellState.Solid);
 
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 20, 0), SandCellState.Solid);
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 19, 0), SandCellState.Solid);
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 2, 18, 0), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 20), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 19), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 2, 18), SandCellState.Solid);
                 break;
         }
     }
@@ -138,7 +138,7 @@ public partial class GameOfLiveForm : Form
 
         ruleSet = new SandRuleSetArray();
         
-        var middle = (int)(playGroundSand.Dimension.X / 2);
+        var middle = playGroundSand.Dimension.X / 2;
         aliveColor = SKColors.Bisque;
         
         switch (cbPatternSand.SelectedIndex)
@@ -150,16 +150,16 @@ public partial class GameOfLiveForm : Form
                 GameOfLifeInitializer.GenerateSandHourglass(playGroundSand);
                 break;
             case 2:
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 0, 0), SandCellState.Sand);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 0), SandCellState.Sand);
 
                 // add some terrain
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle + 1, 10, 0), SandCellState.Solid);
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 11, 0), SandCellState.Solid);
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 12, 0), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle + 1, 10), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 11), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 12), SandCellState.Solid);
 
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 20, 0), SandCellState.Solid);
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 19, 0), SandCellState.Solid);
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 2, 18, 0), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 20), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 19), SandCellState.Solid);
+                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 2, 18), SandCellState.Solid);
                 break;
         }
     }
@@ -183,8 +183,8 @@ public partial class GameOfLiveForm : Form
             case 2: 
                 GameOfLifeInitializer.AddSingleLineWithCellOnEveryXColumn(gamePlayGround, 10, 10);
                 GameOfLifeInitializer.AddSingleColumnWithCellOnEveryYRow(gamePlayGround, 10, 10);
-                GameOfLifeInitializer.AddSingleCell(gamePlayGround, Vector.Zero);
-                GameOfLifeInitializer.AddSingleCell(gamePlayGround, new Vector(dimension.X - 1, dimension.Y - 1, 0));
+                GameOfLifeInitializer.AddSingleCell(gamePlayGround, new Vector(0, 0));
+                GameOfLifeInitializer.AddSingleCell(gamePlayGround, new Vector(dimension.X - 1, dimension.Y - 1));
                 break;
         }
     }
@@ -207,8 +207,8 @@ public partial class GameOfLiveForm : Form
             case 2: 
                 GameOfLifeInitializer.AddSingleLineWithCellOnEveryXColumn(playGroundBool, 10, 10);
                 GameOfLifeInitializer.AddSingleColumnWithCellOnEveryYRow(playGroundBool, 10, 10);
-                GameOfLifeInitializer.AddSingleCell(playGroundBool, Vector.Zero);
-                GameOfLifeInitializer.AddSingleCell(playGroundBool, new Vector(dimension.X - 1, dimension.Y - 1, 0));
+                GameOfLifeInitializer.AddSingleCell(playGroundBool, new Vector(0, 0));
+                GameOfLifeInitializer.AddSingleCell(playGroundBool, new Vector(dimension.X - 1, dimension.Y - 1));
                 break;
         }
     }

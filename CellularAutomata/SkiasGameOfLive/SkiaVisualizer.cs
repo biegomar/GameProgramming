@@ -49,10 +49,10 @@ public static class SkiaVisualizer<T>
     
     private static void RenderAsBitmap(PlayGround<T> playGround, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
     {
-        using var bitmap = new SKBitmap((int)playGround.Dimension.X, (int)playGround.Dimension.Y);
+        using var bitmap = new SKBitmap(playGround.Dimension.X, playGround.Dimension.Y);
         //var pixels = bitmap.Pixels;
         
-        var positionToCheck = Vector.Zero;
+        var positionToCheck = new Vector(0, 0);
         for (int y = 0; y < playGround.Dimension.Y; y++)
         {
             for (int x = 0; x < playGround.Dimension.X; x++)
@@ -75,10 +75,10 @@ public static class SkiaVisualizer<T>
     
     private static void RenderAsBitmap(PlayGroundArray<T> playGround, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
     {
-        using var bitmap = new SKBitmap((int)playGround.Dimension.X, (int)playGround.Dimension.Y);
+        using var bitmap = new SKBitmap(playGround.Dimension.X, playGround.Dimension.Y);
         //var pixels = bitmap.Pixels;
         
-        var positionToCheck = Vector.Zero;
+        var positionToCheck = new Vector(0, 0);
         for (int y = 0; y < playGround.Dimension.Y; y++)
         {
             for (int x = 0; x < playGround.Dimension.X; x++)
@@ -102,7 +102,7 @@ public static class SkiaVisualizer<T>
     
     private static void RenderPixel(PlayGround<T> playGround, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
     {
-        var positionToCheck = Vector.Zero;
+        var positionToCheck = new Vector(0, 0);
 
         using var paint = new SKPaint();
         for (int y = 0; y < playGround.Dimension.Y; y++)
@@ -128,7 +128,7 @@ public static class SkiaVisualizer<T>
         {
             for (int x = 0; x < playGround.Dimension.X; x++)
             {
-                var color = stateToColor(playGround[(x,y,0)]);
+                var color = stateToColor(playGround[(x,y)]);
                 if (color == emptyColor) continue;
                 
                 //var point = new SKPoint(x,y);
@@ -141,14 +141,14 @@ public static class SkiaVisualizer<T>
     private static void RenderAsRectangles(PlayGround<T> playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
     {
         using var paint = new SKPaint();
-        var cellWidth = (int)cellSize.X;
-        var cellHeight = (int)cellSize.Y;
+        var cellWidth = cellSize.X;
+        var cellHeight = cellSize.Y;
         
         foreach (var cell in playGround.Cells.Values)
         {
-            var top = cell.Position.Y * cellHeight;
+            var top = cell.Y * cellHeight;
             var bottom = top + cellHeight;
-            var left = cell.Position.X * cellWidth;
+            var left = cell.X * cellWidth;
             var right = left + cellWidth;
             
             var color = stateToColor(cell.State);
@@ -164,14 +164,14 @@ public static class SkiaVisualizer<T>
     private static void RenderAsRectangles(PlayGroundArray<T> playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
     {
         using var paint = new SKPaint();
-        var cellWidth = (int)cellSize.X;
-        var cellHeight = (int)cellSize.Y;
+        var cellWidth = cellSize.X;
+        var cellHeight = cellSize.Y;
         
         foreach (var cell in playGround.Cells)
         {
-            var top = cell.Position.Y * cellHeight;
+            var top = cell.Y * cellHeight;
             var bottom = top + cellHeight;
-            var left = cell.Position.X * cellWidth;
+            var left = cell.X * cellWidth;
             var right = left + cellWidth;
             
             var color = stateToColor(cell.State);

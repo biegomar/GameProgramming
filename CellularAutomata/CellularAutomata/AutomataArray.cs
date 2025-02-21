@@ -28,7 +28,7 @@ public static class AutomataArray<T>
         
         foreach (var cell in initialPlayGround.Cells)
         {
-            nextGenerationPlayGround![cell.Position] = ruleSet.ApplyRules(initialPlayGround, cell.Position); 
+            nextGenerationPlayGround![(cell.X, cell.Y)] = ruleSet.ApplyRules(initialPlayGround, (cell.X, cell.Y)); 
         }
         
         nextGenerationPlayGround = (PlayGroundArray<T>)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn);
@@ -50,7 +50,7 @@ public static class AutomataArray<T>
 
         Parallel.ForEach(initialPlayGround.Cells.Cast<Cell<T>>(), parallelOptions, cell =>
         {
-            nextGenerationPlayGround![cell.Position] = ruleSet.ApplyRules(initialPlayGround, cell.Position);
+            nextGenerationPlayGround![(cell.X, cell.Y)] = ruleSet.ApplyRules(initialPlayGround, (cell.X, cell.Y));
         });
         
         nextGenerationPlayGround = (PlayGroundArray<T>)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn);

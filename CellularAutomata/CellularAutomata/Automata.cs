@@ -38,9 +38,9 @@ public static class Automata<T>
     public static PlayGround<T> NextGenerationForLoop(PlayGround<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn)
     {
         var newPlayGround = new PlayGround<T>(initialPlayGround.Dimension);
-        var dimensionX = (int)initialPlayGround.Dimension.X;
-        var dimensionY = (int)initialPlayGround.Dimension.Y;
-        var position = Vector.Zero;
+        var dimensionX = initialPlayGround.Dimension.X;
+        var dimensionY = initialPlayGround.Dimension.Y;
+        var position = new Vector(0,0);
         
         for (var x = 0; x < dimensionX; x++)
         {

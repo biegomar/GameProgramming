@@ -1,9 +1,17 @@
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace CellularAutomata;
 
 public class GameOfLifeRuleSetArray : IRuleSet<bool>
 {
+    private static readonly (int DX, int DY)[] NeighborOffsets = 
+    {
+        (-1, -1), (-1, 0), (-1, 1),
+        ( 0, -1),          ( 0, 1),
+        ( 1, -1), ( 1, 0), ( 1, 1),
+    };
+
     public IDictionary<string, uint> RuleCounter { get; init; } = new Dictionary<string, uint>
     {
         ["CellEmpty"] = 0,
@@ -12,57 +20,47 @@ public class GameOfLifeRuleSetArray : IRuleSet<bool>
     
     public bool ApplyRules(IPlayGround<bool> playGround, Vector position)
     {
-        return this.ApplyRules(playGround, ((int)position.X, (int)position.Y, (int)position.Z));
+        return this.ApplyRules(playGround, (position.X, position.Y));
     }
 
-    public bool ApplyRules(IPlayGround<bool> playGround, (int X, int Y, int Z) position)
+    public bool ApplyRules(IPlayGround<bool> playGround, (int X, int Y) position)
     {
         var cellState = playGround[position];
         
-        var liveNeighbors = CountLivingNeighbors(playGround, position);
+        var liveNeighbors = CountLivingNeighbors(playGround, position.X, position.Y);
         
         return liveNeighbors == 3 || (cellState && liveNeighbors == 2);
     }
     
-    private int CountLivingNeighbors(IPlayGround<bool> playGround, (int X, int Y, int Z) position)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private int CountLivingNeighbors(IPlayGround<bool> playGround, int X, int Y)
     {
         int liveNeighbors = 0;
-        
-        bool shouldBreak = false;
 
-        for (int dx = -1; dx <= 1; dx++)
+        foreach (var (dx, dy) in NeighborOffsets)
         {
-            for (int dy = -1; dy <= 1; dy++)
+            var nx = X + dx;
+            var ny = Y + dy;
+
+            if (IsWithinBounds(playGround.Dimension, nx, ny) && playGround[(nx, ny)])
             {
-                if (dx == 0 && dy == 0)
-                    continue;
-                
-                var neighbor = (position.X + dx, position.Y + dy, 0);
-                
-                if (IsWithinBounds(playGround.Dimension, neighbor) && playGround[neighbor])
-                {
-                    liveNeighbors++;
-                    if (liveNeighbors == 4)
-                    {
-                        shouldBreak = true;
-                        break;
-
-                    }
-                }
+                liveNeighbors++;
+                if (liveNeighbors == 4)
+                    break;
             }
-            
-            if (shouldBreak) break;
-
         }
 
         return liveNeighbors;
     }
+
     
-    private bool IsWithinBounds(Vector dimension, (int X, int Y, int Z) position)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool IsWithinBounds(Vector dimension, int x, int y )
     {
-        return position.X >= 0 && position.Y >= 0 &&
-               position.X < dimension.X &&
-               position.Y < dimension.Y;
+        var withinX = (uint)x < (uint)dimension.X; 
+        var withinY = (uint)y < (uint)dimension.Y;
+
+        return withinX && withinY;
     }
 
     public IPlayGround<bool> ApplySpawnRules(IPlayGround<bool> playGround, bool isSpawn)

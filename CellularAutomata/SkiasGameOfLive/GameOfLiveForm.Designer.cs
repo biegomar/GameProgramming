@@ -172,7 +172,7 @@ partial class GameOfLiveForm
         // cellSizeSelector
         // 
         cellSizeSelector.Location = new System.Drawing.Point(1112, 193);
-        cellSizeSelector.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
+        cellSizeSelector.Maximum = new decimal(new int[] { 32, 0, 0, 0 });
         cellSizeSelector.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
         cellSizeSelector.Name = "cellSizeSelector";
         cellSizeSelector.Size = new System.Drawing.Size(66, 23);

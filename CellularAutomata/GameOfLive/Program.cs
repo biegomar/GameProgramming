@@ -3,8 +3,8 @@
 using CellularAutomata;
 using GameOfLive;
 
-var dimension = new Vector(100,40,0);
-var screenSize = new Vector(dimension.X + 5, dimension.Y + 5, 0);
+var dimension = new Vector(100,40);
+var screenSize = new Vector(dimension.X + 5, dimension.Y + 5);
 var playGround = new PlayGround<bool>(dimension);
 var ruleSet = new GameOfLifeRuleSet();
 

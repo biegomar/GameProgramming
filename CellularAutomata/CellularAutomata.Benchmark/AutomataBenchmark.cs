@@ -6,8 +6,8 @@ using BenchmarkDotNet.Running;
 public class AutomataBenchmark
 {
     private const int Iterations = 50;
-    private static Vector dimension = new Vector(800,600,0);
-    private Vector screenSize = new Vector(dimension.X + 5, dimension.Y + 5, 0);
+    private static Vector dimension = new Vector(800,600);
+    private Vector screenSize = new Vector(dimension.X + 5, dimension.Y + 5);
     PlayGround<bool> playGround = new PlayGround<bool>(dimension);
     PlayGroundArray<bool> playGroundArray = new PlayGroundArray<bool>(dimension);
     GameOfLifeRuleSet ruleSet = new GameOfLifeRuleSet();

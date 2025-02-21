@@ -23,7 +23,7 @@ public static class ConsoleVisualizer<T>
             
             for (var x = 0; x < playGround.Dimension.X; x++)
             {
-                var positionToCheck = new Vector(x, y, 0);
+                var positionToCheck = new Vector(x, y);
                 lineBuilder.Append(stateToChar(playGround[positionToCheck]));
             }
             
@@ -51,7 +51,7 @@ public static class ConsoleVisualizer<T>
 
             for (int x = 0; x < playGround.Dimension.X; x++)
             {
-                var positionToCheck = new Vector(x, y, 0);
+                var positionToCheck = new Vector(x, y);
                 var cellColor = stateToColor(playGround[positionToCheck]);
 
                 // Wenn es ein neuer Farbbereich ist, wird die bisherige Farbe ausgegeben
@@ -68,7 +68,7 @@ public static class ConsoleVisualizer<T>
             
             if (lineBuilder.Length > 0)
             {
-                PrintColoredLine(lineBuilder.ToString(), startX + ((int)playGround.Dimension.X - lineBuilder.Length),
+                PrintColoredLine(lineBuilder.ToString(), startX + (playGround.Dimension.X - lineBuilder.Length),
                     startY + y, currentColor);
             }
         }
@@ -87,8 +87,8 @@ public static class ConsoleVisualizer<T>
     
     public static void SetConsoleSize(Vector dimension)
     {
-        var width = (int)dimension.X;
-        var height = (int)dimension.Y;
+        var width = dimension.X;
+        var height = dimension.Y;
         
         if (width > 0 && width <= Console.LargestWindowWidth && height > 0 && height <= Console.LargestWindowHeight)
         {

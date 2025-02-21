@@ -21,7 +21,7 @@ public static class GameOfLifeInitializer
             Parallel.ForEach(playGroundArrayBool.Cells.Cast<Cell<bool>>(), cell =>
             {
                 var state = random.NextDouble() < aliveProbability;
-                playGroundArrayBool[cell.Position] = state;
+                playGroundArrayBool[(cell.X, cell.Y)] = state;
             });
         }
         
@@ -44,14 +44,14 @@ public static class GameOfLifeInitializer
             Parallel.ForEach(playGroundArrayBool.Cells.Cast<Cell<SandCellState>>(), cell =>
             {
                 var state = random.NextDouble() < aliveProbability;
-                playGroundArrayBool[cell.Position] = state ? SandCellState.Sand : SandCellState.Empty;
+                playGroundArrayBool[(cell.X, cell.Y)] = state ? SandCellState.Sand : SandCellState.Empty;
             });
         }
     }
 
     public static void AddSingleCell(IPlayGround<bool> playground, int x, int y)
     {
-        playground[(x, y, 0)] = true;
+        playground[(x, y)] = true;
     }
 
     public static void AddCheckerboard(IPlayGround<bool> playground)
@@ -66,7 +66,7 @@ public static class GameOfLifeInitializer
     {
         for (int x = 0; x < playground.Dimension.X; x++)
         {
-            playground[(x, row, 0)] = int.IsEvenInteger(x) && int.IsEvenInteger(row) || int.IsOddInteger(x) && int.IsOddInteger(row);
+            playground[(x, row)] = int.IsEvenInteger(x) && int.IsEvenInteger(row) || int.IsOddInteger(x) && int.IsOddInteger(row);
         } 
     }
 
@@ -74,7 +74,7 @@ public static class GameOfLifeInitializer
     {
         for (int x = 0; x < playground.Dimension.X; x++)
         {
-            playground[(x, row, 0)] = x % distance == 0;
+            playground[(x, row)] = x % distance == 0;
         } 
     }
 
@@ -82,7 +82,7 @@ public static class GameOfLifeInitializer
     {
         for (int y = 0; y < playground.Dimension.Y; y++)
         {
-            playground[(column, y, 0)] = y % distance == 0;
+            playground[(column, y)] = y % distance == 0;
         } 
     }
 
@@ -99,62 +99,62 @@ public static class GameOfLifeInitializer
     // **Muster 1: Blinker (kleiner Oszillator)**
     public static void AddBlinker(IPlayGround<bool> playground, Vector startPosition)
     {
-        playground[new Vector(startPosition.X, startPosition.Y, 0)] = true;
-        playground[new Vector(startPosition.X + 1, startPosition.Y, 0)] = true;
-        playground[new Vector(startPosition.X + 2, startPosition.Y, 0)] = true;
+        playground[new Vector(startPosition.X, startPosition.Y)] = true;
+        playground[new Vector(startPosition.X + 1, startPosition.Y)] = true;
+        playground[new Vector(startPosition.X + 2, startPosition.Y)] = true;
     }
 
     // **Muster 2: Glider (bewegliches Muster)**
     public static void AddGlider(IPlayGround<bool> playground, Vector startPosition)
     {
-        playground[new Vector(startPosition.X + 2, startPosition.Y, 0)] = true;        // Zelle oben rechts
-        playground[new Vector(startPosition.X, startPosition.Y + 1, 0)] = true;        // Zelle Mitte links
-        playground[new Vector(startPosition.X + 2, startPosition.Y + 1, 0)] = true;    // Zelle Mitte rechts
-        playground[new Vector(startPosition.X + 1, startPosition.Y + 2, 0)] = true;    // Zelle Mitte unten
-        playground[new Vector(startPosition.X + 2, startPosition.Y + 2, 0)] = true;    // Zelle unten rechts 
+        playground[new Vector(startPosition.X + 2, startPosition.Y)] = true;        // Zelle oben rechts
+        playground[new Vector(startPosition.X, startPosition.Y + 1)] = true;        // Zelle Mitte links
+        playground[new Vector(startPosition.X + 2, startPosition.Y + 1)] = true;    // Zelle Mitte rechts
+        playground[new Vector(startPosition.X + 1, startPosition.Y + 2)] = true;    // Zelle Mitte unten
+        playground[new Vector(startPosition.X + 2, startPosition.Y + 2)] = true;    // Zelle unten rechts 
     }
 
     // **Muster 3: Toad (größerer Oszillator)**
     public static void AddToad(IPlayGround<bool> playground, Vector startPosition)
     {
-        playground[new Vector(startPosition.X + 1, startPosition.Y, 0)] = true;
-        playground[new Vector(startPosition.X + 2, startPosition.Y, 0)] = true;
-        playground[new Vector(startPosition.X + 3, startPosition.Y, 0)] = true;
-        playground[new Vector(startPosition.X, startPosition.Y + 1, 0)] = true;
-        playground[new Vector(startPosition.X + 1, startPosition.Y + 1, 0)] = true;
-        playground[new Vector(startPosition.X + 2, startPosition.Y + 1, 0)] = true; 
+        playground[new Vector(startPosition.X + 1, startPosition.Y)] = true;
+        playground[new Vector(startPosition.X + 2, startPosition.Y)] = true;
+        playground[new Vector(startPosition.X + 3, startPosition.Y)] = true;
+        playground[new Vector(startPosition.X, startPosition.Y + 1)] = true;
+        playground[new Vector(startPosition.X + 1, startPosition.Y + 1)] = true;
+        playground[new Vector(startPosition.X + 2, startPosition.Y + 1)] = true; 
     }
 
     // **Muster 4: Block (stabiler Zustand)**
     public static void AddBlock(IPlayGround<bool> playground, Vector startPosition)
     {
-        playground[new Vector(startPosition.X, startPosition.Y, 0)] = true;
-        playground[new Vector(startPosition.X + 1, startPosition.Y, 0)] = true;
-        playground[new Vector(startPosition.X, startPosition.Y + 1, 0)] = true;
-        playground[new Vector(startPosition.X + 1, startPosition.Y + 1, 0)] = true; 
+        playground[new Vector(startPosition.X, startPosition.Y)] = true;
+        playground[new Vector(startPosition.X + 1, startPosition.Y)] = true;
+        playground[new Vector(startPosition.X, startPosition.Y + 1)] = true;
+        playground[new Vector(startPosition.X + 1, startPosition.Y + 1)] = true; 
     }
 
     // **Muster 5: Beacon (kleiner oszillierender Zustand)**
     public static void AddBeacon(IPlayGround<bool> playground, Vector startPosition)
     {
         // Oberer linker Block
-        playground[new Vector(startPosition.X, startPosition.Y, 0)] = true;
-        playground[new Vector(startPosition.X + 1, startPosition.Y, 0)] = true;
-        playground[new Vector(startPosition.X, startPosition.Y + 1, 0)] = true;
-        playground[new Vector(startPosition.X + 1, startPosition.Y + 1, 0)] = true;
+        playground[new Vector(startPosition.X, startPosition.Y)] = true;
+        playground[new Vector(startPosition.X + 1, startPosition.Y)] = true;
+        playground[new Vector(startPosition.X, startPosition.Y + 1)] = true;
+        playground[new Vector(startPosition.X + 1, startPosition.Y + 1)] = true;
 
         // Unterer rechter Block
-        playground[new Vector(startPosition.X + 2, startPosition.Y + 2, 0)] = true;
-        playground[new Vector(startPosition.X + 3, startPosition.Y + 2, 0)] = true;
-        playground[new Vector(startPosition.X + 2, startPosition.Y + 3, 0)] = true;
-        playground[new Vector(startPosition.X + 3, startPosition.Y + 3, 0)] = true;   
+        playground[new Vector(startPosition.X + 2, startPosition.Y + 2)] = true;
+        playground[new Vector(startPosition.X + 3, startPosition.Y + 2)] = true;
+        playground[new Vector(startPosition.X + 2, startPosition.Y + 3)] = true;
+        playground[new Vector(startPosition.X + 3, startPosition.Y + 3)] = true;   
     }
     
     public static void GenerateSandHourglass(IPlayGround<SandCellState> playground)
     {
         var dimension = playground.Dimension;
-        var width = (int)dimension.X;
-        var height = (int)dimension.Y;
+        var width = dimension.X;
+        var height = dimension.Y;
 
         int midX = width / 2; // Mitte der Breite
         int midY = height / 2; // Mitte der Höhe
@@ -166,19 +166,19 @@ public static class GameOfLifeInitializer
             {
                 if (IsOutline(x, y, width, height) && !IsConnection(x, y, midX, midY))
                 {
-                    playground[new Vector(x, y, 0)] = SandCellState.Solid;
+                    playground[new Vector(x, y)] = SandCellState.Solid;
                 }
                 else if (IsTopSand(x, y, midX, midY))
                 {
-                    playground[new Vector(x, y, 0)] = SandCellState.Sand;
+                    playground[new Vector(x, y)] = SandCellState.Sand;
                 }
                 else if (IsConnection(x, y, midX, midY))
                 {
-                    playground[new Vector(x, y, 0)] = SandCellState.Sand;
+                    playground[new Vector(x, y)] = SandCellState.Sand;
                 }
                 else if (IsBottomEmpty(x, y, midX, midY))
                 {
-                    playground[new Vector(x, y, 0)] = SandCellState.Empty;
+                    playground[new Vector(x, y)] = SandCellState.Empty;
                 }
             }
         }
