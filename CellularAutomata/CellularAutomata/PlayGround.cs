@@ -1,6 +1,6 @@
 ﻿namespace CellularAutomata;
 
-public class PlayGround<T> : IPlayGround<T>
+public sealed class PlayGround<T> : IPlayGround<T>
 {
     public Dictionary<Vector, Cell<T>> Cells { get; init; }
 

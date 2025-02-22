@@ -1,6 +1,6 @@
 ﻿namespace CellularAutomata;
 
-public class PlayGroundArray<T> : IPlayGround<T>
+public sealed class PlayGroundArray<T> : IPlayGround<T>
 {
     public Cell<T>[,] Cells { get; init; }
     

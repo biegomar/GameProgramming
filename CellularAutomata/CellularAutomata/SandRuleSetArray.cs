@@ -3,7 +3,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace CellularAutomata;
 
-public class SandRuleSetArray : IRuleSet<SandCellState>
+public sealed class SandRuleSetArray : IRuleSet<SandCellState>
 {
     private static readonly (int DX, int DY)[] NeighborOffsets = 
     {

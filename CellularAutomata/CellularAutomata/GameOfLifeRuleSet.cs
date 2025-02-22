@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace CellularAutomata;
 
-public class GameOfLifeRuleSet : IRuleSet<bool>
+public sealed class GameOfLifeRuleSet : IRuleSet<bool>
 {
     private static readonly (int DX, int DY)[] NeighborOffsets = 
     {

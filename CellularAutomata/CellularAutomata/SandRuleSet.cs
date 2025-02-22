@@ -1,6 +1,6 @@
 ﻿namespace CellularAutomata;
 
-public class SandRuleSet : IRuleSet<SandCellState>
+public sealed class SandRuleSet : IRuleSet<SandCellState>
 {
     public IDictionary<string, uint> RuleCounter { get; init; } = new Dictionary<string, uint>();
     
