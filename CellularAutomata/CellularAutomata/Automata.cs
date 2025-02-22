@@ -1,18 +1,12 @@
-﻿namespace CellularAutomata;
+﻿using System.Runtime.CompilerServices;
+
+namespace CellularAutomata;
 
 public static class Automata<T>
 {
-    private static PlayGround<T>? backupPlayGround;
     private static PlayGround<T>? nextGenerationPlayGround;
-    
-    private static void InitBackupPlayGround(PlayGround<T> initialPlayGround)
-    {
-        if (backupPlayGround == null || backupPlayGround.Dimension != initialPlayGround.Dimension)
-        {
-            backupPlayGround = new PlayGround<T>(initialPlayGround.Dimension);
-        }
-    }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void InitNextGenerationPlayGround(PlayGround<T> initialPlayGround)
     {
         if (nextGenerationPlayGround == null || nextGenerationPlayGround.Dimension != initialPlayGround.Dimension)
@@ -24,7 +18,6 @@ public static class Automata<T>
     public static PlayGround<T> NextGeneration(PlayGround<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn)
     {
         InitNextGenerationPlayGround(initialPlayGround);
-        InitBackupPlayGround(initialPlayGround);
         
         foreach (var cell in initialPlayGround.Cells)
         {
@@ -41,7 +34,6 @@ public static class Automata<T>
     public static PlayGround<T> NextGenerationParallel(PlayGround<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn, int maxDegreeOfParallelism)
     {
         InitNextGenerationPlayGround(initialPlayGround);
-        InitBackupPlayGround(initialPlayGround);
 
         var parallelOptions = new ParallelOptions()
         {
@@ -82,11 +74,9 @@ public static class Automata<T>
         return resultPlayGround;
     }
     
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     static void Swap(ref PlayGround<T> instanceOne, ref PlayGround<T> instanceTwo)
     { 
-        InitBackupPlayGround(instanceOne);
-        backupPlayGround = instanceOne;
-        instanceOne = instanceTwo;
-        instanceTwo = backupPlayGround;
+        (instanceOne, instanceTwo) = (instanceTwo, instanceOne);
     }
 }
