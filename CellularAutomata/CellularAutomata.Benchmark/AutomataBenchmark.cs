@@ -42,7 +42,52 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGround = Automata<bool>.NextGenerationParallel(playGround, ruleSet, false);    
+            playGround = Automata<bool>.NextGenerationParallel(playGround, ruleSet, false, Environment.ProcessorCount);    
+        }
+    }
+    
+    [Benchmark]
+    public void RunParallelHalf()
+    {
+        for (int i = 0; i < Iterations; i++)
+        {
+            playGround = Automata<bool>.NextGenerationParallel(playGround, ruleSet, false,Environment.ProcessorCount / 2);    
+        }
+    }
+    
+    [Benchmark]
+    public void RunParallel2()
+    {
+        for (int i = 0; i < Iterations; i++)
+        {
+            playGround = Automata<bool>.NextGenerationParallel(playGround, ruleSet, false, 2);    
+        }
+    }
+    
+    [Benchmark]
+    public void RunParallel4()
+    {
+        for (int i = 0; i < Iterations; i++)
+        {
+            playGround = Automata<bool>.NextGenerationParallel(playGround, ruleSet, false, 4);    
+        }
+    }
+    
+    [Benchmark]
+    public void RunParallel8()
+    {
+        for (int i = 0; i < Iterations; i++)
+        {
+            playGround = Automata<bool>.NextGenerationParallel(playGround, ruleSet, false, 8);    
+        }
+    }
+    
+    [Benchmark]
+    public void RunParallel16()
+    {
+        for (int i = 0; i < Iterations; i++)
+        {
+            playGround = Automata<bool>.NextGenerationParallel(playGround, ruleSet, false, 16);    
         }
     }
     
