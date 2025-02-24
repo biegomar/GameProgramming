@@ -1,0 +1,131 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="AvaloniaGameOfLive.MainWindow"
+        Width="1280" Height="680"
+        Title="AvaloniaGameOfLive">
+    <Grid ColumnDefinitions="810, *, 1.4*" RowDefinitions="20, 610, *">
+    <!-- Spielfläche -->
+    <TextBlock x:Name="statusLabel"
+               Grid.Column="0" 
+               Grid.Row="0"  Text="Generation"
+               Margin="5"
+               />
+    <Canvas x:Name="GameOfLiveView" 
+            Grid.Column="0" 
+            Grid.Row="1"
+            Background="Red"
+            Height="600"
+            Width="800"
+            Margin="5">
+    </Canvas>       
+    <!-- Steuerung -->
+    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Left" Spacing="12" Margin="5">
+      <Button x:Name="btnStart"
+              Content="Start"
+              Width="95"
+              HorizontalContentAlignment="Center"
+              />
+      <Button x:Name="btnStop"
+              Content="Stop" 
+              Width="95"
+              HorizontalContentAlignment="Center"
+              />
+      <Button x:Name="btnSingleStep"
+              Content="Next Step"
+              Width="95"
+              HorizontalContentAlignment="Center"
+              />
+      <Button x:Name="btnReset"
+              Content="Reset"
+              Width="95"
+              HorizontalContentAlignment="Center"
+              Click="btnReset_Click"
+
+      />
+      <CheckBox x:Name="cbStopWatch" Content="Zeitmessung starten" Margin="0,148,0,0"/>
+    </StackPanel>
+    <TextBlock Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" x:Name="tbStopWatch" Text="Statistik" VerticalAlignment="Center" Width="350" Margin="0,148,0,0"/>
+    <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Left" Spacing="12" Margin="10">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Spacing="12">
+                    <TextBlock x:Name="lblProbability" Text="Anfangswahrscheinlichkeit" VerticalAlignment="Center"/>
+                    <Slider x:Name="probabilitySelector"
+                            HorizontalAlignment="Left"
+                            Maximum="500"
+                            Minimum="0"
+                            Value="500"
+                            Width="250" 
+                    />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
+                    <TextBlock x:Name="lblSpeed" Text="Geschwindigkeit" VerticalAlignment="Center"/>
+                    <NumericUpDown x:Name="systemSpeedSelector"
+                                   Minimum="0"
+                                   Maximum="500"
+                                   Value="500"
+                                   Increment="1"
+                                   Width="135"
+                                   HorizontalAlignment="Right"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
+                    <TextBlock x:Name="lblRuleSet" Text="Regeln" VerticalAlignment="Center" Width="75"/>
+                    <!-- Regel-Set Auswahl -->
+                    <ComboBox x:Name="cbRuleSet" HorizontalAlignment="Right" Width="170">
+                            <ComboBox.Items>
+                                    <ComboBoxItem Content="Game of Life" />
+                                    <ComboBoxItem Content="Sand" />
+                                    <ComboBoxItem Content="Game of Life Array" />
+                                    <ComboBoxItem Content="Sand Array" />
+                            </ComboBox.Items>
+                    </ComboBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
+                    <TextBlock x:Name="lblPattern" Text="Muster" VerticalAlignment="Center" Width="75"/>
+                    <!-- Pattern-Auswahl -->
+                    <ComboBox x:Name="cbPattern" 
+                              HorizontalAlignment="Right" Width="170">
+                            <ComboBox.Items>
+                                    <ComboBoxItem Content="Random" />
+                                    <ComboBoxItem Content="Schachbrett" />
+                                    <ComboBoxItem Content="Free Style" />
+                            </ComboBox.Items>
+                    </ComboBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
+                    <TextBlock x:Name="lblCellSize" Text="Zellgröße" VerticalAlignment="Center" Width="75"/>
+                    <NumericUpDown x:Name="cellSizeSelector"
+                                   Minimum="1"
+                                   Maximum="64"
+                                   Value="4"
+                                   Increment="1"
+                                   Width="170"
+                                   HorizontalAlignment="Right"/>
+
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
+                    <TextBlock x:Name="lblEngine" Text="Engine" VerticalAlignment="Center" Width="75"/>
+                    <ComboBox x:Name="cbEngine" 
+                              HorizontalAlignment="Right" Width="170">
+                            <ComboBox.Items>
+                                    <ComboBoxItem Content="Rect" />
+                                    <ComboBoxItem Content="Point" />
+                                    <ComboBoxItem Content="PointOnBitmap" />
+                            </ComboBox.Items>
+                    </ComboBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
+                <TextBlock x:Name="lblStopWatch" Text="Durchläufe" VerticalAlignment="Center" Width="75"/>
+                <NumericUpDown x:Name="stopWatchCountSelector"
+                           Minimum="1"
+                           Maximum="10000"
+                           Value="50"
+                           Increment="1"
+                           Width="170"
+                           HorizontalAlignment="Right"/>
+            </StackPanel>
+    </StackPanel>
+    
+  </Grid>
+</Window>
