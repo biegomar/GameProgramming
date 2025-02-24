@@ -182,7 +182,7 @@ partial class GameOfLiveForm
         // 
         // GameOfLiveView
         // 
-        GameOfLiveView.Location = new System.Drawing.Point(14, 54);
+        GameOfLiveView.Location = new System.Drawing.Point(14, 77);
         GameOfLiveView.Name = "GameOfLiveView";
         GameOfLiveView.Size = new System.Drawing.Size(800, 600);
         GameOfLiveView.TabIndex = 15;

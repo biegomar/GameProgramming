@@ -1,6 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Runtime.InteropServices;
-using CellularAutomata;
+﻿using CellularAutomata;
 
 namespace SkiasGameOfLive;
 

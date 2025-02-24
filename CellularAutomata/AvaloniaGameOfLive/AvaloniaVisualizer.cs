@@ -1,22 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 using CellularAutomata;
 
 namespace AvaloniaGameOfLive;
 
 using Avalonia;
 using Avalonia.Media;
+using Vector = CellularAutomata.Vector;
 
-public class AvaloniaVisualizer<T>
+public static class AvaloniaVisualizer<T>
 {
-    public static void Render(PlayGround<T> playGround, Vector cellSize, DrawingContext context, int renderEngineIndex, Color emptyColor,
-        Func<T, Color> stateToColor)
+    public static void Render(PlayGround<T> playGround, Vector cellSize, Canvas canvas, int renderEngineIndex, Color emptyColor, Func<T, Color> stateToColor)
     {
         switch (renderEngineIndex)
         {
             case 0:
-                RenderAsRectangles(playGround, cellSize, context, emptyColor, stateToColor);
+                RenderAsRectangles(playGround, cellSize, canvas, emptyColor, stateToColor);
                 break;
             // case 1:
             //     RenderPixel(playGround, canvas, emptyColor, stateToColor);
@@ -25,18 +25,31 @@ public class AvaloniaVisualizer<T>
             //     RenderAsBitmap(playGround, canvas, emptyColor, stateToColor);
             //     break;
             default:
-                RenderAsRectangles(playGround, cellSize, context, emptyColor, stateToColor);
+                RenderAsRectangles(playGround, cellSize, canvas, emptyColor, stateToColor);
                 break;
         }
     }
     
-    public static void Render(PlayGroundArray<T> playGround, Vector cellSize, DrawingContext context, int renderEngineIndex, Color emptyColor,
-        Func<T, Color> stateToColor)
+    public static void Render(PlayGroundArray<T> playGround, Vector cellSize, Canvas canvas, int renderEngineIndex, Color emptyColor, Func<T, Color> stateToColor)
     {
-        
+        switch (renderEngineIndex)
+        {
+            case 0:
+                RenderAsRectangles(playGround, cellSize, canvas, emptyColor, stateToColor);
+                break;
+            // case 1:
+            //     RenderPixel(playGround, canvas, emptyColor, stateToColor);
+            //     break;
+            // case 2:
+            //     RenderAsBitmap(playGround, canvas, emptyColor, stateToColor);
+            //     break;
+            default:
+                RenderAsRectangles(playGround, cellSize, canvas, emptyColor, stateToColor);
+                break;
+        }
     }
     
-    private static void RenderAsRectangles(PlayGround<T> playGround, Vector cellSize, DrawingContext context, Color emptyColor, Func<T, Color> stateToColor)
+    private static void RenderAsRectangles(PlayGround<T> playGround, Vector cellSize, Canvas canvas, Color emptyColor, Func<T, Color> stateToColor)
     {
         var cellWidth = cellSize.X;
         var cellHeight = cellSize.Y;
@@ -50,13 +63,23 @@ public class AvaloniaVisualizer<T>
             if (color == emptyColor) continue;
             
             var brush = new SolidColorBrush(color);
+            
+            var rect = new Rectangle
+            {
+                Width = cellWidth,
+                Height = cellHeight,
+                Fill = brush
+            };
 
-            var rect = new Rect(left, top, cellWidth, cellHeight);
-            context.FillRectangle(brush, rect);
+            Canvas.SetLeft(rect, left); 
+            Canvas.SetTop(rect, top); 
+
+            canvas.Children.Add(rect);
+
         }
     }
     
-    private static void RenderAsRectangles(PlayGroundArray<T> playGround, Vector cellSize, DrawingContext context, Color emptyColor, Func<T, Color> stateToColor)
+    private static void RenderAsRectangles(PlayGroundArray<T> playGround, Vector cellSize, Canvas canvas, Color emptyColor, Func<T, Color> stateToColor)
     {
         var cellWidth = cellSize.X;
         var cellHeight = cellSize.Y;
@@ -71,8 +94,17 @@ public class AvaloniaVisualizer<T>
             
             var brush = new SolidColorBrush(color);
 
-            var rect = new Rect(left, top, cellWidth, cellHeight);
-            context.FillRectangle(brush, rect);
+            var rect = new Rectangle
+            {
+                Width = cellWidth,
+                Height = cellHeight,
+                Fill = brush
+            };
+
+            Canvas.SetLeft(rect, left); 
+            Canvas.SetTop(rect, top); 
+
+            canvas.Children.Add(rect);
         }
     }
 

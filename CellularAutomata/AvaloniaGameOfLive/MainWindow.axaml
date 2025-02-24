@@ -16,10 +16,11 @@
     <Canvas x:Name="GameOfLiveView" 
             Grid.Column="0" 
             Grid.Row="1"
-            Background="Red"
+            Background="Black"
             Height="600"
             Width="800"
             Margin="5">
+            
     </Canvas>       
     <!-- Steuerung -->
     <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Left" Spacing="12" Margin="5">
@@ -49,15 +50,15 @@
     </StackPanel>
     <TextBlock Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" x:Name="tbStopWatch" Text="Statistik" VerticalAlignment="Center" Width="350" Margin="0,148,0,0"/>
     <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Left" Spacing="12" Margin="10">
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Spacing="12">
-                    <TextBlock x:Name="lblProbability" Text="Anfangswahrscheinlichkeit" VerticalAlignment="Center"/>
-                    <Slider x:Name="probabilitySelector"
-                            HorizontalAlignment="Left"
-                            Maximum="500"
-                            Minimum="0"
-                            Value="500"
-                            Width="250" 
-                    />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
+                    <TextBlock x:Name="lblProbability" Text="Wahrscheinlichkeit" VerticalAlignment="Center"/>
+                    <NumericUpDown x:Name="probabilitySelector"
+                                   Minimum="0"
+                                   Maximum="1"
+                                   Value="0.2"
+                                   Increment="0.1"
+                                   Width="120"
+                                   HorizontalAlignment="Right"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
                     <TextBlock x:Name="lblSpeed" Text="Geschwindigkeit" VerticalAlignment="Center"/>
@@ -72,7 +73,7 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
                     <TextBlock x:Name="lblRuleSet" Text="Regeln" VerticalAlignment="Center" Width="75"/>
                     <!-- Regel-Set Auswahl -->
-                    <ComboBox x:Name="cbRuleSet" HorizontalAlignment="Right" Width="170">
+                    <ComboBox x:Name="cbRuleSet" HorizontalAlignment="Right" Width="170" SelectedIndex="0">
                             <ComboBox.Items>
                                     <ComboBoxItem Content="Game of Life" />
                                     <ComboBoxItem Content="Sand" />
@@ -84,8 +85,7 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
                     <TextBlock x:Name="lblPattern" Text="Muster" VerticalAlignment="Center" Width="75"/>
                     <!-- Pattern-Auswahl -->
-                    <ComboBox x:Name="cbPattern" 
-                              HorizontalAlignment="Right" Width="170">
+                    <ComboBox x:Name="cbPattern" HorizontalAlignment="Right" Width="170" SelectedIndex="0">
                             <ComboBox.Items>
                                     <ComboBoxItem Content="Random" />
                                     <ComboBoxItem Content="Schachbrett" />
@@ -106,8 +106,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
                     <TextBlock x:Name="lblEngine" Text="Engine" VerticalAlignment="Center" Width="75"/>
-                    <ComboBox x:Name="cbEngine" 
-                              HorizontalAlignment="Right" Width="170">
+                    <ComboBox x:Name="cbEngine" HorizontalAlignment="Right" Width="170" SelectedIndex="0">
                             <ComboBox.Items>
                                     <ComboBoxItem Content="Rect" />
                                     <ComboBoxItem Content="Point" />

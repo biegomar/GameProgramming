@@ -417,7 +417,6 @@ public partial class GameOfLiveForm : Form
         }
         
         canvas.Clear(emptyColor);
-        SKColor[] sandCellColors = [emptyColor, aliveColor, SKColors.Brown, emptyColor];
         
         switch (type)
         {

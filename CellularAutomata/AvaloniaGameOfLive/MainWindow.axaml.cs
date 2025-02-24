@@ -26,6 +26,7 @@ public partial class MainWindow : Window
     private Vector cellSize => new ((int)cellSizeSelector.Value, (int)cellSizeSelector.Value);
     private Vector dimension;
     private Color aliveColor = Colors.Chartreuse;
+    private readonly Color emptyColor = Colors.Red;
     
     private readonly ToolTip toolTip = new ();
     private readonly DispatcherTimer toolTipTimer = new ();
@@ -96,8 +97,9 @@ public partial class MainWindow : Window
     
     private void RenderPlaygroundAndDisplayGeneration()
     {
-        GameOfLiveView.InvalidateVisual();
-        this.DisplayGeneration();
+        VisualizerRender(ruleSetType, GameOfLiveView);
+        //GameOfLiveView.InvalidateVisual();
+        //this.DisplayGeneration();
     }
 
     private void DisplayGeneration()
@@ -129,7 +131,7 @@ public partial class MainWindow : Window
         switch (cbPattern.SelectedIndex)
         {
             case 0: 
-                GameOfLifeInitializer.Randomize(gamePlayGround, probabilitySelector.Value);
+                GameOfLifeInitializer.Randomize(gamePlayGround, (double)probabilitySelector.Value!);
                 break;
             case 1: 
                 GameOfLifeInitializer.AddCheckerboard(gamePlayGround);
@@ -248,6 +250,45 @@ public partial class MainWindow : Window
         cbEngine.IsEnabled = true;
         
         btnStop.IsEnabled = isRunning;
+    }
+
+    
+    private void VisualizerRender(RuleSetType type, Canvas canvas)
+    {
+        if (timingEnabled)
+        {
+            renderingStopwatch.Restart(); 
+        }
+        
+        GameOfLiveView.Children.Clear();
+        
+        switch (type)
+        {
+            case RuleSetType.GameOfLifeArray:
+                PlayGroundArray<bool> localBoolPlayGroundArray = (playGroundBool as PlayGroundArray<bool>)!;
+                AvaloniaVisualizer<bool>.Render(localBoolPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, b => b ? this.aliveColor : emptyColor);
+                break;
+            case RuleSetType.Sand:
+                PlayGround<SandCellState> localSandCellStatePlayGround = (playGroundSand as PlayGround<SandCellState>)!;
+                AvaloniaVisualizer<SandCellState>.Render(localSandCellStatePlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, ChooseSandColor);
+                break;
+            case RuleSetType.GameOfLife:
+                PlayGround<bool> localBoolPlayGround = (playGroundBool as PlayGround<bool>)!;
+                AvaloniaVisualizer<bool>.Render(localBoolPlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, b => b ? this.aliveColor : emptyColor);
+                break;
+            case RuleSetType.SandArray:
+                PlayGroundArray<SandCellState> localSandCellStatePlayGroundArray = (playGroundSand as PlayGroundArray<SandCellState>)!;
+                AvaloniaVisualizer<SandCellState>.Render(localSandCellStatePlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, ChooseSandColor);
+                break;
+            default:    
+                break;
+        }
+        
+        if (timingEnabled)
+        {
+            renderingStopwatch.Stop();
+            renderingTimes.Add(renderingStopwatch.ElapsedMilliseconds);
+        }
     }
     
     private async Task ProcessNextGeneration()
@@ -378,9 +419,35 @@ public partial class MainWindow : Window
         return $"{(int)timespan.TotalMinutes:D2}:{timespan.Seconds:D2}.{timespan.Milliseconds:D3}";
     }
     
-    private void btnReset_Click(object? sender, RoutedEventArgs e
-    )
+    private void btnReset_Click(object? sender, RoutedEventArgs e)
     {
         InitializePlayGround();
+    }
+    
+    private Color ChooseSandColor(SandCellState state)
+    {
+        if (state == SandCellState.Empty) return emptyColor;
+        if (state == SandCellState.Sand) return ChooseSandColor();
+        if (state == SandCellState.Solid) return Colors.Brown;
+        
+        return emptyColor;
+    }
+    
+    private Color ChooseSandColor()
+    {
+        var colors = new Avalonia.Media.Color[]
+        {
+            Avalonia.Media.Color.FromRgb(194, 178, 128),
+            Avalonia.Media.Color.FromRgb(210, 180, 140),
+            Avalonia.Media.Color.FromRgb(244, 164, 96),
+            Avalonia.Media.Color.FromRgb(222, 184, 135)
+        };
+
+        
+        var random = new Random();
+        int index = random.Next(0, colors.Length);
+        
+        return colors[index];
+
     }
 }
