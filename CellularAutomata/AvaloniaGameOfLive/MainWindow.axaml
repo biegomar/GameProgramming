@@ -38,6 +38,7 @@
               Content="Next Step"
               Width="95"
               HorizontalContentAlignment="Center"
+              Click="btnSingleStep_Click"
               />
       <Button x:Name="btnReset"
               Content="Reset"
@@ -85,7 +86,11 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
                     <TextBlock x:Name="lblPattern" Text="Muster" VerticalAlignment="Center" Width="75"/>
                     <!-- Pattern-Auswahl -->
-                    <ComboBox x:Name="cbPattern" HorizontalAlignment="Right" Width="170" SelectedIndex="0">
+                    <ComboBox x:Name="cbPattern" 
+                              HorizontalAlignment="Right" 
+                              Width="170" 
+                              SelectedIndex="0"
+                              >
                             <ComboBox.Items>
                                     <ComboBoxItem Content="Random" />
                                     <ComboBoxItem Content="Schachbrett" />

@@ -55,6 +55,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        InitializeEventHandlers();
         InitializePlayGround();
         SetButtonState(false);
         InitializeTimer();
@@ -68,6 +69,23 @@ public partial class MainWindow : Window
             toolTip.IsVisible = false;
             toolTipTimer.Stop(); 
         };
+    }
+
+    private void InitializeEventHandlers()
+    {
+        cbPattern.SelectionChanged += cbPattern_SelectedValueChanged;
+        cellSizeSelector.ValueChanged += cellSizeSelector_ValueChanged;
+    }
+    
+    private void cellSizeSelector_ValueChanged(object sender, EventArgs e)
+    {
+        cbEngine.IsEnabled = cellSizeSelector.Value == 1;
+        if (cellSizeSelector.Value != 1)
+        {
+            cbEngine.SelectedIndex = 0;    
+        }
+        
+        InitializePlayGround();
     }
     
     private void InitializePlayGround()
@@ -99,7 +117,7 @@ public partial class MainWindow : Window
     {
         VisualizerRender(ruleSetType, GameOfLiveView);
         //GameOfLiveView.InvalidateVisual();
-        //this.DisplayGeneration();
+        this.DisplayGeneration();
     }
 
     private void DisplayGeneration()
@@ -251,6 +269,7 @@ public partial class MainWindow : Window
         
         btnStop.IsEnabled = isRunning;
     }
+    
 
     
     private void VisualizerRender(RuleSetType type, Canvas canvas)
@@ -420,6 +439,18 @@ public partial class MainWindow : Window
     }
     
     private void btnReset_Click(object? sender, RoutedEventArgs e)
+    {
+        InitializePlayGround();
+    }
+    
+    private void btnSingleStep_Click(object sender, RoutedEventArgs e)
+    {
+        GenerateNextPlaygroundState(ruleSetType);
+                
+        RenderPlaygroundAndDisplayGeneration();
+    }
+    
+    private void cbPattern_SelectedValueChanged(object sender, RoutedEventArgs e)
     {
         InitializePlayGround();
     }
