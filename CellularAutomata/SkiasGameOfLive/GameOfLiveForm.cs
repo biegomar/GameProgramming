@@ -245,7 +245,7 @@ public partial class GameOfLiveForm : Form
 
         totalStopwatch.Restart();
         
-        await Task.Run(() =>
+        await Task.Run(async () =>
         {
             while (!token.IsCancellationRequested && currentGeneration < maxGenerations)
             {
@@ -262,7 +262,7 @@ public partial class GameOfLiveForm : Form
                     generationTimes.Add(generationStopwatch.ElapsedMilliseconds);
                 }
 
-                Invoke(RenderPlaygroundAndDisplayGeneration);
+                await InvokeAsync(RenderPlaygroundAndDisplayGeneration, token);
                 
                 if (timingEnabled)
                 {
@@ -271,7 +271,7 @@ public partial class GameOfLiveForm : Form
 
                 if (systemSpeed > 0)
                 {
-                    Thread.Sleep(systemSpeed);    
+                    await Task.Delay(systemSpeed, token);    
                 }
             }
         }, token);

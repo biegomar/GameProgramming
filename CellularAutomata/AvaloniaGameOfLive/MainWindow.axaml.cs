@@ -75,6 +75,40 @@ public partial class MainWindow : Window
     {
         cbPattern.SelectionChanged += cbPattern_SelectedValueChanged;
         cellSizeSelector.ValueChanged += cellSizeSelector_ValueChanged;
+        cbRuleSet.SelectionChanged += cbRuleSet_SelectedValueChanged;
+        cbStopWatch.IsCheckedChanged += cbStopWatch_CheckedChanged;
+        cbEngine.SelectionChanged += cbEngine_SelectedIndexChanged;
+        btnStart.Click += startGameOfLive_Click;
+        btnStop.Click += btnStop_Click;
+    }
+    
+    private void startGameOfLive_Click(object sender, EventArgs e)
+    {
+        if (cancellationTokenSource == null)
+        {
+            ProcessNextGeneration();
+        }
+        
+        SetButtonState(true);
+    }
+    
+    private void btnStop_Click(object sender, EventArgs e)
+    {
+        cancellationTokenSource?.Cancel();
+        SetButtonState(false);
+    }
+    
+    private void cbRuleSet_SelectedValueChanged(object sender, EventArgs e)
+    {
+        cbPattern.IsEnabled = true;
+        if (cbRuleSet.SelectedIndex == 1)
+        {
+            cbPattern.IsEnabled = false;
+        }
+        
+        ruleSetType = GetTypeFromSelection();
+        
+        InitializePlayGround();
     }
     
     private void cellSizeSelector_ValueChanged(object sender, EventArgs e)
@@ -85,6 +119,18 @@ public partial class MainWindow : Window
             cbEngine.SelectedIndex = 0;    
         }
         
+        InitializePlayGround();
+    }
+    
+    private void cbStopWatch_CheckedChanged(object sender, EventArgs e)
+    {
+        tbStopWatch.IsVisible = cbStopWatch.IsChecked!.Value;
+        stopWatchCountSelector.IsEnabled = cbStopWatch.IsChecked!.Value;
+        timingEnabled = cbStopWatch.IsChecked!.Value;
+    }
+    
+    private void cbEngine_SelectedIndexChanged(object sender, EventArgs e)
+    {
         InitializePlayGround();
     }
     
@@ -318,66 +364,79 @@ public partial class MainWindow : Window
         var maxGenerations = stopWatchCountSelector.Value == null ? 50 : (int)stopWatchCountSelector.Value;
         
         currentGeneration = 0;
+        const int renderInterval = 5;
+
 
         totalStopwatch.Restart();
         
-        await Task.Run(() =>
+        await Task.Run(async () =>
         {
             while (!token.IsCancellationRequested && currentGeneration < maxGenerations)
             {
-                if (timingEnabled)
-                {
-                    generationStopwatch.Restart();
-                }
+                // if (timingEnabled)
+                // {
+                //     generationStopwatch.Restart();
+                // }
 
                 GenerateNextPlaygroundState(ruleSetType);
                 
-                if (timingEnabled)
+                // if (timingEnabled)
+                // {
+                //     generationStopwatch.Stop();
+                //     generationTimes.Add(generationStopwatch.ElapsedMilliseconds);
+                // }
+
+                //Dispatcher.UIThread.Post(RenderPlaygroundAndDisplayGeneration);
+                if (currentGeneration % renderInterval == 0) // Nur alle 5 Generationen rendern
                 {
-                    generationStopwatch.Stop();
-                    generationTimes.Add(generationStopwatch.ElapsedMilliseconds);
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        RenderPlaygroundAndDisplayGeneration();
+                    }, DispatcherPriority.Render);
                 }
 
-                Dispatcher.UIThread.Post(RenderPlaygroundAndDisplayGeneration);
+
                 
                 if (timingEnabled)
                 {
                     currentGeneration++;
                 }
 
-                if (systemSpeed > 0)
-                {
-                    Thread.Sleep(systemSpeed);    
-                }
+                // if (systemSpeed > 0)
+                // {
+                //     Thread.Sleep(systemSpeed);  
+                        //await Task.Delay(systemSpeed, token);
+                // }
+
             }
         }, token);
         
         totalStopwatch.Stop();
         
-        if (timingEnabled)
-        {
-            var totalStats = new StringBuilder();
-            totalStats.AppendLine($"Simulation abgeschlossen nach {currentGeneration} Generationen auf {Environment.ProcessorCount} Kernen:");
-            totalStats.AppendLine($"Gesamtzeit: {FormatTime(totalStopwatch.ElapsedMilliseconds)} m");
-            totalStats.AppendLine($"Gesamtzeit der Einzelmessungen: {FormatTime(generationTimes.Sum() + renderingTimes.Sum())} m");
-            
-            var generationStats = CalculateStatistics(generationTimes, "Generierung");
-            var renderingStats = CalculateStatistics(renderingTimes, "Rendering");
-            
-            totalStats.AppendLine("");
-            totalStats.AppendLine(generationStats);
-            totalStats.AppendLine("");
-            totalStats.AppendLine(renderingStats);
-            
-            // if (playGroundBool is PlayGroundArray<bool> playGroundWithStatistics)
-            // {
-            //     var initStatistics = CalculateStatistics(PlayGroundArray<bool>.GenerationTimes.ToArray(), currentGeneration, "Initialisierung");
-            //     totalStats.AppendLine("");
-            //     totalStats.AppendLine(initStatistics);
-            // }
-            
-            tbStopWatch.Text = totalStats.ToString();
-        }
+        // if (timingEnabled)
+        // {
+        //     var totalStats = new StringBuilder();
+        //     totalStats.AppendLine($"Simulation abgeschlossen nach {currentGeneration} Generationen auf {Environment.ProcessorCount} Kernen:");
+        //     totalStats.AppendLine($"Gesamtzeit: {FormatTime(totalStopwatch.ElapsedMilliseconds)} m");
+        //     totalStats.AppendLine($"Gesamtzeit der Einzelmessungen: {FormatTime(generationTimes.Sum() + renderingTimes.Sum())} m");
+        //     
+        //     var generationStats = CalculateStatistics(generationTimes, "Generierung");
+        //     var renderingStats = CalculateStatistics(renderingTimes, "Rendering");
+        //     
+        //     totalStats.AppendLine("");
+        //     totalStats.AppendLine(generationStats);
+        //     totalStats.AppendLine("");
+        //     totalStats.AppendLine(renderingStats);
+        //     
+        //     // if (playGroundBool is PlayGroundArray<bool> playGroundWithStatistics)
+        //     // {
+        //     //     var initStatistics = CalculateStatistics(PlayGroundArray<bool>.GenerationTimes.ToArray(), currentGeneration, "Initialisierung");
+        //     //     totalStats.AppendLine("");
+        //     //     totalStats.AppendLine(initStatistics);
+        //     // }
+        //     
+        //     tbStopWatch.Text = totalStats.ToString();
+        // }
 
         SetButtonState(false);
 
@@ -450,7 +509,7 @@ public partial class MainWindow : Window
         RenderPlaygroundAndDisplayGeneration();
     }
     
-    private void cbPattern_SelectedValueChanged(object sender, RoutedEventArgs e)
+    private void cbPattern_SelectedValueChanged(object sender, EventArgs e)
     {
         InitializePlayGround();
     }
