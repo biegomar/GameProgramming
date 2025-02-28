@@ -1,4 +1,3 @@
-using System;
 using CellularAutomata;
 
 public class GameOfLifeInitializer

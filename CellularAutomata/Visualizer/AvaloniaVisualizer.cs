@@ -1,12 +1,11 @@
-﻿using System;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
-using CellularAutomata;
-
-namespace AvaloniaGameOfLive;
-
-using Avalonia;
 using Avalonia.Media;
+using CellularAutomata;
+using Color = Avalonia.Media.Color;
+
+namespace Visualizer;
+
 using Vector = CellularAutomata.Vector;
 
 public static class AvaloniaVisualizer<T>

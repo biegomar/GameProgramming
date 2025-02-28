@@ -1,7 +1,6 @@
 ﻿namespace CellularAutomata.Benchmark;
 
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Running;
 
 public class AutomataBenchmark
 {

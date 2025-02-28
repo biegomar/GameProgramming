@@ -10,6 +10,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\CellularAutomata\CellularAutomata.csproj" />
+      <ProjectReference Include="..\Visualizer\Visualizer.csproj" />
     </ItemGroup>
 
     <ItemGroup>

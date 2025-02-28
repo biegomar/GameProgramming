@@ -7,10 +7,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Media;
 using Avalonia.Threading;
 using CellularAutomata;
 using SkiaSharp;
+using Visualizer;
 
 namespace AvaloniaGameOfLive;
 

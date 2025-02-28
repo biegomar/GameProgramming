@@ -1,9 +1,9 @@
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Text;
 using CellularAutomata;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
+using Visualizer;
 using Timer = System.Windows.Forms.Timer;
 
 namespace SkiasGameOfLive;
