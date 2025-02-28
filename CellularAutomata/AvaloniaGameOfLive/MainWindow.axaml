@@ -6,7 +6,8 @@
         mc:Ignorable="d"
         x:Class="AvaloniaGameOfLive.MainWindow"
         Width="1280" Height="650"
-        Title="AvaloniaGameOfLive">
+        Title="AvaloniaGameOfLive"
+        >
     <Grid ColumnDefinitions="810, *, 1.4*" RowDefinitions="20, 610, *">
         <TextBlock x:Name="statusLabel"
                Grid.Column="0" 
@@ -136,8 +137,8 @@
                          TextWrapping="Wrap"
                          IsReadOnly="True"
                          Margin="10"
-                         Height="270"
-                         Width="450" />
+                         Height="280"
+                         Width="430" />
 
             </ScrollViewer>
 

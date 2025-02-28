@@ -20,8 +20,8 @@ public class SkiaCanvasControl : Control
         if (Bounds.Width <= 0 || Bounds.Height <= 0)
             return;
 
-        int width = (int)Bounds.Width;
-        int height = (int)Bounds.Height;
+        var width = (int)Bounds.Width;
+        var height = (int)Bounds.Height;
         
         _bitmap ??= new WriteableBitmap(new PixelSize(width, height), new Vector(96, 96), Avalonia.Platform.PixelFormat.Bgra8888);
 

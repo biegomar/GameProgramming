@@ -157,6 +157,8 @@ public static class SkiaVisualizer<T>
         
             canvas.DrawRect(rect, paint);
         }
+        
+        canvas.Flush();
     }
     
     private static void RenderAsRectangles(PlayGroundArray<T> playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
@@ -180,6 +182,8 @@ public static class SkiaVisualizer<T>
         
             canvas.DrawRect(rect, paint);
         }
+        
+        canvas.Flush();
         
         // for (var y = 0; y < playGround.Dimension.Y; y++)
         // {
