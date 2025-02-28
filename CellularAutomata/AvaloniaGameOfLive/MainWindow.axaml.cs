@@ -10,6 +10,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
 using CellularAutomata;
+using SkiaSharp;
 
 namespace AvaloniaGameOfLive;
 
@@ -25,8 +26,8 @@ public partial class MainWindow : Window
     
     private Vector cellSize => new ((int)cellSizeSelector.Value, (int)cellSizeSelector.Value);
     private Vector dimension;
-    private Color aliveColor = Colors.Chartreuse;
-    private readonly Color emptyColor = Colors.Red;
+    private SKColor aliveColor = SKColors.Chartreuse;
+    private readonly SKColor emptyColor = SKColors.Red;
     
     private readonly ToolTip toolTip = new ();
     private readonly DispatcherTimer toolTipTimer = new ();
@@ -48,8 +49,8 @@ public partial class MainWindow : Window
     private RuleSetType ruleSetType;
     
     private CancellationTokenSource? cancellationTokenSource;
-    
-    private int systemSpeed => (int)(systemSpeedSelector.Maximum - systemSpeedSelector.Value);
+
+    private int systemSpeed;
     private Vector bitmapSize => new ((int)this.GameOfLiveView.Width, (int)this.GameOfLiveView.Height);
     
     public MainWindow()
@@ -80,13 +81,16 @@ public partial class MainWindow : Window
         cbEngine.SelectionChanged += cbEngine_SelectedIndexChanged;
         btnStart.Click += startGameOfLive_Click;
         btnStop.Click += btnStop_Click;
+        systemSpeedSelector.ValueChanged += systemSpeedSelector_ValueChanged;
+        
+        GameOfLiveView.PaintSurface += GameOfLiveView_PaintSurface;
     }
     
     private void startGameOfLive_Click(object sender, EventArgs e)
     {
         if (cancellationTokenSource == null)
         {
-            ProcessNextGeneration();
+            ProcessNextGenerationAsync().ConfigureAwait(false);
         }
         
         SetButtonState(true);
@@ -128,6 +132,11 @@ public partial class MainWindow : Window
         stopWatchCountSelector.IsEnabled = cbStopWatch.IsChecked!.Value;
         timingEnabled = cbStopWatch.IsChecked!.Value;
     }
+
+    private void systemSpeedSelector_ValueChanged(object sender, EventArgs e)
+    {
+        this.systemSpeed = (int)(systemSpeedSelector.Maximum - systemSpeedSelector.Value)!;
+    }
     
     private void cbEngine_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -161,8 +170,7 @@ public partial class MainWindow : Window
     
     private void RenderPlaygroundAndDisplayGeneration()
     {
-        VisualizerRender(ruleSetType, GameOfLiveView);
-        //GameOfLiveView.InvalidateVisual();
+        GameOfLiveView.InvalidateVisual();
         this.DisplayGeneration();
     }
 
@@ -191,7 +199,7 @@ public partial class MainWindow : Window
         
         ruleSet = new GameOfLifeRuleSet();
         
-        aliveColor = Colors.Chartreuse;
+        aliveColor = SKColors.Chartreuse;
         switch (cbPattern.SelectedIndex)
         {
             case 0: 
@@ -215,7 +223,7 @@ public partial class MainWindow : Window
         
         ruleSet = new GameOfLifeRuleSetArray();
         
-        aliveColor = Colors.Chartreuse;
+        aliveColor = SKColors.Chartreuse;
         switch (cbPattern.SelectedIndex)
         {
             case 0: 
@@ -240,7 +248,7 @@ public partial class MainWindow : Window
         ruleSet = new SandRuleSet();
 
         var middle = playGroundSand.Dimension.X / 2;
-        aliveColor = Colors.Bisque;
+        aliveColor = SKColors.Bisque;
 
         switch (cbPattern.SelectedIndex)
         {
@@ -272,7 +280,7 @@ public partial class MainWindow : Window
         ruleSet = new SandRuleSetArray();
         
         var middle = playGroundSand.Dimension.X / 2;
-        aliveColor = Colors.Bisque;
+        aliveColor = SKColors.Bisque;
         
         switch (cbPattern.SelectedIndex)
         {
@@ -316,34 +324,35 @@ public partial class MainWindow : Window
         btnStop.IsEnabled = isRunning;
     }
     
-
+    private void GameOfLiveView_PaintSurface(SKCanvas e)
+    {
+        VisualizerRender(ruleSetType, e);
+    }
     
-    private void VisualizerRender(RuleSetType type, Canvas canvas)
+    private void VisualizerRender(RuleSetType type, SKCanvas canvas)
     {
         if (timingEnabled)
         {
             renderingStopwatch.Restart(); 
         }
         
-        GameOfLiveView.Children.Clear();
-        
         switch (type)
         {
             case RuleSetType.GameOfLifeArray:
                 PlayGroundArray<bool> localBoolPlayGroundArray = (playGroundBool as PlayGroundArray<bool>)!;
-                AvaloniaVisualizer<bool>.Render(localBoolPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, b => b ? this.aliveColor : emptyColor);
+                SkiaVisualizer<bool>.Render(localBoolPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, b => b ? this.aliveColor : emptyColor);
                 break;
             case RuleSetType.Sand:
                 PlayGround<SandCellState> localSandCellStatePlayGround = (playGroundSand as PlayGround<SandCellState>)!;
-                AvaloniaVisualizer<SandCellState>.Render(localSandCellStatePlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, ChooseSandColor);
+                SkiaVisualizer<SandCellState>.Render(localSandCellStatePlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, ChooseSandColor);
                 break;
             case RuleSetType.GameOfLife:
                 PlayGround<bool> localBoolPlayGround = (playGroundBool as PlayGround<bool>)!;
-                AvaloniaVisualizer<bool>.Render(localBoolPlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, b => b ? this.aliveColor : emptyColor);
+                SkiaVisualizer<bool>.Render(localBoolPlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, b => b ? this.aliveColor : emptyColor);
                 break;
             case RuleSetType.SandArray:
                 PlayGroundArray<SandCellState> localSandCellStatePlayGroundArray = (playGroundSand as PlayGroundArray<SandCellState>)!;
-                AvaloniaVisualizer<SandCellState>.Render(localSandCellStatePlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, ChooseSandColor);
+                SkiaVisualizer<SandCellState>.Render(localSandCellStatePlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, ChooseSandColor);
                 break;
             default:    
                 break;
@@ -356,7 +365,7 @@ public partial class MainWindow : Window
         }
     }
     
-    private async Task ProcessNextGeneration()
+    private async Task ProcessNextGenerationAsync()
     {
         cancellationTokenSource = new CancellationTokenSource();
         CancellationToken token = cancellationTokenSource.Token;
@@ -364,8 +373,7 @@ public partial class MainWindow : Window
         var maxGenerations = stopWatchCountSelector.Value == null ? 50 : (int)stopWatchCountSelector.Value;
         
         currentGeneration = 0;
-        const int renderInterval = 5;
-
+        var renderInterval = 5;
 
         totalStopwatch.Restart();
         
@@ -373,70 +381,70 @@ public partial class MainWindow : Window
         {
             while (!token.IsCancellationRequested && currentGeneration < maxGenerations)
             {
-                // if (timingEnabled)
-                // {
-                //     generationStopwatch.Restart();
-                // }
-
-                GenerateNextPlaygroundState(ruleSetType);
-                
-                // if (timingEnabled)
-                // {
-                //     generationStopwatch.Stop();
-                //     generationTimes.Add(generationStopwatch.ElapsedMilliseconds);
-                // }
-
-                //Dispatcher.UIThread.Post(RenderPlaygroundAndDisplayGeneration);
-                if (currentGeneration % renderInterval == 0) // Nur alle 5 Generationen rendern
+                if (timingEnabled)
                 {
-                    await Dispatcher.UIThread.InvokeAsync(() =>
-                    {
-                        RenderPlaygroundAndDisplayGeneration();
-                    }, DispatcherPriority.Render);
+                    generationStopwatch.Restart();
                 }
 
+                GenerateNextPlaygroundState(ruleSetType);
 
-                
+                if (timingEnabled)
+                {
+                    generationStopwatch.Stop();
+                    generationTimes.Add(generationStopwatch.ElapsedMilliseconds);
+                }
+
+                //await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.Render);
+                // if (currentGeneration % renderInterval == 0) // Nur alle 5 Generationen rendern
+                // {
+                //     await Dispatcher.UIThread.InvokeAsync(() =>
+                //     {
+                //         RenderPlaygroundAndDisplayGeneration();
+                //     }, DispatcherPriority.Render);
+                // }
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    RenderPlaygroundAndDisplayGeneration();
+                }, DispatcherPriority.Render);
+
                 if (timingEnabled)
                 {
                     currentGeneration++;
                 }
 
-                // if (systemSpeed > 0)
-                // {
-                //     Thread.Sleep(systemSpeed);  
-                        //await Task.Delay(systemSpeed, token);
-                // }
+                if (systemSpeed > 0)
+                {
+                    await Task.Delay(systemSpeed, token);
+                }
 
             }
         }, token);
         
         totalStopwatch.Stop();
         
-        // if (timingEnabled)
-        // {
-        //     var totalStats = new StringBuilder();
-        //     totalStats.AppendLine($"Simulation abgeschlossen nach {currentGeneration} Generationen auf {Environment.ProcessorCount} Kernen:");
-        //     totalStats.AppendLine($"Gesamtzeit: {FormatTime(totalStopwatch.ElapsedMilliseconds)} m");
-        //     totalStats.AppendLine($"Gesamtzeit der Einzelmessungen: {FormatTime(generationTimes.Sum() + renderingTimes.Sum())} m");
-        //     
-        //     var generationStats = CalculateStatistics(generationTimes, "Generierung");
-        //     var renderingStats = CalculateStatistics(renderingTimes, "Rendering");
-        //     
-        //     totalStats.AppendLine("");
-        //     totalStats.AppendLine(generationStats);
-        //     totalStats.AppendLine("");
-        //     totalStats.AppendLine(renderingStats);
-        //     
-        //     // if (playGroundBool is PlayGroundArray<bool> playGroundWithStatistics)
-        //     // {
-        //     //     var initStatistics = CalculateStatistics(PlayGroundArray<bool>.GenerationTimes.ToArray(), currentGeneration, "Initialisierung");
-        //     //     totalStats.AppendLine("");
-        //     //     totalStats.AppendLine(initStatistics);
-        //     // }
-        //     
-        //     tbStopWatch.Text = totalStats.ToString();
-        // }
+        if (timingEnabled)
+        {
+            var totalStats = new StringBuilder();
+            totalStats.AppendLine($"Simulation abgeschlossen nach {currentGeneration} Generationen auf {Environment.ProcessorCount} Kernen:");
+            totalStats.AppendLine($"Gesamtzeit: {FormatTime(totalStopwatch.ElapsedMilliseconds)} m");
+            totalStats.AppendLine($"Gesamtzeit der Einzelmessungen: {FormatTime(generationTimes.Sum() + renderingTimes.Sum())} m");
+            
+            var generationStats = CalculateStatistics(generationTimes, "Generierung");
+            var renderingStats = CalculateStatistics(renderingTimes, "Rendering");
+            
+            totalStats.AppendLine(generationStats);
+            totalStats.AppendLine(renderingStats);
+            
+            // if (playGroundBool is PlayGroundArray<bool> playGroundWithStatistics)
+            // {
+            //     var initStatistics = CalculateStatistics(PlayGroundArray<bool>.GenerationTimes.ToArray(), currentGeneration, "Initialisierung");
+            //     totalStats.AppendLine("");
+            //     totalStats.AppendLine(initStatistics);
+            // }
+            
+            tbStopWatch.Text = totalStats.ToString();
+        }
 
         SetButtonState(false);
 
@@ -480,11 +488,11 @@ public partial class MainWindow : Window
         statistics.AppendLine($"- Langsamste: {maxFormatted} m");
         statistics.AppendLine($"- Schnellste: {minFormatted} m");
         statistics.AppendLine($"- Durchschnitt: {averageFormatted} m");
-        statistics.AppendLine("");
-        foreach (var ruleCount in ruleSet.RuleCounter)
-        {
-            statistics.AppendLine($"- {ruleCount.Key}: {ruleCount.Value}");
-        }
+        //statistics.AppendLine("");
+        // foreach (var ruleCount in ruleSet.RuleCounter)
+        // {
+        //     statistics.AppendLine($"- {ruleCount.Key}: {ruleCount.Value}");
+        // }
 
         times.Clear();
         
@@ -514,25 +522,24 @@ public partial class MainWindow : Window
         InitializePlayGround();
     }
     
-    private Color ChooseSandColor(SandCellState state)
+    private SKColor ChooseSandColor(SandCellState state)
     {
         if (state == SandCellState.Empty) return emptyColor;
         if (state == SandCellState.Sand) return ChooseSandColor();
-        if (state == SandCellState.Solid) return Colors.Brown;
+        if (state == SandCellState.Solid) return SKColors.Brown;
         
         return emptyColor;
     }
     
-    private Color ChooseSandColor()
+    private SKColor ChooseSandColor()
     {
-        var colors = new Avalonia.Media.Color[]
+        var colors = new SKColor[]
         {
-            Avalonia.Media.Color.FromRgb(194, 178, 128),
-            Avalonia.Media.Color.FromRgb(210, 180, 140),
-            Avalonia.Media.Color.FromRgb(244, 164, 96),
-            Avalonia.Media.Color.FromRgb(222, 184, 135)
+            new SKColor(194, 178, 128), 
+            new SKColor(210, 180, 140), 
+            new SKColor(244, 164, 96),  
+            new SKColor(222, 184, 135)  
         };
-
         
         var random = new Random();
         int index = random.Next(0, colors.Length);

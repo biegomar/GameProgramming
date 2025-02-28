@@ -280,32 +280,37 @@ public partial class GameOfLiveForm : Form
         
         if (timingEnabled)
         {
-            var totalStats = new StringBuilder();
-            totalStats.AppendLine($"Simulation abgeschlossen nach {currentGeneration} Generationen auf {Environment.ProcessorCount} Kernen:");
-            totalStats.AppendLine($"Gesamtzeit: {FormatTime(totalStopwatch.ElapsedMilliseconds)} m");
-            totalStats.AppendLine($"Gesamtzeit der Einzelmessungen: {FormatTime(generationTimes.Sum() + renderingTimes.Sum())} m");
-            
-            var generationStats = CalculateStatistics(generationTimes, "Generierung");
-            var renderingStats = CalculateStatistics(renderingTimes, "Rendering");
-            
-            totalStats.AppendLine("");
-            totalStats.AppendLine(generationStats);
-            totalStats.AppendLine("");
-            totalStats.AppendLine(renderingStats);
-            
-            // if (playGroundBool is PlayGroundArray<bool> playGroundWithStatistics)
-            // {
-            //     var initStatistics = CalculateStatistics(PlayGroundArray<bool>.GenerationTimes.ToArray(), currentGeneration, "Initialisierung");
-            //     totalStats.AppendLine("");
-            //     totalStats.AppendLine(initStatistics);
-            // }
-            
-            tbStopWatch.Text = totalStats.ToString();
+            GenerateSimulationReport();
         }
 
         SetButtonState(false);
 
         cancellationTokenSource = null;
+    }
+    
+    private void GenerateSimulationReport()
+    {
+        var totalStats = new StringBuilder();
+        totalStats.AppendLine($"Simulation abgeschlossen nach {currentGeneration} Generationen auf {Environment.ProcessorCount} Kernen:");
+        totalStats.AppendLine($"Gesamtzeit: {FormatTime(totalStopwatch.ElapsedMilliseconds)} m");
+        totalStats.AppendLine($"Gesamtzeit der Einzelmessungen: {FormatTime(generationTimes.Sum() + renderingTimes.Sum())} m");
+            
+        var generationStats = CalculateStatistics(generationTimes, "Generierung");
+        var renderingStats = CalculateStatistics(renderingTimes, "Rendering");
+            
+        totalStats.AppendLine("");
+        totalStats.AppendLine(generationStats);
+        totalStats.AppendLine("");
+        totalStats.AppendLine(renderingStats);
+            
+        // if (playGroundBool is PlayGroundArray<bool> playGroundWithStatistics)
+        // {
+        //     var initStatistics = CalculateStatistics(PlayGroundArray<bool>.GenerationTimes.ToArray(), currentGeneration, "Initialisierung");
+        //     totalStats.AppendLine("");
+        //     totalStats.AppendLine(initStatistics);
+        // }
+            
+        tbStopWatch.Text = totalStats.ToString();
     }
     
     private string CalculateStatistics(IList<long> times, string type)
