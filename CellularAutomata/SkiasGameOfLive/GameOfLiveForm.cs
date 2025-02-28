@@ -18,6 +18,14 @@ public partial class GameOfLiveForm : Form
         GameOfLifeArray,
     }
     
+    private readonly SKColor[] colors =
+    [
+        new SKColor(194, 178, 128), 
+        new SKColor(210, 180, 140), 
+        new SKColor(244, 164, 96),  
+        new SKColor(222, 184, 135)
+    ];
+    
     private Vector cellSize => new ((int)cellSizeSelector.Value, (int)cellSizeSelector.Value);
     
     private Vector dimension;
@@ -33,6 +41,7 @@ public partial class GameOfLiveForm : Form
     private readonly Stopwatch generationStopwatch = new ();
     private readonly Stopwatch renderingStopwatch = new ();
     private readonly Stopwatch totalStopwatch = new ();
+    private readonly Random random = new ();
     
     private bool timingEnabled = true;
     private int currentGeneration = 0;
@@ -235,42 +244,41 @@ public partial class GameOfLiveForm : Form
 
     private async Task ProcessNextGeneration()
     {
+        generationTimes.Clear();
+        renderingTimes.Clear();
+        
         cancellationTokenSource = new CancellationTokenSource();
         CancellationToken token = cancellationTokenSource.Token;
         
         var maxGenerations = (int)stopWatchCountSelector.Value;
         
         currentGeneration = 0;
-
-        totalStopwatch.Restart();
         
         await Task.Run(async () =>
         {
+            totalStopwatch.Restart();
             while (!token.IsCancellationRequested && currentGeneration < maxGenerations)
             {
                 if (timingEnabled)
                 {
                     generationStopwatch.Restart();
-                }
-
-                GenerateNextPlaygroundState(ruleSetType);
-                
-                if (timingEnabled)
-                {
+                    
+                    GenerateNextPlaygroundState(ruleSetType);
+                    
                     generationStopwatch.Stop();
                     generationTimes.Add(generationStopwatch.ElapsedMilliseconds);
+                    
+                    currentGeneration++;
+                }
+                else
+                {
+                    GenerateNextPlaygroundState(ruleSetType);
                 }
 
                 await InvokeAsync(RenderPlaygroundAndDisplayGeneration, token);
-                
-                if (timingEnabled)
-                {
-                    currentGeneration++;
-                }
             }
+            totalStopwatch.Stop();
         }, token);
-        
-        totalStopwatch.Stop();
         
         if (timingEnabled)
         {
@@ -405,16 +413,22 @@ public partial class GameOfLiveForm : Form
 
     private void GameOfLiveView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
     {
-        VisualizerRender(ruleSetType, e.Surface.Canvas);
+        if (timingEnabled)
+        {
+            renderingStopwatch.Restart();
+            VisualizerRender(ruleSetType, e.Surface.Canvas);
+            renderingStopwatch.Stop();
+            renderingTimes.Add(renderingStopwatch.ElapsedMilliseconds);
+        }
+        else
+        {
+            VisualizerRender(ruleSetType, e.Surface.Canvas);
+        }
+        
     }
 
     private void VisualizerRender(RuleSetType type, SKCanvas canvas)
     {
-        if (timingEnabled)
-        {
-            renderingStopwatch.Restart(); 
-        }
-        
         canvas.Clear(emptyColor);
         
         switch (type)
@@ -438,38 +452,23 @@ public partial class GameOfLiveForm : Form
             default:    
                 break;
         }
-        
-        if (timingEnabled)
-        {
-            renderingStopwatch.Stop();
-            renderingTimes.Add(renderingStopwatch.ElapsedMilliseconds);
-        }
     }
 
     private SKColor ChooseSandColor(SandCellState state)
     {
-        if (state == SandCellState.Empty) return emptyColor;
-        if (state == SandCellState.Sand) return ChooseSandColor();
-        if (state == SandCellState.Solid) return SKColors.Brown;
-        
-        return emptyColor;
+        return state switch
+        {
+            SandCellState.Empty => emptyColor,
+            SandCellState.Sand => ChooseSandColor(),
+            SandCellState.Solid => SKColors.Brown,
+            _ => emptyColor
+        };
     }
     
     private SKColor ChooseSandColor()
     {
-        var colors = new SKColor[]
-        {
-            new SKColor(194, 178, 128), 
-            new SKColor(210, 180, 140), 
-            new SKColor(244, 164, 96),  
-            new SKColor(222, 184, 135)  
-        };
-        
-        var random = new Random();
-        int index = random.Next(0, colors.Length);
-        
+        var index = random.Next(0, colors.Length);
         return colors[index];
-
     }
 
     private void cbRuleSet_SelectedValueChanged(object sender, EventArgs e)
@@ -538,11 +537,6 @@ public partial class GameOfLiveForm : Form
         paStopWatch.Visible = cbStopWatch.Checked;
         stopWatchCountSelector.Enabled = cbStopWatch.Checked;
         timingEnabled = cbStopWatch.Checked;
-    }
-
-    private void lblSum_Click(object sender, EventArgs e)
-    {
-        throw new System.NotImplementedException();
     }
 
     private void cbRuleSet_SelectedIndexChanged(object sender, EventArgs e)
