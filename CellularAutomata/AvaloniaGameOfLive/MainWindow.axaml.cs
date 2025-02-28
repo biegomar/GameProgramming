@@ -49,8 +49,7 @@ public partial class MainWindow : Window
     private RuleSetType ruleSetType;
     
     private CancellationTokenSource? cancellationTokenSource;
-
-    private int systemSpeed;
+    
     private Vector bitmapSize => new ((int)this.GameOfLiveView.Width, (int)this.GameOfLiveView.Height);
     
     public MainWindow()
@@ -81,7 +80,6 @@ public partial class MainWindow : Window
         cbEngine.SelectionChanged += cbEngine_SelectedIndexChanged;
         btnStart.Click += startGameOfLive_Click;
         btnStop.Click += btnStop_Click;
-        systemSpeedSelector.ValueChanged += systemSpeedSelector_ValueChanged;
         
         GameOfLiveView.PaintSurface += GameOfLiveView_PaintSurface;
     }
@@ -133,11 +131,6 @@ public partial class MainWindow : Window
         timingEnabled = cbStopWatch.IsChecked!.Value;
     }
 
-    private void systemSpeedSelector_ValueChanged(object sender, EventArgs e)
-    {
-        this.systemSpeed = (int)(systemSpeedSelector.Maximum - systemSpeedSelector.Value)!;
-    }
-    
     private void cbEngine_SelectedIndexChanged(object sender, EventArgs e)
     {
         InitializePlayGround();
@@ -399,12 +392,6 @@ public partial class MainWindow : Window
                 {
                     currentGeneration++;
                 }
-
-                if (systemSpeed > 0)
-                {
-                    await Task.Delay(systemSpeed, token);
-                }
-
             }
         }, token);
         

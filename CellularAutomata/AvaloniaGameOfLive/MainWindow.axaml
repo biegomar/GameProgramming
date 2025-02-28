@@ -56,17 +56,6 @@
             </StackPanel>
             
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
-                <TextBlock x:Name="lblSpeed" Text="Geschwindigkeit" VerticalAlignment="Center"/>
-                <NumericUpDown x:Name="systemSpeedSelector"
-                               Minimum="0"
-                               Maximum="500"
-                               Value="500"
-                               Increment="1"
-                               Width="135"
-                               HorizontalAlignment="Right"/>
-            </StackPanel>
-            
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
                 <TextBlock x:Name="lblRuleSet" Text="Regeln" VerticalAlignment="Center" Width="75"/>
                 <!-- Regel-Set Auswahl -->
                 <ComboBox x:Name="cbRuleSet" HorizontalAlignment="Right" Width="170" SelectedIndex="0">
