@@ -45,7 +45,6 @@ public partial class GameOfLiveForm : Form
     
     private CancellationTokenSource? cancellationTokenSource;
     
-    private int systemSpeed => (int)(systemSpeedSelector.Maximum - systemSpeedSelector.Value);
     private Vector bitmapSize => new (this.GameOfLiveView.Width, this.GameOfLiveView.Height);
     
     public GameOfLiveForm()
@@ -267,11 +266,6 @@ public partial class GameOfLiveForm : Form
                 if (timingEnabled)
                 {
                     currentGeneration++;
-                }
-
-                if (systemSpeed > 0)
-                {
-                    await Task.Delay(systemSpeed, token);    
                 }
             }
         }, token);

@@ -34,8 +34,6 @@ partial class GameOfLiveForm
         btnStop = new System.Windows.Forms.Button();
         probabilitySelector = new System.Windows.Forms.NumericUpDown();
         lblProbability = new System.Windows.Forms.Label();
-        lblSpeed = new System.Windows.Forms.Label();
-        systemSpeedSelector = new System.Windows.Forms.NumericUpDown();
         cbPattern = new System.Windows.Forms.ComboBox();
         lblPattern = new System.Windows.Forms.Label();
         btnReset = new System.Windows.Forms.Button();
@@ -55,7 +53,6 @@ partial class GameOfLiveForm
         cbEngine = new System.Windows.Forms.ComboBox();
         cbPatternSand = new System.Windows.Forms.ComboBox();
         ((System.ComponentModel.ISupportInitialize)probabilitySelector).BeginInit();
-        ((System.ComponentModel.ISupportInitialize)systemSpeedSelector).BeginInit();
         ((System.ComponentModel.ISupportInitialize)cellSizeSelector).BeginInit();
         ((System.ComponentModel.ISupportInitialize)stopWatchCountSelector).BeginInit();
         paStopWatch.SuspendLayout();
@@ -107,23 +104,6 @@ partial class GameOfLiveForm
         lblProbability.Size = new System.Drawing.Size(152, 23);
         lblProbability.TabIndex = 6;
         lblProbability.Text = "Anfangswahrscheinlichkeit";
-        // 
-        // lblSpeed
-        // 
-        lblSpeed.Location = new System.Drawing.Point(954, 78);
-        lblSpeed.Name = "lblSpeed";
-        lblSpeed.Size = new System.Drawing.Size(152, 23);
-        lblSpeed.TabIndex = 8;
-        lblSpeed.Text = "Geschwindigkeit";
-        // 
-        // systemSpeedSelector
-        // 
-        systemSpeedSelector.Location = new System.Drawing.Point(1112, 78);
-        systemSpeedSelector.Maximum = new decimal(new int[] { 500, 0, 0, 0 });
-        systemSpeedSelector.Name = "systemSpeedSelector";
-        systemSpeedSelector.Size = new System.Drawing.Size(66, 23);
-        systemSpeedSelector.TabIndex = 7;
-        systemSpeedSelector.Value = new decimal(new int[] { 500, 0, 0, 0 });
         // 
         // cbPattern
         // 
@@ -321,8 +301,6 @@ partial class GameOfLiveForm
         Controls.Add(btnReset);
         Controls.Add(lblPattern);
         Controls.Add(cbPattern);
-        Controls.Add(lblSpeed);
-        Controls.Add(systemSpeedSelector);
         Controls.Add(lblProbability);
         Controls.Add(probabilitySelector);
         Controls.Add(btnStop);
@@ -332,7 +310,6 @@ partial class GameOfLiveForm
         MaximumSize = new System.Drawing.Size(1280, 720);
         MinimumSize = new System.Drawing.Size(1280, 720);
         ((System.ComponentModel.ISupportInitialize)probabilitySelector).EndInit();
-        ((System.ComponentModel.ISupportInitialize)systemSpeedSelector).EndInit();
         ((System.ComponentModel.ISupportInitialize)cellSizeSelector).EndInit();
         ((System.ComponentModel.ISupportInitialize)stopWatchCountSelector).EndInit();
         paStopWatch.ResumeLayout(false);
@@ -371,8 +348,6 @@ partial class GameOfLiveForm
     private System.Windows.Forms.Label lblPattern;
 
     private System.Windows.Forms.Label lblProbability;
-    private System.Windows.Forms.Label lblSpeed;
-    private System.Windows.Forms.NumericUpDown systemSpeedSelector;
 
     private System.Windows.Forms.NumericUpDown probabilitySelector;
 
