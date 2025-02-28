@@ -24,6 +24,14 @@ public partial class MainWindow : Window
         GameOfLifeArray,
     }
     
+    private readonly SKColor[] colors =
+    [
+        new (194, 178, 128), 
+        new (210, 180, 140), 
+        new (244, 164, 96),  
+        new (222, 184, 135)
+    ];
+    
     private Vector cellSize => new ((int)cellSizeSelector.Value, (int)cellSizeSelector.Value);
     private Vector dimension;
     private SKColor aliveColor = SKColors.Chartreuse;
@@ -38,6 +46,7 @@ public partial class MainWindow : Window
     private readonly Stopwatch generationStopwatch = new ();
     private readonly Stopwatch renderingStopwatch = new ();
     private readonly Stopwatch totalStopwatch = new ();
+    private readonly Random random = new ();
     
     private bool timingEnabled = true;
     private int currentGeneration = 0;
@@ -498,27 +507,18 @@ public partial class MainWindow : Window
     
     private SKColor ChooseSandColor(SandCellState state)
     {
-        if (state == SandCellState.Empty) return emptyColor;
-        if (state == SandCellState.Sand) return ChooseSandColor();
-        if (state == SandCellState.Solid) return SKColors.Brown;
-        
-        return emptyColor;
+        return state switch
+        {
+            SandCellState.Empty => emptyColor,
+            SandCellState.Sand => ChooseSandColor(),
+            SandCellState.Solid => SKColors.Brown,
+            _ => emptyColor
+        };
     }
     
     private SKColor ChooseSandColor()
     {
-        var colors = new SKColor[]
-        {
-            new SKColor(194, 178, 128), 
-            new SKColor(210, 180, 140), 
-            new SKColor(244, 164, 96),  
-            new SKColor(222, 184, 135)  
-        };
-        
-        var random = new Random();
-        int index = random.Next(0, colors.Length);
-        
+        var index = random.Next(0, colors.Length);
         return colors[index];
-
     }
 }
