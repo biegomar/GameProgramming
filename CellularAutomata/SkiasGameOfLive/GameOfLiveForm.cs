@@ -291,7 +291,7 @@ public partial class GameOfLiveForm : Form
     private void GenerateSimulationReport()
     {
         var totalStats = new StringBuilder();
-        totalStats.AppendLine($"Simulation abgeschlossen nach {currentGeneration} Generationen auf {Environment.ProcessorCount} Kernen:");
+        totalStats.AppendLine($"{currentGeneration} Generationen auf {Environment.ProcessorCount} Kernen:");
         totalStats.AppendLine($"Gesamtzeit: {FormatTime(totalStopwatch.ElapsedMilliseconds)} m");
         totalStats.AppendLine($"Gesamtzeit der Einzelmessungen: {FormatTime(generationTimes.Sum() + renderingTimes.Sum())} m");
             

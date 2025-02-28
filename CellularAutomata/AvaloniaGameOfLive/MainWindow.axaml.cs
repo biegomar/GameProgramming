@@ -373,7 +373,6 @@ public partial class MainWindow : Window
         var maxGenerations = stopWatchCountSelector.Value == null ? 50 : (int)stopWatchCountSelector.Value;
         
         currentGeneration = 0;
-        var renderInterval = 5;
 
         totalStopwatch.Restart();
         
@@ -394,19 +393,7 @@ public partial class MainWindow : Window
                     generationTimes.Add(generationStopwatch.ElapsedMilliseconds);
                 }
 
-                //await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.Render);
-                // if (currentGeneration % renderInterval == 0) // Nur alle 5 Generationen rendern
-                // {
-                //     await Dispatcher.UIThread.InvokeAsync(() =>
-                //     {
-                //         RenderPlaygroundAndDisplayGeneration();
-                //     }, DispatcherPriority.Render);
-                // }
-
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    RenderPlaygroundAndDisplayGeneration();
-                }, DispatcherPriority.Render);
+                await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.MaxValue);
 
                 if (timingEnabled)
                 {
@@ -426,7 +413,7 @@ public partial class MainWindow : Window
         if (timingEnabled)
         {
             var totalStats = new StringBuilder();
-            totalStats.AppendLine($"Simulation abgeschlossen nach {currentGeneration} Generationen auf {Environment.ProcessorCount} Kernen:");
+            totalStats.AppendLine($"{currentGeneration} Generationen auf {Environment.ProcessorCount} Kernen:");
             totalStats.AppendLine($"Gesamtzeit: {FormatTime(totalStopwatch.ElapsedMilliseconds)} m");
             totalStats.AppendLine($"Gesamtzeit der Einzelmessungen: {FormatTime(generationTimes.Sum() + renderingTimes.Sum())} m");
             

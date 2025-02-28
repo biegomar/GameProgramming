@@ -117,6 +117,8 @@ public static class SkiaVisualizer<T>
                 canvas.DrawPoint(x, y, paint);
             }
         }
+        
+        canvas.Flush();
     }
     
     private static void RenderPixel(PlayGroundArray<T> playGround, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
@@ -134,6 +136,8 @@ public static class SkiaVisualizer<T>
                 canvas.DrawPoint(x, y, paint);
             }
         }
+        
+        canvas.Flush();
     }
     
     private static void RenderAsRectangles(PlayGround<T> playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
