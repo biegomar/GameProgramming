@@ -101,7 +101,6 @@
                         <ComboBox.Items>
                                 <ComboBoxItem Content="Rect" />
                                 <ComboBoxItem Content="Point" />
-                                <ComboBoxItem Content="PointOnBitmap" />
                         </ComboBox.Items>
                 </ComboBox>
             </StackPanel>

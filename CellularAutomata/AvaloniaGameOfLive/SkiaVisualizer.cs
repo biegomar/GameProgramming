@@ -17,9 +17,6 @@ public static class SkiaVisualizer<T>
             case 1:
                 RenderPixel(playGround, canvas, emptyColor, stateToColor);
                 break;
-            case 2:
-                RenderAsBitmap(playGround, canvas, emptyColor, stateToColor);
-                break;
             default:
                 RenderAsRectangles(playGround, cellSize, canvas, emptyColor, stateToColor);
                 break;
@@ -36,65 +33,9 @@ public static class SkiaVisualizer<T>
             case 1:
                 RenderPixel(playGround, canvas, emptyColor, stateToColor);
                 break;
-            case 2:
-                RenderAsBitmap(playGround, canvas, emptyColor, stateToColor);
-                break;
             default:
                 RenderAsRectangles(playGround, cellSize, canvas, emptyColor, stateToColor);
                 break;
-        }
-    }
-    
-    private static void RenderAsBitmap(PlayGround<T> playGround, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
-    {
-        using var bitmap = new SKBitmap(playGround.Dimension.X, playGround.Dimension.Y);
-        //var pixels = bitmap.Pixels;
-        
-        var positionToCheck = new Vector(0, 0);
-        for (int y = 0; y < playGround.Dimension.Y; y++)
-        {
-            for (int x = 0; x < playGround.Dimension.X; x++)
-            {
-                var color = stateToColor(playGround[positionToCheck]);
-                if (color == emptyColor) continue;
-                
-                positionToCheck.X = x;
-                positionToCheck.Y = y;
-                bitmap.SetPixel(x, y, color);
-                //pixels[y * (int)playGround.Dimension.X + x] = color;
-            }
-        }
-        
-        using (var image = SKImage.FromBitmap(bitmap))
-        {
-            canvas.DrawImage(image, 0, 0);
-        }
-    }
-    
-    private static void RenderAsBitmap(PlayGroundArray<T> playGround, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
-    {
-        using var bitmap = new SKBitmap(playGround.Dimension.X, playGround.Dimension.Y);
-        //var pixels = bitmap.Pixels;
-        
-        var positionToCheck = new Vector(0, 0);
-        for (int y = 0; y < playGround.Dimension.Y; y++)
-        {
-            for (int x = 0; x < playGround.Dimension.X; x++)
-            {
-                var color = stateToColor(playGround[positionToCheck]);
-                if (color == emptyColor) continue;
-                
-                positionToCheck.X = x;
-                positionToCheck.Y = y;
-                
-                bitmap.SetPixel(x, y, color);
-                //pixels[y * (int)playGround.Dimension.X + x] = color;
-            }
-        }
-        
-        using (var image = SKImage.FromBitmap(bitmap))
-        {
-            canvas.DrawImage(image, 0, 0);
         }
     }
     
