@@ -1,23 +1,28 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 
 namespace CellularAutomata;
 
-public static class AutomataArray<T>
+public sealed class AutomataArray<T>
 {
-    private static PlayGroundArray<T>? nextGenerationPlayGround;
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void InitNextGenerationPlayGround(PlayGroundArray<T> initialPlayGround)
+    private PlayGroundArray<T>? nextGenerationPlayGround;
+    
+    private void InitNextGenerationPlayGround(Vector dimension)
     {
-        if (nextGenerationPlayGround == null || nextGenerationPlayGround.Dimension != initialPlayGround.Dimension)
+        if (nextGenerationPlayGround == null || nextGenerationPlayGround.Dimension != dimension)
         {
-            nextGenerationPlayGround = new PlayGroundArray<T>(initialPlayGround.Dimension);
+            nextGenerationPlayGround = new PlayGroundArray<T>(dimension);
         }
     }
     
-    public static PlayGroundArray<T> NextGeneration(PlayGroundArray<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn)
+    public AutomataArray(Vector dimension)
     {
-        InitNextGenerationPlayGround(initialPlayGround);
+        this.InitNextGenerationPlayGround(dimension);
+    }
+    
+    public PlayGroundArray<T> NextGeneration(PlayGroundArray<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn)
+    {
+        //InitNextGenerationPlayGround(initialPlayGround);
         
         foreach (var cell in initialPlayGround.Cells)
         {
@@ -31,29 +36,50 @@ public static class AutomataArray<T>
         return initialPlayGround;
     }
     
-    public static PlayGroundArray<T> NextGenerationParallel(PlayGroundArray<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn, int maxDegreeOfParallelism)
+    public PlayGroundArray<T> NextGenerationParallel(PlayGroundArray<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn, int maxDegreeOfParallelism)
     {
-        InitNextGenerationPlayGround(initialPlayGround);
-
         var parallelOptions = new ParallelOptions()
         {
-            MaxDegreeOfParallelism = maxDegreeOfParallelism
+            MaxDegreeOfParallelism = Math.Min(maxDegreeOfParallelism, Environment.ProcessorCount)
         };
 
-        Parallel.ForEach(initialPlayGround.Cells.Cast<Cell<T>>(), parallelOptions, cell =>
+        if (nextGenerationPlayGround != null)
         {
-            nextGenerationPlayGround![(cell.X, cell.Y)] = ruleSet.ApplyRules(initialPlayGround, (cell.X, cell.Y));
-        });
+            // var ground = initialPlayGround;
+            // Parallel.For(0, initialPlayGround.Dimension.X, parallelOptions, x =>
+            // {
+            //     for (var y = 0; y < ground.Dimension.Y; y++)
+            //     {
+            //         nextGenerationPlayGround[(x, y)] = ruleSet.ApplyRules(ground, (x, y));
+            //     }
+            // });
+            
+            var ground = initialPlayGround;
+            
+            var xPartitioner = Partitioner.Create(0, initialPlayGround.Dimension.X);
+
+            Parallel.ForEach(xPartitioner, parallelOptions, range =>
+            {
+                for (var x = range.Item1; x < range.Item2; x++) 
+                {
+                    for (var y = 0; y < ground.Dimension.Y; y++)
+                    {
+                        nextGenerationPlayGround[(x, y)] = ruleSet.ApplyRules(ground, (x, y));
+                    }
+                }
+            });
+
+            
+            nextGenerationPlayGround = (PlayGroundArray<T>)ruleSet.ApplySpawnRules(nextGenerationPlayGround, isSpawn);
         
-        nextGenerationPlayGround = (PlayGroundArray<T>)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn);
-        
-        Swap(ref initialPlayGround, ref nextGenerationPlayGround);
+            Swap(ref initialPlayGround, ref nextGenerationPlayGround);    
+        }
         
         return initialPlayGround;
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    static void Swap(ref PlayGroundArray<T> instanceOne, ref PlayGroundArray<T> instanceTwo)
+    private static void Swap(ref PlayGroundArray<T> instanceOne, ref PlayGroundArray<T> instanceTwo)
     { 
         (instanceOne, instanceTwo) = (instanceTwo, instanceOne);
     }

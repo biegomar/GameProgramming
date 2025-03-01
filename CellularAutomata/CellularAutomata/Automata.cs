@@ -2,22 +2,26 @@
 
 namespace CellularAutomata;
 
-public static class Automata<T>
+public sealed class Automata<T>
 {
-    private static PlayGround<T>? nextGenerationPlayGround;
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void InitNextGenerationPlayGround(PlayGround<T> initialPlayGround)
+    private PlayGround<T>? nextGenerationPlayGround;
+    
+    private void InitNextGenerationPlayGround(Vector dimension)
     {
-        if (nextGenerationPlayGround == null || nextGenerationPlayGround.Dimension != initialPlayGround.Dimension)
+        if (nextGenerationPlayGround == null || nextGenerationPlayGround.Dimension != dimension)
         {
-            nextGenerationPlayGround = new PlayGround<T>(initialPlayGround.Dimension);
+            nextGenerationPlayGround = new PlayGround<T>(dimension);
         }
     }
-    
-    public static PlayGround<T> NextGeneration(PlayGround<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn)
+
+    public Automata(Vector dimension)
     {
-        InitNextGenerationPlayGround(initialPlayGround);
+        this.InitNextGenerationPlayGround(dimension);
+    }
+    
+    public PlayGround<T> NextGeneration(PlayGround<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn)
+    {
+        //InitNextGenerationPlayGround(initialPlayGround);
         
         foreach (var cell in initialPlayGround.Cells)
         {
@@ -31,18 +35,17 @@ public static class Automata<T>
         return initialPlayGround;
     }
 
-    public static PlayGround<T> NextGenerationParallel(PlayGround<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn, int maxDegreeOfParallelism)
+    public PlayGround<T> NextGenerationParallel(PlayGround<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn, int maxDegreeOfParallelism)
     {
-        InitNextGenerationPlayGround(initialPlayGround);
-
         var parallelOptions = new ParallelOptions()
         {
-            MaxDegreeOfParallelism = maxDegreeOfParallelism
+            MaxDegreeOfParallelism = Math.Min(maxDegreeOfParallelism, Environment.ProcessorCount)
         };
-        
+
+        var ground = initialPlayGround;
         Parallel.ForEach(initialPlayGround.Cells, parallelOptions, cell =>
         {
-            nextGenerationPlayGround![cell.Key] = ruleSet.ApplyRules(initialPlayGround, cell.Key);
+            nextGenerationPlayGround![cell.Key] = ruleSet.ApplyRules(ground, cell.Key);
         });
         
         nextGenerationPlayGround = (PlayGround<T>)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn);
@@ -52,20 +55,17 @@ public static class Automata<T>
         return initialPlayGround;
     }
     
-    public static PlayGround<T> NextGenerationForLoop(PlayGround<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn)
+    public PlayGround<T> NextGenerationForLoop(PlayGround<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn)
     {
         var newPlayGround = new PlayGround<T>(initialPlayGround.Dimension);
         var dimensionX = initialPlayGround.Dimension.X;
         var dimensionY = initialPlayGround.Dimension.Y;
-        var position = new Vector(0,0);
         
         for (var x = 0; x < dimensionX; x++)
         {
-            position.X = x;
             for (var y = 0; y < dimensionY; y++)
             {
-                position.Y = y;
-                newPlayGround[position] = ruleSet.ApplyRules(initialPlayGround, position);
+                newPlayGround[(x,y)] = ruleSet.ApplyRules(initialPlayGround, (x,y));
             }
         }
         
@@ -75,7 +75,7 @@ public static class Automata<T>
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    static void Swap(ref PlayGround<T> instanceOne, ref PlayGround<T> instanceTwo)
+    private void Swap(ref PlayGround<T> instanceOne, ref PlayGround<T> instanceTwo)
     { 
         (instanceOne, instanceTwo) = (instanceTwo, instanceOne);
     }

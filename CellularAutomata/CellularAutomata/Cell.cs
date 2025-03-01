@@ -1,11 +1,8 @@
-﻿using System.Runtime.InteropServices;
+﻿namespace CellularAutomata;
 
-namespace CellularAutomata;
-
-[StructLayout(LayoutKind.Sequential, Pack = 4)]
 public sealed class Cell<T>(T state, int x, int y)
 {
-    public int X = x;
-    public int Y = y;
+    public readonly int X = x;
+    public readonly int Y = y;
     public T State = state;
 }

@@ -7,6 +7,7 @@ var dimension = new Vector(100,40);
 var screenSize = new Vector(dimension.X + 5, dimension.Y + 5);
 var playGround = new PlayGround<bool>(dimension);
 var ruleSet = new GameOfLifeRuleSet();
+Automata<bool> automataBool = new (dimension);
 
 GameOfLifeInitializer.Randomize(playGround, 0.2);
 
@@ -25,7 +26,7 @@ do
 {
     //ConsoleVisualizer.Render(playGround, x => x ? 'X' : ' ');
     ConsoleVisualizer<bool>.RenderWithColors(playGround, x => x ? ConsoleColor.Green : ConsoleColor.Black);
-    playGround = Automata<bool>.NextGeneration(playGround, ruleSet, false);
+    playGround = automataBool.NextGeneration(playGround, ruleSet, false);
     Thread.Sleep(250);
     
     if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)

@@ -51,11 +51,17 @@ public partial class MainWindow : Window
     private bool timingEnabled = true;
     private int currentGeneration = 0;
     private int generation = 0;
+    private int processorCount = 2;
     
     private IPlayGround<bool> playGroundBool;
     private IPlayGround<SandCellState> playGroundSand;
     private IBaseRuleSet ruleSet;
     private RuleSetType ruleSetType;
+    
+    private Automata<bool> automataBool;
+    private AutomataArray<bool> automataArrayBool;
+    private Automata<SandCellState> automataSandBool;
+    private AutomataArray<SandCellState> automataSandArrayBool;
     
     private CancellationTokenSource? cancellationTokenSource;
     
@@ -64,6 +70,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        InitializeComponentValues();
         InitializeEventHandlers();
         InitializePlayGround();
         SetButtonState(false);
@@ -80,6 +87,11 @@ public partial class MainWindow : Window
         };
     }
 
+    private void InitializeComponentValues()
+    {
+        processorCountSelector.Maximum = Environment.ProcessorCount;
+    }
+
     private void InitializeEventHandlers()
     {
         cbPattern.SelectionChanged += cbPattern_SelectedValueChanged;
@@ -89,6 +101,7 @@ public partial class MainWindow : Window
         cbEngine.SelectionChanged += cbEngine_SelectedIndexChanged;
         btnStart.Click += startGameOfLive_Click;
         btnStop.Click += btnStop_Click;
+        processorCountSelector.ValueChanged += processorCountSelector_ValueChanged;
         
         GameOfLiveView.PaintSurface += GameOfLiveView_PaintSurface;
     }
@@ -132,6 +145,11 @@ public partial class MainWindow : Window
         
         InitializePlayGround();
     }
+
+    private void processorCountSelector_ValueChanged(object sender, EventArgs e)
+    {
+        processorCount = (int)processorCountSelector.Value!;
+    }
     
     private void cbStopWatch_CheckedChanged(object sender, EventArgs e)
     {
@@ -144,12 +162,17 @@ public partial class MainWindow : Window
     {
         InitializePlayGround();
     }
-    
+
     private void InitializePlayGround()
     {
         ruleSetType = GetTypeFromSelection();
         generation = 0;
         dimension = new Vector(bitmapSize.X / cellSize.X, bitmapSize.Y / cellSize.Y);
+
+        automataBool = new Automata<bool>(dimension);
+        automataArrayBool = new AutomataArray<bool>(dimension);
+        automataSandBool = new Automata<SandCellState>(dimension);
+        automataSandArrayBool = new AutomataArray<SandCellState>(dimension);
 
         switch (ruleSetType)
         {
@@ -166,10 +189,10 @@ public partial class MainWindow : Window
                 InitializeForSandArray();
                 break;
         }
-        
+
         RenderPlaygroundAndDisplayGeneration();
     }
-    
+
     private void RenderPlaygroundAndDisplayGeneration()
     {
         GameOfLiveView.InvalidateVisual();
@@ -319,6 +342,7 @@ public partial class MainWindow : Window
         
         cellSizeSelector.IsEnabled = !isRunning;
         stopWatchCountSelector.IsEnabled = !isRunning;
+        processorCountSelector.IsEnabled = !isRunning;
         
         cbEngine.IsEnabled = !isRunning && cellSizeSelector.Value == 1;
         cbEngine.IsEnabled = true;
@@ -409,7 +433,7 @@ public partial class MainWindow : Window
         if (timingEnabled)
         {
             var totalStats = new StringBuilder();
-            totalStats.AppendLine($"{currentGeneration} Generationen auf {Environment.ProcessorCount} Kernen:");
+            totalStats.AppendLine($"{currentGeneration} Generationen auf {processorCount} Kernen:");
             totalStats.AppendLine($"Gesamtzeit: {FormatTime(totalStopwatch.ElapsedMilliseconds)} m");
             totalStats.AppendLine($"Gesamtzeit der Einzelmessungen: {FormatTime(generationTimes.Sum() + renderingTimes.Sum())} m");
             
@@ -438,15 +462,15 @@ public partial class MainWindow : Window
     {
         playGroundBool = type switch
         {
-            RuleSetType.GameOfLife => Automata<bool>.NextGenerationParallel((playGroundBool as PlayGround<bool>)!, (ruleSet as GameOfLifeRuleSet)!, false, Environment.ProcessorCount),
-            RuleSetType.GameOfLifeArray => AutomataArray<bool>.NextGenerationParallel((playGroundBool as PlayGroundArray<bool>)!,(ruleSet as GameOfLifeRuleSetArray)!, false, Environment.ProcessorCount),
+            RuleSetType.GameOfLife => automataBool.NextGenerationParallel((playGroundBool as PlayGround<bool>)!, (ruleSet as GameOfLifeRuleSet)!, false, processorCount),
+            RuleSetType.GameOfLifeArray => automataArrayBool.NextGenerationParallel((playGroundBool as PlayGroundArray<bool>)!,(ruleSet as GameOfLifeRuleSetArray)!, false, processorCount),
             _ => playGroundBool
         };
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => Automata<SandCellState>.NextGenerationParallel((playGroundSand as PlayGround<SandCellState>)!, (ruleSet as SandRuleSet)!, false, Environment.ProcessorCount),
-            RuleSetType.SandArray => AutomataArray<SandCellState>.NextGenerationParallel((playGroundSand as PlayGroundArray<SandCellState>)!,(ruleSet as SandRuleSetArray)!, false, Environment.ProcessorCount),
+            RuleSetType.Sand => automataSandBool.NextGenerationParallel((playGroundSand as PlayGround<SandCellState>)!, (ruleSet as SandRuleSet)!, false, processorCount),
+            RuleSetType.SandArray => automataSandArrayBool.NextGenerationParallel((playGroundSand as PlayGroundArray<SandCellState>)!,(ruleSet as SandRuleSetArray)!, false, processorCount),
             _ => playGroundSand
         };
     }

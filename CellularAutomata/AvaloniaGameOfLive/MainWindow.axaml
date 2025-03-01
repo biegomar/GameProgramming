@@ -69,6 +69,17 @@
             </StackPanel>
             
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
+                <TextBlock x:Name="lblProcessorCount" Text="Cores" VerticalAlignment="Center" Width="75"/>
+                <NumericUpDown x:Name="processorCountSelector"
+                               Minimum="1"
+                               Maximum="32"
+                               Value="2"
+                               Increment="1"
+                               Width="170"
+                               HorizontalAlignment="Right"/>
+            </StackPanel>
+            
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
                 <TextBlock x:Name="lblPattern" Text="Muster" VerticalAlignment="Center" Width="75"/>
                 <!-- Pattern-Auswahl -->
                 <ComboBox x:Name="cbPattern" 

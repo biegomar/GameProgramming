@@ -40,19 +40,16 @@ public static class SkiaVisualizer<T>
     
     private static void RenderPixel(PlayGround<T> playGround, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
     {
-        var positionToCheck = new Vector(0, 0);
+        //var positionToCheck = new Vector(0, 0);
 
         using var paint = new SKPaint();
         for (int y = 0; y < playGround.Dimension.Y; y++)
         {
             for (int x = 0; x < playGround.Dimension.X; x++)
             {
-                var color = stateToColor(playGround[positionToCheck]);
+                var color = stateToColor(playGround[(x,y)]);
                 if (color == emptyColor) continue;
                 
-                positionToCheck.X = x;
-                positionToCheck.Y = y;
-
                 paint.Color = color;
                 canvas.DrawPoint(x, y, paint);
             }

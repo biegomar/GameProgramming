@@ -52,10 +52,13 @@ partial class GameOfLiveForm
         lblEngine = new System.Windows.Forms.Label();
         cbEngine = new System.Windows.Forms.ComboBox();
         cbPatternSand = new System.Windows.Forms.ComboBox();
+        lblProcessorCount = new System.Windows.Forms.Label();
+        processorCountSelector = new System.Windows.Forms.NumericUpDown();
         ((System.ComponentModel.ISupportInitialize)probabilitySelector).BeginInit();
         ((System.ComponentModel.ISupportInitialize)cellSizeSelector).BeginInit();
         ((System.ComponentModel.ISupportInitialize)stopWatchCountSelector).BeginInit();
         paStopWatch.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)processorCountSelector).BeginInit();
         SuspendLayout();
         // 
         // btnStart
@@ -172,7 +175,7 @@ partial class GameOfLiveForm
         // 
         // lblRuleSet
         // 
-        lblRuleSet.Location = new System.Drawing.Point(954, 135);
+        lblRuleSet.Location = new System.Drawing.Point(954, 106);
         lblRuleSet.Name = "lblRuleSet";
         lblRuleSet.Size = new System.Drawing.Size(99, 23);
         lblRuleSet.TabIndex = 17;
@@ -182,7 +185,7 @@ partial class GameOfLiveForm
         // 
         cbRuleSet.FormattingEnabled = true;
         cbRuleSet.Items.AddRange(new object[] { "Game of Life", "Sand", "Game of Life Array", "Sand Array" });
-        cbRuleSet.Location = new System.Drawing.Point(1059, 135);
+        cbRuleSet.Location = new System.Drawing.Point(1059, 106);
         cbRuleSet.Name = "cbRuleSet";
         cbRuleSet.Size = new System.Drawing.Size(119, 23);
         cbRuleSet.TabIndex = 16;
@@ -260,7 +263,7 @@ partial class GameOfLiveForm
         // cbEngine
         // 
         cbEngine.FormattingEnabled = true;
-        cbEngine.Items.AddRange(new object[] { "Rect", "Point", "PointOnBitmap" });
+        cbEngine.Items.AddRange(new object[] { "Rect", "Point" });
         cbEngine.Location = new System.Drawing.Point(1059, 226);
         cbEngine.Name = "cbEngine";
         cbEngine.Size = new System.Drawing.Size(119, 23);
@@ -279,12 +282,33 @@ partial class GameOfLiveForm
         cbPatternSand.Text = "Random";
         cbPatternSand.SelectedValueChanged += cbPatternSand_SelectedValueChanged;
         // 
+        // lblProcessorCount
+        // 
+        lblProcessorCount.Location = new System.Drawing.Point(954, 135);
+        lblProcessorCount.Name = "lblProcessorCount";
+        lblProcessorCount.Size = new System.Drawing.Size(99, 23);
+        lblProcessorCount.TabIndex = 27;
+        lblProcessorCount.Text = "Cores";
+        // 
+        // processorCountSelector
+        // 
+        processorCountSelector.Location = new System.Drawing.Point(1112, 135);
+        processorCountSelector.Maximum = new decimal(new int[] { 32, 0, 0, 0 });
+        processorCountSelector.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+        processorCountSelector.Name = "processorCountSelector";
+        processorCountSelector.Size = new System.Drawing.Size(66, 23);
+        processorCountSelector.TabIndex = 26;
+        processorCountSelector.Value = new decimal(new int[] { 2, 0, 0, 0 });
+        processorCountSelector.ValueChanged += processorCountSelector_ValueChanged;
+        // 
         // GameOfLiveForm
         // 
         AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         BackColor = System.Drawing.SystemColors.Control;
         ClientSize = new System.Drawing.Size(1264, 681);
+        Controls.Add(lblProcessorCount);
+        Controls.Add(processorCountSelector);
         Controls.Add(cbPatternSand);
         Controls.Add(lblEngine);
         Controls.Add(cbEngine);
@@ -314,8 +338,12 @@ partial class GameOfLiveForm
         ((System.ComponentModel.ISupportInitialize)stopWatchCountSelector).EndInit();
         paStopWatch.ResumeLayout(false);
         paStopWatch.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)processorCountSelector).EndInit();
         ResumeLayout(false);
     }
+
+    private System.Windows.Forms.Label lblProcessorCount;
+    private System.Windows.Forms.NumericUpDown processorCountSelector;
 
     private System.Windows.Forms.ComboBox cbPatternSand;
 

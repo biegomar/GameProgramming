@@ -6,17 +6,17 @@ namespace CellularAutomata;
     /// The vector class.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public struct Vector
+    public readonly struct Vector : IEquatable<Vector>
     {
         /// <summary>
         /// X
         /// </summary>
-        public int X;
-
+        public readonly int X;
+        
         /// <summary>
         /// Y
         /// </summary>
-        public int Y;
+        public readonly int Y;
 
         /// <summary>
         /// Constructor with parameters.
@@ -54,7 +54,7 @@ namespace CellularAutomata;
         }       
 
         /// <inheritdoc/>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is Vector other)
             {
@@ -74,5 +74,10 @@ namespace CellularAutomata;
         public override string ToString()
         {
             return $"[{this.X}, {this.Y}]";
+        }
+
+        public bool Equals(Vector other)
+        {
+            return X == other.X && Y == other.Y;
         }
     }
