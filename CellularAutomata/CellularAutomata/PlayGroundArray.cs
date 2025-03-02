@@ -1,29 +1,31 @@
-﻿namespace CellularAutomata;
+﻿using System.Runtime.CompilerServices;
+
+namespace CellularAutomata;
 
 public sealed class PlayGroundArray<T> : IPlayGround<T>
 {
-    public Cell<T>[,] Cells { get; init; }
+    public Cell<T>[] Cells { get; }
     
-    public Vector Dimension { get; init; }
+    public Vector Dimension { get; }
 
     public PlayGroundArray(Vector dimension)
     {
         Dimension = dimension;
-        Cells = new Cell<T>[dimension.X, dimension.Y];
+        Cells = new Cell<T>[dimension.X * dimension.Y];
         
         Initialize();
     }
     
     public T this[Vector position]
     {
-        get => Cells[position.X, position.Y].State;
-        set => Cells[position.X, position.Y].State = value;
+        get => Cells[this.GetIndex(position.X, position.Y)].State;
+        set => Cells[this.GetIndex(position.X, position.Y)].State = value;
     }
 
     public T this[(int x, int y) position]
     {
-        get => Cells[position.x, position.y].State;
-        set => Cells[position.x, position.y].State = value;
+        get => Cells[this.GetIndex(position.x, position.y)].State;
+        set => Cells[this.GetIndex(position.x, position.y)].State = value;
     }
     
     private void Initialize()
@@ -34,8 +36,14 @@ public sealed class PlayGroundArray<T> : IPlayGround<T>
         {
             for (var y = 0; y < this.Dimension.Y; y++)
             {
-                this.Cells[x, y] = new Cell<T>(defaultState, x, y);
+                this.Cells[this.GetIndex(x, y)] = new Cell<T>(defaultState, x, y);
             }
         }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private int GetIndex(int x, int y)
+    {
+        return x * this.Dimension.Y + y;
     }
 }
