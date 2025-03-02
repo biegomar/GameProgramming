@@ -51,7 +51,7 @@ public partial class MainWindow : Window
     private bool timingEnabled = true;
     private int currentGeneration = 0;
     private int generation = 0;
-    private int processorCount = 2;
+    private int processorCount;
     
     private IPlayGround<bool> playGroundBool;
     private IPlayGround<SandCellState> playGroundSand;
@@ -90,6 +90,7 @@ public partial class MainWindow : Window
     private void InitializeComponentValues()
     {
         processorCountSelector.Maximum = Environment.ProcessorCount;
+        processorCount = (int)processorCountSelector.Value!;
     }
 
     private void InitializeEventHandlers()

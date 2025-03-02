@@ -117,22 +117,5 @@ public static class SkiaVisualizer<T>
         
             canvas.DrawRect(rect, paint);
         }
-        
-        // for (var y = 0; y < playGround.Dimension.Y; y++)
-        // {
-        //     var top = y * cellHeight;
-        //     var bottom = top + cellHeight;
-        //
-        //     for (var x = 0; x < playGround.Dimension.X; x++)
-        //     {
-        //         var left = x * cellWidth;
-        //         var right = left + cellWidth;
-        //         
-        //         paint.Color = stateToColor(playGround[(x,y,0)]);
-        //
-        //         var rect = new SKRect(left, top, right, bottom);
-        //         canvas.DrawRect(rect, paint);
-        //     }
-        // }
     }
 }
