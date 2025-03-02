@@ -31,7 +31,6 @@ public sealed class GameOfLifeRuleSetArray : IRuleSet<bool>
         return liveNeighbors == 3 || (cellState && liveNeighbors == 2);
     }
     
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private int CountLivingNeighbors(IPlayGround<bool> playGround, int X, int Y)
     {
         int liveNeighbors = 0;
@@ -61,7 +60,7 @@ public sealed class GameOfLifeRuleSetArray : IRuleSet<bool>
 
         return withinX && withinY;
     }
-
+    
     public IPlayGround<bool> ApplySpawnRules(IPlayGround<bool> playGround, bool isSpawn)
     {
         return playGround;
