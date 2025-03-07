@@ -127,13 +127,14 @@ public partial class MainWindow : Window
     
     private void cbRuleSet_SelectedValueChanged(object sender, EventArgs e)
     {
-        cbPattern.IsEnabled = true;
-        if (cbRuleSet.SelectedIndex == 1)
-        {
-            cbPattern.IsEnabled = false;
-        }
+        // cbPattern.IsEnabled = true;
+        // if (cbRuleSet.SelectedIndex == 1)
+        // {
+        //     cbPattern.IsEnabled = false;
+        // }
         
         ruleSetType = GetTypeFromSelection();
+        SetPatternItems(ruleSetType);
         
         InitializePlayGround();
     }
@@ -219,14 +220,44 @@ public partial class MainWindow : Window
         };
     }
 
+    private void SetPatternItems(RuleSetType ruleSetType)
+    {
+        cbPattern.Items.Clear();
+
+        switch (ruleSetType)
+        {
+            case RuleSetType.Sand:
+            case RuleSetType.SandArray:
+                cbPattern.Items.Add("Random");
+                cbPattern.Items.Add("Sanduhr");
+                cbPattern.Items.Add("Freestyle");
+                break;
+            case RuleSetType.Wolfram:
+                foreach (var item in Enumerable.Range(0, 256).Select(n => n.ToString()))
+                {
+                    cbPattern.Items.Add(item);
+                }
+                break;
+            case RuleSetType.GameOfLife:
+            case RuleSetType.GameOfLifeArray:
+            default:
+                cbPattern.Items.Add("Random");
+                cbPattern.Items.Add("Schachbrett");
+                cbPattern.Items.Add("Freestyle");
+                break;
+        }
+
+        cbPattern.SelectedIndex = 0;
+    }
+
     private void InitializeWolfram()
     {
         automataWolframBool = new AutomataWolfram<bool>();
         playGroundBool = new PlayGroundArray<bool>(dimension);
 
-        ruleSet = new WolframRuleSet(250);
+        ruleSet = new WolframRuleSet(cbPattern.SelectedIndex);
         
-        aliveColor = SKColors.Chartreuse;
+        aliveColor = SKColors.CornflowerBlue;
         
         GameOfLifeInitializer.AddSingleCell(playGroundBool, new Vector(dimension.X/2, 0));
 
