@@ -37,7 +37,6 @@ partial class GameOfLiveForm
         cbPattern = new System.Windows.Forms.ComboBox();
         lblPattern = new System.Windows.Forms.Label();
         btnReset = new System.Windows.Forms.Button();
-        skControl1 = new SkiaSharp.Views.Desktop.SKControl();
         lblCellSize = new System.Windows.Forms.Label();
         cellSizeSelector = new System.Windows.Forms.NumericUpDown();
         GameOfLiveView = new SkiaSharp.Views.Desktop.SKControl();
@@ -136,13 +135,6 @@ partial class GameOfLiveForm
         btnReset.Text = "Reset";
         btnReset.UseVisualStyleBackColor = true;
         btnReset.Click += btnReset_Click;
-        // 
-        // skControl1
-        // 
-        skControl1.Location = new System.Drawing.Point(0, 0);
-        skControl1.Name = "skControl1";
-        skControl1.Size = new System.Drawing.Size(0, 0);
-        skControl1.TabIndex = 0;
         // 
         // lblCellSize
         // 

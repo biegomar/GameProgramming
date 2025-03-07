@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using System;
+using SkiaSharp;
 
 namespace AvaloniaGameOfLive;
 
@@ -16,6 +17,9 @@ class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
+            .UseSkia()
             .WithInterFont()
-            .LogToTrace();
+            .LogToTrace()
+        
+            ;
 }

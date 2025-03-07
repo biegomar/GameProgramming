@@ -64,6 +64,7 @@
                                 <ComboBoxItem Content="Sand" />
                                 <ComboBoxItem Content="Game of Life Array" />
                                 <ComboBoxItem Content="Sand Array" />
+                                <ComboBoxItem Content="Wolfram Array" />
                         </ComboBox.Items>
                 </ComboBox>
             </StackPanel>

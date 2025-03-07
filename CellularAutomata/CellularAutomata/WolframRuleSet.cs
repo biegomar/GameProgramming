@@ -4,7 +4,6 @@ namespace CellularAutomata;
 
 public sealed class WolframRuleSet : IRuleSet<bool> 
 {
-    //private readonly Dictionary<int, int[]> WolframRules = new Dictionary<int, int[]>();
     private readonly int[] wolframRule = new int[8];
     
     public IDictionary<string, uint> RuleCounter { get; init; } = new Dictionary<string, uint>
@@ -46,7 +45,6 @@ public sealed class WolframRuleSet : IRuleSet<bool>
         }
     }
     
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private (bool left, bool right) GetNeighboursState(IPlayGround<bool> playGround, (int X, int Y) position)
     {
         (int X, int Y) left = (position.X - 1, position.Y);
