@@ -41,8 +41,8 @@ public partial class MainWindow : Window
     private readonly ToolTip toolTip = new ();
     private readonly DispatcherTimer toolTipTimer = new ();
 
-    private readonly IList<long> generationTimes = new List<long>();
-    private readonly IList<long> renderingTimes = new List<long>();
+    private IList<long> generationTimes;
+    private IList<long> renderingTimes;
     
     private readonly Stopwatch generationStopwatch = new ();
     private readonly Stopwatch renderingStopwatch = new ();
@@ -405,11 +405,6 @@ public partial class MainWindow : Window
     
     private void VisualizerRender(RuleSetType type, SKCanvas canvas)
     {
-        if (timingEnabled)
-        {
-            renderingStopwatch.Restart(); 
-        }
-        
         switch (type)
         {
             case RuleSetType.GameOfLifeArray:
@@ -432,12 +427,6 @@ public partial class MainWindow : Window
             default:    
                 break;
         }
-        
-        if (timingEnabled)
-        {
-            renderingStopwatch.Stop();
-            renderingTimes.Add(renderingStopwatch.ElapsedTicks);
-        }
     }
     
     private async Task ProcessNextGenerationAsync()
@@ -449,6 +438,9 @@ public partial class MainWindow : Window
         
         currentGeneration = 0;
         
+        generationTimes = new List<long>(2000);
+        renderingTimes = new List<long>(2000);
+        
         await Task.Run(async () =>
         {
             totalStopwatch.Restart();
@@ -459,21 +451,25 @@ public partial class MainWindow : Window
                     if (timingEnabled)
                     {
                         generationStopwatch.Restart();
-                    }
-
-                    GenerateNextPlaygroundState(ruleSetType);
-
-                    if (timingEnabled)
-                    {
+                    
+                        GenerateNextPlaygroundState(ruleSetType);
+                    
                         generationStopwatch.Stop();
                         generationTimes.Add(generationStopwatch.ElapsedTicks);
-                    }
-
-                    await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.MaxValue);
-
-                    if (timingEnabled)
-                    {
+                        
+                        renderingStopwatch.Restart();
+                        
+                        await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.MaxValue);
+                        
+                        renderingStopwatch.Stop();
+                        renderingTimes.Add(renderingStopwatch.ElapsedTicks);
+                    
                         currentGeneration++;
+                    }
+                    else
+                    {
+                        GenerateNextPlaygroundState(ruleSetType);
+                        await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.MaxValue);
                     }
                 }
             }

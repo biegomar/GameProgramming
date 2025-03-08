@@ -274,62 +274,71 @@ public partial class GameOfLiveForm : Form
         await Task.Run(async () =>
         {
             totalStopwatch.Restart();
-            while (!token.IsCancellationRequested && currentGeneration < maxGenerations)
+            try
             {
-                if (timingEnabled)
+                while (!token.IsCancellationRequested && currentGeneration < maxGenerations)
                 {
-                    generationStopwatch.Restart();
+                    if (timingEnabled)
+                    {
+                        generationStopwatch.Restart();
                     
-                    GenerateNextPlaygroundState(ruleSetType);
+                        GenerateNextPlaygroundState(ruleSetType);
                     
-                    generationStopwatch.Stop();
-                    generationTimes.Add(generationStopwatch.ElapsedMilliseconds);
+                        generationStopwatch.Stop();
+                        generationTimes.Add(generationStopwatch.ElapsedTicks);
                     
-                    currentGeneration++;
-                }
-                else
-                {
-                    GenerateNextPlaygroundState(ruleSetType);
-                }
+                        currentGeneration++;
+                    }
+                    else
+                    {
+                        GenerateNextPlaygroundState(ruleSetType);
+                    }
 
-                await InvokeAsync(RenderPlaygroundAndDisplayGeneration, token);
+                    await InvokeAsync(RenderPlaygroundAndDisplayGeneration, token);
+                }
             }
-            totalStopwatch.Stop();
+            finally
+            {
+                totalStopwatch.Stop();
+            }
+            
         }, token);
         
-        if (timingEnabled)
-        {
-            GenerateSimulationReport();
-        }
+        GenerateStatisticsReport();
 
         SetButtonState(false);
 
         cancellationTokenSource = null;
     }
     
-    private void GenerateSimulationReport()
+    private void GenerateStatisticsReport()
     {
-        var totalStats = new StringBuilder();
-        totalStats.AppendLine($"{currentGeneration} Generationen auf {processorCount} Kernen:");
-        totalStats.AppendLine($"Gesamtzeit: {FormatTime(totalStopwatch.ElapsedMilliseconds)} m");
-        totalStats.AppendLine($"Gesamtzeit der Einzelmessungen: {FormatTime(generationTimes.Sum() + renderingTimes.Sum())} m");
+        if (timingEnabled)
+        {
+            var totalTicks = totalStopwatch.ElapsedTicks;
+            var totalSum = generationTimes.Sum() + renderingTimes.Sum();
+            var totalStats = new StringBuilder();
+            totalStats.AppendLine($"{currentGeneration} Generationen auf {processorCount} Kernen:");
+            totalStats.AppendLine($"Gesamtzeit: {FormatTimeFromTicks(totalTicks)} s");
+            totalStats.AppendLine($"Gesamtzeit der Einzelmessungen: {FormatTimeFromTicks(totalSum)} s");
+            totalStats.AppendLine($"Differenz zur Gesamtzeit: {FormatTimeFromTicks(Math.Abs(totalTicks - totalSum))} s");
+            totalStats.AppendLine("");
             
-        var generationStats = CalculateStatistics(generationTimes, "Generierung");
-        var renderingStats = CalculateStatistics(renderingTimes, "Rendering");
+            var generationStats = CalculateStatistics(generationTimes, "Generierung");
+            var renderingStats = CalculateStatistics(renderingTimes, "Rendering");
             
-        totalStats.AppendLine("");
-        totalStats.AppendLine(generationStats);
-        totalStats.AppendLine("");
-        totalStats.AppendLine(renderingStats);
+            totalStats.AppendLine(generationStats);
+            totalStats.AppendLine(renderingStats);
             
-        // if (playGroundBool is PlayGroundArray<bool> playGroundWithStatistics)
-        // {
-        //     var initStatistics = CalculateStatistics(PlayGroundArray<bool>.GenerationTimes.ToArray(), currentGeneration, "Initialisierung");
-        //     totalStats.AppendLine("");
-        //     totalStats.AppendLine(initStatistics);
-        // }
+            // if (playGroundBool is PlayGroundArray<bool> playGroundWithStatistics)
+            // {
+            //     var initStatistics = CalculateStatistics(PlayGroundArray<bool>.GenerationTimes.ToArray(), currentGeneration, "Initialisierung");
+            //     totalStats.AppendLine("");
+            //     totalStats.AppendLine(initStatistics);
+            // }
             
-        tbStopWatch.Text = totalStats.ToString();
+            tbStopWatch.Text = totalStats.ToString();
+        }
     }
     
     private string CalculateStatistics(IList<long> times, string type)
@@ -341,32 +350,57 @@ public partial class GameOfLiveForm : Form
         var max = times.Max();                  
         var average = times.Average();        
 
-        var totalFormatted = FormatTime(total);
-        var minFormatted = FormatTime(min);
-        var maxFormatted = FormatTime(max);
-        var averageFormatted = FormatTime((long)average);
+        var totalFormatted = FormatTimeFromTicks(total);
+        var minFormatted = FormatTimeInMicroseconds(min);
+        var maxFormatted = FormatTimeInMicroseconds(max);
+        var averageFormatted = FormatTimeInMicroseconds((long)average);
 
         // Ausgabe
         statistics.AppendLine($"{type}-Statistik:");
-        statistics.AppendLine($"- Gesamtzeit: {totalFormatted} m");
-        statistics.AppendLine($"- Langsamste: {maxFormatted} m");
-        statistics.AppendLine($"- Schnellste: {minFormatted} m");
-        statistics.AppendLine($"- Durchschnitt: {averageFormatted} m");
-        statistics.AppendLine("");
-        foreach (var ruleCount in ruleSet.RuleCounter)
-        {
-            statistics.AppendLine($"- {ruleCount.Key}: {ruleCount.Value}");
-        }
+        statistics.AppendLine($"- Gesamtzeit: {totalFormatted} s");
+        statistics.AppendLine($"- Langsamste: {maxFormatted} µs");
+        statistics.AppendLine($"- Schnellste: {minFormatted} µs");
+        statistics.AppendLine($"- Durchschnitt: {averageFormatted} µs");
+        //statistics.AppendLine("");
+        // foreach (var ruleCount in ruleSet.RuleCounter)
+        // {
+        //     statistics.AppendLine($"- {ruleCount.Key}: {ruleCount.Value}");
+        // }
 
         times.Clear();
         
         return statistics.ToString();
     }
 
-    private string FormatTime(long milliseconds)
+    private string FormatTimeFromTicks(long ticks)
     {
-        var timespan = TimeSpan.FromMilliseconds(milliseconds);
-        return $"{(int)timespan.TotalMinutes:D2}:{timespan.Seconds:D2}.{timespan.Milliseconds:D3}";
+        try
+        {
+            var timespan = TimeSpan.FromTicks(ticks);
+            var totalMicroseconds = ticks * (1000000.0 / TimeSpan.TicksPerSecond);
+            var microseconds = (int)(totalMicroseconds % 1000); 
+        
+            return $"{timespan.Seconds}.{timespan.Milliseconds:D3}{microseconds:D3}";
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e);
+            return string.Empty;
+        }
+    }
+    
+    private string FormatTimeInMicroseconds(long ticks)
+    {
+        try
+        {
+            var totalMicroseconds = ticks * (1000000.0 / TimeSpan.TicksPerSecond);
+            return $"{(int)totalMicroseconds:D3}";
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e);
+            return string.Empty;
+        }
     }
 
 
@@ -435,7 +469,7 @@ public partial class GameOfLiveForm : Form
             renderingStopwatch.Restart();
             VisualizerRender(ruleSetType, e.Surface.Canvas);
             renderingStopwatch.Stop();
-            renderingTimes.Add(renderingStopwatch.ElapsedMilliseconds);
+            renderingTimes.Add(renderingStopwatch.ElapsedTicks);
         }
         else
         {
