@@ -436,7 +436,7 @@ public partial class MainWindow : Window
         if (timingEnabled)
         {
             renderingStopwatch.Stop();
-            renderingTimes.Add(renderingStopwatch.ElapsedMilliseconds);
+            renderingTimes.Add(renderingStopwatch.ElapsedTicks);
         }
     }
     
@@ -448,43 +448,60 @@ public partial class MainWindow : Window
         var maxGenerations = stopWatchCountSelector.Value == null ? 50 : (int)stopWatchCountSelector.Value;
         
         currentGeneration = 0;
-
-        totalStopwatch.Restart();
         
         await Task.Run(async () =>
         {
-            while (!token.IsCancellationRequested && currentGeneration < maxGenerations)
+            totalStopwatch.Restart();
+            try
             {
-                if (timingEnabled)
+                while (!token.IsCancellationRequested && currentGeneration < maxGenerations)
                 {
-                    generationStopwatch.Restart();
+                    if (timingEnabled)
+                    {
+                        generationStopwatch.Restart();
+                    }
+
+                    GenerateNextPlaygroundState(ruleSetType);
+
+                    if (timingEnabled)
+                    {
+                        generationStopwatch.Stop();
+                        generationTimes.Add(generationStopwatch.ElapsedTicks);
+                    }
+
+                    await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.MaxValue);
+
+                    if (timingEnabled)
+                    {
+                        currentGeneration++;
+                    }
                 }
-
-                GenerateNextPlaygroundState(ruleSetType);
-
-                if (timingEnabled)
-                {
-                    generationStopwatch.Stop();
-                    generationTimes.Add(generationStopwatch.ElapsedMilliseconds);
-                }
-
-                await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.MaxValue);
-
-                if (timingEnabled)
-                {
-                    currentGeneration++;
-                }
+            }
+            finally
+            {
+                totalStopwatch.Stop();
             }
         }, token);
         
-        totalStopwatch.Stop();
-        
+        GenerateStatisticsReport();
+
+        SetButtonState(false);
+
+        cancellationTokenSource = null;
+    }
+
+    private void GenerateStatisticsReport()
+    {
         if (timingEnabled)
         {
+            var totalTicks = totalStopwatch.ElapsedTicks;
+            var totalSum = generationTimes.Sum() + renderingTimes.Sum();
             var totalStats = new StringBuilder();
             totalStats.AppendLine($"{currentGeneration} Generationen auf {processorCount} Kernen:");
-            totalStats.AppendLine($"Gesamtzeit: {FormatTime(totalStopwatch.ElapsedMilliseconds)} m");
-            totalStats.AppendLine($"Gesamtzeit der Einzelmessungen: {FormatTime(generationTimes.Sum() + renderingTimes.Sum())} m");
+            totalStats.AppendLine($"Gesamtzeit: {FormatTimeFromTicks(totalTicks)} s");
+            totalStats.AppendLine($"Gesamtzeit der Einzelmessungen: {FormatTimeFromTicks(totalSum)} s");
+            totalStats.AppendLine($"Differenz zur Gesamtzeit: {FormatTimeFromTicks(Math.Abs(totalTicks - totalSum))} s");
+            totalStats.AppendLine("");
             
             var generationStats = CalculateStatistics(generationTimes, "Generierung");
             var renderingStats = CalculateStatistics(renderingTimes, "Rendering");
@@ -501,12 +518,8 @@ public partial class MainWindow : Window
             
             tbStopWatch.Text = totalStats.ToString();
         }
-
-        SetButtonState(false);
-
-        cancellationTokenSource = null;
     }
-    
+
     private void GenerateNextPlaygroundState(RuleSetType type)
     {
         playGroundBool = type switch
@@ -534,17 +547,17 @@ public partial class MainWindow : Window
         var max = times.Max();                  
         var average = times.Average();        
 
-        var totalFormatted = FormatTime(total);
-        var minFormatted = FormatTime(min);
-        var maxFormatted = FormatTime(max);
-        var averageFormatted = FormatTime((long)average);
+        var totalFormatted = FormatTimeFromTicks(total);
+        var minFormatted = FormatTimeInMicroseconds(min);
+        var maxFormatted = FormatTimeInMicroseconds(max);
+        var averageFormatted = FormatTimeInMicroseconds((long)average);
 
         // Ausgabe
         statistics.AppendLine($"{type}-Statistik:");
-        statistics.AppendLine($"- Gesamtzeit: {totalFormatted} m");
-        statistics.AppendLine($"- Langsamste: {maxFormatted} m");
-        statistics.AppendLine($"- Schnellste: {minFormatted} m");
-        statistics.AppendLine($"- Durchschnitt: {averageFormatted} m");
+        statistics.AppendLine($"- Gesamtzeit: {totalFormatted} s");
+        statistics.AppendLine($"- Langsamste: {maxFormatted} µs");
+        statistics.AppendLine($"- Schnellste: {minFormatted} µs");
+        statistics.AppendLine($"- Durchschnitt: {averageFormatted} µs");
         //statistics.AppendLine("");
         // foreach (var ruleCount in ruleSet.RuleCounter)
         // {
@@ -556,10 +569,35 @@ public partial class MainWindow : Window
         return statistics.ToString();
     }
 
-    private string FormatTime(long milliseconds)
+    private string FormatTimeFromTicks(long ticks)
     {
-        var timespan = TimeSpan.FromMilliseconds(milliseconds);
-        return $"{(int)timespan.TotalMinutes:D2}:{timespan.Seconds:D2}.{timespan.Milliseconds:D3}";
+        try
+        {
+            var timespan = TimeSpan.FromTicks(ticks);
+            var totalMicroseconds = ticks * (1000000.0 / TimeSpan.TicksPerSecond);
+            var microseconds = (int)(totalMicroseconds % 1000); 
+        
+            return $"{timespan.Seconds}.{timespan.Milliseconds:D3}{microseconds:D3}";
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e);
+            return string.Empty;
+        }
+    }
+    
+    private string FormatTimeInMicroseconds(long ticks)
+    {
+        try
+        {
+            var totalMicroseconds = ticks * (1000000.0 / TimeSpan.TicksPerSecond);
+            return $"{(int)totalMicroseconds:D3}";
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e);
+            return string.Empty;
+        }
     }
     
     private void btnReset_Click(object? sender, RoutedEventArgs e)
