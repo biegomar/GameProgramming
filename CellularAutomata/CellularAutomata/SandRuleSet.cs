@@ -27,7 +27,7 @@ public sealed class SandRuleSet : IRuleSet<SandCellState>
         var cellNeighbors = GetNeighboursState(playGround, position);
         var cellNeighborsFromLeft = GetNeighboursState(playGround, new Vector(position.X - 1, position.Y));
         
-        if (cellState == SandCellState.Sand)
+        if (IsSand(cellState))
         {
             if (
                 (cellNeighbors.Bottom == SandCellState.Empty ||
@@ -39,27 +39,31 @@ public sealed class SandRuleSet : IRuleSet<SandCellState>
                 return SandCellState.Empty;
             }
             
-            return SandCellState.Sand;
+            return cellState;
         }
            
         // Prio 1: grain above me
-        if (cellNeighbors.Top == SandCellState.Sand)
+        if (IsSand(cellNeighbors.Top))
         {
-            return SandCellState.Sand;
+            return cellNeighbors.Top;
         }
 
         // Prio 2: grain to the top left, but only if its Prio 1 is blocked.
-        if (cellNeighbors is { TopLeft: SandCellState.Sand, Left: SandCellState.Sand or SandCellState.Solid, Top: SandCellState.Empty })
+        if (IsSand(cellNeighbors.TopLeft) && (IsSand(cellNeighbors.Left) || cellNeighbors.Left == SandCellState.Solid) &&
+            cellNeighbors.Top == SandCellState.Empty)
         {
-            return SandCellState.Sand;
+            return cellNeighbors.TopLeft;
         }
 
         // Prio 3: grain to the top right, but only if its Prio 1 and Prio 2 is blocked.
         var cellNeighborsFromRight = GetNeighboursState(playGround, new Vector(position.X + 1, position.Y));
-        if (cellNeighbors is { TopRight: SandCellState.Sand, Top: SandCellState.Empty, Right: SandCellState.Sand or SandCellState.Solid }
-            && (cellNeighborsFromRight is { Right : SandCellState.Sand or SandCellState.Solid} || (cellNeighborsFromRight.Right == SandCellState.Empty && cellNeighborsFromRight.TopRight != SandCellState.Empty)))
+        if (IsSand(cellNeighbors.TopRight) &&
+            cellNeighbors.Top == SandCellState.Empty &&
+            (IsSand(cellNeighbors.Right) || cellNeighbors.Right == SandCellState.Solid) &&
+            (IsSand(cellNeighborsFromRight.Right) || cellNeighborsFromRight.Right == SandCellState.Solid || 
+             (cellNeighborsFromRight.Right == SandCellState.Empty && cellNeighborsFromRight.TopRight != SandCellState.Empty)))
         {
-            return SandCellState.Sand; 
+            return cellNeighbors.TopRight; 
         }
 
         return SandCellState.Empty;
@@ -111,12 +115,16 @@ public sealed class SandRuleSet : IRuleSet<SandCellState>
             BottomRight: IsWithinBounds(playGround.Dimension, bottomRight) ? playGround[bottomRight] : SandCellState.Empty
         );
     }
-
     
     private bool IsWithinBounds(Vector dimension, Vector position)
     {
         return position.X >= 0 && position.Y >= 0 &&
                position.X < dimension.X &&
                position.Y < dimension.Y;
+    }
+    
+    private bool IsSand(SandCellState cellState)
+    {
+        return cellState is SandCellState.Sand or SandCellState.SandDark or SandCellState.SandLight or SandCellState.SandMedium;
     }
 }

@@ -63,9 +63,7 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
         }
 
         // Prio 2: grain to the top left, but only if its Prio 1 is blocked.
-        //if (cellNeighbors is { TopLeft: SandCellState.Sand, Left: SandCellState.Sand or SandCellState.Solid, Top: SandCellState.Empty })
-        if (IsSand(cellNeighbors.TopLeft) &&
-            (IsSand(cellNeighbors.Left) || cellNeighbors.Left == SandCellState.Solid) &&
+        if (IsSand(cellNeighbors.TopLeft) && (IsSand(cellNeighbors.Left) || cellNeighbors.Left == SandCellState.Solid) &&
             cellNeighbors.Top == SandCellState.Empty)
         {
             return cellNeighbors.TopLeft;
@@ -73,8 +71,6 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
 
         // Prio 3: grain to the top right, but only if its Prio 1 and Prio 2 is blocked.
         var cellNeighborsFromRight = GetNeighboursState(playGround, (position.X + 1, position.Y));
-        // if (cellNeighbors is { TopRight: SandCellState.Sand, Top: SandCellState.Empty, Right: SandCellState.Sand or SandCellState.Solid }
-        //     && (cellNeighborsFromRight is { Right : SandCellState.Sand or SandCellState.Solid} || (cellNeighborsFromRight.Right == SandCellState.Empty && cellNeighborsFromRight.TopRight != SandCellState.Empty)))
         if (IsSand(cellNeighbors.TopRight) &&
             cellNeighbors.Top == SandCellState.Empty &&
             (IsSand(cellNeighbors.Right) || cellNeighbors.Right == SandCellState.Solid) &&

@@ -36,7 +36,7 @@ public static class GameOfLifeInitializer
             Parallel.ForEach(playGroundBool.Cells, cell =>
             {
                 var state = random.NextDouble() < aliveProbability;
-                playground[cell.Key] = state ? SandCellState.Sand : SandCellState.Empty;
+                playground[cell.Key] = state ? GetRandomSandCellState() : SandCellState.Empty;
             });
         }
         else if (playground is PlayGroundArray<SandCellState> playGroundArrayBool)
@@ -44,7 +44,7 @@ public static class GameOfLifeInitializer
             Parallel.ForEach(playGroundArrayBool.Cells.Cast<Cell<SandCellState>>(), cell =>
             {
                 var state = random.NextDouble() < aliveProbability;
-                playGroundArrayBool[(cell.X, cell.Y)] = state ? SandCellState.Sand : SandCellState.Empty;
+                playGroundArrayBool[(cell.X, cell.Y)] = state ? GetRandomSandCellState() : SandCellState.Empty;
             });
         }
     }
@@ -170,11 +170,11 @@ public static class GameOfLifeInitializer
                 }
                 else if (IsTopSand(x, y, midX, midY))
                 {
-                    playground[new Vector(x, y)] = SandCellState.Sand;
+                    playground[new Vector(x, y)] = GetRandomSandCellState();
                 }
                 else if (IsConnection(x, y, midX, midY))
                 {
-                    playground[new Vector(x, y)] = SandCellState.Sand;
+                    playground[new Vector(x, y)] = GetRandomSandCellState();
                 }
                 else if (IsBottomEmpty(x, y, midX, midY))
                 {
@@ -227,4 +227,12 @@ public static class GameOfLifeInitializer
         return y > midY && Math.Abs(x - midX) <= (y - midY - 1);
     }
 
+    private static SandCellState GetRandomSandCellState()
+    {
+        var random = new Random();
+        var randomValue = random.Next(2, 6);
+
+        return (SandCellState)randomValue;
+
+    }
 }
