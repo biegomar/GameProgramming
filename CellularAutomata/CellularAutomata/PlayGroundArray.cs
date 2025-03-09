@@ -8,12 +8,12 @@ public sealed class PlayGroundArray<T> : IPlayGround<T>
     
     public Vector Dimension { get; }
 
-    public PlayGroundArray(Vector dimension)
+    public PlayGroundArray(Vector dimension, Func<int, int, Cell<T>>? cellFactory = null)
     {
         Dimension = dimension;
         Cells = new Cell<T>[dimension.X * dimension.Y];
         
-        Initialize();
+        Initialize(cellFactory);
     }
     
     public T this[Vector position]
@@ -28,7 +28,7 @@ public sealed class PlayGroundArray<T> : IPlayGround<T>
         set => Cells[this.GetIndex(position.x, position.y)].State = value;
     }
     
-    private void Initialize()
+    private void Initialize(Func<int, int, Cell<T>>? cellFactory = null)
     {
         var defaultState = default(T)!;
         
@@ -36,7 +36,10 @@ public sealed class PlayGroundArray<T> : IPlayGround<T>
         {
             for (var y = 0; y < this.Dimension.Y; y++)
             {
-                this.Cells[this.GetIndex(x, y)] = new Cell<T>(defaultState, x, y);
+                this.Cells[this.GetIndex(x, y)] = cellFactory != null 
+                    ? cellFactory(x, y) 
+                    : new Cell<T>(defaultState, x, y);
+
             }
         }
     }

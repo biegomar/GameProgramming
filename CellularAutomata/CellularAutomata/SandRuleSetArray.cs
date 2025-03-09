@@ -41,39 +41,47 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
         var cellNeighbors = GetNeighboursState(playGround, position);
         var cellNeighborsFromLeft = GetNeighboursState(playGround, (position.X - 1, position.Y));
         
-        if (cellState == SandCellState.Sand)
+        if (IsSand(cellState))
         {
             if (
                 (cellNeighbors.Bottom == SandCellState.Empty ||
-                (cellNeighbors.BottomRight == SandCellState.Empty && cellNeighbors.Right == SandCellState.Empty) ||
-                (cellNeighbors.BottomLeft == SandCellState.Empty && cellNeighbors.Left == SandCellState.Empty && cellNeighborsFromLeft.Left == SandCellState.Empty))
+                cellNeighbors is { BottomRight: SandCellState.Empty, Right: SandCellState.Empty } ||
+                (cellNeighbors is { BottomLeft: SandCellState.Empty, Left: SandCellState.Empty } && cellNeighborsFromLeft.Left == SandCellState.Empty))
                 && position.Y < playGround.Dimension.Y - 1
                )
             {
                 return SandCellState.Empty;
             }
             
-            return SandCellState.Sand;
+            return cellState;
         }
            
         // Prio 1: grain above me
-        if (cellNeighbors.Top == SandCellState.Sand)
+        if (IsSand(cellNeighbors.Top))
         {
-            return SandCellState.Sand;
+            return cellNeighbors.Top;
         }
 
         // Prio 2: grain to the top left, but only if its Prio 1 is blocked.
-        if (cellNeighbors is { TopLeft: SandCellState.Sand, Left: SandCellState.Sand or SandCellState.Solid, Top: SandCellState.Empty })
+        //if (cellNeighbors is { TopLeft: SandCellState.Sand, Left: SandCellState.Sand or SandCellState.Solid, Top: SandCellState.Empty })
+        if (IsSand(cellNeighbors.TopLeft) &&
+            (IsSand(cellNeighbors.Left) || cellNeighbors.Left == SandCellState.Solid) &&
+            cellNeighbors.Top == SandCellState.Empty)
         {
-            return SandCellState.Sand;
+            return cellNeighbors.TopLeft;
         }
 
         // Prio 3: grain to the top right, but only if its Prio 1 and Prio 2 is blocked.
         var cellNeighborsFromRight = GetNeighboursState(playGround, (position.X + 1, position.Y));
-        if (cellNeighbors is { TopRight: SandCellState.Sand, Top: SandCellState.Empty, Right: SandCellState.Sand or SandCellState.Solid }
-            && (cellNeighborsFromRight is { Right : SandCellState.Sand or SandCellState.Solid} || (cellNeighborsFromRight.Right == SandCellState.Empty && cellNeighborsFromRight.TopRight != SandCellState.Empty)))
+        // if (cellNeighbors is { TopRight: SandCellState.Sand, Top: SandCellState.Empty, Right: SandCellState.Sand or SandCellState.Solid }
+        //     && (cellNeighborsFromRight is { Right : SandCellState.Sand or SandCellState.Solid} || (cellNeighborsFromRight.Right == SandCellState.Empty && cellNeighborsFromRight.TopRight != SandCellState.Empty)))
+        if (IsSand(cellNeighbors.TopRight) &&
+            cellNeighbors.Top == SandCellState.Empty &&
+            (IsSand(cellNeighbors.Right) || cellNeighbors.Right == SandCellState.Solid) &&
+            (IsSand(cellNeighborsFromRight.Right) || cellNeighborsFromRight.Right == SandCellState.Solid || 
+             (cellNeighborsFromRight.Right == SandCellState.Empty && cellNeighborsFromRight.TopRight != SandCellState.Empty)))
         {
-            return SandCellState.Sand; 
+            return cellNeighbors.TopRight; 
         }
 
         return SandCellState.Empty;
@@ -120,30 +128,6 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
             Bottom: IsWithinBounds(playGround.Dimension, bottom.X, bottom.Y) ? playGround[bottom] : SandCellState.Empty,
             BottomRight: IsWithinBounds(playGround.Dimension, bottomRight.X, bottomRight.Y) ? playGround[bottomRight] : SandCellState.Empty
         );
-        
-        // var neighbors = new SandCellState[8];
-        // int index = 0;
-        //
-        // foreach (var (dx, dy) in NeighborOffsets)
-        // {
-        //     var nx = position.X + dx;
-        //     var ny = position.Y + dy;
-        //     
-        //     neighbors[index++] = IsWithinBounds(playGround.Dimension, nx, ny)
-        //         ? playGround[(nx, ny)]
-        //         : SandCellState.Empty; 
-        // }
-        //
-        // return new CellNeighbors(
-        //     TopLeft: neighbors[0],
-        //     Top: neighbors[1],
-        //     TopRight: neighbors[2],
-        //     Left: neighbors[3],
-        //     Right: neighbors[4],
-        //     BottomLeft: neighbors[5],
-        //     Bottom: neighbors[6],
-        //     BottomRight: neighbors[7]
-        // );
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -154,4 +138,8 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
                y < dimension.Y;
     }
     
+    private bool IsSand(SandCellState cellState)
+    {
+        return cellState is SandCellState.Sand or SandCellState.SandDark or SandCellState.SandLight or SandCellState.SandMedium;
+    }
 }

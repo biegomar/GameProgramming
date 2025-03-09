@@ -618,15 +618,12 @@ public partial class MainWindow : Window
         return state switch
         {
             SandCellState.Empty => emptyColor,
-            SandCellState.Sand => ChooseSandColor(),
-            SandCellState.Solid => SKColors.Brown,
+            SandCellState.Sand => SKColors.Goldenrod,
+            SandCellState.SandDark => SKColors.DarkGoldenrod,
+            SandCellState.SandLight => SKColors.LightGoldenrodYellow,
+            SandCellState.SandMedium => SKColors.Chocolate,
+            SandCellState.Solid => SKColors.Gray,
             _ => emptyColor
         };
-    }
-    
-    private SKColor ChooseSandColor()
-    {
-        var index = random.Next(0, colors.Length);
-        return colors[index];
     }
 }
