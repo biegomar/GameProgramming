@@ -58,19 +58,31 @@ public static class SkiaVisualizer<T>
     
     private static void RenderPixel(PlayGroundArray<T> playGround, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
     {
-        using var paint = new SKPaint();
-        for (int y = 0; y < playGround.Dimension.Y; y++)
+        var points = new List<SKPoint>(playGround.Dimension.X * playGround.Dimension.Y);
+        //var points = new SKPoint[playGround.Dimension.X * playGround.Dimension.Y];
+
+        SKColor drawingColor = emptyColor;
+        var index = 0;
+        for (var x = 0; x < playGround.Dimension.X; x++)
         {
-            for (int x = 0; x < playGround.Dimension.X; x++)
+            for (var y = 0; y < playGround.Dimension.Y; y++)
             {
                 var color = stateToColor(playGround[(x,y)]);
                 if (color == emptyColor) continue;
                 
-                //var point = new SKPoint(x,y);
-                paint.Color = color;
-                canvas.DrawPoint(x, y, paint);
+                if (!drawingColor.Equals(color)) drawingColor = color;
+                
+                //points[index++] = new SKPoint(x, y); 
+                points.Add(new SKPoint(x, y));
             }
         }
+        
+        using var paint = new SKPaint();
+        paint.Color = drawingColor;
+        paint.IsAntialias = false;
+        paint.Style = SKPaintStyle.Fill;
+        paint.StrokeCap = SKStrokeCap.Square;
+        canvas.DrawPoints(SKPointMode.Points, points.ToArray(), paint);
     }
     
     private static void RenderAsRectangles(PlayGround<T> playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
