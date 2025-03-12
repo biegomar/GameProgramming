@@ -1,4 +1,5 @@
-﻿using CellularAutomata;
+﻿using System.Collections.Concurrent;
+using CellularAutomata;
 using SkiaSharp;
 
 namespace Visualizer;
@@ -40,49 +41,88 @@ public static class SkiaVisualizer<T>
     
     private static void RenderPixel(PlayGround<T> playGround, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
     {
-        //var positionToCheck = new Vector(0, 0);
+        var colorBuckets = new ConcurrentDictionary<SKColor, ConcurrentBag<SKPoint>>();
+        var dimensionX = playGround.Dimension.X;
 
-        using var paint = new SKPaint();
-        for (int y = 0; y < playGround.Dimension.Y; y++)
+        Parallel.For(0, dimensionX, x =>
         {
-            for (int x = 0; x < playGround.Dimension.X; x++)
+            for (var y = 0; y < playGround.Dimension.Y; y++)
             {
-                var color = stateToColor(playGround[(x,y)]);
-                if (color == emptyColor) continue;
-                
-                paint.Color = color;
-                canvas.DrawPoint(x, y, paint);
+                var color = stateToColor(playGround[(x, y)]);
+                if (color == emptyColor)
+                    continue;
+
+                var point = new SKPoint(x, y);
+                colorBuckets.GetOrAdd(color, _ => new ConcurrentBag<SKPoint>()).Add(point);
             }
+        });
+
+        
+        using var paint = new SKPaint();
+        paint.IsAntialias = false;
+        paint.Style = SKPaintStyle.Fill;
+        paint.StrokeCap = SKStrokeCap.Square;
+
+        foreach (var (color, pointList) in colorBuckets)
+        {
+            paint.Color = color;
+            canvas.DrawPoints(SKPointMode.Points, pointList.ToArray(), paint);
         }
     }
     
     private static void RenderPixel(PlayGroundArray<T> playGround, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
     {
-        var points = new List<SKPoint>(playGround.Dimension.X * playGround.Dimension.Y);
-        //var points = new SKPoint[playGround.Dimension.X * playGround.Dimension.Y];
-
-        SKColor drawingColor = emptyColor;
-        var index = 0;
-        for (var x = 0; x < playGround.Dimension.X; x++)
+        var colorBuckets = new ConcurrentDictionary<SKColor, ConcurrentBag<SKPoint>>();
+        var dimensionX = playGround.Dimension.X;
+    
+        ParallelOptions parallelOptions = new ParallelOptions
+        {
+            MaxDegreeOfParallelism = 8 // Begrenze die maximale Anzahl paralleler Threads
+        };
+        
+        Parallel.For(0, dimensionX, parallelOptions,x =>
         {
             for (var y = 0; y < playGround.Dimension.Y; y++)
             {
-                var color = stateToColor(playGround[(x,y)]);
-                if (color == emptyColor) continue;
-                
-                if (!drawingColor.Equals(color)) drawingColor = color;
-                
-                //points[index++] = new SKPoint(x, y); 
-                points.Add(new SKPoint(x, y));
+                var color = stateToColor(playGround[(x, y)]);
+                if (color == emptyColor)
+                    continue;
+    
+                var point = new SKPoint(x, y);
+                colorBuckets.GetOrAdd(color, _ => new ConcurrentBag<SKPoint>()).Add(point);
             }
-        }
+        });
+    
         
         using var paint = new SKPaint();
-        paint.Color = drawingColor;
         paint.IsAntialias = false;
         paint.Style = SKPaintStyle.Fill;
         paint.StrokeCap = SKStrokeCap.Square;
-        canvas.DrawPoints(SKPointMode.Points, points.ToArray(), paint);
+    
+        foreach (var (color, pointList) in colorBuckets)
+        {
+            paint.Color = color;
+            canvas.DrawPoints(SKPointMode.Points, pointList.ToArray(), paint);
+        }
+
+        
+        // Parallel.ForEach(colorBuckets, parallelOptions, bucket =>
+        // {
+        //     var (color, pointList) = bucket;
+        //
+        //     // Lokaler Paint für jeden Thread
+        //     var localPaint = new SKPaint
+        //     {
+        //         IsAntialias = false,
+        //         Style = SKPaintStyle.Fill,
+        //         StrokeCap = SKStrokeCap.Square,
+        //         Color = color
+        //     };
+        //
+        //     canvas.DrawPoints(SKPointMode.Points, pointList.ToArray(), localPaint);
+        // });
+
+
     }
     
     private static void RenderAsRectangles(PlayGround<T> playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
