@@ -1,23 +1,28 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace CellularAutomata;
 
 public sealed class SandRuleSetArray : IRuleSet<SandCellState>
 {
-    private static readonly (int DX, int DY)[] NeighborOffsets = 
+    public IDictionary<string, uint> RuleCounter { get; init; } = new Dictionary<string, uint>
     {
-        (-1, -1), (0, -1), (1, -1),
-        ( -1, 0),          ( 1, 0),
-        ( -1, 1), ( 0, 1), ( 1, 1),
+        ["Solid"] = 0,
+        ["Prio0"] = 0,
+        ["Prio1"] = 0,
+        ["Prio2"] = 0,
+        ["Prio3"] = 0,
+        ["Empty"] = 0,
     };
     
-    public IDictionary<string, uint> RuleCounter { get; init; } = new Dictionary<string, uint>();
     
-    private record CellNeighbors(
+    [StructLayout(LayoutKind.Sequential, Size = 9)]
+    private record struct CellNeighbors(
         SandCellState TopLeft,
         SandCellState Top,
         SandCellState TopRight,
         SandCellState Left,
+        SandCellState LeftLeft,
         SandCellState Right,
         SandCellState BottomLeft,
         SandCellState Bottom,
@@ -33,20 +38,15 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
     {
         var cellState = playGround[position];
 
-        if (cellState == SandCellState.Solid)
-        {
-            return SandCellState.Solid;
-        }
-
         var cellNeighbors = GetNeighboursState(playGround, position);
-        var cellNeighborsFromLeft = GetNeighboursState(playGround, (position.X - 1, position.Y));
         
         if (IsSand(cellState))
         {
+            //RuleCounter["Prio0"]++;
             if (
                 (cellNeighbors.Bottom == SandCellState.Empty ||
-                cellNeighbors is { BottomRight: SandCellState.Empty, Right: SandCellState.Empty } ||
-                (cellNeighbors is { BottomLeft: SandCellState.Empty, Left: SandCellState.Empty } && cellNeighborsFromLeft.Left == SandCellState.Empty))
+                 cellNeighbors is { BottomRight: SandCellState.Empty, Right: SandCellState.Empty } 
+                     or { BottomLeft: SandCellState.Empty, Left: SandCellState.Empty, LeftLeft: SandCellState.Empty })
                 && position.Y < playGround.Dimension.Y - 1
                )
             {
@@ -55,10 +55,11 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
             
             return cellState;
         }
-           
+        
         // Prio 1: grain above me
         if (IsSand(cellNeighbors.Top))
         {
+            //RuleCounter["Prio1"]++;
             return cellNeighbors.Top;
         }
 
@@ -66,6 +67,7 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
         if (IsSand(cellNeighbors.TopLeft) && (IsSand(cellNeighbors.Left) || cellNeighbors.Left == SandCellState.Solid) &&
             cellNeighbors.Top == SandCellState.Empty)
         {
+            //RuleCounter["Prio2"]++;
             return cellNeighbors.TopLeft;
         }
 
@@ -77,9 +79,17 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
             (IsSand(cellNeighborsFromRight.Right) || cellNeighborsFromRight.Right == SandCellState.Solid || 
              (cellNeighborsFromRight.Right == SandCellState.Empty && cellNeighborsFromRight.TopRight != SandCellState.Empty)))
         {
+            //RuleCounter["Prio3"]++;
             return cellNeighbors.TopRight; 
         }
+        
+        if (cellState == SandCellState.Solid)
+        {
+            //RuleCounter["Solid"]++;
+            return SandCellState.Solid;
+        }
 
+        //RuleCounter["Empty"]++;
         return SandCellState.Empty;
     }
     
@@ -109,6 +119,7 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
         (int X, int Y) top = (position.X, position.Y - 1);
         (int X, int Y) topRight = (position.X + 1, position.Y - 1);
         (int X, int Y) left = (position.X - 1, position.Y);
+        (int X, int Y) leftleft = (position.X - 2, position.Y);
         (int X, int Y) right = (position.X + 1, position.Y);
         (int X, int Y) bottomLeft = (position.X - 1, position.Y + 1);
         (int X, int Y) bottom = (position.X, position.Y + 1);
@@ -119,6 +130,7 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
             Top: IsWithinBounds(playGround.Dimension, top.X, top.Y) ? playGround[top] : SandCellState.Empty,
             TopRight: IsWithinBounds(playGround.Dimension, topRight.X, topRight.Y) ? playGround[topRight] : SandCellState.Empty,
             Left: IsWithinBounds(playGround.Dimension, left.X, left.Y) ? playGround[left] : SandCellState.Empty,
+            LeftLeft: IsWithinBounds(playGround.Dimension, left.X - 1, left.Y) ? playGround[leftleft] : SandCellState.Empty,
             Right: IsWithinBounds(playGround.Dimension, right.X, right.Y) ? playGround[right] : SandCellState.Empty,
             BottomLeft: IsWithinBounds(playGround.Dimension, bottomLeft.X, bottomLeft.Y) ? playGround[bottomLeft] : SandCellState.Empty,
             Bottom: IsWithinBounds(playGround.Dimension, bottom.X, bottom.Y) ? playGround[bottom] : SandCellState.Empty,

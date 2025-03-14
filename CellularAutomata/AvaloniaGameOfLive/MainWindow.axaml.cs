@@ -554,11 +554,14 @@ public partial class MainWindow : Window
         statistics.AppendLine($"- Langsamste: {maxFormatted} µs");
         statistics.AppendLine($"- Schnellste: {minFormatted} µs");
         statistics.AppendLine($"- Durchschnitt: {averageFormatted} µs");
-        //statistics.AppendLine("");
-        // foreach (var ruleCount in ruleSet.RuleCounter)
-        // {
-        //     statistics.AppendLine($"- {ruleCount.Key}: {ruleCount.Value}");
-        // }
+        statistics.AppendLine("");
+         foreach (var ruleCount in ruleSet.RuleCounter)
+         {
+             if (ruleCount.Value != 0)
+             {
+                 statistics.AppendLine($"- {ruleCount.Key}: {ruleCount.Value}");   
+             }
+         }
 
         times.Clear();
         
