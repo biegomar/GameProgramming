@@ -46,7 +46,7 @@ public partial class GameOfLiveForm : Form
     private bool timingEnabled = true;
     private int currentGeneration = 0;
     private int generation = 0;
-    private int processorCount = 2;
+    private int maxDegreeOfParallelism = 2;
 
     private IPlayGround<bool> playGroundBool;
     private IPlayGround<SandCellState> playGroundSand;
@@ -318,7 +318,7 @@ public partial class GameOfLiveForm : Form
             var totalTicks = totalStopwatch.ElapsedTicks;
             var totalSum = generationTimes.Sum() + renderingTimes.Sum();
             var totalStats = new StringBuilder();
-            totalStats.AppendLine($"{currentGeneration} Generationen auf {processorCount} Kernen:");
+            totalStats.AppendLine($"{currentGeneration} Generationen auf {maxDegreeOfParallelism} Kernen:");
             totalStats.AppendLine($"Gesamtzeit: {FormatTimeFromTicks(totalTicks)} s");
             totalStats.AppendLine($"Gesamtzeit der Einzelmessungen: {FormatTimeFromTicks(totalSum)} s");
             totalStats.AppendLine($"Differenz zur Gesamtzeit: {FormatTimeFromTicks(Math.Abs(totalTicks - totalSum))} s");
@@ -408,15 +408,15 @@ public partial class GameOfLiveForm : Form
     {
         playGroundBool = type switch
         {
-            RuleSetType.GameOfLife => automataBool.NextGenerationParallel((playGroundBool as PlayGround<bool>)!, (ruleSet as GameOfLifeRuleSet)!, false, processorCount),
-            RuleSetType.GameOfLifeArray => automataArrayBool.NextGenerationParallel((playGroundBool as PlayGroundArray<bool>)!,(ruleSet as GameOfLifeRuleSetArray)!, false, processorCount),
+            RuleSetType.GameOfLife => automataBool.NextGenerationParallel((playGroundBool as PlayGround<bool>)!, (ruleSet as GameOfLifeRuleSet)!, false, maxDegreeOfParallelism),
+            RuleSetType.GameOfLifeArray => automataArrayBool.NextGenerationParallel((playGroundBool as PlayGroundArray<bool>)!,(ruleSet as GameOfLifeRuleSetArray)!, false, maxDegreeOfParallelism),
             _ => playGroundBool
         };
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSandBool.NextGenerationParallel((playGroundSand as PlayGround<SandCellState>)!, (ruleSet as SandRuleSet)!, false, processorCount),
-            RuleSetType.SandArray => automataSandArrayBool.NextGenerationParallel((playGroundSand as PlayGroundArray<SandCellState>)!,(ruleSet as SandRuleSetArray)!, false, processorCount),
+            RuleSetType.Sand => automataSandBool.NextGenerationParallel((playGroundSand as PlayGround<SandCellState>)!, (ruleSet as SandRuleSet)!, false, maxDegreeOfParallelism),
+            RuleSetType.SandArray => automataSandArrayBool.NextGenerationParallel((playGroundSand as PlayGroundArray<SandCellState>)!,(ruleSet as SandRuleSetArray)!, false, maxDegreeOfParallelism),
             _ => playGroundSand
         };
     }
@@ -486,19 +486,19 @@ public partial class GameOfLiveForm : Form
         {
             case RuleSetType.GameOfLifeArray:
                 PlayGroundArray<bool> localBoolPlayGroundArray = (playGroundBool as PlayGroundArray<bool>)!;
-                SkiaVisualizer<bool>.Render(localBoolPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, b => b ? this.aliveColor : emptyColor);
+                SkiaVisualizer<bool>.Render(localBoolPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b ? this.aliveColor : emptyColor);
                 break;
             case RuleSetType.Sand:
                 PlayGround<SandCellState> localSandCellStatePlayGround = (playGroundSand as PlayGround<SandCellState>)!;
-                SkiaVisualizer<SandCellState>.Render(localSandCellStatePlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, ChooseSandColor);
+                SkiaVisualizer<SandCellState>.Render(localSandCellStatePlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, ChooseSandColor);
                 break;
             case RuleSetType.GameOfLife:
                 PlayGround<bool> localBoolPlayGround = (playGroundBool as PlayGround<bool>)!;
-                SkiaVisualizer<bool>.Render(localBoolPlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, b => b ? this.aliveColor : emptyColor);
+                SkiaVisualizer<bool>.Render(localBoolPlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b ? this.aliveColor : emptyColor);
                 break;
             case RuleSetType.SandArray:
                 PlayGroundArray<SandCellState> localSandCellStatePlayGroundArray = (playGroundSand as PlayGroundArray<SandCellState>)!;
-                SkiaVisualizer<SandCellState>.Render(localSandCellStatePlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, ChooseSandColor);
+                SkiaVisualizer<SandCellState>.Render(localSandCellStatePlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, ChooseSandColor);
                 break;
             default:    
                 break;
@@ -619,6 +619,6 @@ public partial class GameOfLiveForm : Form
 
     private void processorCountSelector_ValueChanged(object sender, EventArgs e)
     {
-        processorCount = (int)processorCountSelector.Value;
+        maxDegreeOfParallelism = (int)processorCountSelector.Value;
     }
 }

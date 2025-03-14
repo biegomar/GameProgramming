@@ -7,44 +7,49 @@ namespace Visualizer;
 public static class SkiaVisualizer<T>
 {
     
-    public static void Render(PlayGround<T> playGround, Vector cellSize, SKCanvas canvas, int renderEngineIndex, SKColor emptyColor, Func<T, SKColor> stateToColor)
+    public static void Render(PlayGround<T> playGround, Vector cellSize, SKCanvas canvas, int renderEngineIndex, SKColor emptyColor, int maxDegreeOfParallelism, Func<T, SKColor> stateToColor)
     {
         switch (renderEngineIndex)
         {
             case 0:
-                RenderAsRectangles(playGround, cellSize, canvas, emptyColor, stateToColor);
+                RenderAsRectangles(playGround, cellSize, canvas, emptyColor, maxDegreeOfParallelism, stateToColor);
                 break;
             case 1:
-                RenderPixel(playGround, canvas, emptyColor, stateToColor);
+                RenderPixel(playGround, canvas, emptyColor, maxDegreeOfParallelism, stateToColor);
                 break;
             default:
-                RenderAsRectangles(playGround, cellSize, canvas, emptyColor, stateToColor);
+                RenderAsRectangles(playGround, cellSize, canvas, emptyColor, maxDegreeOfParallelism, stateToColor);
                 break;
         }
     }
     
-    public static void Render(PlayGroundArray<T> playGround, Vector cellSize, SKCanvas canvas, int renderEngineIndex, SKColor emptyColor, Func<T, SKColor> stateToColor)
+    public static void Render(PlayGroundArray<T> playGround, Vector cellSize, SKCanvas canvas, int renderEngineIndex, SKColor emptyColor, int maxDegreeOfParallelism, Func<T, SKColor> stateToColor)
     {
         switch (renderEngineIndex)
         {
             case 0:
-                RenderAsRectangles(playGround, cellSize, canvas, emptyColor, stateToColor);
+                RenderAsRectangles(playGround, cellSize, canvas, emptyColor, maxDegreeOfParallelism, stateToColor);
                 break;
             case 1:
-                RenderPixel(playGround, canvas, emptyColor, stateToColor);
+                RenderPixel(playGround, canvas, emptyColor, maxDegreeOfParallelism, stateToColor);
                 break;
             default:
-                RenderAsRectangles(playGround, cellSize, canvas, emptyColor, stateToColor);
+                RenderAsRectangles(playGround, cellSize, canvas, emptyColor, maxDegreeOfParallelism, stateToColor);
                 break;
         }
     }
     
-    private static void RenderPixel(PlayGround<T> playGround, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
+    private static void RenderPixel(PlayGround<T> playGround, SKCanvas canvas, SKColor emptyColor, int maxDegreeOfParallelism, Func<T, SKColor> stateToColor)
     {
         var colorBuckets = new ConcurrentDictionary<SKColor, ConcurrentBag<SKPoint>>();
         var dimensionX = playGround.Dimension.X;
 
-        Parallel.For(0, dimensionX, x =>
+        ParallelOptions parallelOptions = new ParallelOptions
+        {
+            MaxDegreeOfParallelism = maxDegreeOfParallelism
+        };
+        
+        Parallel.For(0, dimensionX, parallelOptions, x =>
         {
             for (var y = 0; y < playGround.Dimension.Y; y++)
             {
@@ -70,14 +75,14 @@ public static class SkiaVisualizer<T>
         }
     }
     
-    private static void RenderPixel(PlayGroundArray<T> playGround, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
+    private static void RenderPixel(PlayGroundArray<T> playGround, SKCanvas canvas, SKColor emptyColor, int maxDegreeOfParallelism, Func<T, SKColor> stateToColor)
     {
         var colorBuckets = new ConcurrentDictionary<SKColor, ConcurrentBag<SKPoint>>();
         var dimensionX = playGround.Dimension.X;
     
         ParallelOptions parallelOptions = new ParallelOptions
         {
-            MaxDegreeOfParallelism = 8 // Begrenze die maximale Anzahl paralleler Threads
+            MaxDegreeOfParallelism = maxDegreeOfParallelism
         };
         
         Parallel.For(0, dimensionX, parallelOptions,x =>
@@ -125,7 +130,7 @@ public static class SkiaVisualizer<T>
 
     }
     
-    private static void RenderAsRectangles(PlayGround<T> playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
+    private static void RenderAsRectangles(PlayGround<T> playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, int maxDegreeOfParallelism, Func<T, SKColor> stateToColor)
     {
         using var paint = new SKPaint();
         var cellWidth = cellSize.X;
@@ -148,7 +153,7 @@ public static class SkiaVisualizer<T>
         }
     }
     
-    private static void RenderAsRectangles(PlayGroundArray<T> playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, Func<T, SKColor> stateToColor)
+    private static void RenderAsRectangles(PlayGroundArray<T> playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, int maxDegreeOfParallelism, Func<T, SKColor> stateToColor)
     {
         using var paint = new SKPaint();
         var cellWidth = cellSize.X;
