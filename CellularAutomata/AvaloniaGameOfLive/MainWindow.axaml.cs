@@ -141,12 +141,6 @@ public partial class MainWindow : Window
     
     private void cellSizeSelector_ValueChanged(object sender, EventArgs e)
     {
-        cbEngine.IsEnabled = cellSizeSelector.Value == 1;
-        if (cellSizeSelector.Value != 1)
-        {
-            cbEngine.SelectedIndex = 0;    
-        }
-        
         InitializePlayGround();
     }
 

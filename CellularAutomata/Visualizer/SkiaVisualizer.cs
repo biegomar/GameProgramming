@@ -15,7 +15,7 @@ public static class SkiaVisualizer<T>
                 RenderAsRectangles(playGround, cellSize, canvas, emptyColor, maxDegreeOfParallelism, stateToColor);
                 break;
             case 1:
-                RenderPixel(playGround, canvas, emptyColor, maxDegreeOfParallelism, stateToColor);
+                RenderPixel(playGround, cellSize, canvas, emptyColor, maxDegreeOfParallelism, stateToColor);
                 break;
             default:
                 RenderAsRectangles(playGround, cellSize, canvas, emptyColor, maxDegreeOfParallelism, stateToColor);
@@ -31,7 +31,7 @@ public static class SkiaVisualizer<T>
                 RenderAsRectangles(playGround, cellSize, canvas, emptyColor, maxDegreeOfParallelism, stateToColor);
                 break;
             case 1:
-                RenderPixel(playGround, canvas, emptyColor, maxDegreeOfParallelism, stateToColor);
+                RenderPixel(playGround, cellSize, canvas, emptyColor, maxDegreeOfParallelism, stateToColor);
                 break;
             default:
                 RenderAsRectangles(playGround, cellSize, canvas, emptyColor, maxDegreeOfParallelism, stateToColor);
@@ -39,10 +39,12 @@ public static class SkiaVisualizer<T>
         }
     }
     
-    private static void RenderPixel(PlayGround<T> playGround, SKCanvas canvas, SKColor emptyColor, int maxDegreeOfParallelism, Func<T, SKColor> stateToColor)
+    private static void RenderPixel(PlayGround<T> playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, int maxDegreeOfParallelism, Func<T, SKColor> stateToColor)
     {
         var colorBuckets = new ConcurrentDictionary<SKColor, ConcurrentBag<SKPoint>>();
         var dimensionX = playGround.Dimension.X;
+        var cellWidth = cellSize.X;
+        var cellHeight = cellSize.Y;
 
         ParallelOptions parallelOptions = new ParallelOptions
         {
@@ -57,7 +59,7 @@ public static class SkiaVisualizer<T>
                 if (color == emptyColor)
                     continue;
 
-                var point = new SKPoint(x, y);
+                var point = new SKPoint(x * cellHeight, y * cellWidth);
                 colorBuckets.GetOrAdd(color, _ => new ConcurrentBag<SKPoint>()).Add(point);
             }
         });
@@ -67,6 +69,7 @@ public static class SkiaVisualizer<T>
         paint.IsAntialias = false;
         paint.Style = SKPaintStyle.Fill;
         paint.StrokeCap = SKStrokeCap.Square;
+        paint.StrokeWidth = cellSize.X;
 
         foreach (var (color, pointList) in colorBuckets)
         {
@@ -75,10 +78,12 @@ public static class SkiaVisualizer<T>
         }
     }
     
-    private static void RenderPixel(PlayGroundArray<T> playGround, SKCanvas canvas, SKColor emptyColor, int maxDegreeOfParallelism, Func<T, SKColor> stateToColor)
+    private static void RenderPixel(PlayGroundArray<T> playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, int maxDegreeOfParallelism, Func<T, SKColor> stateToColor)
     {
         var colorBuckets = new ConcurrentDictionary<SKColor, ConcurrentBag<SKPoint>>();
         var dimensionX = playGround.Dimension.X;
+        var cellWidth = cellSize.X;
+        var cellHeight = cellSize.Y;
     
         ParallelOptions parallelOptions = new ParallelOptions
         {
@@ -93,7 +98,7 @@ public static class SkiaVisualizer<T>
                 if (color == emptyColor)
                     continue;
     
-                var point = new SKPoint(x, y);
+                var point = new SKPoint(x * cellHeight, y * cellWidth);
                 colorBuckets.GetOrAdd(color, _ => new ConcurrentBag<SKPoint>()).Add(point);
             }
         });
@@ -103,6 +108,7 @@ public static class SkiaVisualizer<T>
         paint.IsAntialias = false;
         paint.Style = SKPaintStyle.Fill;
         paint.StrokeCap = SKStrokeCap.Square;
+        paint.StrokeWidth = cellSize.X;
     
         foreach (var (color, pointList) in colorBuckets)
         {

@@ -1,14 +1,19 @@
-﻿namespace CellularAutomata;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace CellularAutomata;
 
 public sealed class SandRuleSet : IRuleSet<SandCellState>
 {
     public IDictionary<string, uint> RuleCounter { get; init; } = new Dictionary<string, uint>();
     
-    private record CellNeighbors(
+    [StructLayout(LayoutKind.Sequential, Size = 9)]
+    private record struct CellNeighbors(
         SandCellState TopLeft,
         SandCellState Top,
         SandCellState TopRight,
         SandCellState Left,
+        SandCellState LeftLeft,
         SandCellState Right,
         SandCellState BottomLeft,
         SandCellState Bottom,
@@ -25,14 +30,13 @@ public sealed class SandRuleSet : IRuleSet<SandCellState>
         }
 
         var cellNeighbors = GetNeighboursState(playGround, position);
-        var cellNeighborsFromLeft = GetNeighboursState(playGround, new Vector(position.X - 1, position.Y));
         
         if (IsSand(cellState))
         {
             if (
                 (cellNeighbors.Bottom == SandCellState.Empty ||
-                (cellNeighbors.BottomRight == SandCellState.Empty && cellNeighbors.Right == SandCellState.Empty) ||
-                (cellNeighbors.BottomLeft == SandCellState.Empty && cellNeighbors.Left == SandCellState.Empty && cellNeighborsFromLeft.Left == SandCellState.Empty))
+                 cellNeighbors is { BottomRight: SandCellState.Empty, Right: SandCellState.Empty } 
+                     or { BottomLeft: SandCellState.Empty, Left: SandCellState.Empty, LeftLeft: SandCellState.Empty })
                 && position.Y < playGround.Dimension.Y - 1
                )
             {
@@ -93,12 +97,14 @@ public sealed class SandRuleSet : IRuleSet<SandCellState>
         return localPlayGround;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private CellNeighbors GetNeighboursState(IPlayGround<SandCellState> playGround, Vector position)
     {
         var topLeft = new Vector(position.X - 1, position.Y - 1);
         var top = new Vector(position.X, position.Y - 1);
         var topRight = new Vector(position.X + 1, position.Y - 1);
         var left = new Vector(position.X - 1, position.Y);
+        var leftleft = new Vector(position.X - 2, position.Y);
         var right = new Vector(position.X + 1, position.Y);
         var bottomLeft = new Vector(position.X - 1, position.Y + 1);
         var bottom = new Vector(position.X, position.Y + 1);
@@ -109,6 +115,7 @@ public sealed class SandRuleSet : IRuleSet<SandCellState>
             Top: IsWithinBounds(playGround.Dimension, top) ? playGround[top] : SandCellState.Empty,
             TopRight: IsWithinBounds(playGround.Dimension, topRight) ? playGround[topRight] : SandCellState.Empty,
             Left: IsWithinBounds(playGround.Dimension, left) ? playGround[left] : SandCellState.Empty,
+            LeftLeft: IsWithinBounds(playGround.Dimension, leftleft) ? playGround[leftleft] : SandCellState.Empty,
             Right: IsWithinBounds(playGround.Dimension, right) ? playGround[right] : SandCellState.Empty,
             BottomLeft: IsWithinBounds(playGround.Dimension, bottomLeft) ? playGround[bottomLeft] : SandCellState.Empty,
             Bottom: IsWithinBounds(playGround.Dimension, bottom) ? playGround[bottom] : SandCellState.Empty,
@@ -116,6 +123,7 @@ public sealed class SandRuleSet : IRuleSet<SandCellState>
         );
     }
     
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool IsWithinBounds(Vector dimension, Vector position)
     {
         return position.X >= 0 && position.Y >= 0 &&
@@ -123,6 +131,7 @@ public sealed class SandRuleSet : IRuleSet<SandCellState>
                position.Y < dimension.Y;
     }
     
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool IsSand(SandCellState cellState)
     {
         return cellState is SandCellState.Sand or SandCellState.SandDark or SandCellState.SandLight or SandCellState.SandMedium;
