@@ -124,11 +124,12 @@ public sealed class SandRuleSet : IRuleSet<SandCellState>
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool IsWithinBounds(Vector dimension, Vector position)
+    private bool IsWithinBounds(Vector dimension, Vector position )
     {
-        return position.X >= 0 && position.Y >= 0 &&
-               position.X < dimension.X &&
-               position.Y < dimension.Y;
+        var withinX = (uint)position.X < (uint)dimension.X; 
+        var withinY = (uint)position.Y < (uint)dimension.Y;
+    
+        return withinX && withinY;
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

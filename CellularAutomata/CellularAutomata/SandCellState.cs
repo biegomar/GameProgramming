@@ -1,6 +1,6 @@
 ﻿namespace CellularAutomata;
 
-public enum SandCellState
+public enum SandCellState : byte
 {
     Empty = 0,
     Solid = 1,

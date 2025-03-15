@@ -14,9 +14,9 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
         ["Prio3"] = 0,
         ["Empty"] = 0,
     };
-    
-    
-    [StructLayout(LayoutKind.Sequential, Size = 9)]
+
+
+    [StructLayout(LayoutKind.Sequential, Size = 9, Pack = 1)]
     private record struct CellNeighbors(
         SandCellState TopLeft,
         SandCellState Top,
@@ -115,15 +115,18 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private CellNeighbors GetNeighboursState(IPlayGround<SandCellState> playGround, (int X, int Y) position)
     {
-        (int X, int Y) topLeft = (position.X - 1, position.Y - 1);
-        (int X, int Y) top = (position.X, position.Y - 1);
-        (int X, int Y) topRight = (position.X + 1, position.Y - 1);
-        (int X, int Y) left = (position.X - 1, position.Y);
-        (int X, int Y) leftleft = (position.X - 2, position.Y);
-        (int X, int Y) right = (position.X + 1, position.Y);
-        (int X, int Y) bottomLeft = (position.X - 1, position.Y + 1);
-        (int X, int Y) bottom = (position.X, position.Y + 1);
-        (int X, int Y) bottomRight = (position.X + 1, position.Y + 1);
+        var posX = position.X;
+        var posY = position.Y;
+        (int X, int Y) topLeft = (posX - 1, posY - 1);
+        (int X, int Y) top = (posX, posY - 1);
+        (int X, int Y) topRight = (posX + 1, posY - 1);
+        (int X, int Y) left = (posX - 1, posY);
+        (int X, int Y) leftleft = (posX - 2, posY);
+        (int X, int Y) right = (posX + 1, posY);
+        (int X, int Y) bottomLeft = (posX - 1, posY + 1);
+        (int X, int Y) bottom = (posX, posY + 1);
+        (int X, int Y) bottomRight = (posX + 1, posY + 1);
+        
         
         return new CellNeighbors(
             TopLeft: IsWithinBounds(playGround.Dimension, topLeft.X, topLeft.Y) ? playGround[topLeft] : SandCellState.Empty,
@@ -141,9 +144,10 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool IsWithinBounds(Vector dimension, int x, int y )
     {
-        return x >= 0 && y >= 0 &&
-               x < dimension.X &&
-               y < dimension.Y;
+        var withinX = (uint)x < (uint)dimension.X; 
+        var withinY = (uint)y < (uint)dimension.Y;
+    
+        return withinX && withinY;
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
