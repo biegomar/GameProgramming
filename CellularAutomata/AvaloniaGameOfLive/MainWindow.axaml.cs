@@ -5,12 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using CellularAutomata;
 using SkiaSharp;
 using Visualizer;
+using Vector = CellularAutomata.Vector;
 
 namespace AvaloniaGameOfLive;
 
@@ -38,8 +41,9 @@ public partial class MainWindow : Window
     private SKColor aliveColor = SKColors.Chartreuse;
     private readonly SKColor emptyColor = SKColors.Red;
     
-    private readonly ToolTip toolTip = new ();
+    private ToolTip toolTip;
     private readonly DispatcherTimer toolTipTimer = new ();
+    private bool _isTooltipVisible = false;
 
     private IList<long> generationTimes;
     private IList<long> renderingTimes;
@@ -66,6 +70,8 @@ public partial class MainWindow : Window
     private AutomataWolfram<bool> automataWolframBool;
     
     private CancellationTokenSource? cancellationTokenSource;
+    private CancellationTokenSource? tooltipCancellationSource;
+
     
     private Vector bitmapSize => new ((int)this.GameOfLiveView.Width, (int)this.GameOfLiveView.Height);
     
@@ -76,17 +82,6 @@ public partial class MainWindow : Window
         InitializeEventHandlers();
         InitializePlayGround();
         SetButtonState(false);
-        InitializeTimer();
-    }
-    
-    private void InitializeTimer()
-    {
-        toolTipTimer.Interval = TimeSpan.FromSeconds(3); 
-        toolTipTimer.Tick += (s, e) =>
-        {
-            toolTip.IsVisible = false;
-            toolTipTimer.Stop(); 
-        };
     }
 
     private void InitializeComponentValues()
@@ -107,6 +102,7 @@ public partial class MainWindow : Window
         processorCountSelector.ValueChanged += processorCountSelector_ValueChanged;
         
         GameOfLiveView.PaintSurface += GameOfLiveView_PaintSurface;
+        GameOfLiveView.PointerPressed += GameOfLiveView_PointerPressed;
     }
     
     private void startGameOfLive_Click(object sender, EventArgs e)
@@ -154,6 +150,83 @@ public partial class MainWindow : Window
     {
         InitializePlayGround();
     }
+    
+    private void GameOfLiveView_PointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (IsRightButtonPressed(e))
+        {
+            HandleRightClickOnGameView(e);
+        }
+    }
+    
+    private bool IsRightButtonPressed(PointerPressedEventArgs e)
+    {
+        return e.GetCurrentPoint(GameOfLiveView).Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed;
+    }
+    
+    private Task HandleRightClickOnGameView(PointerPressedEventArgs e)
+    {
+        CloseTooltip(GameOfLiveView);
+
+        var position = e.GetPosition(GameOfLiveView);
+        var tooltipText = FormatTooltipText(position);
+
+        return ShowTooltipWithTimeout(tooltipText);
+    }
+    
+    private string FormatTooltipText(Point position)
+    {
+        var viewWidth = GameOfLiveView.Width;
+        var viewHeight = GameOfLiveView.Height;
+        
+        var mouseX = position.X;
+        var mouseY = position.Y;
+        
+        var cellX = (int)(mouseX / viewWidth * dimension.X);
+        var cellY = (int)(mouseY / viewHeight * dimension.Y);
+        
+        return $"Zelle: [{cellX}, {cellY}]";
+    }
+
+    private async Task ShowTooltipWithTimeout(string tooltipText)
+    {
+        tooltipCancellationSource = new CancellationTokenSource();
+        try
+        {
+            OpenTooltip(GameOfLiveView, tooltipText);
+            _isTooltipVisible = true;
+                
+            await Task.Delay(TimeSpan.FromSeconds(3), tooltipCancellationSource.Token);
+        }
+        catch (TaskCanceledException)
+        {
+        }
+        finally
+        {
+            if (_isTooltipVisible)
+            {
+                CloseTooltip(GameOfLiveView);
+            }
+        }
+    }
+
+    private void OpenTooltip(Control control, string text)
+    {
+        toolTip = new ToolTip { Content = text };
+        ToolTip.SetTip(control, toolTip);
+        ToolTip.SetIsOpen(control, true);
+        _isTooltipVisible = true;
+
+    }
+    
+    private void CloseTooltip(Control control)
+    {
+        tooltipCancellationSource?.Cancel();
+        ToolTip.SetIsOpen(control, false);
+        ToolTip.SetTip(control, null);
+        _isTooltipVisible = false;
+    }
+
 
     private void InitializePlayGround()
     {
