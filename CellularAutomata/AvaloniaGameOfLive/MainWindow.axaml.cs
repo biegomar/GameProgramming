@@ -184,8 +184,35 @@ public partial class MainWindow : Window
         
         var cellX = (int)(mouseX / viewWidth * dimension.X);
         var cellY = (int)(mouseY / viewHeight * dimension.Y);
+        var cellState = GetCellState(new Vector(cellX, cellY));
         
-        return $"Zelle: [{cellX}, {cellY}]";
+        return $"Zelle: [{cellX}, {cellY}]: {cellState}";
+    }
+
+    private string GetCellState(Vector cellPosition)
+    {
+        switch (ruleSetType)
+        {
+            case RuleSetType.Sand:
+            case RuleSetType.SandArray:
+                return GetCellStateFromSand(cellPosition);
+            case RuleSetType.GameOfLife:
+            case RuleSetType.GameOfLifeArray:
+            case RuleSetType.Wolfram:
+                return GetCellStateForGameOfLive(cellPosition);
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+    
+    private string GetCellStateForGameOfLive(Vector cellPosition)
+    {
+        return playGroundBool[cellPosition].ToString();
+    }
+
+    private string GetCellStateFromSand(Vector cellPosition)
+    {
+        return playGroundSand[cellPosition].ToString();
     }
 
     private async Task ShowTooltipWithTimeout(string tooltipText)
@@ -488,6 +515,7 @@ public partial class MainWindow : Window
                 break;
         }
     }
+    
     
     private async Task ProcessNextGenerationAsync()
     {
