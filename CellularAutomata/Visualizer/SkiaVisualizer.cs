@@ -141,21 +141,26 @@ public static class SkiaVisualizer<T>
         using var paint = new SKPaint();
         var cellWidth = cellSize.X;
         var cellHeight = cellSize.Y;
-        
-        foreach (var cell in playGround.Cells.Values)
+        var dimensionX = playGround.Dimension.X;
+        var dimensionY = playGround.Dimension.Y;
+
+        for (var column = 0; column < dimensionX; column++)
         {
-            var top = cell.Y * cellHeight;
-            var bottom = top + cellHeight;
-            var left = cell.X * cellWidth;
-            var right = left + cellWidth;
+            for (var row = 0; row < dimensionY; row++)
+            {
+                var top = row * cellHeight;
+                var bottom = top + cellHeight;
+                var left = column * cellWidth;
+                var right = left + cellWidth;
             
-            var color = stateToColor(cell.State);
-            if (color == emptyColor) continue;
+                var color = stateToColor(playGround[(column, row)]);
+                if (color == emptyColor) continue;
             
-            paint.Color = color;
-            var rect = new SKRect(left, top, right, bottom);
+                paint.Color = color;
+                var rect = new SKRect(left, top, right, bottom);
         
-            canvas.DrawRect(rect, paint);
+                canvas.DrawRect(rect, paint);
+            }
         }
     }
     
@@ -164,21 +169,26 @@ public static class SkiaVisualizer<T>
         using var paint = new SKPaint();
         var cellWidth = cellSize.X;
         var cellHeight = cellSize.Y;
-        
-        foreach (var cell in playGround.Cells)
+        var dimensionX = playGround.Dimension.X;
+        var dimensionY = playGround.Dimension.Y;
+
+        for (var column = 0; column < dimensionX; column++)
         {
-            var top = cell.Y * cellHeight;
-            var bottom = top + cellHeight;
-            var left = cell.X * cellWidth;
-            var right = left + cellWidth;
+            for (var row = 0; row < dimensionY; row++)
+            {
+                var top = row * cellHeight;
+                var bottom = top + cellHeight;
+                var left = column * cellWidth;
+                var right = left + cellWidth;
             
-            var color = stateToColor(cell.State);
-            if (color == emptyColor) continue;
+                var color = stateToColor(playGround[(column, row)]);
+                if (color == emptyColor) continue;
             
-            paint.Color = color;
-            var rect = new SKRect(left, top, right, bottom);
+                paint.Color = color;
+                var rect = new SKRect(left, top, right, bottom);
         
-            canvas.DrawRect(rect, paint);
+                canvas.DrawRect(rect, paint);
+            }
         }
     }
 }

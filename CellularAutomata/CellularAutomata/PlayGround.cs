@@ -50,7 +50,7 @@ public sealed class PlayGround<T> : IPlayGround<T>
         {
             for (var y = 0; y < this.Dimension.Y; y++)
             {
-                this.Cells.Add(new Vector(x,y), new Cell<T>(defaultState, x, y));
+                this.Cells.Add(new Vector(x,y), new Cell<T>(defaultState));
             }
         }
     }

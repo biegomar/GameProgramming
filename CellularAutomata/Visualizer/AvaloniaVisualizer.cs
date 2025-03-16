@@ -52,29 +52,31 @@ public static class AvaloniaVisualizer<T>
     {
         var cellWidth = cellSize.X;
         var cellHeight = cellSize.Y;
-        
-        foreach (var cell in playGround.Cells.Values)
+
+        for (var column = 0; column < playGround.Dimension.X; column++)
         {
-            var top = cell.Y * cellHeight;
-            var left = cell.X * cellWidth;
-            
-            var color = stateToColor(cell.State);
-            if (color == emptyColor) continue;
-            
-            var brush = new SolidColorBrush(color);
-            
-            var rect = new Rectangle
+            for (var row = 0; row < playGround.Dimension.Y; row++)
             {
-                Width = cellWidth,
-                Height = cellHeight,
-                Fill = brush
-            };
+                var top = row * cellHeight;
+                var left = column * cellWidth;
+            
+                var color = stateToColor(playGround[(column, row)]);
+                if (color == emptyColor) continue;
+            
+                var brush = new SolidColorBrush(color);
+            
+                var rect = new Rectangle
+                {
+                    Width = cellWidth,
+                    Height = cellHeight,
+                    Fill = brush
+                };
 
-            Canvas.SetLeft(rect, left); 
-            Canvas.SetTop(rect, top); 
+                Canvas.SetLeft(rect, left); 
+                Canvas.SetTop(rect, top); 
 
-            canvas.Children.Add(rect);
-
+                canvas.Children.Add(rect);
+            }
         }
     }
     
@@ -82,28 +84,31 @@ public static class AvaloniaVisualizer<T>
     {
         var cellWidth = cellSize.X;
         var cellHeight = cellSize.Y;
-        
-        foreach (var cell in playGround.Cells)
+
+        for (var column = 0; column < playGround.Dimension.X; column++)
         {
-            var top = cell.Y * cellHeight;
-            var left = cell.X * cellWidth;
-            
-            var color = stateToColor(cell.State);
-            if (color == emptyColor) continue;
-            
-            var brush = new SolidColorBrush(color);
-
-            var rect = new Rectangle
+            for (var row = 0; row < playGround.Dimension.Y; row++)
             {
-                Width = cellWidth,
-                Height = cellHeight,
-                Fill = brush
-            };
+                var top = row * cellHeight;
+                var left = column * cellWidth;
+            
+                var color = stateToColor(playGround[(column, row)]);
+                if (color == emptyColor) continue;
+            
+                var brush = new SolidColorBrush(color);
 
-            Canvas.SetLeft(rect, left); 
-            Canvas.SetTop(rect, top); 
+                var rect = new Rectangle
+                {
+                    Width = cellWidth,
+                    Height = cellHeight,
+                    Fill = brush
+                };
 
-            canvas.Children.Add(rect);
+                Canvas.SetLeft(rect, left); 
+                Canvas.SetTop(rect, top); 
+
+                canvas.Children.Add(rect);
+            }
         }
     }
 

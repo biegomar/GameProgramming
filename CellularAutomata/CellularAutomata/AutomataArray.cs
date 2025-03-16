@@ -22,11 +22,12 @@ public sealed class AutomataArray<T>
     
     public PlayGroundArray<T> NextGeneration(PlayGroundArray<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn)
     {
-        //InitNextGenerationPlayGround(initialPlayGround);
-        
-        foreach (var cell in initialPlayGround.Cells)
+        for (var column = 0; column < initialPlayGround.Dimension.X; column++)
         {
-            nextGenerationPlayGround![(cell.X, cell.Y)] = ruleSet.ApplyRules(initialPlayGround, (cell.X, cell.Y)); 
+            for (var row = 0; row < initialPlayGround.Dimension.Y; row++)
+            {
+                nextGenerationPlayGround![(column, row)] = ruleSet.ApplyRules(initialPlayGround, (column, row));    
+            }
         }
         
         nextGenerationPlayGround = (PlayGroundArray<T>)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn);

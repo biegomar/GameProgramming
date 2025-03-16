@@ -45,7 +45,7 @@ public sealed class PlayGroundArray<T> : IPlayGround<T>
             {
                 this.Cells[this.GetIndex(x, y)] = cellFactory != null 
                     ? cellFactory(x, y) 
-                    : new Cell<T>(defaultState, x, y);
+                    : new Cell<T>(defaultState);
 
             }
         }

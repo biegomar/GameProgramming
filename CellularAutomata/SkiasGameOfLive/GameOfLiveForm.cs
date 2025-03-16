@@ -137,7 +137,7 @@ public partial class GameOfLiveForm : Form
         switch (cbPatternSand.SelectedIndex)
         {
             case 0:
-                GameOfLifeInitializer.Randomize(playGroundSand, (double)probabilitySelector.Value);
+                GameOfLifeInitializer.Randomize(playGroundSand, maxDegreeOfParallelism, (double)probabilitySelector.Value);
                 break;
             case 1:
                 GameOfLifeInitializer.GenerateSandHourglass(playGroundSand);
@@ -169,7 +169,7 @@ public partial class GameOfLiveForm : Form
         switch (cbPatternSand.SelectedIndex)
         {
             case 0:
-                GameOfLifeInitializer.Randomize(playGroundSand, (double)probabilitySelector.Value);
+                GameOfLifeInitializer.Randomize(playGroundSand, maxDegreeOfParallelism, (double)probabilitySelector.Value);
                 break;
             case 1:
                 GameOfLifeInitializer.GenerateSandHourglass(playGroundSand);
@@ -200,7 +200,7 @@ public partial class GameOfLiveForm : Form
         switch (cbPattern.SelectedIndex)
         {
             case 0: 
-                GameOfLifeInitializer.Randomize(gamePlayGround, (double)probabilitySelector.Value);
+                GameOfLifeInitializer.Randomize(gamePlayGround, maxDegreeOfParallelism, (double)probabilitySelector.Value);
                 break;
             case 1: 
                 GameOfLifeInitializer.AddCheckerboard(gamePlayGround);
@@ -224,7 +224,7 @@ public partial class GameOfLiveForm : Form
         switch (cbPattern.SelectedIndex)
         {
             case 0: 
-                GameOfLifeInitializer.Randomize(playGroundBool, (double)probabilitySelector.Value);
+                GameOfLifeInitializer.Randomize(playGroundBool, maxDegreeOfParallelism, (double)probabilitySelector.Value);
                 break;
             case 1: 
                 GameOfLifeInitializer.AddCheckerboard(playGroundBool);

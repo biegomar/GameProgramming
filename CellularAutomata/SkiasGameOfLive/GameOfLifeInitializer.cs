@@ -1,10 +1,11 @@
+using System.Collections.Concurrent;
 using CellularAutomata;
 
 namespace SkiasGameOfLive;
 
 public static class GameOfLifeInitializer
 {
-    public static void Randomize(IPlayGround<bool> playground, double aliveProbability = 0.2)
+    public static void Randomize(IPlayGround<bool> playground, int maxDegreeOfParallelism, double aliveProbability = 0.2)
     {
         var random = new Random();
 
@@ -18,16 +19,28 @@ public static class GameOfLifeInitializer
         }
         else if (playground is PlayGroundArray<bool> playGroundArrayBool)
         {
-            Parallel.ForEach(playGroundArrayBool.Cells.Cast<Cell<bool>>(), cell =>
+            var parallelOptions = new ParallelOptions()
             {
-                var state = random.NextDouble() < aliveProbability;
-                playGroundArrayBool[(cell.X, cell.Y)] = state;
+                MaxDegreeOfParallelism = Math.Min(maxDegreeOfParallelism, Environment.ProcessorCount)
+            };
+            
+            var xPartitioner = Partitioner.Create(0, playGroundArrayBool.Dimension.X);
+            Parallel.ForEach(xPartitioner, parallelOptions, range =>
+            {
+                for (var x = range.Item1; x < range.Item2; x++) 
+                {
+                    for (var y = 0; y < playGroundArrayBool.Dimension.Y; y++)
+                    {
+                        var state = random.NextDouble() < aliveProbability;
+                        playGroundArrayBool[(x, y)] = state;
+                    }
+                }
             });
         }
         
     }
     
-    public static void Randomize(IPlayGround<SandCellState> playground, double aliveProbability = 0.2)
+    public static void Randomize(IPlayGround<SandCellState> playground, int maxDegreeOfParallelism, double aliveProbability = 0.2)
     {
         var random = new Random();
 
@@ -41,10 +54,22 @@ public static class GameOfLifeInitializer
         }
         else if (playground is PlayGroundArray<SandCellState> playGroundArrayBool)
         {
-            Parallel.ForEach(playGroundArrayBool.Cells.Cast<Cell<SandCellState>>(), cell =>
+            var parallelOptions = new ParallelOptions()
             {
-                var state = random.NextDouble() < aliveProbability;
-                playGroundArrayBool[(cell.X, cell.Y)] = state ? GetRandomSandCellState() : SandCellState.Empty;
+                MaxDegreeOfParallelism = Math.Min(maxDegreeOfParallelism, Environment.ProcessorCount)
+            };
+            
+            var xPartitioner = Partitioner.Create(0, playGroundArrayBool.Dimension.X);
+            Parallel.ForEach(xPartitioner, parallelOptions, range =>
+            {
+                for (var x = range.Item1; x < range.Item2; x++) 
+                {
+                    for (var y = 0; y < playGroundArrayBool.Dimension.Y; y++)
+                    {
+                        var state = random.NextDouble() < aliveProbability;
+                        playGroundArrayBool[(x, y)] = state ? GetRandomSandCellState() : SandCellState.Empty;
+                    }
+                }
             });
         }
     }

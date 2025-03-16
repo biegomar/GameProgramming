@@ -360,7 +360,7 @@ public partial class MainWindow : Window
         switch (cbPattern.SelectedIndex)
         {
             case 0: 
-                GameOfLifeInitializer.Randomize(playGroundBool, (double)probabilitySelector.Value!);
+                GameOfLifeInitializer.Randomize(playGroundBool, maxDegreeOfParallelism, (double)probabilitySelector.Value!);
                 break;
             case 1: 
                 GameOfLifeInitializer.AddCheckerboard(playGroundBool);
@@ -385,7 +385,7 @@ public partial class MainWindow : Window
         switch (cbPattern.SelectedIndex)
         {
             case 0: 
-                GameOfLifeInitializer.Randomize(playGroundBool, (double)probabilitySelector.Value);
+                GameOfLifeInitializer.Randomize(playGroundBool, maxDegreeOfParallelism, (double)probabilitySelector.Value);
                 break;
             case 1: 
                 GameOfLifeInitializer.AddCheckerboard(playGroundBool);
@@ -412,7 +412,7 @@ public partial class MainWindow : Window
         switch (cbPattern.SelectedIndex)
         {
             case 0:
-                SandInitializer.Randomize(playGroundSand, (double)probabilitySelector.Value);
+                SandInitializer.Randomize(playGroundSand, maxDegreeOfParallelism, (double)probabilitySelector.Value);
                 break;
             case 1:
                 SandInitializer.GenerateSandHourglass(playGroundSand);
@@ -445,13 +445,16 @@ public partial class MainWindow : Window
         switch (cbPattern.SelectedIndex)
         {
             case 0:
-                SandInitializer.Randomize(playGroundSand, (double)probabilitySelector.Value);
+                SandInitializer.Randomize(playGroundSand, maxDegreeOfParallelism, (double)probabilitySelector.Value);
                 break;
             case 1:
                 SandInitializer.GenerateSandHourglass(playGroundSand);
                 break;
             case 2:
                 SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 0), SandCellState.Sand);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 1), SandCellState.SandDark);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 2), SandCellState.SandMedium);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 2), SandCellState.SandLight);
 
                 // add some terrain
                 SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle + 1, 10), SandCellState.Solid);

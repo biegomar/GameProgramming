@@ -1,8 +1,9 @@
-﻿namespace CellularAutomata;
+﻿using System.Runtime.InteropServices;
 
-public sealed class Cell<T>(T state, int x, int y)
+namespace CellularAutomata;
+
+[StructLayout(LayoutKind.Sequential)]
+public record struct Cell<T>(T State)
 {
-    public readonly int X = x;
-    public readonly int Y = y;
-    public T State = state;
+    public T State = State;
 }

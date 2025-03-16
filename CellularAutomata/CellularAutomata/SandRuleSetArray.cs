@@ -5,6 +5,9 @@ namespace CellularAutomata;
 
 public sealed class SandRuleSetArray : IRuleSet<SandCellState>
 {
+    private Vector dimension;
+    private bool isInitialized = false;
+    
     public IDictionary<string, uint> RuleCounter { get; init; } = new Dictionary<string, uint>
     {
         // ["Solid"] = 0,
@@ -37,9 +40,17 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
     public SandCellState ApplyRules(IPlayGround<SandCellState> playGround, (int X, int Y) position)
     {
         var cellState = playGround[position];
+        
+        if (!isInitialized)
+        {
+            dimension = playGround.Dimension;
+            isInitialized = true;
+        }
 
         var cellNeighbors = GetNeighboursState(playGround, position);
         
+        // First look at a cell with state
+
         if (IsSand(cellState))
         {
             //RuleCounter["Prio0"]++;
@@ -55,6 +66,15 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
             
             return cellState;
         }
+        
+        if (IsSolid(cellState))
+        {
+            //RuleCounter["Solid"]++;
+            return SandCellState.Solid;
+        }
+        
+        
+        // We are sure. That cell is empty.
         
         // Prio 1: grain above me
         if (IsSand(cellNeighbors.Top))
@@ -81,12 +101,6 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
         {
             //RuleCounter["Prio3"]++;
             return cellNeighbors.TopRight; 
-        }
-        
-        if (cellState == SandCellState.Solid)
-        {
-            //RuleCounter["Solid"]++;
-            return SandCellState.Solid;
         }
 
         //RuleCounter["Empty"]++;
@@ -128,20 +142,20 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
         
         
         return new CellNeighbors(
-            TopLeft: IsWithinBounds(playGround.Dimension, topLeft.X, topLeft.Y) ? playGround[topLeft] : SandCellState.Empty,
-            Top: IsWithinBounds(playGround.Dimension, top.X, top.Y) ? playGround[top] : SandCellState.Empty,
-            TopRight: IsWithinBounds(playGround.Dimension, topRight.X, topRight.Y) ? playGround[topRight] : SandCellState.Empty,
-            Left: IsWithinBounds(playGround.Dimension, left.X, left.Y) ? playGround[left] : SandCellState.Empty,
-            LeftLeft: IsWithinBounds(playGround.Dimension, left.X - 1, left.Y) ? playGround[leftleft] : SandCellState.Empty,
-            Right: IsWithinBounds(playGround.Dimension, right.X, right.Y) ? playGround[right] : SandCellState.Empty,
-            BottomLeft: IsWithinBounds(playGround.Dimension, bottomLeft.X, bottomLeft.Y) ? playGround[bottomLeft] : SandCellState.Empty,
-            Bottom: IsWithinBounds(playGround.Dimension, bottom.X, bottom.Y) ? playGround[bottom] : SandCellState.Empty,
-            BottomRight: IsWithinBounds(playGround.Dimension, bottomRight.X, bottomRight.Y) ? playGround[bottomRight] : SandCellState.Empty
+            TopLeft: IsWithinBounds(topLeft.X, topLeft.Y) ? playGround[topLeft] : SandCellState.Empty,
+            Top: IsWithinBounds(top.X, top.Y) ? playGround[top] : SandCellState.Empty,
+            TopRight: IsWithinBounds(topRight.X, topRight.Y) ? playGround[topRight] : SandCellState.Empty,
+            Left: IsWithinBounds(left.X, left.Y) ? playGround[left] : SandCellState.Empty,
+            LeftLeft: IsWithinBounds(left.X - 1, left.Y) ? playGround[leftleft] : SandCellState.Empty,
+            Right: IsWithinBounds(right.X, right.Y) ? playGround[right] : SandCellState.Empty,
+            BottomLeft: IsWithinBounds(bottomLeft.X, bottomLeft.Y) ? playGround[bottomLeft] : SandCellState.Empty,
+            Bottom: IsWithinBounds(bottom.X, bottom.Y) ? playGround[bottom] : SandCellState.Empty,
+            BottomRight: IsWithinBounds(bottomRight.X, bottomRight.Y) ? playGround[bottomRight] : SandCellState.Empty
         );
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool IsWithinBounds(Vector dimension, int x, int y )
+    private bool IsWithinBounds(int x, int y )
     {
         var withinX = (uint)x < (uint)dimension.X; 
         var withinY = (uint)y < (uint)dimension.Y;
@@ -153,5 +167,17 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
     private bool IsSand(SandCellState cellState)
     {
         return (byte)cellState > 1;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool IsSolid(SandCellState cellState)
+    {
+        return (byte)cellState == 1;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool IsSandOrSolid(SandCellState cellState)
+    {
+        return (byte)cellState > 0;
     }
 }

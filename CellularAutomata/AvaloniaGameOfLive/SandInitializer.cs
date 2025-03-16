@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using CellularAutomata;
 
@@ -6,7 +7,7 @@ namespace AvaloniaGameOfLive;
 
 public static class SandInitializer
 {
-    public static void Randomize(IPlayGround<SandCellState> playground, double aliveProbability = 0.2)
+    public static void Randomize(IPlayGround<SandCellState> playground, int maxDegreeOfParallelism, double aliveProbability = 0.2)
     {
         var random = new Random();
 
@@ -20,10 +21,22 @@ public static class SandInitializer
         }
         else if (playground is PlayGroundArray<SandCellState> playGroundArrayBool)
         {
-            Parallel.ForEach(playGroundArrayBool.Cells, cell =>
+            var parallelOptions = new ParallelOptions()
             {
-                var state = random.NextDouble() < aliveProbability;
-                playGroundArrayBool[(cell.X, cell.Y)] = state ? GetRandomSandCellState() : SandCellState.Empty;
+                MaxDegreeOfParallelism = Math.Min(maxDegreeOfParallelism, Environment.ProcessorCount)
+            };
+            
+            var xPartitioner = Partitioner.Create(0, playGroundArrayBool.Dimension.X);
+            Parallel.ForEach(xPartitioner, parallelOptions, range =>
+            {
+                for (var x = range.Item1; x < range.Item2; x++) 
+                {
+                    for (var y = 0; y < playGroundArrayBool.Dimension.Y; y++)
+                    {
+                        var state = random.NextDouble() < aliveProbability;
+                        playGroundArrayBool[(x, y)] = state ? GetRandomSandCellState() : SandCellState.Empty;
+                    }
+                }
             });
         }
     }
