@@ -7,12 +7,12 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
 {
     public IDictionary<string, uint> RuleCounter { get; init; } = new Dictionary<string, uint>
     {
-        ["Solid"] = 0,
-        ["Prio0"] = 0,
-        ["Prio1"] = 0,
-        ["Prio2"] = 0,
-        ["Prio3"] = 0,
-        ["Empty"] = 0,
+        // ["Solid"] = 0,
+        // ["Prio0"] = 0,
+        // ["Prio1"] = 0,
+        // ["Prio2"] = 0,
+        // ["Prio3"] = 0,
+        // ["Empty"] = 0,
     };
 
 
@@ -99,7 +99,6 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
         
         if (isSpawn)
         {
-            
             var position = (localPlayGround.Dimension.X / 2, 0);
             var cellNeighbors = GetNeighboursState(localPlayGround, position);
 
@@ -153,7 +152,6 @@ public sealed class SandRuleSetArray : IRuleSet<SandCellState>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool IsSand(SandCellState cellState)
     {
-        //return cellState is SandCellState.Sand or SandCellState.SandDark or SandCellState.SandLight or SandCellState.SandMedium;
         return (byte)cellState > 1;
     }
 }

@@ -127,12 +127,6 @@ public partial class MainWindow : Window
     
     private void cbRuleSet_SelectedValueChanged(object sender, EventArgs e)
     {
-        // cbPattern.IsEnabled = true;
-        // if (cbRuleSet.SelectedIndex == 1)
-        // {
-        //     cbPattern.IsEnabled = false;
-        // }
-        
         ruleSetType = GetTypeFromSelection();
         SetPatternItems(ruleSetType);
         
@@ -198,7 +192,6 @@ public partial class MainWindow : Window
     private void DisplayGeneration()
     {
         statusLabel.Text = $"Generation: {generation++}";
-        //statusLabel.Update();
     }
     
     private RuleSetType GetTypeFromSelection() 
@@ -499,13 +492,6 @@ public partial class MainWindow : Window
             totalStats.AppendLine(generationStats);
             totalStats.AppendLine(renderingStats);
             
-            // if (playGroundBool is PlayGroundArray<bool> playGroundWithStatistics)
-            // {
-            //     var initStatistics = CalculateStatistics(PlayGroundArray<bool>.GenerationTimes.ToArray(), currentGeneration, "Initialisierung");
-            //     totalStats.AppendLine("");
-            //     totalStats.AppendLine(initStatistics);
-            // }
-            
             tbStopWatch.Text = totalStats.ToString();
         }
     }
@@ -548,14 +534,18 @@ public partial class MainWindow : Window
         statistics.AppendLine($"- Langsamste: {maxFormatted} µs");
         statistics.AppendLine($"- Schnellste: {minFormatted} µs");
         statistics.AppendLine($"- Durchschnitt: {averageFormatted} µs");
-        statistics.AppendLine("");
-         foreach (var ruleCount in ruleSet.RuleCounter)
-         {
-             if (ruleCount.Value != 0)
-             {
-                 statistics.AppendLine($"- {ruleCount.Key}: {ruleCount.Value}");   
-             }
-         }
+
+        if (ruleSet.RuleCounter.Any())
+        {
+            statistics.AppendLine("");
+            foreach (var ruleCount in ruleSet.RuleCounter)
+            {
+                if (ruleCount.Value != 0)
+                {
+                    statistics.AppendLine($"- {ruleCount.Key}: {ruleCount.Value}");   
+                }
+            }   
+        }
 
         times.Clear();
         

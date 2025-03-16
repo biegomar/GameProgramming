@@ -135,7 +135,6 @@ public sealed class SandRuleSet : IRuleSet<SandCellState>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool IsSand(SandCellState cellState)
     {
-        //return cellState is SandCellState.Sand or SandCellState.SandDark or SandCellState.SandLight or SandCellState.SandMedium;
         return (byte)cellState > 1;
     }
 }
