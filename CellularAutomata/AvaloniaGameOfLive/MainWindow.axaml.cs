@@ -412,22 +412,22 @@ public partial class MainWindow : Window
         switch (cbPattern.SelectedIndex)
         {
             case 0:
-                GameOfLifeInitializer.Randomize(playGroundSand, (double)probabilitySelector.Value);
+                SandInitializer.Randomize(playGroundSand, (double)probabilitySelector.Value);
                 break;
             case 1:
-                GameOfLifeInitializer.GenerateSandHourglass(playGroundSand);
+                SandInitializer.GenerateSandHourglass(playGroundSand);
                 break;
             case 2:
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 0), SandCellState.Sand);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 0), SandCellState.Sand);
 
                 // add some terrain
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle + 1, 10), SandCellState.Solid);
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 11), SandCellState.Solid);
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 12), SandCellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle + 1, 10), SandCellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 11), SandCellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 12), SandCellState.Solid);
 
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 20), SandCellState.Solid);
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 19), SandCellState.Solid);
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 2, 18), SandCellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 20), SandCellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 19), SandCellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 2, 18), SandCellState.Solid);
                 break;
         }
     }
@@ -445,22 +445,22 @@ public partial class MainWindow : Window
         switch (cbPattern.SelectedIndex)
         {
             case 0:
-                GameOfLifeInitializer.Randomize(playGroundSand, (double)probabilitySelector.Value);
+                SandInitializer.Randomize(playGroundSand, (double)probabilitySelector.Value);
                 break;
             case 1:
-                GameOfLifeInitializer.GenerateSandHourglass(playGroundSand);
+                SandInitializer.GenerateSandHourglass(playGroundSand);
                 break;
             case 2:
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 0), SandCellState.Sand);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 0), SandCellState.Sand);
 
                 // add some terrain
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle + 1, 10), SandCellState.Solid);
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 11), SandCellState.Solid);
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 12), SandCellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle + 1, 10), SandCellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 11), SandCellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 12), SandCellState.Solid);
 
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 20), SandCellState.Solid);
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 19), SandCellState.Solid);
-                GameOfLifeInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 2, 18), SandCellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 20), SandCellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 19), SandCellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 2, 18), SandCellState.Solid);
                 break;
         }
     }
