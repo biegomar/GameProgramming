@@ -12,6 +12,7 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using CellularAutomata;
 using SkiaSharp;
+using Supporter;
 using Visualizer;
 using Vector = CellularAutomata.Vector;
 
@@ -581,22 +582,10 @@ public partial class MainWindow : Window
     {
         if (timingEnabled)
         {
-            var totalTicks = totalStopwatch.ElapsedTicks;
-            var totalSum = generationTimes.Sum() + renderingTimes.Sum();
-            var totalStats = new StringBuilder();
-            totalStats.AppendLine($"{currentGeneration} Generationen auf {maxDegreeOfParallelism} Kernen:");
-            totalStats.AppendLine($"Gesamtzeit: {FormatTimeFromTicks(totalTicks)} s");
-            totalStats.AppendLine($"Gesamtzeit der Einzelmessungen: {FormatTimeFromTicks(totalSum)} s");
-            totalStats.AppendLine($"Differenz zur Gesamtzeit: {FormatTimeFromTicks(Math.Abs(totalTicks - totalSum))} s");
-            totalStats.AppendLine("");
-            
-            var generationStats = CalculateStatistics(generationTimes, "Generierung");
-            var renderingStats = CalculateStatistics(renderingTimes, "Rendering");
-            
-            totalStats.AppendLine(generationStats);
-            totalStats.AppendLine(renderingStats);
-            
-            tbStopWatch.Text = totalStats.ToString();
+            var statisticGenerator = new StatisticGenerator();
+
+            tbStopWatch.Text = statisticGenerator.Generate(new AutomataStatistics(totalStopwatch.ElapsedTicks, currentGeneration, maxDegreeOfParallelism,
+                generationTimes, renderingTimes));
         }
     }
 
@@ -616,75 +605,6 @@ public partial class MainWindow : Window
             RuleSetType.SandArray => automataSandArray.NextGenerationParallel((playGroundSand as PlayGroundArray<SandCellState>)!,(ruleSet as SandRuleSetArray)!, false, maxDegreeOfParallelism),
             _ => playGroundSand
         };
-    }
-    
-    private string CalculateStatistics(IList<long> times, string type)
-    {
-        var statistics = new StringBuilder();
-        
-        var total = times.Sum();                
-        var min = times.Min();                  
-        var max = times.Max();                  
-        var average = times.Average();        
-
-        var totalFormatted = FormatTimeFromTicks(total);
-        var minFormatted = FormatTimeInMicroseconds(min);
-        var maxFormatted = FormatTimeInMicroseconds(max);
-        var averageFormatted = FormatTimeInMicroseconds((long)average);
-
-        // Ausgabe
-        statistics.AppendLine($"{type}-Statistik:");
-        statistics.AppendLine($"- Gesamtzeit: {totalFormatted} s");
-        statistics.AppendLine($"- Langsamste: {maxFormatted} µs");
-        statistics.AppendLine($"- Schnellste: {minFormatted} µs");
-        statistics.AppendLine($"- Durchschnitt: {averageFormatted} µs");
-
-        if (ruleSet.RuleCounter.Any())
-        {
-            statistics.AppendLine("");
-            foreach (var ruleCount in ruleSet.RuleCounter)
-            {
-                if (ruleCount.Value != 0)
-                {
-                    statistics.AppendLine($"- {ruleCount.Key}: {ruleCount.Value}");   
-                }
-            }   
-        }
-
-        times.Clear();
-        
-        return statistics.ToString();
-    }
-
-    private string FormatTimeFromTicks(long ticks)
-    {
-        try
-        {
-            var timespan = TimeSpan.FromTicks(ticks);
-            var totalMicroseconds = ticks * (1000000.0 / TimeSpan.TicksPerSecond);
-            var microseconds = (int)(totalMicroseconds % 1000); 
-        
-            return $"{timespan.Seconds}.{timespan.Milliseconds:D3}{microseconds:D3}";
-        }
-        catch (Exception e)
-        {
-            Debug.WriteLine(e);
-            return string.Empty;
-        }
-    }
-    
-    private string FormatTimeInMicroseconds(long ticks)
-    {
-        try
-        {
-            var totalMicroseconds = ticks * (1000000.0 / TimeSpan.TicksPerSecond);
-            return $"{(int)totalMicroseconds:D3}";
-        }
-        catch (Exception e)
-        {
-            Debug.WriteLine(e);
-            return string.Empty;
-        }
     }
     
     private void btnReset_Click(object? sender, RoutedEventArgs e)

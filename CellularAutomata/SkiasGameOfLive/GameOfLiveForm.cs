@@ -3,6 +3,7 @@ using System.Text;
 using CellularAutomata;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
+using Supporter;
 using Visualizer;
 using Timer = System.Windows.Forms.Timer;
 
@@ -315,95 +316,13 @@ public partial class GameOfLiveForm : Form
     {
         if (timingEnabled)
         {
-            var totalTicks = totalStopwatch.ElapsedTicks;
-            var totalSum = generationTimes.Sum() + renderingTimes.Sum();
-            var totalStats = new StringBuilder();
-            totalStats.AppendLine($"{currentGeneration} Generationen auf {maxDegreeOfParallelism} Kernen:");
-            totalStats.AppendLine($"Gesamtzeit: {FormatTimeFromTicks(totalTicks)} s");
-            totalStats.AppendLine($"Gesamtzeit der Einzelmessungen: {FormatTimeFromTicks(totalSum)} s");
-            totalStats.AppendLine($"Differenz zur Gesamtzeit: {FormatTimeFromTicks(Math.Abs(totalTicks - totalSum))} s");
-            totalStats.AppendLine("");
-            
-            var generationStats = CalculateStatistics(generationTimes, "Generierung");
-            var renderingStats = CalculateStatistics(renderingTimes, "Rendering");
-            
-            totalStats.AppendLine(generationStats);
-            totalStats.AppendLine(renderingStats);
-            
-            // if (playGroundBool is PlayGroundArray<bool> playGroundWithStatistics)
-            // {
-            //     var initStatistics = CalculateStatistics(PlayGroundArray<bool>.GenerationTimes.ToArray(), currentGeneration, "Initialisierung");
-            //     totalStats.AppendLine("");
-            //     totalStats.AppendLine(initStatistics);
-            // }
-            
-            tbStopWatch.Text = totalStats.ToString();
+            var statisticGenerator = new StatisticGenerator();
+
+            tbStopWatch.Text = statisticGenerator.Generate(new AutomataStatistics(totalStopwatch.ElapsedTicks, currentGeneration, maxDegreeOfParallelism,
+                generationTimes, renderingTimes));
         }
     }
     
-    private string CalculateStatistics(IList<long> times, string type)
-    {
-        var statistics = new StringBuilder();
-        
-        var total = times.Sum();                
-        var min = times.Min();                  
-        var max = times.Max();                  
-        var average = times.Average();        
-
-        var totalFormatted = FormatTimeFromTicks(total);
-        var minFormatted = FormatTimeInMicroseconds(min);
-        var maxFormatted = FormatTimeInMicroseconds(max);
-        var averageFormatted = FormatTimeInMicroseconds((long)average);
-
-        // Ausgabe
-        statistics.AppendLine($"{type}-Statistik:");
-        statistics.AppendLine($"- Gesamtzeit: {totalFormatted} s");
-        statistics.AppendLine($"- Langsamste: {maxFormatted} µs");
-        statistics.AppendLine($"- Schnellste: {minFormatted} µs");
-        statistics.AppendLine($"- Durchschnitt: {averageFormatted} µs");
-        //statistics.AppendLine("");
-        // foreach (var ruleCount in ruleSet.RuleCounter)
-        // {
-        //     statistics.AppendLine($"- {ruleCount.Key}: {ruleCount.Value}");
-        // }
-
-        times.Clear();
-        
-        return statistics.ToString();
-    }
-
-    private string FormatTimeFromTicks(long ticks)
-    {
-        try
-        {
-            var timespan = TimeSpan.FromTicks(ticks);
-            var totalMicroseconds = ticks * (1000000.0 / TimeSpan.TicksPerSecond);
-            var microseconds = (int)(totalMicroseconds % 1000); 
-        
-            return $"{timespan.Seconds}.{timespan.Milliseconds:D3}{microseconds:D3}";
-        }
-        catch (Exception e)
-        {
-            Debug.WriteLine(e);
-            return string.Empty;
-        }
-    }
-    
-    private string FormatTimeInMicroseconds(long ticks)
-    {
-        try
-        {
-            var totalMicroseconds = ticks * (1000000.0 / TimeSpan.TicksPerSecond);
-            return $"{(int)totalMicroseconds:D3}";
-        }
-        catch (Exception e)
-        {
-            Debug.WriteLine(e);
-            return string.Empty;
-        }
-    }
-
-
     private void GenerateNextPlaygroundState(RuleSetType type)
     {
         playGroundBool = type switch
