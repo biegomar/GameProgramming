@@ -3,15 +3,15 @@ using System.Runtime.CompilerServices;
 
 namespace CellularAutomata;
 
-public sealed class AutomataArray<T>
+public sealed class AutomataArray
 {
-    private PlayGroundArray<T>? nextGenerationPlayGround;
+    private PlayGroundArray? nextGenerationPlayGround;
     
     private void InitNextGenerationPlayGround(Vector dimension)
     {
         if (nextGenerationPlayGround == null || nextGenerationPlayGround.Dimension != dimension)
         {
-            nextGenerationPlayGround = new PlayGroundArray<T>(dimension);
+            nextGenerationPlayGround = new PlayGroundArray(dimension);
         }
     }
     
@@ -20,7 +20,7 @@ public sealed class AutomataArray<T>
         this.InitNextGenerationPlayGround(dimension);
     }
     
-    public PlayGroundArray<T> NextGeneration(PlayGroundArray<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn)
+    public PlayGroundArray NextGeneration(PlayGroundArray initialPlayGround, IRuleSet ruleSet, bool isSpawn)
     {
         for (var column = 0; column < initialPlayGround.Dimension.X; column++)
         {
@@ -30,14 +30,14 @@ public sealed class AutomataArray<T>
             }
         }
         
-        nextGenerationPlayGround = (PlayGroundArray<T>)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn);
+        nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn);
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
         
         return initialPlayGround;
     }
     
-    public PlayGroundArray<T> NextGenerationParallel(PlayGroundArray<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn, int maxDegreeOfParallelism)
+    public PlayGroundArray NextGenerationParallel(PlayGroundArray initialPlayGround, IRuleSet ruleSet, bool isSpawn, int maxDegreeOfParallelism)
     {
         var parallelOptions = new ParallelOptions()
         {
@@ -71,7 +71,7 @@ public sealed class AutomataArray<T>
             });
 
             
-            nextGenerationPlayGround = (PlayGroundArray<T>)ruleSet.ApplySpawnRules(nextGenerationPlayGround, isSpawn);
+            nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround, isSpawn);
         
             Swap(ref initialPlayGround, ref nextGenerationPlayGround);    
         }
@@ -80,7 +80,7 @@ public sealed class AutomataArray<T>
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void Swap(ref PlayGroundArray<T> instanceOne, ref PlayGroundArray<T> instanceTwo)
+    private static void Swap(ref PlayGroundArray instanceOne, ref PlayGroundArray instanceTwo)
     { 
         (instanceOne, instanceTwo) = (instanceTwo, instanceOne);
     }

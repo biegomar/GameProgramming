@@ -59,16 +59,16 @@ public partial class MainWindow : Window
     private int generation = 0;
     private int maxDegreeOfParallelism = 2;
     
-    private IPlayGround<bool> playGroundBool;
-    private IPlayGround<SandCellState> playGroundSand;
+    private IPlayGround playGroundBool;
+    private IPlayGround playGroundSand;
     private IBaseRuleSet ruleSet;
     private RuleSetType ruleSetType;
     
-    private Automata<bool> automataBool;
-    private AutomataArray<bool> automataArrayBool;
-    private Automata<SandCellState> automataSand;
-    private AutomataArray<SandCellState> automataSandArray;
-    private AutomataWolfram<bool> automataWolframBool;
+    private Automata automataBool;
+    private AutomataArray automataArrayBool;
+    private Automata automataSand;
+    private AutomataArray automataSandArray;
+    private AutomataWolfram automataWolframBool;
     
     private CancellationTokenSource? cancellationTokenSource;
     private CancellationTokenSource? tooltipCancellationSource;
@@ -340,8 +340,8 @@ public partial class MainWindow : Window
 
     private void InitializeWolfram()
     {
-        automataWolframBool = new AutomataWolfram<bool>();
-        playGroundBool = new PlayGroundArray<bool>(dimension);
+        automataWolframBool = new AutomataWolfram();
+        playGroundBool = new PlayGroundArray(dimension);
 
         ruleSet = new WolframRuleSet(cbPattern.SelectedIndex);
         
@@ -352,8 +352,8 @@ public partial class MainWindow : Window
     }
     private void InitializeForGameOfLive()
     {
-        automataBool = new Automata<bool>(dimension);
-        playGroundBool = new PlayGround<bool>(dimension);
+        automataBool = new Automata(dimension);
+        playGroundBool = new PlayGround(dimension);
         
         ruleSet = new GameOfLifeRuleSet();
         
@@ -377,8 +377,8 @@ public partial class MainWindow : Window
     
     private void InitializeForGameOfLiveArray()
     {
-        automataArrayBool = new AutomataArray<bool>(dimension);
-        playGroundBool = new PlayGroundArray<bool>(dimension);
+        automataArrayBool = new AutomataArray(dimension);
+        playGroundBool = new PlayGroundArray(dimension);
         
         ruleSet = new GameOfLifeRuleSetArray();
         
@@ -402,8 +402,8 @@ public partial class MainWindow : Window
     
     private void InitializeForSand()
     {
-        automataSand = new Automata<SandCellState>(dimension);
-        playGroundSand = new PlayGround<SandCellState>(dimension);
+        automataSand = new Automata(dimension);
+        playGroundSand = new PlayGround(dimension);
 
         ruleSet = new SandRuleSet();
 
@@ -419,24 +419,24 @@ public partial class MainWindow : Window
                 SandInitializer.GenerateSandHourglass(playGroundSand);
                 break;
             case 2:
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 0), SandCellState.Sand);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 0), CellState.Sand);
 
                 // add some terrain
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle + 1, 10), SandCellState.Solid);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 11), SandCellState.Solid);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 12), SandCellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle + 1, 10), CellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 11), CellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 12), CellState.Solid);
 
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 20), SandCellState.Solid);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 19), SandCellState.Solid);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 2, 18), SandCellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 20), CellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 19), CellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 2, 18), CellState.Solid);
                 break;
         }
     }
     
     private void InitializeForSandArray()
     {
-        automataSandArray = new AutomataArray<SandCellState>(dimension);
-        playGroundSand = new PlayGroundArray<SandCellState>(dimension);
+        automataSandArray = new AutomataArray(dimension);
+        playGroundSand = new PlayGroundArray(dimension);
 
         ruleSet = new SandRuleSetArray();
         
@@ -452,19 +452,19 @@ public partial class MainWindow : Window
                 SandInitializer.GenerateSandHourglass(playGroundSand);
                 break;
             case 2:
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 0), SandCellState.Sand);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 1), SandCellState.SandDark);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 2), SandCellState.SandMedium);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 2), SandCellState.SandLight);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 0), CellState.Sand);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 1), CellState.SandDark);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 2), CellState.SandMedium);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 2), CellState.SandLight);
 
                 // add some terrain
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle + 1, 10), SandCellState.Solid);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 11), SandCellState.Solid);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 12), SandCellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle + 1, 10), CellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 11), CellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 12), CellState.Solid);
 
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 20), SandCellState.Solid);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 19), SandCellState.Solid);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 2, 18), SandCellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 20), CellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 19), CellState.Solid);
+                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 2, 18), CellState.Solid);
                 break;
         }
     }
@@ -500,20 +500,20 @@ public partial class MainWindow : Window
         {
             case RuleSetType.GameOfLifeArray:
             case RuleSetType.Wolfram:
-                PlayGroundArray<bool> localBoolPlayGroundArray = (playGroundBool as PlayGroundArray<bool>)!;
-                SkiaVisualizer<bool>.Render(localBoolPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b ? this.aliveColor : emptyColor);
+                PlayGroundArray localBoolPlayGroundArray = (playGroundBool as PlayGroundArray)!;
+                SkiaVisualizer.Render(localBoolPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b == CellState.Solid ? this.aliveColor : emptyColor);
                 break;
             case RuleSetType.Sand:
-                PlayGround<SandCellState> localSandCellStatePlayGround = (playGroundSand as PlayGround<SandCellState>)!;
-                SkiaVisualizer<SandCellState>.Render(localSandCellStatePlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, ChooseSandColor);
+                PlayGround localSandCellStatePlayGround = (playGroundSand as PlayGround)!;
+                SkiaVisualizer.Render(localSandCellStatePlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, ChooseSandColor);
                 break;
             case RuleSetType.GameOfLife:
-                PlayGround<bool> localBoolPlayGround = (playGroundBool as PlayGround<bool>)!;
-                SkiaVisualizer<bool>.Render(localBoolPlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b ? this.aliveColor : emptyColor);
+                PlayGround localBoolPlayGround = (playGroundBool as PlayGround)!;
+                SkiaVisualizer.Render(localBoolPlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b == CellState.Solid ? this.aliveColor : emptyColor);
                 break;
             case RuleSetType.SandArray:
-                PlayGroundArray<SandCellState> localSandCellStatePlayGroundArray = (playGroundSand as PlayGroundArray<SandCellState>)!;
-                SkiaVisualizer<SandCellState>.Render(localSandCellStatePlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, ChooseSandColor);
+                PlayGroundArray localSandCellStatePlayGroundArray = (playGroundSand as PlayGroundArray)!;
+                SkiaVisualizer.Render(localSandCellStatePlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, ChooseSandColor);
                 break;
             default:    
                 break;
@@ -593,16 +593,16 @@ public partial class MainWindow : Window
     {
         playGroundBool = type switch
         {
-            RuleSetType.GameOfLife => automataBool.NextGenerationParallel((playGroundBool as PlayGround<bool>)!, (ruleSet as GameOfLifeRuleSet)!, false, maxDegreeOfParallelism),
-            RuleSetType.GameOfLifeArray => automataArrayBool.NextGenerationParallel((playGroundBool as PlayGroundArray<bool>)!,(ruleSet as GameOfLifeRuleSetArray)!, false, maxDegreeOfParallelism),
-            RuleSetType.Wolfram => automataWolframBool.NextGenerationParallel((playGroundBool as PlayGroundArray<bool>)!, (ruleSet as WolframRuleSet)!, generation - 1, maxDegreeOfParallelism),
+            RuleSetType.GameOfLife => automataBool.NextGenerationParallel((playGroundBool as PlayGround)!, (ruleSet as GameOfLifeRuleSet)!, false, maxDegreeOfParallelism),
+            RuleSetType.GameOfLifeArray => automataArrayBool.NextGenerationParallel((playGroundBool as PlayGroundArray)!,(ruleSet as GameOfLifeRuleSetArray)!, false, maxDegreeOfParallelism),
+            RuleSetType.Wolfram => automataWolframBool.NextGenerationParallel((playGroundBool as PlayGroundArray)!, (ruleSet as WolframRuleSet)!, generation - 1, maxDegreeOfParallelism),
             _ => playGroundBool
         };
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.NextGenerationParallel((playGroundSand as PlayGround<SandCellState>)!, (ruleSet as SandRuleSet)!, false, maxDegreeOfParallelism),
-            RuleSetType.SandArray => automataSandArray.NextGenerationParallel((playGroundSand as PlayGroundArray<SandCellState>)!,(ruleSet as SandRuleSetArray)!, false, maxDegreeOfParallelism),
+            RuleSetType.Sand => automataSand.NextGenerationParallel((playGroundSand as PlayGround)!, (ruleSet as SandRuleSet)!, false, maxDegreeOfParallelism),
+            RuleSetType.SandArray => automataSandArray.NextGenerationParallel((playGroundSand as PlayGroundArray)!,(ruleSet as SandRuleSetArray)!, false, maxDegreeOfParallelism),
             _ => playGroundSand
         };
     }
@@ -624,16 +624,16 @@ public partial class MainWindow : Window
         InitializePlayGround();
     }
     
-    private SKColor ChooseSandColor(SandCellState state)
+    private SKColor ChooseSandColor(CellState state)
     {
         return state switch
         {
-            SandCellState.Empty => emptyColor,
-            SandCellState.Sand => SKColors.Goldenrod,
-            SandCellState.SandDark => SKColors.DarkGoldenrod,
-            SandCellState.SandLight => SKColors.LightGoldenrodYellow,
-            SandCellState.SandMedium => SKColors.Chocolate,
-            SandCellState.Solid => SKColors.Gray,
+            CellState.Empty => emptyColor,
+            CellState.Sand => SKColors.Goldenrod,
+            CellState.SandDark => SKColors.DarkGoldenrod,
+            CellState.SandLight => SKColors.LightGoldenrodYellow,
+            CellState.SandMedium => SKColors.Chocolate,
+            CellState.Solid => SKColors.Gray,
             _ => emptyColor
         };
     }

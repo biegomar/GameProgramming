@@ -3,10 +3,10 @@ using CellularAutomata;
 
 namespace GameOfLive;
 
-public static class ConsoleVisualizer<T>
+public static class ConsoleVisualizer
 {
     static int counter = 0;
-    public static void Render(PlayGround<T> playGround, Func<T, char> stateToChar)
+    public static void Render(PlayGround playGround, Func<CellState, char> stateToChar)
     {
         Console.SetCursorPosition(0, 0);
         Console.Write($"Generation {counter++}");
@@ -34,7 +34,7 @@ public static class ConsoleVisualizer<T>
         Console.SetCursorPosition(actualX, actualY);
     }
 
-    public static void RenderWithColors(PlayGround<T> playGround, Func<T, ConsoleColor> stateToColor)
+    public static void RenderWithColors(PlayGround playGround, Func<CellState, ConsoleColor> stateToColor)
     {
         Console.SetCursorPosition(0, 0);
         Console.Write($"Generation {counter++}");

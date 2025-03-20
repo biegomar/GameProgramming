@@ -1,8 +1,8 @@
 ﻿namespace CellularAutomata;
 
-public sealed class AutomataWolfram<T>
+public sealed class AutomataWolfram
 {
-    public PlayGroundArray<T> NextGeneration(PlayGroundArray<T> initialPlayGround, IRuleSet<T> ruleSet, int row)
+    public PlayGroundArray NextGeneration(PlayGroundArray initialPlayGround, IRuleSet ruleSet, int row)
     {
         if (row >= initialPlayGround.Dimension.Y - 1)
         {
@@ -17,7 +17,7 @@ public sealed class AutomataWolfram<T>
         return initialPlayGround;
     }
     
-    public PlayGroundArray<T> NextGenerationParallel(PlayGroundArray<T> initialPlayGround, IRuleSet<T> ruleSet, int row, int maxDegreeOfParallelism)
+    public PlayGroundArray NextGenerationParallel(PlayGroundArray initialPlayGround, IRuleSet ruleSet, int row, int maxDegreeOfParallelism)
     {
         if (row >= initialPlayGround.Dimension.Y - 1)
         {

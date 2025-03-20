@@ -1,22 +1,22 @@
 ﻿namespace CellularAutomata;
 
-public sealed class PlayGround<T> : IPlayGround<T>
+public sealed class PlayGround: IPlayGround
 {
-    public Dictionary<Vector, Cell<T>> Cells { get; init; }
+    public Dictionary<Vector, Cell> Cells { get; init; }
 
     public PlayGround(Vector dimension)
     {
         Dimension = dimension;
         
         var capacity = dimension.X * dimension.Y;
-        Cells = new Dictionary<Vector, Cell<T>>(capacity);
+        Cells = new Dictionary<Vector, Cell>(capacity);
         
         Initialize();
     }
 
     public Vector Dimension { get; init; }
     
-    public T this[Vector position]
+    public CellState this[Vector position]
     {
         get => Cells[position].State;
         set
@@ -28,7 +28,7 @@ public sealed class PlayGround<T> : IPlayGround<T>
 
     }
 
-    public T this[(int x, int y) position]
+    public CellState this[(int x, int y) position]
     {
         get => Cells[new Vector(position.x, position.y)].State;
         set
@@ -44,13 +44,13 @@ public sealed class PlayGround<T> : IPlayGround<T>
 
     private void Initialize()
     {
-        var defaultState = default(T)!;
+        const CellState defaultState = CellState.Empty;
 
         for (var x = 0; x < this.Dimension.X; x++)
         {
             for (var y = 0; y < this.Dimension.Y; y++)
             {
-                this.Cells.Add(new Vector(x,y), new Cell<T>(defaultState));
+                this.Cells.Add(new Vector(x,y), new Cell(defaultState));
             }
         }
     }

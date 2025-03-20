@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 
 namespace CellularAutomata;
 
-public sealed class GameOfLifeRuleSet : IRuleSet<bool>
+public sealed class GameOfLifeRuleSet : IRuleSet
 {
     private static readonly (int DX, int DY)[] NeighborOffsets = 
     {
@@ -18,22 +18,22 @@ public sealed class GameOfLifeRuleSet : IRuleSet<bool>
     };
 
     
-    public bool ApplyRules(IPlayGround<bool> playGround, (int X, int Y) position)
+    public CellState ApplyRules(IPlayGround playGround, (int X, int Y) position)
     {
         return this.ApplyRules(playGround, new Vector(position.X, position.Y));
     }
 
-    public bool ApplyRules(IPlayGround<bool> playGround, Vector position)
+    public CellState ApplyRules(IPlayGround playGround, Vector position)
     {
         var cellState = playGround[position];
 
         var liveNeighbors = CountLivingNeighbors(playGround, position.X, position.Y);
         
-        return liveNeighbors == 3 || (cellState && liveNeighbors == 2);
+        return liveNeighbors == 3 || (cellState == CellState.Solid && liveNeighbors == 2) ? CellState.Solid : CellState.Empty;
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private int CountLivingNeighbors(IPlayGround<bool> playGround, int x, int y)
+    private int CountLivingNeighbors(IPlayGround playGround, int x, int y)
     {
         int liveNeighbors = 0;
 
@@ -42,7 +42,7 @@ public sealed class GameOfLifeRuleSet : IRuleSet<bool>
             var nx = x + dx;
             var ny = y + dy;
 
-            if (IsWithinBounds(playGround.Dimension, nx, ny) && playGround[(nx, ny)])
+            if (IsWithinBounds(playGround.Dimension, nx, ny) && playGround[(nx, ny)] == CellState.Solid)
             {
                 liveNeighbors++;
                 if (liveNeighbors == 4)
@@ -63,7 +63,7 @@ public sealed class GameOfLifeRuleSet : IRuleSet<bool>
         return withinX && withinY;
     }
 
-    public IPlayGround<bool> ApplySpawnRules(IPlayGround<bool> playGround, bool isSpawn)
+    public IPlayGround ApplySpawnRules(IPlayGround playGround, bool isSpawn)
     {
         return playGround;
     }

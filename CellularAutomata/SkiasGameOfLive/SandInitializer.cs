@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 using CellularAutomata;
 
-namespace AvaloniaGameOfLive;
+namespace SkiasGameOfLive;
 
 public static class SandInitializer
 {
@@ -39,12 +37,7 @@ public static class SandInitializer
                 }
             });
         }
-    }
-    
-    public static void AddSandCellStateToCell(IPlayGround playground, Vector position, CellState state)
-    {
-        playground[position] = state; 
-    }
+    } 
     
     public static void GenerateSandHourglass(IPlayGround playground)
     {
@@ -79,7 +72,7 @@ public static class SandInitializer
             }
         }
     }
-    
+
     // Überprüft, ob die Zelle Teil des äußeren Rahmens ist
     private static bool IsOutline(int x, int y, int width, int height)
     {
@@ -114,7 +107,6 @@ public static class SandInitializer
     {
         // Genau die Mitte der Sanduhr (1 Zelle)
         return y == midY && x == midX;
-
     }
 
     // Überprüft, ob die Zelle im unteren Kolben (leer) liegt
@@ -129,6 +121,5 @@ public static class SandInitializer
         var randomValue = random.Next(2, 6);
 
         return (CellState)randomValue;
-
     }
 }

@@ -3,30 +3,30 @@ using System.Runtime.InteropServices;
 
 namespace CellularAutomata;
 
-public sealed class SandRuleSet : IRuleSet<SandCellState>
+public sealed class SandRuleSet : IRuleSet
 {
     public IDictionary<string, uint> RuleCounter { get; init; } = new Dictionary<string, uint>();
     
     [StructLayout(LayoutKind.Sequential, Size = 9)]
     private record struct CellNeighbors(
-        SandCellState TopLeft,
-        SandCellState Top,
-        SandCellState TopRight,
-        SandCellState Left,
-        SandCellState LeftLeft,
-        SandCellState Right,
-        SandCellState BottomLeft,
-        SandCellState Bottom,
-        SandCellState BottomRight
+        CellState TopLeft,
+        CellState Top,
+        CellState TopRight,
+        CellState Left,
+        CellState LeftLeft,
+        CellState Right,
+        CellState BottomLeft,
+        CellState Bottom,
+        CellState BottomRight
     );
     
-    public SandCellState ApplyRules(IPlayGround<SandCellState> playGround, Vector position)
+    public CellState ApplyRules(IPlayGround playGround, Vector position)
     {
         var cellState = playGround[position];
 
-        if (cellState == SandCellState.Solid)
+        if (cellState == CellState.Solid)
         {
-            return SandCellState.Solid;
+            return CellState.Solid;
         }
 
         var cellNeighbors = GetNeighboursState(playGround, position);
@@ -34,13 +34,13 @@ public sealed class SandRuleSet : IRuleSet<SandCellState>
         if (IsSand(cellState))
         {
             if (
-                (cellNeighbors.Bottom == SandCellState.Empty ||
-                 cellNeighbors is { BottomRight: SandCellState.Empty, Right: SandCellState.Empty } 
-                     or { BottomLeft: SandCellState.Empty, Left: SandCellState.Empty, LeftLeft: SandCellState.Empty })
+                (cellNeighbors.Bottom == CellState.Empty ||
+                 cellNeighbors is { BottomRight: CellState.Empty, Right: CellState.Empty } 
+                     or { BottomLeft: CellState.Empty, Left: CellState.Empty, LeftLeft: CellState.Empty })
                 && position.Y < playGround.Dimension.Y - 1
                )
             {
-                return SandCellState.Empty;
+                return CellState.Empty;
             }
             
             return cellState;
@@ -53,8 +53,8 @@ public sealed class SandRuleSet : IRuleSet<SandCellState>
         }
 
         // Prio 2: grain to the top left, but only if its Prio 1 is blocked.
-        if (IsSand(cellNeighbors.TopLeft) && (IsSand(cellNeighbors.Left) || cellNeighbors.Left == SandCellState.Solid) &&
-            cellNeighbors.Top == SandCellState.Empty)
+        if (IsSand(cellNeighbors.TopLeft) && (IsSand(cellNeighbors.Left) || cellNeighbors.Left == CellState.Solid) &&
+            cellNeighbors.Top == CellState.Empty)
         {
             return cellNeighbors.TopLeft;
         }
@@ -62,25 +62,25 @@ public sealed class SandRuleSet : IRuleSet<SandCellState>
         // Prio 3: grain to the top right, but only if its Prio 1 and Prio 2 is blocked.
         var cellNeighborsFromRight = GetNeighboursState(playGround, new Vector(position.X + 1, position.Y));
         if (IsSand(cellNeighbors.TopRight) &&
-            cellNeighbors.Top == SandCellState.Empty &&
-            (IsSand(cellNeighbors.Right) || cellNeighbors.Right == SandCellState.Solid) &&
-            (IsSand(cellNeighborsFromRight.Right) || cellNeighborsFromRight.Right == SandCellState.Solid || 
-             (cellNeighborsFromRight.Right == SandCellState.Empty && cellNeighborsFromRight.TopRight != SandCellState.Empty)))
+            cellNeighbors.Top == CellState.Empty &&
+            (IsSand(cellNeighbors.Right) || cellNeighbors.Right == CellState.Solid) &&
+            (IsSand(cellNeighborsFromRight.Right) || cellNeighborsFromRight.Right == CellState.Solid || 
+             (cellNeighborsFromRight.Right == CellState.Empty && cellNeighborsFromRight.TopRight != CellState.Empty)))
         {
             return cellNeighbors.TopRight; 
         }
 
-        return SandCellState.Empty;
+        return CellState.Empty;
     }
 
-    public SandCellState ApplyRules(IPlayGround<SandCellState> playGround, (int X, int Y) position)
+    public CellState ApplyRules(IPlayGround playGround, (int X, int Y) position)
     {
         return ApplyRules(playGround, new Vector(position.X, position.Y));
     }
 
-    public IPlayGround<SandCellState> ApplySpawnRules(IPlayGround<SandCellState> playGround, bool isSpawn)
+    public IPlayGround ApplySpawnRules(IPlayGround playGround, bool isSpawn)
     {
-        var localPlayGround = (PlayGround<SandCellState>)playGround;
+        var localPlayGround = (PlayGround)playGround;
         
         if (isSpawn)
         {
@@ -88,9 +88,9 @@ public sealed class SandRuleSet : IRuleSet<SandCellState>
             var position = new Vector(localPlayGround.Dimension.X / 2, 0);
             var cellNeighbors = GetNeighboursState(localPlayGround, position);
 
-            if (cellNeighbors.Bottom == SandCellState.Empty)
+            if (cellNeighbors.Bottom == CellState.Empty)
             {
-                localPlayGround[position] = SandCellState.Sand;    
+                localPlayGround[position] = CellState.Sand;    
             }    
         }
         
@@ -98,7 +98,7 @@ public sealed class SandRuleSet : IRuleSet<SandCellState>
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private CellNeighbors GetNeighboursState(IPlayGround<SandCellState> playGround, Vector position)
+    private CellNeighbors GetNeighboursState(IPlayGround playGround, Vector position)
     {
         var topLeft = new Vector(position.X - 1, position.Y - 1);
         var top = new Vector(position.X, position.Y - 1);
@@ -111,15 +111,15 @@ public sealed class SandRuleSet : IRuleSet<SandCellState>
         var bottomRight = new Vector(position.X + 1, position.Y + 1);
         
         return new CellNeighbors(
-            TopLeft: IsWithinBounds(playGround.Dimension, topLeft) ? playGround[topLeft] : SandCellState.Empty,
-            Top: IsWithinBounds(playGround.Dimension, top) ? playGround[top] : SandCellState.Empty,
-            TopRight: IsWithinBounds(playGround.Dimension, topRight) ? playGround[topRight] : SandCellState.Empty,
-            Left: IsWithinBounds(playGround.Dimension, left) ? playGround[left] : SandCellState.Empty,
-            LeftLeft: IsWithinBounds(playGround.Dimension, leftleft) ? playGround[leftleft] : SandCellState.Empty,
-            Right: IsWithinBounds(playGround.Dimension, right) ? playGround[right] : SandCellState.Empty,
-            BottomLeft: IsWithinBounds(playGround.Dimension, bottomLeft) ? playGround[bottomLeft] : SandCellState.Empty,
-            Bottom: IsWithinBounds(playGround.Dimension, bottom) ? playGround[bottom] : SandCellState.Empty,
-            BottomRight: IsWithinBounds(playGround.Dimension, bottomRight) ? playGround[bottomRight] : SandCellState.Empty
+            TopLeft: IsWithinBounds(playGround.Dimension, topLeft) ? playGround[topLeft] : CellState.Empty,
+            Top: IsWithinBounds(playGround.Dimension, top) ? playGround[top] : CellState.Empty,
+            TopRight: IsWithinBounds(playGround.Dimension, topRight) ? playGround[topRight] : CellState.Empty,
+            Left: IsWithinBounds(playGround.Dimension, left) ? playGround[left] : CellState.Empty,
+            LeftLeft: IsWithinBounds(playGround.Dimension, leftleft) ? playGround[leftleft] : CellState.Empty,
+            Right: IsWithinBounds(playGround.Dimension, right) ? playGround[right] : CellState.Empty,
+            BottomLeft: IsWithinBounds(playGround.Dimension, bottomLeft) ? playGround[bottomLeft] : CellState.Empty,
+            Bottom: IsWithinBounds(playGround.Dimension, bottom) ? playGround[bottom] : CellState.Empty,
+            BottomRight: IsWithinBounds(playGround.Dimension, bottomRight) ? playGround[bottomRight] : CellState.Empty
         );
     }
     
@@ -133,7 +133,7 @@ public sealed class SandRuleSet : IRuleSet<SandCellState>
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool IsSand(SandCellState cellState)
+    private bool IsSand(CellState cellState)
     {
         return (byte)cellState > 1;
     }

@@ -2,9 +2,9 @@
 
 namespace CellularAutomata;
 
-public sealed class PlayGroundArray<T> : IPlayGround<T>
+public sealed class PlayGroundArray : IPlayGround
 {
-    public Cell<T>[] Cells { get; }
+    public Cell[] Cells { get; }
     
     public Vector Dimension { get; }
     
@@ -12,40 +12,40 @@ public sealed class PlayGroundArray<T> : IPlayGround<T>
     private readonly int dimensionY;
 
 
-    public PlayGroundArray(Vector dimension, Func<int, int, Cell<T>>? cellFactory = null)
+    public PlayGroundArray(Vector dimension, Func<int, int, Cell>? cellFactory = null)
     {
         Dimension = dimension;
         dimensionX = dimension.X;
         dimensionY = dimension.Y;
         
-        Cells = new Cell<T>[dimensionX * dimensionY];
+        Cells = new Cell[dimensionX * dimensionY];
         
         Initialize(cellFactory);
     }
     
-    public T this[Vector position]
+    public CellState this[Vector position]
     {
         get => Cells[this.GetIndex(position.X, position.Y)].State;
         set => Cells[this.GetIndex(position.X, position.Y)].State = value;
     }
 
-    public T this[(int x, int y) position]
+    public CellState this[(int x, int y) position]
     {
         get => Cells[this.GetIndex(position.x, position.y)].State;
         set => Cells[this.GetIndex(position.x, position.y)].State = value;
     }
     
-    private void Initialize(Func<int, int, Cell<T>>? cellFactory = null)
+    private void Initialize(Func<int, int, Cell>? cellFactory = null)
     {
-        var defaultState = default(T)!;
-        
+        const CellState defaultState = CellState.Empty;
+
         for (ushort x = 0; x < this.dimensionX; x++)
         {
             for (ushort y = 0; y < this.dimensionY; y++)
             {
                 this.Cells[this.GetIndex(x, y)] = cellFactory != null 
                     ? cellFactory(x, y) 
-                    : new Cell<T>(defaultState);
+                    : new Cell(defaultState);
 
             }
         }

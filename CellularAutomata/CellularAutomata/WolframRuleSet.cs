@@ -2,7 +2,7 @@
 
 namespace CellularAutomata;
 
-public sealed class WolframRuleSet : IRuleSet<bool> 
+public sealed class WolframRuleSet : IRuleSet
 {
     private readonly int[] wolframRule = new int[8];
     
@@ -17,22 +17,22 @@ public sealed class WolframRuleSet : IRuleSet<bool>
         InitializeWolframRule(rule);
     }
     
-    public bool ApplyRules(IPlayGround<bool> playGround, Vector position)
+    public CellState ApplyRules(IPlayGround playGround, Vector position)
     {
         return this.ApplyRules(playGround, (position.X, position.Y));
     }
 
-    public bool ApplyRules(IPlayGround<bool> playGround, (int X, int Y) position)
+    public CellState ApplyRules(IPlayGround playGround, (int X, int Y) position)
     {
         var (leftState, rightState) = GetNeighboursState(playGround, position);
-        var cellState = playGround[position];
+        var cellState = playGround[position] != CellState.Empty;
         
         int ruleIndex = (leftState ? 4 : 0) | (cellState ? 2 : 0) | (rightState ? 1 : 0);
 
-        return wolframRule[ruleIndex] == 1;
+        return wolframRule[ruleIndex] == 1 ? CellState.Solid : CellState.Empty;
     }
 
-    public IPlayGround<bool> ApplySpawnRules(IPlayGround<bool> playGround, bool isSpawn)
+    public IPlayGround ApplySpawnRules(IPlayGround playGround, bool isSpawn)
     {
         return playGround;
     }
@@ -45,13 +45,13 @@ public sealed class WolframRuleSet : IRuleSet<bool>
         }
     }
     
-    private (bool left, bool right) GetNeighboursState(IPlayGround<bool> playGround, (int X, int Y) position)
+    private (bool left, bool right) GetNeighboursState(IPlayGround playGround, (int X, int Y) position)
     {
         (int X, int Y) left = (position.X - 1, position.Y);
         (int X, int Y) right = (position.X + 1, position.Y);
 
-        return (IsWithinBounds(playGround.Dimension, left.X, left.Y) && playGround[left],
-            IsWithinBounds(playGround.Dimension, right.X, right.Y) && playGround[right]);
+        return (IsWithinBounds(playGround.Dimension, left.X, left.Y) && playGround[left] != CellState.Empty,
+            IsWithinBounds(playGround.Dimension, right.X, right.Y) && playGround[right] != CellState.Empty);
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -6,12 +6,12 @@ public class AutomataBenchmark
 {
     private const int Iterations = 50;
     private static Vector dimension = new Vector(800,600);
-    private PlayGround<bool> playGround = new PlayGround<bool>(dimension);
-    private PlayGroundArray<bool> playGroundArray = new PlayGroundArray<bool>(dimension);
+    private PlayGround playGround = new PlayGround(dimension);
+    private PlayGroundArray playGroundArray = new PlayGroundArray(dimension);
     private GameOfLifeRuleSet ruleSet = new GameOfLifeRuleSet();
     private GameOfLifeRuleSetArray ruleSetArray = new GameOfLifeRuleSetArray();
-    private readonly Automata<bool> automataBool = new (dimension);
-    private readonly AutomataArray<bool> automataArrayBool = new (dimension);
+    private readonly Automata automataBool = new (dimension);
+    private readonly AutomataArray automataArrayBool = new (dimension);
     
     public AutomataBenchmark()
     {

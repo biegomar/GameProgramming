@@ -1,11 +1,9 @@
 ﻿namespace CellularAutomata;
 
-public interface IPlayGround<T>
+public interface IPlayGround
 {
     Vector Dimension { get; }
     
-    T this[Vector position] { get; set; }
-    T this[(int x, int y) position] { get; set; }
-
- 
+    CellState this[Vector position] { get; set; }
+    CellState this[(int x, int y) position] { get; set; }
 }

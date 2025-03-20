@@ -8,19 +8,19 @@ namespace AvaloniaGameOfLive;
 
 public static class GameOfLifeInitializer
 {
-    public static void Randomize(IPlayGround<bool> playground, int maxDegreeOfParallelism, double aliveProbability = 0.2)
+    public static void Randomize(IPlayGround playground, int maxDegreeOfParallelism, double aliveProbability = 0.2)
     {
         var random = new Random();
 
-        if (playground is PlayGround<bool> playGroundBool)
+        if (playground is PlayGround playGroundBool)
         {
             Parallel.ForEach(playGroundBool.Cells, cell =>
             {
                 var state = random.NextDouble() < aliveProbability;
-                playground[cell.Key] = state;
+                playground[cell.Key] = state ? CellState.Solid : CellState.Empty;
             });
         }
-        else if (playground is PlayGroundArray<bool> playGroundArrayBool)
+        else if (playground is PlayGroundArray playGroundArrayBool)
         {
             var parallelOptions = new ParallelOptions()
             {
@@ -35,7 +35,7 @@ public static class GameOfLifeInitializer
                     for (var y = 0; y < playGroundArrayBool.Dimension.Y; y++)
                     {
                         var state = random.NextDouble() < aliveProbability;
-                        playGroundArrayBool[(x, y)] = state;
+                        playGroundArrayBool[(x, y)] = state ? CellState.Solid : CellState.Empty;
                     }
                 }
             });
@@ -43,7 +43,7 @@ public static class GameOfLifeInitializer
         
     }
 
-    public static void AddCheckerboard(IPlayGround<bool> playground)
+    public static void AddCheckerboard(IPlayGround playground)
     {
         for (int y = 0; y < playground.Dimension.Y; y++)
         {
@@ -51,91 +51,91 @@ public static class GameOfLifeInitializer
         }
     }
     
-    private static void AddCheckerLine(IPlayGround<bool> playground, int row)
+    private static void AddCheckerLine(IPlayGround playground, int row)
     {
         for (int x = 0; x < playground.Dimension.X; x++)
         {
-            playground[(x, row)] = int.IsEvenInteger(x) && int.IsEvenInteger(row) || int.IsOddInteger(x) && int.IsOddInteger(row);
+            playground[(x, row)] = int.IsEvenInteger(x) && int.IsEvenInteger(row) || int.IsOddInteger(x) && int.IsOddInteger(row) ? CellState.Solid : CellState.Empty;
         } 
     }
 
-    public static void AddSingleLineWithCellOnEveryXColumn(IPlayGround<bool> playground, int distance, int row)
+    public static void AddSingleLineWithCellOnEveryXColumn(IPlayGround playground, int distance, int row)
     {
         for (int x = 0; x < playground.Dimension.X; x++)
         {
-            playground[(x, row)] = x % distance == 0;
+            playground[(x, row)] = x % distance == 0 ? CellState.Solid : CellState.Empty;
         } 
     }
 
-    public static void AddSingleColumnWithCellOnEveryYRow(IPlayGround<bool> playground, int distance, int column)
+    public static void AddSingleColumnWithCellOnEveryYRow(IPlayGround playground, int distance, int column)
     {
         for (int y = 0; y < playground.Dimension.Y; y++)
         {
-            playground[(column, y)] = y % distance == 0;
+            playground[(column, y)] = y % distance == 0 ? CellState.Solid : CellState.Empty;
         } 
     }
 
-    public static void AddSingleCell(IPlayGround<bool> playground, Vector position)
+    public static void AddSingleCell(IPlayGround playground, Vector position)
     {
         AddSingleCell(playground, position.X, position.Y);
     }
     
-    public static void AddSingleCell(IPlayGround<bool> playground, int x, int y)
+    public static void AddSingleCell(IPlayGround playground, int x, int y)
     {
-        playground[(x, y)] = true;
+        playground[(x, y)] = CellState.Solid;
     }
     
     // **Muster 1: Blinker (kleiner Oszillator)**
-    public static void AddBlinker(IPlayGround<bool> playground, Vector startPosition)
-    {
-        playground[new Vector(startPosition.X, startPosition.Y)] = true;
-        playground[new Vector(startPosition.X + 1, startPosition.Y)] = true;
-        playground[new Vector(startPosition.X + 2, startPosition.Y)] = true;
+    public static void AddBlinker(IPlayGround playground, Vector startPosition)
+    { 
+        playground[new Vector(startPosition.X, startPosition.Y)] = CellState.Solid;
+        playground[new Vector(startPosition.X + 1, startPosition.Y)] = CellState.Solid;
+        playground[new Vector(startPosition.X + 2, startPosition.Y)] = CellState.Solid;
     }
 
     // **Muster 2: Glider (bewegliches Muster)**
-    public static void AddGlider(IPlayGround<bool> playground, Vector startPosition)
+    public static void AddGlider(IPlayGround playground, Vector startPosition)
     {
-        playground[new Vector(startPosition.X + 2, startPosition.Y)] = true;        // Zelle oben rechts
-        playground[new Vector(startPosition.X, startPosition.Y + 1)] = true;        // Zelle Mitte links
-        playground[new Vector(startPosition.X + 2, startPosition.Y + 1)] = true;    // Zelle Mitte rechts
-        playground[new Vector(startPosition.X + 1, startPosition.Y + 2)] = true;    // Zelle Mitte unten
-        playground[new Vector(startPosition.X + 2, startPosition.Y + 2)] = true;    // Zelle unten rechts 
+        playground[new Vector(startPosition.X + 2, startPosition.Y)] = CellState.Solid;        // Zelle oben rechts
+        playground[new Vector(startPosition.X, startPosition.Y + 1)] = CellState.Solid;        // Zelle Mitte links
+        playground[new Vector(startPosition.X + 2, startPosition.Y + 1)] = CellState.Solid;    // Zelle Mitte rechts
+        playground[new Vector(startPosition.X + 1, startPosition.Y + 2)] = CellState.Solid;    // Zelle Mitte unten
+        playground[new Vector(startPosition.X + 2, startPosition.Y + 2)] = CellState.Solid;    // Zelle unten rechts 
     }
 
     // **Muster 3: Toad (größerer Oszillator)**
-    public static void AddToad(IPlayGround<bool> playground, Vector startPosition)
+    public static void AddToad(IPlayGround playground, Vector startPosition)
     {
-        playground[new Vector(startPosition.X + 1, startPosition.Y)] = true;
-        playground[new Vector(startPosition.X + 2, startPosition.Y)] = true;
-        playground[new Vector(startPosition.X + 3, startPosition.Y)] = true;
-        playground[new Vector(startPosition.X, startPosition.Y + 1)] = true;
-        playground[new Vector(startPosition.X + 1, startPosition.Y + 1)] = true;
-        playground[new Vector(startPosition.X + 2, startPosition.Y + 1)] = true; 
+        playground[new Vector(startPosition.X + 1, startPosition.Y)] = CellState.Solid;
+        playground[new Vector(startPosition.X + 2, startPosition.Y)] = CellState.Solid;
+        playground[new Vector(startPosition.X + 3, startPosition.Y)] = CellState.Solid;
+        playground[new Vector(startPosition.X, startPosition.Y + 1)] = CellState.Solid;
+        playground[new Vector(startPosition.X + 1, startPosition.Y + 1)] = CellState.Solid;
+        playground[new Vector(startPosition.X + 2, startPosition.Y + 1)] = CellState.Solid; 
     }
 
     // **Muster 4: Block (stabiler Zustand)**
-    public static void AddBlock(IPlayGround<bool> playground, Vector startPosition)
+    public static void AddBlock(IPlayGround playground, Vector startPosition)
     {
-        playground[new Vector(startPosition.X, startPosition.Y)] = true;
-        playground[new Vector(startPosition.X + 1, startPosition.Y)] = true;
-        playground[new Vector(startPosition.X, startPosition.Y + 1)] = true;
-        playground[new Vector(startPosition.X + 1, startPosition.Y + 1)] = true; 
+        playground[new Vector(startPosition.X, startPosition.Y)] = CellState.Solid;
+        playground[new Vector(startPosition.X + 1, startPosition.Y)] = CellState.Solid;
+        playground[new Vector(startPosition.X, startPosition.Y + 1)] = CellState.Solid;
+        playground[new Vector(startPosition.X + 1, startPosition.Y + 1)] = CellState.Solid; 
     }
 
     // **Muster 5: Beacon (kleiner oszillierender Zustand)**
-    public static void AddBeacon(IPlayGround<bool> playground, Vector startPosition)
+    public static void AddBeacon(IPlayGround playground, Vector startPosition)
     {
         // Oberer linker Block
-        playground[new Vector(startPosition.X, startPosition.Y)] = true;
-        playground[new Vector(startPosition.X + 1, startPosition.Y)] = true;
-        playground[new Vector(startPosition.X, startPosition.Y + 1)] = true;
-        playground[new Vector(startPosition.X + 1, startPosition.Y + 1)] = true;
+        playground[new Vector(startPosition.X, startPosition.Y)] = CellState.Solid;
+        playground[new Vector(startPosition.X + 1, startPosition.Y)] = CellState.Solid;
+        playground[new Vector(startPosition.X, startPosition.Y + 1)] = CellState.Solid;
+        playground[new Vector(startPosition.X + 1, startPosition.Y + 1)] = CellState.Solid;
 
         // Unterer rechter Block
-        playground[new Vector(startPosition.X + 2, startPosition.Y + 2)] = true;
-        playground[new Vector(startPosition.X + 3, startPosition.Y + 2)] = true;
-        playground[new Vector(startPosition.X + 2, startPosition.Y + 3)] = true;
-        playground[new Vector(startPosition.X + 3, startPosition.Y + 3)] = true;   
+        playground[new Vector(startPosition.X + 2, startPosition.Y + 2)] = CellState.Solid;
+        playground[new Vector(startPosition.X + 3, startPosition.Y + 2)] = CellState.Solid;
+        playground[new Vector(startPosition.X + 2, startPosition.Y + 3)] = CellState.Solid;
+        playground[new Vector(startPosition.X + 3, startPosition.Y + 3)] = CellState.Solid;   
     }
 }

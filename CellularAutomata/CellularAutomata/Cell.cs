@@ -2,8 +2,8 @@
 
 namespace CellularAutomata;
 
-[StructLayout(LayoutKind.Sequential)]
-public record struct Cell<T>(T State)
+[StructLayout(LayoutKind.Sequential, Size = 1)]
+public record struct Cell(CellState State)
 {
-    public T State = State;
+    public CellState State = State;
 }

@@ -8,9 +8,9 @@ namespace Visualizer;
 
 using Vector = CellularAutomata.Vector;
 
-public static class AvaloniaVisualizer<T>
+public static class AvaloniaVisualizer
 {
-    public static void Render(PlayGround<T> playGround, Vector cellSize, Canvas canvas, int renderEngineIndex, Color emptyColor, Func<T, Color> stateToColor)
+    public static void Render(PlayGround playGround, Vector cellSize, Canvas canvas, int renderEngineIndex, Color emptyColor, Func<CellState, Color> stateToColor)
     {
         switch (renderEngineIndex)
         {
@@ -29,7 +29,7 @@ public static class AvaloniaVisualizer<T>
         }
     }
     
-    public static void Render(PlayGroundArray<T> playGround, Vector cellSize, Canvas canvas, int renderEngineIndex, Color emptyColor, Func<T, Color> stateToColor)
+    public static void Render(PlayGroundArray playGround, Vector cellSize, Canvas canvas, int renderEngineIndex, Color emptyColor, Func<CellState, Color> stateToColor)
     {
         switch (renderEngineIndex)
         {
@@ -48,7 +48,7 @@ public static class AvaloniaVisualizer<T>
         }
     }
     
-    private static void RenderAsRectangles(PlayGround<T> playGround, Vector cellSize, Canvas canvas, Color emptyColor, Func<T, Color> stateToColor)
+    private static void RenderAsRectangles(PlayGround playGround, Vector cellSize, Canvas canvas, Color emptyColor, Func<CellState, Color> stateToColor)
     {
         var cellWidth = cellSize.X;
         var cellHeight = cellSize.Y;
@@ -80,7 +80,7 @@ public static class AvaloniaVisualizer<T>
         }
     }
     
-    private static void RenderAsRectangles(PlayGroundArray<T> playGround, Vector cellSize, Canvas canvas, Color emptyColor, Func<T, Color> stateToColor)
+    private static void RenderAsRectangles(PlayGroundArray playGround, Vector cellSize, Canvas canvas, Color emptyColor, Func<CellState, Color> stateToColor)
     {
         var cellWidth = cellSize.X;
         var cellHeight = cellSize.Y;

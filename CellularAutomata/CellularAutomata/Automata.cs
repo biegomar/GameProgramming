@@ -2,15 +2,15 @@
 
 namespace CellularAutomata;
 
-public sealed class Automata<T>
+public sealed class Automata
 {
-    private PlayGround<T>? nextGenerationPlayGround;
+    private PlayGround? nextGenerationPlayGround;
     
     private void InitNextGenerationPlayGround(Vector dimension)
     {
         if (nextGenerationPlayGround == null || nextGenerationPlayGround.Dimension != dimension)
         {
-            nextGenerationPlayGround = new PlayGround<T>(dimension);
+            nextGenerationPlayGround = new PlayGround(dimension);
         }
     }
 
@@ -19,7 +19,7 @@ public sealed class Automata<T>
         this.InitNextGenerationPlayGround(dimension);
     }
     
-    public PlayGround<T> NextGeneration(PlayGround<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn)
+    public PlayGround NextGeneration(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn)
     {
         //InitNextGenerationPlayGround(initialPlayGround);
         
@@ -28,14 +28,14 @@ public sealed class Automata<T>
             nextGenerationPlayGround![cell.Key] = ruleSet.ApplyRules(initialPlayGround, cell.Key); 
         }
         
-        nextGenerationPlayGround = (PlayGround<T>)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn);
+        nextGenerationPlayGround = (PlayGround)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn);
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
         
         return initialPlayGround;
     }
 
-    public PlayGround<T> NextGenerationParallel(PlayGround<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn, int maxDegreeOfParallelism)
+    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn, int maxDegreeOfParallelism)
     {
         var parallelOptions = new ParallelOptions()
         {
@@ -48,16 +48,16 @@ public sealed class Automata<T>
             nextGenerationPlayGround![cell.Key] = ruleSet.ApplyRules(ground, cell.Key);
         });
         
-        nextGenerationPlayGround = (PlayGround<T>)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn);
+        nextGenerationPlayGround = (PlayGround)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn);
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
         
         return initialPlayGround;
     }
     
-    public PlayGround<T> NextGenerationForLoop(PlayGround<T> initialPlayGround, IRuleSet<T> ruleSet, bool isSpawn)
+    public PlayGround NextGenerationForLoop(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn)
     {
-        var newPlayGround = new PlayGround<T>(initialPlayGround.Dimension);
+        var newPlayGround = new PlayGround(initialPlayGround.Dimension);
         var dimensionX = initialPlayGround.Dimension.X;
         var dimensionY = initialPlayGround.Dimension.Y;
         
@@ -69,13 +69,13 @@ public sealed class Automata<T>
             }
         }
         
-        var resultPlayGround = (PlayGround<T>)ruleSet.ApplySpawnRules(newPlayGround, isSpawn);
+        var resultPlayGround = (PlayGround)ruleSet.ApplySpawnRules(newPlayGround, isSpawn);
         
         return resultPlayGround;
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void Swap(ref PlayGround<T> instanceOne, ref PlayGround<T> instanceTwo)
+    private void Swap(ref PlayGround instanceOne, ref PlayGround instanceTwo)
     { 
         (instanceOne, instanceTwo) = (instanceTwo, instanceOne);
     }

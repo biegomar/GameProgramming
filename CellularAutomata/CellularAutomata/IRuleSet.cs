@@ -1,8 +1,8 @@
 ﻿namespace CellularAutomata;
 
-public interface IRuleSet<T> : IBaseRuleSet
+public interface IRuleSet : IBaseRuleSet
 {
-    T ApplyRules(IPlayGround<T> playGround, Vector position);
-    T ApplyRules(IPlayGround<T> playGround, (int X, int Y) position);
-    IPlayGround<T> ApplySpawnRules(IPlayGround<T> playGround, bool isSpawn);
+    CellState ApplyRules(IPlayGround playGround, Vector position);
+    CellState ApplyRules(IPlayGround playGround, (int X, int Y) position);
+    IPlayGround ApplySpawnRules(IPlayGround playGround, bool isSpawn);
 }
