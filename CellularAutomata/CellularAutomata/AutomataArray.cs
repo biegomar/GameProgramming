@@ -1,23 +1,19 @@
 ﻿using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
+using System.Linq;
 
 namespace CellularAutomata;
 
 public sealed class AutomataArray
 {
-    private PlayGroundArray? nextGenerationPlayGround;
+    private PlayGroundArray nextGenerationPlayGround;
     
-    private void InitNextGenerationPlayGround(Vector dimension)
+    public AutomataArray(Vector dimension)
     {
         if (nextGenerationPlayGround == null || nextGenerationPlayGround.Dimension != dimension)
         {
             nextGenerationPlayGround = new PlayGroundArray(dimension);
         }
-    }
-    
-    public AutomataArray(Vector dimension)
-    {
-        this.InitNextGenerationPlayGround(dimension);
     }
     
     public PlayGroundArray NextGeneration(PlayGroundArray initialPlayGround, IRuleSet ruleSet, bool isSpawn)
@@ -26,11 +22,11 @@ public sealed class AutomataArray
         {
             for (var row = 0; row < initialPlayGround.Dimension.Y; row++)
             {
-                nextGenerationPlayGround![(column, row)] = ruleSet.ApplyRules(initialPlayGround, (column, row));    
+                nextGenerationPlayGround[(column, row)] = ruleSet.ApplyRules(initialPlayGround, (column, row));    
             }
         }
         
-        nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn);
+        nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround, isSpawn);
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
         
@@ -44,37 +40,24 @@ public sealed class AutomataArray
             MaxDegreeOfParallelism = Math.Min(maxDegreeOfParallelism, Environment.ProcessorCount)
         };
 
-        if (nextGenerationPlayGround != null)
-        {
-            // var ground = initialPlayGround;
-            // Parallel.For(0, initialPlayGround.Dimension.X, parallelOptions, x =>
-            // {
-            //     for (var y = 0; y < ground.Dimension.Y; y++)
-            //     {
-            //         nextGenerationPlayGround[(x, y)] = ruleSet.ApplyRules(ground, (x, y));
-            //     }
-            // });
-            
-            var ground = initialPlayGround;
-            
-            var xPartitioner = Partitioner.Create(0, initialPlayGround.Dimension.X);
-
-            Parallel.ForEach(xPartitioner, parallelOptions, range =>
-            {
-                for (var x = range.Item1; x < range.Item2; x++) 
-                {
-                    for (var y = 0; y < ground.Dimension.Y; y++)
-                    {
-                        nextGenerationPlayGround[(x, y)] = ruleSet.ApplyRules(ground, (x, y));
-                    }
-                }
-            });
-
-            
-            nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround, isSpawn);
+        var ground = initialPlayGround;
         
-            Swap(ref initialPlayGround, ref nextGenerationPlayGround);    
-        }
+        var xPartitioner = Partitioner.Create(0, initialPlayGround.Dimension.X);
+        
+        Parallel.ForEach(xPartitioner, parallelOptions, range =>
+        {
+            for (var x = range.Item1; x < range.Item2; x++) 
+            {
+                for (var y = 0; y < ground.Dimension.Y; y++)
+                {
+                    nextGenerationPlayGround[(x, y)] = ruleSet.ApplyRules(ground, (x, y));
+                }
+            }
+        });
+        
+        nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround, isSpawn);
+        
+        Swap(ref initialPlayGround, ref nextGenerationPlayGround); 
         
         return initialPlayGround;
     }

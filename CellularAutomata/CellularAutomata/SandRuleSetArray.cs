@@ -7,6 +7,8 @@ public sealed class SandRuleSetArray : IRuleSet
 {
     private Vector dimension;
     private bool isInitialized = false;
+    private const CellState Solid = CellState.Solid;
+    private const CellState Empty = CellState.Empty;
     
     public IDictionary<string, uint> RuleCounter { get; init; } = new Dictionary<string, uint>
     {
@@ -55,13 +57,13 @@ public sealed class SandRuleSetArray : IRuleSet
         {
             //RuleCounter["Prio0"]++;
             if (
-                (cellNeighbors.Bottom == CellState.Empty ||
-                 cellNeighbors is { BottomRight: CellState.Empty, Right: CellState.Empty } 
-                     or { BottomLeft: CellState.Empty, Left: CellState.Empty, LeftLeft: CellState.Empty })
+                (cellNeighbors.Bottom == Empty ||
+                 cellNeighbors is { BottomRight: Empty, Right: Empty } 
+                     or { BottomLeft: Empty, Left: Empty, LeftLeft: Empty })
                 && position.Y < playGround.Dimension.Y - 1
                )
             {
-                return CellState.Empty;
+                return Empty;
             }
             
             return cellState;
@@ -70,7 +72,7 @@ public sealed class SandRuleSetArray : IRuleSet
         if (IsSolid(cellState))
         {
             //RuleCounter["Solid"]++;
-            return CellState.Solid;
+            return Solid;
         }
         
         
@@ -84,8 +86,8 @@ public sealed class SandRuleSetArray : IRuleSet
         }
 
         // Prio 2: grain to the top left, but only if its Prio 1 is blocked.
-        if (IsSand(cellNeighbors.TopLeft) && (IsSand(cellNeighbors.Left) || cellNeighbors.Left == CellState.Solid) &&
-            cellNeighbors.Top == CellState.Empty)
+        if (IsSand(cellNeighbors.TopLeft) && (IsSand(cellNeighbors.Left) || cellNeighbors.Left == Solid) &&
+            cellNeighbors.Top == Empty)
         {
             //RuleCounter["Prio2"]++;
             return cellNeighbors.TopLeft;
@@ -94,17 +96,17 @@ public sealed class SandRuleSetArray : IRuleSet
         // Prio 3: grain to the top right, but only if its Prio 1 and Prio 2 is blocked.
         var cellNeighborsFromRight = GetNeighboursState(playGround, (position.X + 1, position.Y));
         if (IsSand(cellNeighbors.TopRight) &&
-            cellNeighbors.Top == CellState.Empty &&
-            (IsSand(cellNeighbors.Right) || cellNeighbors.Right == CellState.Solid) &&
-            (IsSand(cellNeighborsFromRight.Right) || cellNeighborsFromRight.Right == CellState.Solid || 
-             (cellNeighborsFromRight.Right == CellState.Empty && cellNeighborsFromRight.TopRight != CellState.Empty)))
+            cellNeighbors.Top == Empty &&
+            (IsSand(cellNeighbors.Right) || cellNeighbors.Right == Solid) &&
+            (IsSand(cellNeighborsFromRight.Right) || cellNeighborsFromRight.Right == Solid || 
+             (cellNeighborsFromRight.Right == Empty && cellNeighborsFromRight.TopRight != Empty)))
         {
             //RuleCounter["Prio3"]++;
             return cellNeighbors.TopRight; 
         }
 
         //RuleCounter["Empty"]++;
-        return CellState.Empty;
+        return Empty;
     }
     
     public IPlayGround ApplySpawnRules(IPlayGround playGround, bool isSpawn)
@@ -116,7 +118,7 @@ public sealed class SandRuleSetArray : IRuleSet
             var position = (localPlayGround.Dimension.X / 2, 0);
             var cellNeighbors = GetNeighboursState(localPlayGround, position);
 
-            if (cellNeighbors.Bottom == CellState.Empty)
+            if (cellNeighbors.Bottom == Empty)
             {
                 localPlayGround[position] = CellState.Sand;    
             }    
@@ -142,15 +144,15 @@ public sealed class SandRuleSetArray : IRuleSet
         
         
         return new CellNeighbors(
-            TopLeft: IsWithinBounds(topLeft.X, topLeft.Y) ? playGround[topLeft] : CellState.Empty,
-            Top: IsWithinBounds(top.X, top.Y) ? playGround[top] : CellState.Empty,
-            TopRight: IsWithinBounds(topRight.X, topRight.Y) ? playGround[topRight] : CellState.Empty,
-            Left: IsWithinBounds(left.X, left.Y) ? playGround[left] : CellState.Empty,
-            LeftLeft: IsWithinBounds(left.X - 1, left.Y) ? playGround[leftleft] : CellState.Empty,
-            Right: IsWithinBounds(right.X, right.Y) ? playGround[right] : CellState.Empty,
-            BottomLeft: IsWithinBounds(bottomLeft.X, bottomLeft.Y) ? playGround[bottomLeft] : CellState.Empty,
-            Bottom: IsWithinBounds(bottom.X, bottom.Y) ? playGround[bottom] : CellState.Empty,
-            BottomRight: IsWithinBounds(bottomRight.X, bottomRight.Y) ? playGround[bottomRight] : CellState.Empty
+            TopLeft: IsWithinBounds(topLeft.X, topLeft.Y) ? playGround[topLeft] : Empty,
+            Top: IsWithinBounds(top.X, top.Y) ? playGround[top] : Empty,
+            TopRight: IsWithinBounds(topRight.X, topRight.Y) ? playGround[topRight] : Empty,
+            Left: IsWithinBounds(left.X, left.Y) ? playGround[left] : Empty,
+            LeftLeft: IsWithinBounds(left.X - 1, left.Y) ? playGround[leftleft] : Empty,
+            Right: IsWithinBounds(right.X, right.Y) ? playGround[right] : Empty,
+            BottomLeft: IsWithinBounds(bottomLeft.X, bottomLeft.Y) ? playGround[bottomLeft] : Empty,
+            Bottom: IsWithinBounds(bottom.X, bottom.Y) ? playGround[bottom] : Empty,
+            BottomRight: IsWithinBounds(bottomRight.X, bottomRight.Y) ? playGround[bottomRight] : Empty
         );
     }
     
