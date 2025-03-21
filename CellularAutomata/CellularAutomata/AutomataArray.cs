@@ -16,7 +16,7 @@ public sealed class AutomataArray
         }
     }
     
-    public PlayGroundArray NextGeneration(PlayGroundArray initialPlayGround, IRuleSet ruleSet, bool isSpawn)
+    public PlayGroundArray NextGeneration(PlayGroundArray initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition)
     {
         for (var column = 0; column < initialPlayGround.Dimension.X; column++)
         {
@@ -26,14 +26,14 @@ public sealed class AutomataArray
             }
         }
         
-        nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround, isSpawn);
+        nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround, isSpawn, spawnPosition);
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
         
         return initialPlayGround;
     }
     
-    public PlayGroundArray NextGenerationParallel(PlayGroundArray initialPlayGround, IRuleSet ruleSet, bool isSpawn, int maxDegreeOfParallelism)
+    public PlayGroundArray NextGenerationParallel(PlayGroundArray initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition, int maxDegreeOfParallelism)
     {
         var parallelOptions = new ParallelOptions()
         {
@@ -55,7 +55,7 @@ public sealed class AutomataArray
             }
         });
         
-        nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround, isSpawn);
+        nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround, isSpawn, spawnPosition);
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround); 
         

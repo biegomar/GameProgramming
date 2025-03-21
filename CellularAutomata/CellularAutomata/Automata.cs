@@ -19,7 +19,7 @@ public sealed class Automata
         this.InitNextGenerationPlayGround(dimension);
     }
     
-    public PlayGround NextGeneration(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn)
+    public PlayGround NextGeneration(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition)
     {
         //InitNextGenerationPlayGround(initialPlayGround);
         
@@ -28,14 +28,14 @@ public sealed class Automata
             nextGenerationPlayGround![cell.Key] = ruleSet.ApplyRules(initialPlayGround, cell.Key); 
         }
         
-        nextGenerationPlayGround = (PlayGround)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn);
+        nextGenerationPlayGround = (PlayGround)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn, spawnPosition);
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
         
         return initialPlayGround;
     }
 
-    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn, int maxDegreeOfParallelism)
+    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition, int maxDegreeOfParallelism)
     {
         var parallelOptions = new ParallelOptions()
         {
@@ -48,14 +48,14 @@ public sealed class Automata
             nextGenerationPlayGround![cell.Key] = ruleSet.ApplyRules(ground, cell.Key);
         });
         
-        nextGenerationPlayGround = (PlayGround)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn);
+        nextGenerationPlayGround = (PlayGround)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn, spawnPosition);
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
         
         return initialPlayGround;
     }
     
-    public PlayGround NextGenerationForLoop(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn)
+    public PlayGround NextGenerationForLoop(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition)
     {
         var newPlayGround = new PlayGround(initialPlayGround.Dimension);
         var dimensionX = initialPlayGround.Dimension.X;
@@ -69,7 +69,7 @@ public sealed class Automata
             }
         }
         
-        var resultPlayGround = (PlayGround)ruleSet.ApplySpawnRules(newPlayGround, isSpawn);
+        var resultPlayGround = (PlayGround)ruleSet.ApplySpawnRules(newPlayGround, isSpawn, spawnPosition);
         
         return resultPlayGround;
     }

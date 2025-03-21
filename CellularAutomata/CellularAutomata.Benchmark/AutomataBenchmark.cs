@@ -24,7 +24,7 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGround = automataBool.NextGenerationForLoop(playGround, ruleSet, false);    
+            playGround = automataBool.NextGenerationForLoop(playGround, ruleSet, false, new Vector(0,0));    
         }
     }
     
@@ -33,7 +33,7 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGround = automataBool.NextGeneration(playGround, ruleSet, false);    
+            playGround = automataBool.NextGeneration(playGround, ruleSet, false, new Vector(0,0));    
         }
     }
     
@@ -42,7 +42,7 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGround = automataBool.NextGenerationParallel(playGround, ruleSet, false, Environment.ProcessorCount);    
+            playGround = automataBool.NextGenerationParallel(playGround, ruleSet, false, new Vector(0,0), Environment.ProcessorCount);    
         }
     }
     
@@ -51,7 +51,7 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGround = automataBool.NextGenerationParallel(playGround, ruleSet, false,Environment.ProcessorCount / 2);    
+            playGround = automataBool.NextGenerationParallel(playGround, ruleSet, false, new Vector(0,0),Environment.ProcessorCount / 2);    
         }
     }
     
@@ -60,7 +60,7 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGround = automataBool.NextGenerationParallel(playGround, ruleSet, false, 2);    
+            playGround = automataBool.NextGenerationParallel(playGround, ruleSet, false, new Vector(0,0), 2);    
         }
     }
     
@@ -69,7 +69,7 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGround = automataBool.NextGenerationParallel(playGround, ruleSet, false, 4);    
+            playGround = automataBool.NextGenerationParallel(playGround, ruleSet, false, new Vector(0,0), 4);    
         }
     }
     
@@ -78,7 +78,7 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGround = automataBool.NextGenerationParallel(playGround, ruleSet, false, 8);    
+            playGround = automataBool.NextGenerationParallel(playGround, ruleSet, false, new Vector(0,0), 8);    
         }
     }
     
@@ -87,7 +87,7 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGround = automataBool.NextGenerationParallel(playGround, ruleSet, false, 16);    
+            playGround = automataBool.NextGenerationParallel(playGround, ruleSet, false, new Vector(0,0), 16);    
         }
     }
     
@@ -96,7 +96,7 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGroundArray = automataArrayBool.NextGeneration(playGroundArray, ruleSetArray, false);    
+            playGroundArray = automataArrayBool.NextGeneration(playGroundArray, ruleSetArray, false, new Vector(0,0));    
         }
     }
     
@@ -105,7 +105,7 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGroundArray = automataArrayBool.NextGenerationParallel(playGroundArray, ruleSetArray, false, Environment.ProcessorCount / 2);    
+            playGroundArray = automataArrayBool.NextGenerationParallel(playGroundArray, ruleSetArray, false, new Vector(0,0), Environment.ProcessorCount / 2);    
         }
     }
     
@@ -114,7 +114,7 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGroundArray = automataArrayBool.NextGenerationParallel(playGroundArray, ruleSetArray, false, Environment.ProcessorCount);    
+            playGroundArray = automataArrayBool.NextGenerationParallel(playGroundArray, ruleSetArray, false, new Vector(0,0), Environment.ProcessorCount);    
         }
     }
     
@@ -123,7 +123,7 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGroundArray = automataArrayBool.NextGenerationParallel(playGroundArray, ruleSetArray, false, 2);    
+            playGroundArray = automataArrayBool.NextGenerationParallel(playGroundArray, ruleSetArray, false, new Vector(0,0), 2);    
         }
     }
     
@@ -132,7 +132,7 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGroundArray = automataArrayBool.NextGenerationParallel(playGroundArray, ruleSetArray, false, 4);    
+            playGroundArray = automataArrayBool.NextGenerationParallel(playGroundArray, ruleSetArray, false, new Vector(0,0), 4);    
         }
     }
     
@@ -141,7 +141,7 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGroundArray = automataArrayBool.NextGenerationParallel(playGroundArray, ruleSetArray, false, 8);    
+            playGroundArray = automataArrayBool.NextGenerationParallel(playGroundArray, ruleSetArray, false, new Vector(0,0), 8);    
         }
     }
     
@@ -150,7 +150,7 @@ public class AutomataBenchmark
     {
         for (int i = 0; i < Iterations; i++)
         {
-            playGroundArray = automataArrayBool.NextGenerationParallel(playGroundArray, ruleSetArray, false, 16);    
+            playGroundArray = automataArrayBool.NextGenerationParallel(playGroundArray, ruleSetArray, false, new Vector(0,0), 16);    
         }
     }
 }

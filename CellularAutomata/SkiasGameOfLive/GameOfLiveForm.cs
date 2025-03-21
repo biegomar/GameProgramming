@@ -327,15 +327,15 @@ public partial class GameOfLiveForm : Form
     {
         playGroundBool = type switch
         {
-            RuleSetType.GameOfLife => automataBool.NextGenerationParallel((playGroundBool as PlayGround)!, (ruleSet as GameOfLifeRuleSet)!, false, maxDegreeOfParallelism),
-            RuleSetType.GameOfLifeArray => automataArrayBool.NextGenerationParallel((playGroundBool as PlayGroundArray)!,(ruleSet as GameOfLifeRuleSetArray)!, false, maxDegreeOfParallelism),
+            RuleSetType.GameOfLife => automataBool.NextGenerationParallel((playGroundBool as PlayGround)!, (ruleSet as GameOfLifeRuleSet)!, false, new Vector(0,0), maxDegreeOfParallelism),
+            RuleSetType.GameOfLifeArray => automataArrayBool.NextGenerationParallel((playGroundBool as PlayGroundArray)!,(ruleSet as GameOfLifeRuleSetArray)!, false, new Vector(0,0), maxDegreeOfParallelism),
             _ => playGroundBool
         };
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSandBool.NextGenerationParallel((playGroundSand as PlayGround)!, (ruleSet as SandRuleSet)!, false, maxDegreeOfParallelism),
-            RuleSetType.SandArray => automataSandArrayBool.NextGenerationParallel((playGroundSand as PlayGroundArray)!,(ruleSet as SandRuleSetArray)!, false, maxDegreeOfParallelism),
+            RuleSetType.Sand => automataSandBool.NextGenerationParallel((playGroundSand as PlayGround)!, (ruleSet as SandRuleSet)!, false, new Vector(0,0), maxDegreeOfParallelism),
+            RuleSetType.SandArray => automataSandArrayBool.NextGenerationParallel((playGroundSand as PlayGroundArray)!,(ruleSet as SandRuleSetArray)!, false, new Vector(0,0), maxDegreeOfParallelism),
             _ => playGroundSand
         };
     }

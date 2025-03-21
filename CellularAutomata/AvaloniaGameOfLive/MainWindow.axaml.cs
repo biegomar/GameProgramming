@@ -29,14 +29,6 @@ public partial class MainWindow : Window
         Wolfram,
     }
     
-    private readonly SKColor[] colors =
-    [
-        new (194, 178, 128), 
-        new (210, 180, 140), 
-        new (244, 164, 96),  
-        new (222, 184, 135)
-    ];
-    
     private Vector cellSize => new ((int)cellSizeSelector.Value, (int)cellSizeSelector.Value);
     private Vector dimension;
     private SKColor aliveColor = SKColors.Chartreuse;
@@ -44,7 +36,9 @@ public partial class MainWindow : Window
     
     private ToolTip toolTip;
     private readonly DispatcherTimer toolTipTimer = new ();
-    private bool _isTooltipVisible = false;
+    private bool isTooltipVisible = false;
+    private bool isSpawnActive = false;
+    private Vector spawnPosition = new (0, 0);
 
     private IList<long> generationTimes;
     private IList<long> renderingTimes;
@@ -104,6 +98,7 @@ public partial class MainWindow : Window
         
         GameOfLiveView.PaintSurface += GameOfLiveView_PaintSurface;
         GameOfLiveView.PointerPressed += GameOfLiveView_PointerPressed;
+        GameOfLiveView.PointerReleased += GameOfLiveView_PointerReleased;
     }
     
     private void startGameOfLive_Click(object sender, EventArgs e)
@@ -158,11 +153,33 @@ public partial class MainWindow : Window
         {
             HandleRightClickOnGameView(e);
         }
+        else if (IsLeftButtonPressed(e))
+        {
+            HandleLeftClickOnGameView(e);
+        }
+    }
+    
+    private void GameOfLiveView_PointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        if (IsLeftButtonReleased(e))
+        {
+            HandleLeftReleasedOnGameView();
+        }
     }
     
     private bool IsRightButtonPressed(PointerPressedEventArgs e)
     {
         return e.GetCurrentPoint(GameOfLiveView).Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed;
+    }
+    
+    private bool IsLeftButtonReleased(PointerReleasedEventArgs e)
+    {
+        return e.GetCurrentPoint(GameOfLiveView).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased;
+    }
+    
+    private bool IsLeftButtonPressed(PointerPressedEventArgs e)
+    {
+        return e.GetCurrentPoint(GameOfLiveView).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed;
     }
     
     private Task HandleRightClickOnGameView(PointerPressedEventArgs e)
@@ -175,7 +192,29 @@ public partial class MainWindow : Window
         return ShowTooltipWithTimeout(tooltipText);
     }
     
+    private void HandleLeftClickOnGameView(PointerPressedEventArgs e)
+    {
+        if (!isSpawnActive) isSpawnActive = true;
+
+        var position = e.GetPosition(GameOfLiveView);
+        spawnPosition = GetCellPositionFromMouseCursor(position);
+    }
+    
+    private void HandleLeftReleasedOnGameView()
+    {
+        if (isSpawnActive) isSpawnActive = false;
+    }
+    
     private string FormatTooltipText(Point position)
+    {
+        var cellPosition = GetCellPositionFromMouseCursor(position);
+
+        var cellState = GetCellState(cellPosition);
+        
+        return $"Zelle: [{cellPosition.X}, {cellPosition.Y}]: {cellState}";
+    }
+
+    private Vector GetCellPositionFromMouseCursor(Point position)
     {
         var viewWidth = GameOfLiveView.Width;
         var viewHeight = GameOfLiveView.Height;
@@ -185,9 +224,8 @@ public partial class MainWindow : Window
         
         var cellX = (int)(mouseX / viewWidth * dimension.X);
         var cellY = (int)(mouseY / viewHeight * dimension.Y);
-        var cellState = GetCellState(new Vector(cellX, cellY));
         
-        return $"Zelle: [{cellX}, {cellY}]: {cellState}";
+        return new Vector(cellX, cellY);
     }
 
     private string GetCellState(Vector cellPosition)
@@ -222,7 +260,7 @@ public partial class MainWindow : Window
         try
         {
             OpenTooltip(GameOfLiveView, tooltipText);
-            _isTooltipVisible = true;
+            isTooltipVisible = true;
                 
             await Task.Delay(TimeSpan.FromSeconds(3), tooltipCancellationSource.Token);
         }
@@ -231,7 +269,7 @@ public partial class MainWindow : Window
         }
         finally
         {
-            if (_isTooltipVisible)
+            if (isTooltipVisible)
             {
                 CloseTooltip(GameOfLiveView);
             }
@@ -243,7 +281,7 @@ public partial class MainWindow : Window
         toolTip = new ToolTip { Content = text };
         ToolTip.SetTip(control, toolTip);
         ToolTip.SetIsOpen(control, true);
-        _isTooltipVisible = true;
+        isTooltipVisible = true;
 
     }
     
@@ -252,7 +290,7 @@ public partial class MainWindow : Window
         tooltipCancellationSource?.Cancel();
         ToolTip.SetIsOpen(control, false);
         ToolTip.SetTip(control, null);
-        _isTooltipVisible = false;
+        isTooltipVisible = false;
     }
 
 
@@ -593,16 +631,16 @@ public partial class MainWindow : Window
     {
         playGroundBool = type switch
         {
-            RuleSetType.GameOfLife => automataBool.NextGenerationParallel((playGroundBool as PlayGround)!, (ruleSet as GameOfLifeRuleSet)!, false, maxDegreeOfParallelism),
-            RuleSetType.GameOfLifeArray => automataArrayBool.NextGenerationParallel((playGroundBool as PlayGroundArray)!,(ruleSet as GameOfLifeRuleSetArray)!, false, maxDegreeOfParallelism),
+            RuleSetType.GameOfLife => automataBool.NextGenerationParallel((playGroundBool as PlayGround)!, (ruleSet as GameOfLifeRuleSet)!, isSpawnActive, spawnPosition, maxDegreeOfParallelism),
+            RuleSetType.GameOfLifeArray => automataArrayBool.NextGenerationParallel((playGroundBool as PlayGroundArray)!,(ruleSet as GameOfLifeRuleSetArray)!, isSpawnActive, spawnPosition, maxDegreeOfParallelism),
             RuleSetType.Wolfram => automataWolframBool.NextGenerationParallel((playGroundBool as PlayGroundArray)!, (ruleSet as WolframRuleSet)!, generation - 1, maxDegreeOfParallelism),
             _ => playGroundBool
         };
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.NextGenerationParallel((playGroundSand as PlayGround)!, (ruleSet as SandRuleSet)!, false, maxDegreeOfParallelism),
-            RuleSetType.SandArray => automataSandArray.NextGenerationParallel((playGroundSand as PlayGroundArray)!,(ruleSet as SandRuleSetArray)!, false, maxDegreeOfParallelism),
+            RuleSetType.Sand => automataSand.NextGenerationParallel((playGroundSand as PlayGround)!, (ruleSet as SandRuleSet)!, isSpawnActive, spawnPosition, maxDegreeOfParallelism),
+            RuleSetType.SandArray => automataSandArray.NextGenerationParallel((playGroundSand as PlayGroundArray)!,(ruleSet as SandRuleSetArray)!, isSpawnActive, spawnPosition, maxDegreeOfParallelism),
             _ => playGroundSand
         };
     }

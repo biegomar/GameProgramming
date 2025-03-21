@@ -73,7 +73,7 @@ public sealed class SandRuleSet : IRuleSet
         return CellState.Empty;
     }
 
-    public IPlayGround ApplySpawnRules(IPlayGround playGround, bool isSpawn)
+    public IPlayGround ApplySpawnRules(IPlayGround playGround, bool isSpawn, Vector spawnPosition)
     {
         return playGround;
     }
