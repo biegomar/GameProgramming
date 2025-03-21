@@ -73,28 +73,9 @@ public sealed class SandRuleSet : IRuleSet
         return CellState.Empty;
     }
 
-    public CellState ApplyRules(IPlayGround playGround, (int X, int Y) position)
-    {
-        return ApplyRules(playGround, new Vector(position.X, position.Y));
-    }
-
     public IPlayGround ApplySpawnRules(IPlayGround playGround, bool isSpawn)
     {
-        var localPlayGround = (PlayGround)playGround;
-        
-        if (isSpawn)
-        {
-            
-            var position = new Vector(localPlayGround.Dimension.X / 2, 0);
-            var cellNeighbors = GetNeighboursState(localPlayGround, position);
-
-            if (cellNeighbors.Bottom == CellState.Empty)
-            {
-                localPlayGround[position] = CellState.Sand;    
-            }    
-        }
-        
-        return localPlayGround;
+        return playGround;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -36,11 +36,6 @@ public sealed class SandRuleSetArray : IRuleSet
 
     public CellState ApplyRules(IPlayGround playGround, Vector position)
     {
-        return this.ApplyRules(playGround, (position.X, position.Y));
-    }
-    
-    public CellState ApplyRules(IPlayGround playGround, (int X, int Y) position)
-    {
         var cellState = playGround[position];
         
         if (!isInitialized)
@@ -94,7 +89,7 @@ public sealed class SandRuleSetArray : IRuleSet
         }
 
         // Prio 3: grain to the top right, but only if its Prio 1 and Prio 2 is blocked.
-        var cellNeighborsFromRight = GetNeighboursState(playGround, (position.X + 1, position.Y));
+        var cellNeighborsFromRight = GetNeighboursState(playGround, position);
         if (IsSand(cellNeighbors.TopRight) &&
             cellNeighbors.Top == Empty &&
             (IsSand(cellNeighbors.Right) || cellNeighbors.Right == Solid) &&
@@ -111,56 +106,40 @@ public sealed class SandRuleSetArray : IRuleSet
     
     public IPlayGround ApplySpawnRules(IPlayGround playGround, bool isSpawn)
     {
-        var localPlayGround = (PlayGroundArray)playGround;
-        
-        if (isSpawn)
-        {
-            var position = (localPlayGround.Dimension.X / 2, 0);
-            var cellNeighbors = GetNeighboursState(localPlayGround, position);
-
-            if (cellNeighbors.Bottom == Empty)
-            {
-                localPlayGround[position] = CellState.Sand;    
-            }    
-        }
-        
-        return localPlayGround;
+        return playGround;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private CellNeighbors GetNeighboursState(IPlayGround playGround, (int X, int Y) position)
+    private CellNeighbors GetNeighboursState(IPlayGround playGround, Vector position)
     {
-        var posX = position.X;
-        var posY = position.Y;
-        (int X, int Y) topLeft = (posX - 1, posY - 1);
-        (int X, int Y) top = (posX, posY - 1);
-        (int X, int Y) topRight = (posX + 1, posY - 1);
-        (int X, int Y) left = (posX - 1, posY);
-        (int X, int Y) leftleft = (posX - 2, posY);
-        (int X, int Y) right = (posX + 1, posY);
-        (int X, int Y) bottomLeft = (posX - 1, posY + 1);
-        (int X, int Y) bottom = (posX, posY + 1);
-        (int X, int Y) bottomRight = (posX + 1, posY + 1);
-        
+        var topLeft = new Vector(position.X - 1, position.Y - 1);
+        var top = new Vector(position.X, position.Y - 1);
+        var topRight = new Vector(position.X + 1, position.Y - 1);
+        var left = new Vector(position.X - 1, position.Y);
+        var leftleft = new Vector(position.X - 2, position.Y);
+        var right = new Vector(position.X + 1, position.Y);
+        var bottomLeft = new Vector(position.X - 1, position.Y + 1);
+        var bottom = new Vector(position.X, position.Y + 1);
+        var bottomRight = new Vector(position.X + 1, position.Y + 1);
         
         return new CellNeighbors(
-            TopLeft: IsWithinBounds(topLeft.X, topLeft.Y) ? playGround[topLeft] : Empty,
-            Top: IsWithinBounds(top.X, top.Y) ? playGround[top] : Empty,
-            TopRight: IsWithinBounds(topRight.X, topRight.Y) ? playGround[topRight] : Empty,
-            Left: IsWithinBounds(left.X, left.Y) ? playGround[left] : Empty,
-            LeftLeft: IsWithinBounds(left.X - 1, left.Y) ? playGround[leftleft] : Empty,
-            Right: IsWithinBounds(right.X, right.Y) ? playGround[right] : Empty,
-            BottomLeft: IsWithinBounds(bottomLeft.X, bottomLeft.Y) ? playGround[bottomLeft] : Empty,
-            Bottom: IsWithinBounds(bottom.X, bottom.Y) ? playGround[bottom] : Empty,
-            BottomRight: IsWithinBounds(bottomRight.X, bottomRight.Y) ? playGround[bottomRight] : Empty
+            TopLeft: IsWithinBounds(playGround.Dimension, topLeft) ? playGround[topLeft] : CellState.Empty,
+            Top: IsWithinBounds(playGround.Dimension, top) ? playGround[top] : CellState.Empty,
+            TopRight: IsWithinBounds(playGround.Dimension, topRight) ? playGround[topRight] : CellState.Empty,
+            Left: IsWithinBounds(playGround.Dimension, left) ? playGround[left] : CellState.Empty,
+            LeftLeft: IsWithinBounds(playGround.Dimension, leftleft) ? playGround[leftleft] : CellState.Empty,
+            Right: IsWithinBounds(playGround.Dimension, right) ? playGround[right] : CellState.Empty,
+            BottomLeft: IsWithinBounds(playGround.Dimension, bottomLeft) ? playGround[bottomLeft] : CellState.Empty,
+            Bottom: IsWithinBounds(playGround.Dimension, bottom) ? playGround[bottom] : CellState.Empty,
+            BottomRight: IsWithinBounds(playGround.Dimension, bottomRight) ? playGround[bottomRight] : CellState.Empty
         );
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool IsWithinBounds(int x, int y )
+    private bool IsWithinBounds(Vector dimension, Vector position )
     {
-        var withinX = (uint)x < (uint)dimension.X; 
-        var withinY = (uint)y < (uint)dimension.Y;
+        var withinX = (uint)position.X < (uint)dimension.X; 
+        var withinY = (uint)position.Y < (uint)dimension.Y;
     
         return withinX && withinY;
     }
