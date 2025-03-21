@@ -26,6 +26,8 @@ public sealed class AutomataArray
             }
         }
         
+        nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround, isSpawn);
+        
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
         
         return initialPlayGround;
@@ -52,6 +54,8 @@ public sealed class AutomataArray
                 }
             }
         });
+        
+        nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround, isSpawn);
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround); 
         
