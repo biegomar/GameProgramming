@@ -28,9 +28,7 @@ public sealed class Automata
             nextGenerationPlayGround![cell.Key] = ruleSet.ApplyRules(initialPlayGround, cell.Key); 
         }
         
-        nextGenerationPlayGround = (PlayGround)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn);
-        
-        Swap(ref initialPlayGround, ref nextGenerationPlayGround);
+        Swap(ref initialPlayGround, ref nextGenerationPlayGround!);
         
         return initialPlayGround;
     }
@@ -48,9 +46,7 @@ public sealed class Automata
             nextGenerationPlayGround![cell.Key] = ruleSet.ApplyRules(ground, cell.Key);
         });
         
-        nextGenerationPlayGround = (PlayGround)ruleSet.ApplySpawnRules(nextGenerationPlayGround!, isSpawn);
-        
-        Swap(ref initialPlayGround, ref nextGenerationPlayGround);
+        Swap(ref initialPlayGround, ref nextGenerationPlayGround!);
         
         return initialPlayGround;
     }
@@ -69,9 +65,7 @@ public sealed class Automata
             }
         }
         
-        var resultPlayGround = (PlayGround)ruleSet.ApplySpawnRules(newPlayGround, isSpawn);
-        
-        return resultPlayGround;
+        return newPlayGround;
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

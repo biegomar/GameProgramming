@@ -158,11 +158,20 @@ public partial class MainWindow : Window
         {
             HandleRightClickOnGameView(e);
         }
+        else if (IsLeftButtonPressed(e))
+        {
+            HandleLeftClickOnGameView(e);
+        }
     }
     
     private bool IsRightButtonPressed(PointerPressedEventArgs e)
     {
         return e.GetCurrentPoint(GameOfLiveView).Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed;
+    }
+    
+    private bool IsLeftButtonPressed(PointerPressedEventArgs e)
+    {
+        return e.GetCurrentPoint(GameOfLiveView).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed;
     }
     
     private Task HandleRightClickOnGameView(PointerPressedEventArgs e)
@@ -173,6 +182,11 @@ public partial class MainWindow : Window
         var tooltipText = FormatTooltipText(position);
 
         return ShowTooltipWithTimeout(tooltipText);
+    }
+    
+    private void HandleLeftClickOnGameView(PointerPressedEventArgs e)
+    {
+        
     }
     
     private string FormatTooltipText(Point position)
