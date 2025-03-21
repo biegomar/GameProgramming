@@ -21,11 +21,6 @@ public sealed class GameOfLifeRuleSet : IRuleSet
     };
 
     
-    public CellState ApplyRules(IPlayGround playGround, (int X, int Y) position)
-    {
-        return this.ApplyRules(playGround, new Vector(position.X, position.Y));
-    }
-
     public CellState ApplyRules(IPlayGround playGround, Vector position)
     {
         var cellState = playGround[position];

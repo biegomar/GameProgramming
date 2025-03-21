@@ -11,7 +11,7 @@ public sealed class AutomataWolfram
         
         for (var x = 0; x < initialPlayGround.Dimension.X; x++)
         {
-            initialPlayGround[(x, row + 1)] = ruleSet.ApplyRules(initialPlayGround, (x, row));
+            initialPlayGround[(x, row + 1)] = ruleSet.ApplyRules(initialPlayGround, new Vector(x, row));
         }
         
         return initialPlayGround;
@@ -31,7 +31,7 @@ public sealed class AutomataWolfram
         
         Parallel.For(0, initialPlayGround.Dimension.X, parallelOptions, x =>
         {
-            initialPlayGround[(x, row + 1)] = ruleSet.ApplyRules(initialPlayGround, (x, row)); 
+            initialPlayGround[(x, row + 1)] = ruleSet.ApplyRules(initialPlayGround, new Vector(x, row)); 
         });
         
         return initialPlayGround;

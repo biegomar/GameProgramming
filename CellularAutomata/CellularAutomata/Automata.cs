@@ -61,7 +61,7 @@ public sealed class Automata
         {
             for (var y = 0; y < dimensionY; y++)
             {
-                newPlayGround[(x,y)] = ruleSet.ApplyRules(initialPlayGround, (x,y));
+                newPlayGround[(x,y)] = ruleSet.ApplyRules(initialPlayGround, new Vector(x,y));
             }
         }
         
