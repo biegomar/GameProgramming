@@ -73,6 +73,11 @@ public sealed class SandRuleSet : IRuleSet
         return CellState.Empty;
     }
 
+    public CellState ApplyRules(IPlayGround playGround, (int X, int Y) position)
+    {
+        return ApplyRules(playGround, new Vector(position.X, position.Y));
+    }
+
     public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector position)
     {
         var localPlayGround = (PlayGround)playGround;

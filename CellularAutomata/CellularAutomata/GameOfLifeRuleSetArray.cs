@@ -22,22 +22,27 @@ public sealed class GameOfLifeRuleSetArray : IRuleSet
     
     public CellState ApplyRules(IPlayGround playGround, Vector position)
     {
+        return this.ApplyRules(playGround, (position.X, position.Y));
+    }
+
+    public CellState ApplyRules(IPlayGround playGround, (int X, int Y) position)
+    {
         var cellState = playGround[position];
         
-        var liveNeighbors = CountLivingNeighbors(playGround, position);
+        var liveNeighbors = CountLivingNeighbors(playGround, position.X, position.Y);
         
         return liveNeighbors == 3 || (cellState == Solid && liveNeighbors == 2) ? Solid : CellState.Empty;
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private int CountLivingNeighbors(IPlayGround playGround, Vector position)
+    private int CountLivingNeighbors(IPlayGround playGround, int X, int Y)
     {
         int liveNeighbors = 0;
     
         foreach (var (dx, dy) in NeighborOffsets)
         {
-            var nx = position.X + dx;
-            var ny = position.Y + dy;
+            var nx = X + dx;
+            var ny = Y + dy;
     
             if (IsWithinBounds(playGround.Dimension, nx, ny) && playGround[(nx, ny)] == Solid)
             {
