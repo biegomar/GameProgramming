@@ -129,8 +129,7 @@ public partial class GameOfLiveForm : Form
     private void InitializeForSand()
     {
         playGroundSand = new PlayGround(dimension);
-
-        ruleSet = new SandRuleSet();
+        ruleSet = new SandRuleSet(dimension);
 
         var middle = playGroundSand.Dimension.X / 2;
         aliveColor = SKColors.Bisque;
@@ -161,8 +160,7 @@ public partial class GameOfLiveForm : Form
     private void InitializeForSandArray()
     {
         playGroundSand = new PlayGroundArray(dimension);
-
-        ruleSet = new SandRuleSetArray();
+        ruleSet = new SandRuleSetArray(dimension);
         
         var middle = playGroundSand.Dimension.X / 2;
         aliveColor = SKColors.Bisque;

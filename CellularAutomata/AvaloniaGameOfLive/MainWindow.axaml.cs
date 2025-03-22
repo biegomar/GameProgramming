@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
@@ -99,9 +98,10 @@ public partial class MainWindow : Window
         GameOfLiveView.PaintSurface += GameOfLiveView_PaintSurface;
         GameOfLiveView.PointerPressed += GameOfLiveView_PointerPressed;
         GameOfLiveView.PointerReleased += GameOfLiveView_PointerReleased;
+        GameOfLiveView.PointerMoved += GameOfLiveView_PointerMoved;
     }
     
-    private void startGameOfLive_Click(object sender, EventArgs e)
+    private void startGameOfLive_Click(object? sender, EventArgs e)
     {
         if (cancellationTokenSource == null)
         {
@@ -111,13 +111,13 @@ public partial class MainWindow : Window
         SetButtonState(true);
     }
     
-    private void btnStop_Click(object sender, EventArgs e)
+    private void btnStop_Click(object? sender, EventArgs e)
     {
         cancellationTokenSource?.Cancel();
         SetButtonState(false);
     }
     
-    private void cbRuleSet_SelectedValueChanged(object sender, EventArgs e)
+    private void cbRuleSet_SelectedValueChanged(object? sender, EventArgs e)
     {
         ruleSetType = GetTypeFromSelection();
         SetPatternItems(ruleSetType);
@@ -125,26 +125,34 @@ public partial class MainWindow : Window
         InitializePlayGround();
     }
     
-    private void cellSizeSelector_ValueChanged(object sender, EventArgs e)
+    private void cellSizeSelector_ValueChanged(object? sender, EventArgs e)
     {
         InitializePlayGround();
     }
 
-    private void processorCountSelector_ValueChanged(object sender, EventArgs e)
+    private void processorCountSelector_ValueChanged(object? sender, EventArgs e)
     {
         maxDegreeOfParallelism = (int)processorCountSelector.Value!;
     }
     
-    private void cbStopWatch_CheckedChanged(object sender, EventArgs e)
+    private void cbStopWatch_CheckedChanged(object? sender, EventArgs e)
     {
         tbStopWatch.IsVisible = cbStopWatch.IsChecked!.Value;
         stopWatchCountSelector.IsEnabled = cbStopWatch.IsChecked!.Value;
         timingEnabled = cbStopWatch.IsChecked!.Value;
     }
 
-    private void cbEngine_SelectedIndexChanged(object sender, EventArgs e)
+    private void cbEngine_SelectedIndexChanged(object? sender, EventArgs e)
     {
         InitializePlayGround();
+    }
+
+    private void GameOfLiveView_PointerMoved(object? sender, PointerEventArgs e)
+    {
+        if (isSpawnActive)
+        {
+            spawnPosition = GetCellPositionFromMouseCursor(e.GetPosition(GameOfLiveView));
+        }
     }
     
     private void GameOfLiveView_PointerPressed(object? sender, PointerPressedEventArgs e)
@@ -195,11 +203,10 @@ public partial class MainWindow : Window
     private void HandleLeftClickOnGameView(PointerPressedEventArgs e)
     {
         if (!isSpawnActive) isSpawnActive = true;
-
-        var position = e.GetPosition(GameOfLiveView);
-        spawnPosition = GetCellPositionFromMouseCursor(position);
+        
+        spawnPosition = GetCellPositionFromMouseCursor(e.GetPosition(GameOfLiveView));
     }
-    
+
     private void HandleLeftReleasedOnGameView()
     {
         if (isSpawnActive) isSpawnActive = false;
@@ -442,8 +449,7 @@ public partial class MainWindow : Window
     {
         automataSand = new Automata(dimension);
         playGroundSand = new PlayGround(dimension);
-
-        ruleSet = new SandRuleSet();
+        ruleSet = new SandRuleSet(dimension);
 
         var middle = playGroundSand.Dimension.X / 2;
         aliveColor = SKColors.Bisque;
@@ -475,8 +481,7 @@ public partial class MainWindow : Window
     {
         automataSandArray = new AutomataArray(dimension);
         playGroundSand = new PlayGroundArray(dimension);
-
-        ruleSet = new SandRuleSetArray();
+        ruleSet = new SandRuleSetArray(dimension);
         
         var middle = playGroundSand.Dimension.X / 2;
         aliveColor = SKColors.Bisque;
@@ -657,7 +662,7 @@ public partial class MainWindow : Window
         RenderPlaygroundAndDisplayGeneration();
     }
     
-    private void cbPattern_SelectedValueChanged(object sender, EventArgs e)
+    private void cbPattern_SelectedValueChanged(object? sender, EventArgs e)
     {
         InitializePlayGround();
     }

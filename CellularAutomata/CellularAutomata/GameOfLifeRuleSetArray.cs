@@ -59,7 +59,7 @@ public sealed class GameOfLifeRuleSetArray : IRuleSet
         return withinX && withinY;
     }
     
-    public IPlayGround ApplySpawnRules(IPlayGround playGround, bool isSpawn, Vector spawnPosition)
+    public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition)
     {
         return playGround;
     }

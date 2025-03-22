@@ -10,10 +10,7 @@ public sealed class AutomataArray
     
     public AutomataArray(Vector dimension)
     {
-        if (nextGenerationPlayGround == null || nextGenerationPlayGround.Dimension != dimension)
-        {
-            nextGenerationPlayGround = new PlayGroundArray(dimension);
-        }
+        nextGenerationPlayGround = new PlayGroundArray(dimension);
     }
     
     public PlayGroundArray NextGeneration(PlayGroundArray initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition)
@@ -25,8 +22,11 @@ public sealed class AutomataArray
                 nextGenerationPlayGround[(column, row)] = ruleSet.ApplyRules(initialPlayGround, new Vector(column, row));    
             }
         }
-        
-        nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround, isSpawn, spawnPosition);
+
+        if (isSpawn)
+        {
+            nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround, spawnPosition);    
+        }
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
         
@@ -54,8 +54,11 @@ public sealed class AutomataArray
                 }
             }
         });
-        
-        nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround, isSpawn, spawnPosition);
+
+        if (isSpawn)
+        {
+            nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround, spawnPosition);   
+        }
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround); 
         

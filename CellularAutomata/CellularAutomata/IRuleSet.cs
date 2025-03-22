@@ -3,5 +3,5 @@
 public interface IRuleSet : IBaseRuleSet
 {
     CellState ApplyRules(IPlayGround playGround, Vector position);
-    IPlayGround ApplySpawnRules(IPlayGround playGround, bool isSpawn, Vector spawnPosition);
+    IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition);
 }
