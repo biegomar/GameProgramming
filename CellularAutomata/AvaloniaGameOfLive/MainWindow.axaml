@@ -8,7 +8,7 @@
         Width="1280" Height="650"
         Title="AvaloniaGameOfLive"
         >
-    <Grid ColumnDefinitions="810, *, 1.4*" RowDefinitions="20, 610, *">
+    <Grid ColumnDefinitions="810, *" RowDefinitions="20, 610, *">
         <TextBlock x:Name="statusLabel"
                Grid.Column="0" 
                Grid.Row="0"  Text="Generation"
@@ -22,128 +22,124 @@
                            Margin="5">
         </avaloniaGameOfLive:SkiaCanvasControl>       
     
-        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Left" Spacing="12" Margin="5">
-            <Button x:Name="btnStart"
-                  Content="Start"
-                  Width="95"
-                  HorizontalContentAlignment="Center"/>
-            <Button x:Name="btnStop"
-                  Content="Stop" 
-                  Width="95"
-                  HorizontalContentAlignment="Center"/>
-            <Button x:Name="btnSingleStep"
-                Content="Next Step"
-                Width="95"
-                HorizontalContentAlignment="Center"
-                Click="btnSingleStep_Click"/>
-            <Button x:Name="btnReset"
-                Content="Reset"
-                Width="95"
-                HorizontalContentAlignment="Center"
-                Click="btnReset_Click"/>
-        </StackPanel>
-       
-        <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Left" Spacing="12" Margin="10">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
-                <TextBlock x:Name="lblProbability" Text="Wahrscheinlichkeit" VerticalAlignment="Center"/>
-                <NumericUpDown x:Name="probabilitySelector"
-                               Minimum="0"
-                               Maximum="1"
-                               Value="0.2"
-                               Increment="0.1"
-                               Width="120"
-                               HorizontalAlignment="Right"/>
-            </StackPanel>
-            
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
-                <TextBlock x:Name="lblRuleSet" Text="Regeln" VerticalAlignment="Center" Width="75"/>
-                <!-- Regel-Set Auswahl -->
-                <ComboBox x:Name="cbRuleSet" HorizontalAlignment="Right" Width="170" SelectedIndex="0">
-                        <ComboBox.Items>
+        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Left" Spacing="5" Margin="5,0,5,5">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="10"  >
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Spacing="10" Margin="5,5,65,5" Name="ButtonStack">
+                    <Button x:Name="btnStart"
+                            Content="Start"
+                            Width="95"
+                            HorizontalContentAlignment="Center"/>
+                    <Button x:Name="btnStop"
+                            Content="Stop" 
+                            Width="95"
+                            HorizontalContentAlignment="Center"/>
+                    <Button x:Name="btnSingleStep"
+                            Content="Next Step"
+                            Width="95"
+                            HorizontalContentAlignment="Center"
+                            Click="btnSingleStep_Click"/>
+                    <Button x:Name="btnReset"
+                            Content="Reset"
+                            Width="95"
+                            HorizontalContentAlignment="Center"
+                            Click="btnReset_Click"/>
+                </StackPanel> 
+                
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Spacing="10" Margin="5">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
+                        <TextBlock x:Name="lblProbability" Text="Wahrscheinlichkeit" VerticalAlignment="Center"/>
+                        <NumericUpDown x:Name="probabilitySelector"
+                                       Minimum="0"
+                                       Maximum="1"
+                                       Value="0.2"
+                                       Increment="0.1"
+                                       Width="120"
+                                       HorizontalAlignment="Right"/>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
+                        <TextBlock x:Name="lblRuleSet" Text="Regeln" VerticalAlignment="Center" Width="75"/>
+                        <ComboBox x:Name="cbRuleSet" HorizontalAlignment="Right" Width="170" SelectedIndex="0">
+                            <ComboBox.Items>
                                 <ComboBoxItem Content="Game of Life" />
                                 <ComboBoxItem Content="Sand" />
                                 <ComboBoxItem Content="Game of Life Array" />
                                 <ComboBoxItem Content="Sand Array" />
                                 <ComboBoxItem Content="Wolfram Array" />
-                        </ComboBox.Items>
-                </ComboBox>
-            </StackPanel>
-            
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
-                <TextBlock x:Name="lblProcessorCount" Text="Cores" VerticalAlignment="Center" Width="75"/>
-                <NumericUpDown x:Name="processorCountSelector"
-                               Minimum="1"
-                               Maximum="32"
-                               Value="8"
-                               Increment="1"
-                               Width="170"
-                               HorizontalAlignment="Right"/>
-            </StackPanel>
-            
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
-                <TextBlock x:Name="lblPattern" Text="Muster" VerticalAlignment="Center" Width="75"/>
-                <!-- Pattern-Auswahl -->
-                <ComboBox x:Name="cbPattern" 
-                          HorizontalAlignment="Right" 
-                          Width="170" 
-                          SelectedIndex="0"
-                          >
-                        <ComboBox.Items>
+                            </ComboBox.Items>
+                        </ComboBox>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
+                        <TextBlock x:Name="lblProcessorCount" Text="Cores" VerticalAlignment="Center" Width="75"/>
+                        <NumericUpDown x:Name="processorCountSelector"
+                                       Minimum="1"
+                                       Maximum="32"
+                                       Value="8"
+                                       Increment="1"
+                                       Width="170"
+                                       HorizontalAlignment="Right"/>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
+                        <TextBlock x:Name="lblPattern" Text="Muster" VerticalAlignment="Center" Width="75"/>
+                        <!-- Pattern-Auswahl -->
+                        <ComboBox x:Name="cbPattern" 
+                                  HorizontalAlignment="Right" 
+                                  Width="170" 
+                                  SelectedIndex="0"
+                        >
+                            <ComboBox.Items>
                                 <ComboBoxItem Content="Random" />
                                 <ComboBoxItem Content="Schachbrett" />
                                 <ComboBoxItem Content="Free Style" />
-                        </ComboBox.Items>
-                </ComboBox>
-            </StackPanel>
+                            </ComboBox.Items>
+                        </ComboBox>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
+                        <TextBlock x:Name="lblCellSize" Text="Zellgröße" VerticalAlignment="Center" Width="75"/>
+                        <NumericUpDown x:Name="cellSizeSelector"
+                                       Minimum="1"
+                                       Maximum="64"
+                                       Value="4"
+                                       Increment="1"
+                                       Width="170"
+                                       HorizontalAlignment="Right"/>
+                    </StackPanel>
             
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
-                <TextBlock x:Name="lblCellSize" Text="Zellgröße" VerticalAlignment="Center" Width="75"/>
-                <NumericUpDown x:Name="cellSizeSelector"
-                               Minimum="1"
-                               Maximum="64"
-                               Value="4"
-                               Increment="1"
-                               Width="170"
-                               HorizontalAlignment="Right"/>
-            </StackPanel>
-            
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
-                <TextBlock x:Name="lblEngine" Text="Engine" VerticalAlignment="Center" Width="75"/>
-                <ComboBox x:Name="cbEngine" HorizontalAlignment="Right" Width="170" SelectedIndex="0">
-                        <ComboBox.Items>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
+                        <TextBlock x:Name="lblEngine" Text="Engine" VerticalAlignment="Center" Width="75"/>
+                        <ComboBox x:Name="cbEngine" HorizontalAlignment="Right" Width="170" SelectedIndex="0">
+                            <ComboBox.Items>
                                 <ComboBoxItem Content="Rect" />
                                 <ComboBoxItem Content="Point" />
-                        </ComboBox.Items>
-                </ComboBox>
+                            </ComboBox.Items>
+                        </ComboBox>
+                    </StackPanel>
+                </StackPanel> 
             </StackPanel>
-            
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12" Margin="5,0,5,5">
+                <CheckBox x:Name="cbStopWatch" Content="Messung" VerticalAlignment="Center" Width="97" IsChecked="True" Margin="5,0,60,5"/>
                 <TextBlock x:Name="lblStopWatch" Text="Durchläufe" VerticalAlignment="Center" Width="75"/>
                 <NumericUpDown x:Name="stopWatchCountSelector"
-                           Minimum="1"
-                           Maximum="10000"
-                           Value="50"
-                           Increment="1"
-                           Width="170"
-                           HorizontalAlignment="Right"/>
+                               Minimum="1"
+                               Maximum="10000"
+                               Value="50"
+                               Increment="1"
+                               Width="170"
+                               />
             </StackPanel>
-        </StackPanel>
-        <StackPanel Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="0,260,0,0">
-            <CheckBox x:Name="cbStopWatch" Content="Zeitmessung starten" Margin="15" IsChecked="True"/>
             <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
                 <TextBox x:Name="tbStopWatch"
                          Text="Statistik"
                          AcceptsReturn="True"
                          TextWrapping="Wrap"
                          IsReadOnly="True"
-                         Margin="10"
-                         Height="280"
+                         Height="305"
                          Width="430" />
 
             </ScrollViewer>
-
-
         </StackPanel>
-        
   </Grid>
 </Window>
