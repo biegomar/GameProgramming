@@ -6,7 +6,7 @@ using GameOfLive;
 var dimension = new Vector(100,40);
 var screenSize = new Vector(dimension.X + 5, dimension.Y + 5);
 var playGround = new PlayGround(dimension);
-var ruleSet = new GameOfLifeRuleSet();
+var ruleSet = new GameOfLifeRuleSet(dimension);
 Automata automataBool = new (dimension);
 
 GameOfLifeInitializer.Randomize(playGround, 0.2);

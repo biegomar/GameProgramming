@@ -399,8 +399,7 @@ public partial class MainWindow : Window
     {
         automataBool = new Automata(dimension);
         playGroundBool = new PlayGround(dimension);
-        
-        ruleSet = new GameOfLifeRuleSet();
+        ruleSet = new GameOfLifeRuleSet(dimension);
         
         aliveColor = SKColors.Chartreuse;
         switch (cbPattern.SelectedIndex)
@@ -424,8 +423,7 @@ public partial class MainWindow : Window
     {
         automataArrayBool = new AutomataArray(dimension);
         playGroundBool = new PlayGroundArray(dimension);
-        
-        ruleSet = new GameOfLifeRuleSetArray();
+        ruleSet = new GameOfLifeRuleSetArray(dimension);
         
         aliveColor = SKColors.Chartreuse;
         switch (cbPattern.SelectedIndex)

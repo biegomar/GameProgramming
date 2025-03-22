@@ -3,9 +3,10 @@ using System.Runtime.CompilerServices;
 
 namespace CellularAutomata;
 
-public sealed class GameOfLifeRuleSet : IRuleSet
+public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
 {
     private const CellState Solid = CellState.Solid;
+    private const CellState Empty = CellState.Empty;
     
     private static readonly (int DX, int DY)[] NeighborOffsets = 
     {
@@ -27,7 +28,30 @@ public sealed class GameOfLifeRuleSet : IRuleSet
 
         var liveNeighbors = CountLivingNeighbors(playGround, position.X, position.Y);
         
-        return liveNeighbors == 3 || (cellState == Solid && liveNeighbors == 2) ? Solid : CellState.Empty;
+        return liveNeighbors == 3 || (cellState == Solid && liveNeighbors == 2) ? Solid : Empty;
+    }
+    
+    public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition)
+    {
+        var startX = spawnPosition.X - 5;
+        var endX = spawnPosition.X + 4;
+        
+        var startY = spawnPosition.Y - 5;
+        var endY = spawnPosition.Y + 4;
+
+        for (var x = startX; x <= endX; x++)
+        {
+            for (var y = startY; y <= endY; y++)
+            {
+                var newPos = new Vector(x, y);
+                if (IsWithinBounds(x, y) && playGround[newPos] == Empty)
+                {
+                    playGround[newPos] = Solid;
+                }
+            }    
+        }
+        
+        return playGround;
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -40,7 +64,7 @@ public sealed class GameOfLifeRuleSet : IRuleSet
             var nx = x + dx;
             var ny = y + dy;
     
-            if (IsWithinBounds(playGround.Dimension, nx, ny) && playGround[(nx, ny)] == Solid)
+            if (IsWithinBounds(nx, ny) && playGround[(nx, ny)] == Solid)
             {
                 liveNeighbors++;
                 if (liveNeighbors == 4)
@@ -53,16 +77,11 @@ public sealed class GameOfLifeRuleSet : IRuleSet
     
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool IsWithinBounds(Vector dimension, int x, int y)
+    private bool IsWithinBounds(int x, int y)
     {
         var withinX = (uint)x < (uint)dimension.X; 
         var withinY = (uint)y < (uint)dimension.Y;
 
         return withinX && withinY;
-    }
-
-    public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition)
-    {
-        return playGround;
     }
 }

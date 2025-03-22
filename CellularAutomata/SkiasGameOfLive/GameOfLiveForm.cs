@@ -191,24 +191,22 @@ public partial class GameOfLiveForm : Form
     private void InitializeForGameOfLive()
     {
         playGroundBool = new PlayGround(dimension);
-        var gamePlayGround = (playGroundBool as PlayGround)!;
-        
-        ruleSet = new GameOfLifeRuleSet();
+        ruleSet = new GameOfLifeRuleSet(dimension);
         
         aliveColor = SKColors.Chartreuse;
         switch (cbPattern.SelectedIndex)
         {
             case 0: 
-                GameOfLifeInitializer.Randomize(gamePlayGround, maxDegreeOfParallelism, (double)probabilitySelector.Value);
+                GameOfLifeInitializer.Randomize(playGroundBool, maxDegreeOfParallelism, (double)probabilitySelector.Value);
                 break;
             case 1: 
-                GameOfLifeInitializer.AddCheckerboard(gamePlayGround);
+                GameOfLifeInitializer.AddCheckerboard(playGroundBool);
                 break;
             case 2: 
-                GameOfLifeInitializer.AddSingleLineWithCellOnEveryXColumn(gamePlayGround, 10, 10);
-                GameOfLifeInitializer.AddSingleColumnWithCellOnEveryYRow(gamePlayGround, 10, 10);
-                GameOfLifeInitializer.AddSingleCell(gamePlayGround, new Vector(0, 0));
-                GameOfLifeInitializer.AddSingleCell(gamePlayGround, new Vector(dimension.X - 1, dimension.Y - 1));
+                GameOfLifeInitializer.AddSingleLineWithCellOnEveryXColumn(playGroundBool, 10, 10);
+                GameOfLifeInitializer.AddSingleColumnWithCellOnEveryYRow(playGroundBool, 10, 10);
+                GameOfLifeInitializer.AddSingleCell(playGroundBool, new Vector(0, 0));
+                GameOfLifeInitializer.AddSingleCell(playGroundBool, new Vector(dimension.X - 1, dimension.Y - 1));
                 break;
         }
     }
@@ -216,8 +214,7 @@ public partial class GameOfLiveForm : Form
     private void InitializeForGameOfLiveArray()
     {
         playGroundBool = new PlayGroundArray(dimension);
-        
-        ruleSet = new GameOfLifeRuleSetArray();
+        ruleSet = new GameOfLifeRuleSetArray(dimension);
         
         aliveColor = SKColors.Chartreuse;
         switch (cbPattern.SelectedIndex)

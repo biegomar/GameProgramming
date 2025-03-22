@@ -8,8 +8,8 @@ public class AutomataBenchmark
     private static Vector dimension = new Vector(800,600);
     private PlayGround playGround = new PlayGround(dimension);
     private PlayGroundArray playGroundArray = new PlayGroundArray(dimension);
-    private GameOfLifeRuleSet ruleSet = new GameOfLifeRuleSet();
-    private GameOfLifeRuleSetArray ruleSetArray = new GameOfLifeRuleSetArray();
+    private GameOfLifeRuleSet ruleSet = new GameOfLifeRuleSet(dimension);
+    private GameOfLifeRuleSetArray ruleSetArray = new GameOfLifeRuleSetArray(dimension);
     private readonly Automata automataBool = new (dimension);
     private readonly AutomataArray automataArrayBool = new (dimension);
     
