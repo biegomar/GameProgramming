@@ -223,6 +223,8 @@ public partial class MainWindow : Window
         if (isSpawnActive)
         {
             GetSpawnPositionFromMouseCursor(e);
+            
+            HandleCellSpawnAndRender();
         }
     }
 
@@ -293,7 +295,7 @@ public partial class MainWindow : Window
         if (cancellationTokenSource == null)
         {
             SpawnCells(ruleSetType);
-            RenderPlaygroundAndDisplayGeneration();
+            RenderPlayground();
         }
     }
 
@@ -436,10 +438,15 @@ public partial class MainWindow : Window
         }
     }
 
-    private void RenderPlaygroundAndDisplayGeneration()
+    private void RenderPlayground()
     {
         GameOfLiveView.InvalidateVisual();
-        this.DisplayGeneration();
+    }
+    
+    private void RenderPlaygroundAndDisplayGeneration()
+    {
+        RenderPlayground();
+        DisplayGeneration();
     }
 
     private void DisplayGeneration()
