@@ -13,7 +13,7 @@ public sealed class AutomataArray
         nextGenerationPlayGround = new PlayGroundArray(dimension);
     }
     
-    public PlayGroundArray NextGeneration(PlayGroundArray initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition)
+    public PlayGroundArray NextGeneration(PlayGroundArray initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize)
     {
         for (var column = 0; column < initialPlayGround.Dimension.X; column++)
         {
@@ -25,7 +25,7 @@ public sealed class AutomataArray
 
         if (isSpawn)
         {
-            nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround, spawnPosition);    
+            nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround, spawnPosition, brushSize);    
         }
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
@@ -33,7 +33,7 @@ public sealed class AutomataArray
         return initialPlayGround;
     }
     
-    public PlayGroundArray NextGenerationParallel(PlayGroundArray initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition, int maxDegreeOfParallelism)
+    public PlayGroundArray NextGenerationParallel(PlayGroundArray initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize, int maxDegreeOfParallelism)
     {
         var parallelOptions = new ParallelOptions()
         {
@@ -57,7 +57,7 @@ public sealed class AutomataArray
 
         if (isSpawn)
         {
-            nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround, spawnPosition);   
+            nextGenerationPlayGround = (PlayGroundArray)ruleSet.ApplySpawnRules(nextGenerationPlayGround, spawnPosition, brushSize);   
         }
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround); 

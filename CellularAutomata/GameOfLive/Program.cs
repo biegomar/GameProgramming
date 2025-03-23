@@ -5,6 +5,8 @@ using GameOfLive;
 
 var dimension = new Vector(100,40);
 var screenSize = new Vector(dimension.X + 5, dimension.Y + 5);
+var spawnPosition = new Vector(5,5);
+var brushSize = new Vector(1,1);
 var playGround = new PlayGround(dimension);
 var ruleSet = new GameOfLifeRuleSet(dimension);
 Automata automataBool = new (dimension);
@@ -26,7 +28,7 @@ do
 {
     //ConsoleVisualizer.Render(playGround, x => x ? 'X' : ' ');
     ConsoleVisualizer.RenderWithColors(playGround, x => x == CellState.Solid ? ConsoleColor.Green : ConsoleColor.Black);
-    playGround = automataBool.NextGeneration(playGround, ruleSet, false, new Vector(0,0));
+    playGround = automataBool.NextGeneration(playGround, ruleSet, false, spawnPosition, brushSize);
     Thread.Sleep(250);
     
     if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)

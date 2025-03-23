@@ -30,6 +30,29 @@ public sealed class GameOfLifeRuleSetArray(Vector dimension) : IRuleSet
         return liveNeighbors == 3 || (cellState == Solid && liveNeighbors == 2) ? Solid : Empty;
     }
     
+    public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize)
+    {
+        var startX = spawnPosition.X;
+        var endX = spawnPosition.X + brushSize.X;
+        
+        var startY = spawnPosition.Y;
+        var endY = spawnPosition.Y + brushSize.Y;
+
+        for (var x = startX; x <= endX; x++)
+        {
+            for (var y = startY; y <= endY; y++)
+            {
+                var newPos = new Vector(x, y);
+                if (IsWithinBounds(x, y) && playGround[newPos] == Empty)
+                {
+                    playGround[newPos] = Solid;
+                }
+            }    
+        }
+        
+        return playGround;
+    }
+    
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private int CountLivingNeighbors(IPlayGround playGround, Vector position)
     {
@@ -58,28 +81,5 @@ public sealed class GameOfLifeRuleSetArray(Vector dimension) : IRuleSet
         var withinY = (uint)y < (uint)dimension.Y;
 
         return withinX && withinY;
-    }
-    
-    public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition)
-    {
-        var startX = spawnPosition.X - 5;
-        var endX = spawnPosition.X + 4;
-        
-        var startY = spawnPosition.Y - 5;
-        var endY = spawnPosition.Y + 4;
-
-        for (var x = startX; x <= endX; x++)
-        {
-            for (var y = startY; y <= endY; y++)
-            {
-                var newPos = new Vector(x, y);
-                if (IsWithinBounds(x, y) && playGround[newPos] == Empty)
-                {
-                    playGround[newPos] = Solid;
-                }
-            }    
-        }
-        
-        return playGround;
     }
 }

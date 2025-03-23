@@ -30,6 +30,9 @@ public partial class GameOfLiveForm : Form
     private Vector cellSize => new ((int)cellSizeSelector.Value, (int)cellSizeSelector.Value);
     
     private Vector dimension;
+    private readonly Vector spawnPosition = new Vector(5,5);
+    private readonly Vector brushSize = new Vector(5,5);
+    
     private SKColor aliveColor = SKColors.Chartreuse;
     private readonly SKColor emptyColor = SKColors.Black;
     
@@ -322,15 +325,15 @@ public partial class GameOfLiveForm : Form
     {
         playGroundBool = type switch
         {
-            RuleSetType.GameOfLife => automataBool.NextGenerationParallel((playGroundBool as PlayGround)!, (ruleSet as GameOfLifeRuleSet)!, false, new Vector(0,0), maxDegreeOfParallelism),
-            RuleSetType.GameOfLifeArray => automataArrayBool.NextGenerationParallel((playGroundBool as PlayGroundArray)!,(ruleSet as GameOfLifeRuleSetArray)!, false, new Vector(0,0), maxDegreeOfParallelism),
+            RuleSetType.GameOfLife => automataBool.NextGenerationParallel((playGroundBool as PlayGround)!, (ruleSet as GameOfLifeRuleSet)!, false, spawnPosition, brushSize, maxDegreeOfParallelism),
+            RuleSetType.GameOfLifeArray => automataArrayBool.NextGenerationParallel((playGroundBool as PlayGroundArray)!,(ruleSet as GameOfLifeRuleSetArray)!, false, spawnPosition, brushSize, maxDegreeOfParallelism),
             _ => playGroundBool
         };
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSandBool.NextGenerationParallel((playGroundSand as PlayGround)!, (ruleSet as SandRuleSet)!, false, new Vector(0,0), maxDegreeOfParallelism),
-            RuleSetType.SandArray => automataSandArrayBool.NextGenerationParallel((playGroundSand as PlayGroundArray)!,(ruleSet as SandRuleSetArray)!, false, new Vector(0,0), maxDegreeOfParallelism),
+            RuleSetType.Sand => automataSandBool.NextGenerationParallel((playGroundSand as PlayGround)!, (ruleSet as SandRuleSet)!, false, spawnPosition, brushSize, maxDegreeOfParallelism),
+            RuleSetType.SandArray => automataSandArrayBool.NextGenerationParallel((playGroundSand as PlayGroundArray)!,(ruleSet as SandRuleSetArray)!, false, spawnPosition, brushSize, maxDegreeOfParallelism),
             _ => playGroundSand
         };
     }

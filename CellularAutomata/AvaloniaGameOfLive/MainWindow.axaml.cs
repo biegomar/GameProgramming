@@ -30,6 +30,7 @@ public partial class MainWindow : Window
     
     private Vector cellSize => new ((int)cellSizeSelector.Value, (int)cellSizeSelector.Value);
     private Vector dimension;
+    
     private SKColor aliveColor = SKColors.Chartreuse;
     private readonly SKColor emptyColor = SKColors.Red;
     
@@ -38,6 +39,7 @@ public partial class MainWindow : Window
     private bool isTooltipVisible = false;
     private bool isSpawnActive = false;
     private Vector spawnPosition = new (0, 0);
+    private Vector brushSize = new Vector(10,10);
 
     private IList<long> generationTimes;
     private IList<long> renderingTimes;
@@ -634,16 +636,16 @@ public partial class MainWindow : Window
     {
         playGroundBool = type switch
         {
-            RuleSetType.GameOfLife => automataBool.NextGenerationParallel((playGroundBool as PlayGround)!, (ruleSet as GameOfLifeRuleSet)!, isSpawnActive, spawnPosition, maxDegreeOfParallelism),
-            RuleSetType.GameOfLifeArray => automataArrayBool.NextGenerationParallel((playGroundBool as PlayGroundArray)!,(ruleSet as GameOfLifeRuleSetArray)!, isSpawnActive, spawnPosition, maxDegreeOfParallelism),
+            RuleSetType.GameOfLife => automataBool.NextGenerationParallel((playGroundBool as PlayGround)!, (ruleSet as GameOfLifeRuleSet)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
+            RuleSetType.GameOfLifeArray => automataArrayBool.NextGenerationParallel((playGroundBool as PlayGroundArray)!,(ruleSet as GameOfLifeRuleSetArray)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
             RuleSetType.Wolfram => automataWolframBool.NextGenerationParallel((playGroundBool as PlayGroundArray)!, (ruleSet as WolframRuleSet)!, generation - 1, maxDegreeOfParallelism),
             _ => playGroundBool
         };
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.NextGenerationParallel((playGroundSand as PlayGround)!, (ruleSet as SandRuleSet)!, isSpawnActive, spawnPosition, maxDegreeOfParallelism),
-            RuleSetType.SandArray => automataSandArray.NextGenerationParallel((playGroundSand as PlayGroundArray)!,(ruleSet as SandRuleSetArray)!, isSpawnActive, spawnPosition, maxDegreeOfParallelism),
+            RuleSetType.Sand => automataSand.NextGenerationParallel((playGroundSand as PlayGround)!, (ruleSet as SandRuleSet)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
+            RuleSetType.SandArray => automataSandArray.NextGenerationParallel((playGroundSand as PlayGroundArray)!,(ruleSet as SandRuleSetArray)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
             _ => playGroundSand
         };
     }

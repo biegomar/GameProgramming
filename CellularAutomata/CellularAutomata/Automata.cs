@@ -11,7 +11,7 @@ public sealed class Automata
         nextGenerationPlayGround = new PlayGround(dimension);
     }
     
-    public PlayGround NextGeneration(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition)
+    public PlayGround NextGeneration(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize)
     {
         foreach (var cell in initialPlayGround.Cells)
         {
@@ -20,7 +20,7 @@ public sealed class Automata
 
         if (isSpawn)
         {
-            nextGenerationPlayGround = (PlayGround)ruleSet.ApplySpawnRules(nextGenerationPlayGround, spawnPosition);    
+            nextGenerationPlayGround = (PlayGround)ruleSet.ApplySpawnRules(nextGenerationPlayGround, spawnPosition, brushSize);    
         }
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
@@ -28,7 +28,7 @@ public sealed class Automata
         return initialPlayGround;
     }
 
-    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition, int maxDegreeOfParallelism)
+    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize, int maxDegreeOfParallelism)
     {
         var parallelOptions = new ParallelOptions()
         {
@@ -43,7 +43,7 @@ public sealed class Automata
 
         if (isSpawn)
         {
-            nextGenerationPlayGround = (PlayGround)ruleSet.ApplySpawnRules(nextGenerationPlayGround, spawnPosition);    
+            nextGenerationPlayGround = (PlayGround)ruleSet.ApplySpawnRules(nextGenerationPlayGround, spawnPosition, brushSize);    
         }
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
@@ -51,7 +51,7 @@ public sealed class Automata
         return initialPlayGround;
     }
     
-    public PlayGround NextGenerationForLoop(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition)
+    public PlayGround NextGenerationForLoop(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize)
     {
         var dimensionX = initialPlayGround.Dimension.X;
         var dimensionY = initialPlayGround.Dimension.Y;
@@ -66,7 +66,7 @@ public sealed class Automata
 
         if (isSpawn)
         {
-            nextGenerationPlayGround = (PlayGround)ruleSet.ApplySpawnRules(nextGenerationPlayGround, spawnPosition);    
+            nextGenerationPlayGround = (PlayGround)ruleSet.ApplySpawnRules(nextGenerationPlayGround, spawnPosition, brushSize);    
         }
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);

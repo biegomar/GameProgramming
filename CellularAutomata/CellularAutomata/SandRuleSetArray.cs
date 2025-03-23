@@ -96,13 +96,13 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
         return Empty;
     }
     
-    public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition)
+    public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize)
     {
-        var startX = spawnPosition.X - 5;
-        var endX = spawnPosition.X + 4;
+        var startX = spawnPosition.X;
+        var endX = spawnPosition.X + brushSize.X;
         
-        var startY = spawnPosition.Y - 5;
-        var endY = spawnPosition.Y + 4;
+        var startY = spawnPosition.Y;
+        var endY = spawnPosition.Y + brushSize.Y;
 
         for (var x = startX; x <= endX; x++)
         {
