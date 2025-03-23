@@ -34,10 +34,10 @@ public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
     public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize)
     {
         var startX = spawnPosition.X;
-        var endX = spawnPosition.X + brushSize.X;
+        var endX = spawnPosition.X + brushSize.X - 1;
         
         var startY = spawnPosition.Y;
-        var endY = spawnPosition.Y + brushSize.Y;
+        var endY = spawnPosition.Y + brushSize.Y - 1;
 
         for (var x = startX; x <= endX; x++)
         {

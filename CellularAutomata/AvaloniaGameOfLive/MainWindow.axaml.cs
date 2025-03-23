@@ -90,6 +90,7 @@ public partial class MainWindow : Window
     {
         cbPattern.SelectionChanged += cbPattern_SelectedValueChanged;
         cellSizeSelector.ValueChanged += cellSizeSelector_ValueChanged;
+        brushSizeSelector.ValueChanged += brushSizeSelector_ValueChanged;
         cbRuleSet.SelectionChanged += cbRuleSet_SelectedValueChanged;
         cbStopWatch.IsCheckedChanged += cbStopWatch_CheckedChanged;
         cbEngine.SelectionChanged += cbEngine_SelectedIndexChanged;
@@ -130,6 +131,12 @@ public partial class MainWindow : Window
     private void cellSizeSelector_ValueChanged(object? sender, EventArgs e)
     {
         InitializePlayGround();
+    }
+
+    private void brushSizeSelector_ValueChanged(object? sender, EventArgs e)
+    {
+        var brushSquare = (int)brushSizeSelector.Value!; 
+        brushSize = new Vector(brushSquare, brushSquare);
     }
 
     private void processorCountSelector_ValueChanged(object? sender, EventArgs e)
@@ -204,7 +211,7 @@ public partial class MainWindow : Window
     
     private void HandleLeftClickOnGameView(PointerPressedEventArgs e)
     {
-        if (!isSpawnActive) isSpawnActive = true;
+        if (!isSpawnActive) isSpawnActive = cbBrushActive.IsChecked!.Value;
         
         spawnPosition = GetCellPositionFromMouseCursor(e.GetPosition(GameOfLiveView));
     }

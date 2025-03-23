@@ -120,7 +120,7 @@
                 </StackPanel> 
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12" Margin="5,15,5,5" Name="SpawnPanel">
-                <CheckBox x:Name="cbBrushSize" Content="Zeichnen" VerticalAlignment="Center" Width="97" IsChecked="True" Margin="5,0,60,5"/>
+                <CheckBox x:Name="cbBrushActive" Content="Zeichnen" VerticalAlignment="Center" Width="97" IsChecked="True" Margin="5,0,60,5"/>
                 <TextBlock x:Name="lblBrushSize" Text="Pinselsize" VerticalAlignment="Center" Width="75"/>
                 <NumericUpDown x:Name="brushSizeSelector"
                                Minimum="1"
