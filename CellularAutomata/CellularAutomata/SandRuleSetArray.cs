@@ -136,15 +136,15 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
         var bottomRight = new Vector(position.X + 1, position.Y + 1);
         
         return new CellNeighbors(
-            TopLeft: IsWithinBounds(topLeft) ? playGround[topLeft] : Empty,
-            Top: IsWithinBounds(top) ? playGround[top] : Empty,
-            TopRight: IsWithinBounds(topRight) ? playGround[topRight] : Empty,
-            Left: IsWithinBounds(left) ? playGround[left] : Empty,
-            LeftLeft: IsWithinBounds(leftleft) ? playGround[leftleft] : Empty,
-            Right: IsWithinBounds(right) ? playGround[right] : Empty,
-            BottomLeft: IsWithinBounds(bottomLeft) ? playGround[bottomLeft] : Empty,
-            Bottom: IsWithinBounds(bottom) ? playGround[bottom] : Empty,
-            BottomRight: IsWithinBounds(bottomRight) ? playGround[bottomRight] : Empty
+            TopLeft: IsWithinBounds(topLeft) ? playGround[topLeft] : Solid,
+            Top: IsWithinBounds(top) ? playGround[top] : Solid,
+            TopRight: IsWithinBounds(topRight) ? playGround[topRight] : Solid,
+            Left: IsWithinBounds(left) ? playGround[left] : Solid,
+            LeftLeft: IsWithinBounds(leftleft) ? playGround[leftleft] : Solid,
+            Right: IsWithinBounds(right) ? playGround[right] : Solid,
+            BottomLeft: IsWithinBounds(bottomLeft) ? playGround[bottomLeft] : Solid,
+            Bottom: IsWithinBounds(bottom) ? playGround[bottom] : Solid,
+            BottomRight: IsWithinBounds(bottomRight) ? playGround[bottomRight] : Solid
         );
     }
     
