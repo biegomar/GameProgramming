@@ -94,14 +94,34 @@ public partial class MainWindow : Window
         cbRuleSet.SelectionChanged += cbRuleSet_SelectedValueChanged;
         cbStopWatch.IsCheckedChanged += cbStopWatch_CheckedChanged;
         cbEngine.SelectionChanged += cbEngine_SelectedIndexChanged;
+        
         btnStart.Click += startGameOfLive_Click;
         btnStop.Click += btnStop_Click;
+        btnSingleStep.Click += btnSingleStep_Click;
+        
         processorCountSelector.ValueChanged += processorCountSelector_ValueChanged;
         
         GameOfLiveView.PaintSurface += GameOfLiveView_PaintSurface;
         GameOfLiveView.PointerPressed += GameOfLiveView_PointerPressed;
         GameOfLiveView.PointerReleased += GameOfLiveView_PointerReleased;
         GameOfLiveView.PointerMoved += GameOfLiveView_PointerMoved;
+    }
+    
+    private void btnReset_Click(object? sender, RoutedEventArgs e)
+    {
+        InitializePlayGround();
+    }
+    
+    private void btnSingleStep_Click(object? sender, RoutedEventArgs e)
+    {
+        GenerateNextPlaygroundState(ruleSetType);
+                
+        RenderPlaygroundAndDisplayGeneration();
+    }
+    
+    private void cbPattern_SelectedValueChanged(object? sender, EventArgs e)
+    {
+        InitializePlayGround();
     }
     
     private void startGameOfLive_Click(object? sender, EventArgs e)
@@ -212,8 +232,22 @@ public partial class MainWindow : Window
     private void HandleLeftClickOnGameView(PointerPressedEventArgs e)
     {
         if (!isSpawnActive) isSpawnActive = cbBrushActive.IsChecked!.Value;
-        
-        spawnPosition = GetCellPositionFromMouseCursor(e.GetPosition(GameOfLiveView));
+
+        if (isSpawnActive)
+        {
+            spawnPosition = GetCellPositionFromMouseCursor(e.GetPosition(GameOfLiveView));
+
+            HandleCellSpawnAndRender();
+        }
+    }
+
+    private void HandleCellSpawnAndRender()
+    {
+        if (cancellationTokenSource == null)
+        {
+            SpawnCells(ruleSetType);
+            RenderPlaygroundAndDisplayGeneration();
+        }
     }
 
     private void HandleLeftReleasedOnGameView()
@@ -419,12 +453,6 @@ public partial class MainWindow : Window
             case 1: 
                 GameOfLifeInitializer.AddCheckerboard(playGroundBool);
                 break;
-            case 2: 
-                GameOfLifeInitializer.AddSingleLineWithCellOnEveryXColumn(playGroundBool, 10, 10);
-                GameOfLifeInitializer.AddSingleColumnWithCellOnEveryYRow(playGroundBool, 10, 10);
-                GameOfLifeInitializer.AddSingleCell(playGroundBool, new Vector(0, 0));
-                GameOfLifeInitializer.AddSingleCell(playGroundBool, new Vector(dimension.X - 1, dimension.Y - 1));
-                break;
         }
     }
     
@@ -442,12 +470,6 @@ public partial class MainWindow : Window
                 break;
             case 1: 
                 GameOfLifeInitializer.AddCheckerboard(playGroundBool);
-                break;
-            case 2: 
-                GameOfLifeInitializer.AddSingleLineWithCellOnEveryXColumn(playGroundBool, 10, 10);
-                GameOfLifeInitializer.AddSingleColumnWithCellOnEveryYRow(playGroundBool, 10, 10);
-                GameOfLifeInitializer.AddSingleCell(playGroundBool, new Vector(0, 0));
-                GameOfLifeInitializer.AddSingleCell(playGroundBool, new Vector(dimension.X - 1, dimension.Y - 1));
                 break;
         }
     }
@@ -657,21 +679,21 @@ public partial class MainWindow : Window
         };
     }
     
-    private void btnReset_Click(object? sender, RoutedEventArgs e)
+    private void SpawnCells(RuleSetType type)
     {
-        InitializePlayGround();
-    }
-    
-    private void btnSingleStep_Click(object sender, RoutedEventArgs e)
-    {
-        GenerateNextPlaygroundState(ruleSetType);
-                
-        RenderPlaygroundAndDisplayGeneration();
-    }
-    
-    private void cbPattern_SelectedValueChanged(object? sender, EventArgs e)
-    {
-        InitializePlayGround();
+        playGroundBool = type switch
+        {
+            RuleSetType.GameOfLife => automataBool.ApplySpawnRules((playGroundBool as PlayGround)!, (ruleSet as GameOfLifeRuleSet)!, spawnPosition, brushSize),
+            RuleSetType.GameOfLifeArray => automataArrayBool.ApplySpawnRules((playGroundBool as PlayGroundArray)!,(ruleSet as GameOfLifeRuleSetArray)!, spawnPosition, brushSize),
+            _ => playGroundBool
+        };
+        
+        playGroundSand = type switch
+        {
+            RuleSetType.Sand => automataSand.ApplySpawnRules((playGroundSand as PlayGround)!, (ruleSet as SandRuleSet)!, spawnPosition, brushSize),
+            RuleSetType.SandArray => automataSandArray.ApplySpawnRules((playGroundSand as PlayGroundArray)!,(ruleSet as SandRuleSetArray)!, spawnPosition, brushSize),
+            _ => playGroundSand
+        };
     }
     
     private SKColor ChooseSandColor(CellState state)

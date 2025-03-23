@@ -36,8 +36,7 @@
                     <Button x:Name="btnSingleStep"
                             Content="Next Step"
                             Width="95"
-                            HorizontalContentAlignment="Center"
-                            Click="btnSingleStep_Click"/>
+                            HorizontalContentAlignment="Center" />
                     <Button x:Name="btnReset"
                             Content="Reset"
                             Width="95"

@@ -20,7 +20,7 @@ public sealed class Automata
 
         if (isSpawn)
         {
-            nextGenerationPlayGround = (PlayGround)ruleSet.ApplySpawnRules(nextGenerationPlayGround, spawnPosition, brushSize);    
+            nextGenerationPlayGround = ApplySpawnRules(nextGenerationPlayGround, ruleSet, spawnPosition, brushSize);   
         }
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
@@ -43,7 +43,7 @@ public sealed class Automata
 
         if (isSpawn)
         {
-            nextGenerationPlayGround = (PlayGround)ruleSet.ApplySpawnRules(nextGenerationPlayGround, spawnPosition, brushSize);    
+            nextGenerationPlayGround = ApplySpawnRules(nextGenerationPlayGround, ruleSet, spawnPosition, brushSize); 
         }
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
@@ -66,12 +66,18 @@ public sealed class Automata
 
         if (isSpawn)
         {
-            nextGenerationPlayGround = (PlayGround)ruleSet.ApplySpawnRules(nextGenerationPlayGround, spawnPosition, brushSize);    
+            nextGenerationPlayGround = ApplySpawnRules(nextGenerationPlayGround, ruleSet, spawnPosition, brushSize);    
         }
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
         
         return initialPlayGround;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public PlayGround ApplySpawnRules(PlayGround playGround, IRuleSet ruleSet, Vector spawnPosition, Vector brushSize)
+    {
+        return (PlayGround)ruleSet.ApplySpawnRules(playGround, spawnPosition, brushSize); 
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
