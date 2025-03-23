@@ -26,6 +26,7 @@ public partial class MainWindow : Window
         SandArray,
         GameOfLifeArray,
         Wolfram,
+        NoiseGrid,
     }
     
     private Vector cellSize => new ((int)cellSizeSelector.Value, (int)cellSizeSelector.Value);
@@ -33,7 +34,8 @@ public partial class MainWindow : Window
     
     private SKColor aliveColor = SKColors.Chartreuse;
     private SKColor wolframColor = SKColors.CornflowerBlue;
-    private readonly SKColor emptyColor = SKColors.Red;
+    private SKColor noiseGridColor = SKColors.Aquamarine;
+    private readonly SKColor emptyColor = SKColors.Black;
 
     private double initializationProbability;
     private double spawnProbability;
@@ -67,6 +69,7 @@ public partial class MainWindow : Window
     private Automata automataSand;
     private AutomataArray automataSandArray;
     private AutomataWolfram automataWolframBool;
+    private AutomataNoiseGrid automataNoiseGrid;
     
     private CancellationTokenSource? cancellationTokenSource;
     private CancellationTokenSource? tooltipCancellationSource;
@@ -337,6 +340,7 @@ public partial class MainWindow : Window
             case RuleSetType.GameOfLife:
             case RuleSetType.GameOfLifeArray:
             case RuleSetType.Wolfram:
+            case RuleSetType.NoiseGrid:
                 return GetCellStateForGameOfLive(cellPosition);
             default:
                 throw new ArgumentOutOfRangeException();
@@ -435,6 +439,9 @@ public partial class MainWindow : Window
             case RuleSetType.Wolfram:
                 InitializeWolfram();
                 break;
+            case RuleSetType.NoiseGrid:
+                InitializeNoise();
+                break;
         }
     }
 
@@ -463,6 +470,7 @@ public partial class MainWindow : Window
             2 => RuleSetType.GameOfLifeArray,
             3 => RuleSetType.SandArray,
             4 => RuleSetType.Wolfram,
+            5 => RuleSetType.NoiseGrid,
             _ => RuleSetType.GameOfLife,
         };
     }
@@ -483,6 +491,7 @@ public partial class MainWindow : Window
                     cbPattern.Items.Add(item);
                 }
                 break;
+            case RuleSetType.NoiseGrid:
             case RuleSetType.GameOfLife:
             case RuleSetType.GameOfLifeArray:
             default:
@@ -498,16 +507,6 @@ public partial class MainWindow : Window
         items.ForEach(item => cbPattern.Items.Add(item));
     }
     
-    private void InitializeWolfram()
-    {
-        automataWolframBool = new AutomataWolfram();
-        playGroundBool = new PlayGroundArray(dimension);
-
-        ruleSet = new WolframRuleSet(cbPattern.SelectedIndex);
-        
-        GameOfLifeInitializer.AddSingleCell(playGroundBool, new Vector(dimension.X/2, 0));
-
-    }
     private void InitializeForGameOfLive(bool isArray)
     {
         if (isArray)
@@ -556,6 +555,7 @@ public partial class MainWindow : Window
         
         InitializeSandPattern();
     }
+    
     private void InitializeSandPattern()
     {
         switch (cbPattern.SelectedIndex)
@@ -569,6 +569,42 @@ public partial class MainWindow : Window
         }
     }
     
+    private void InitializeWolfram()
+    {
+        automataWolframBool = new AutomataWolfram();
+        playGroundBool = new PlayGroundArray(dimension);
+        ruleSet = new WolframRuleSet(cbPattern.SelectedIndex);
+        
+        InitializeWolframPattern();
+    }
+    
+    private void InitializeWolframPattern()
+    {
+        GameOfLifeInitializer.AddSingleCell(playGroundBool, new Vector(dimension.X/2, 0));
+    }
+
+    private void InitializeNoise()
+    {
+        automataNoiseGrid = new AutomataNoiseGrid(dimension);
+        playGroundBool = new PlayGroundArray(dimension);
+        ruleSet = new NoiseGridRuleSet(dimension);
+        
+        InitializeNoisePattern();
+    }
+
+    private void InitializeNoisePattern()
+    {
+        switch (cbPattern.SelectedIndex)
+        {
+            case 0: 
+                NoiseGridInitializer.Randomize(playGroundBool, maxDegreeOfParallelism, initializationProbability);
+                break;
+            case 1: 
+                NoiseGridInitializer.AddCheckerboard(playGroundBool);
+                break;
+        }
+    }
+
     private void SetButtonState(bool isRunning)
     {
         btnStart.IsEnabled = !isRunning;
@@ -591,12 +627,12 @@ public partial class MainWindow : Window
     
     private void GameOfLiveView_PaintSurface(SKCanvas e)
     {
-        VisualizerRender(ruleSetType, e);
+        VisualizerRender(e);
     }
     
-    private void VisualizerRender(RuleSetType type, SKCanvas canvas)
+    private void VisualizerRender(SKCanvas canvas)
     {
-        switch (type)
+        switch (ruleSetType)
         {
             case RuleSetType.GameOfLifeArray:
                 var localBoolPlayGroundArray = (playGroundBool as PlayGroundArray)!;
@@ -605,6 +641,10 @@ public partial class MainWindow : Window
             case RuleSetType.Wolfram:
                 var localWolframPlayGroundArray = (playGroundBool as PlayGroundArray)!;
                 SkiaVisualizer.Render(localWolframPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b == CellState.Solid ? this.wolframColor : emptyColor);
+                break;
+            case RuleSetType.NoiseGrid:
+                var localNoiseGridPlayGroundArray = (playGroundBool as PlayGroundArray)!;
+                SkiaVisualizer.Render(localNoiseGridPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b == CellState.Solid ? this.noiseGridColor : emptyColor);
                 break;
             case RuleSetType.Sand:
                 var localSandCellStatePlayGround = (playGroundSand as PlayGround)!;
@@ -699,6 +739,7 @@ public partial class MainWindow : Window
             RuleSetType.GameOfLife => automataBool.NextGenerationParallel((playGroundBool as PlayGround)!, (ruleSet as GameOfLifeRuleSet)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
             RuleSetType.GameOfLifeArray => automataArrayBool.NextGenerationParallel((playGroundBool as PlayGroundArray)!,(ruleSet as GameOfLifeRuleSetArray)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
             RuleSetType.Wolfram => automataWolframBool.NextGenerationParallel((playGroundBool as PlayGroundArray)!, (ruleSet as WolframRuleSet)!, generation - 1, maxDegreeOfParallelism),
+            RuleSetType.NoiseGrid => automataNoiseGrid.NextGenerationParallel((playGroundBool as PlayGroundArray)!, (ruleSet as NoiseGridRuleSet)!, generation - 1, maxDegreeOfParallelism),
             _ => playGroundBool
         };
         

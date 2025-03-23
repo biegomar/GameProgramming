@@ -28,7 +28,7 @@ public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
     {
         var cellState = playGround[position];
 
-        var liveNeighbors = CountLivingNeighbors(playGround, position.X, position.Y);
+        var liveNeighbors = CountLivingNeighbors(playGround, position);
         
         return liveNeighbors == 3 || (cellState == Solid && liveNeighbors == 2) ? Solid : Empty;
     }
@@ -46,7 +46,7 @@ public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
             for (var y = startY; y <= endY; y++)
             {
                 var newPos = new Vector(x, y);
-                if (IsWithinBounds(x, y) && playGround[newPos] == Empty)
+                if (IsWithinBounds(newPos) && playGround[newPos] == Empty)
                 {
                     if (random.NextDouble() < probability)
                     {
@@ -60,16 +60,15 @@ public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private int CountLivingNeighbors(IPlayGround playGround, int x, int y)
+    private int CountLivingNeighbors(IPlayGround playGround, Vector position)
     {
-        var liveNeighbors = 0;
+        int liveNeighbors = 0;
     
         foreach (var (dx, dy) in NeighborOffsets)
         {
-            var nx = x + dx;
-            var ny = y + dy;
+            var neighbor = new Vector(position.X + dx, position.Y + dy);
     
-            if (IsWithinBounds(nx, ny) && playGround[(nx, ny)] == Solid)
+            if (IsWithinBounds(neighbor) && playGround[neighbor] == Solid)
             {
                 liveNeighbors++;
                 if (liveNeighbors == 4)
@@ -80,12 +79,11 @@ public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
         return liveNeighbors;
     }
     
-    
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool IsWithinBounds(int x, int y)
+    private bool IsWithinBounds(Vector neighbor)
     {
-        var withinX = (uint)x < (uint)dimension.X; 
-        var withinY = (uint)y < (uint)dimension.Y;
+        var withinX = (uint)neighbor.X < (uint)dimension.X; 
+        var withinY = (uint)neighbor.Y < (uint)dimension.Y;
 
         return withinX && withinY;
     }

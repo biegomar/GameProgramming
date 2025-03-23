@@ -65,6 +65,7 @@
                                 <ComboBoxItem Content="Game of Life Array" />
                                 <ComboBoxItem Content="Sand Array" />
                                 <ComboBoxItem Content="Wolfram Array" />
+                                <ComboBoxItem Content="NoiseGrid Array" />
                             </ComboBox.Items>
                         </ComboBox>
                     </StackPanel>

@@ -45,7 +45,7 @@ public sealed class GameOfLifeRuleSetArray(Vector dimension) : IRuleSet
             for (var y = startY; y <= endY; y++)
             {
                 var newPos = new Vector(x, y);
-                if (IsWithinBounds(x, y) && playGround[newPos] == Empty)
+                if (IsWithinBounds(newPos) && playGround[newPos] == Empty)
                 {
                     if (random.NextDouble() < probability)
                     {
@@ -65,10 +65,9 @@ public sealed class GameOfLifeRuleSetArray(Vector dimension) : IRuleSet
     
         foreach (var (dx, dy) in NeighborOffsets)
         {
-            var nx = position.X + dx;
-            var ny = position.Y + dy;
+            var neighbor = new Vector(position.X + dx, position.Y + dy);
     
-            if (IsWithinBounds(nx, ny) && playGround[(nx, ny)] == Solid)
+            if (IsWithinBounds(neighbor) && playGround[neighbor] == Solid)
             {
                 liveNeighbors++;
                 if (liveNeighbors == 4)
@@ -80,10 +79,10 @@ public sealed class GameOfLifeRuleSetArray(Vector dimension) : IRuleSet
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool IsWithinBounds(int x, int y )
+    private bool IsWithinBounds(Vector neighbor)
     {
-        var withinX = (uint)x < (uint)dimension.X; 
-        var withinY = (uint)y < (uint)dimension.Y;
+        var withinX = (uint)neighbor.X < (uint)dimension.X; 
+        var withinY = (uint)neighbor.Y < (uint)dimension.Y;
 
         return withinX && withinY;
     }

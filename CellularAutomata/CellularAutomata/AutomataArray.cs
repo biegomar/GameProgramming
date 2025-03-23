@@ -4,15 +4,10 @@ using System.Linq;
 
 namespace CellularAutomata;
 
-public sealed class AutomataArray
+public sealed class AutomataArray(Vector dimension)
 {
-    private PlayGroundArray nextGenerationPlayGround;
-    
-    public AutomataArray(Vector dimension)
-    {
-        nextGenerationPlayGround = new PlayGroundArray(dimension);
-    }
-    
+    private PlayGroundArray nextGenerationPlayGround = new(dimension);
+
     public PlayGroundArray NextGeneration(PlayGroundArray initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize)
     {
         for (var column = 0; column < initialPlayGround.Dimension.X; column++)

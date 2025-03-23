@@ -19,11 +19,6 @@ public sealed class WolframRuleSet : IRuleSet
     
     public CellState ApplyRules(IPlayGround playGround, Vector position)
     {
-        return this.ApplyRules(playGround, (position.X, position.Y));
-    }
-
-    public CellState ApplyRules(IPlayGround playGround, (int X, int Y) position)
-    {
         var (leftState, rightState) = GetNeighboursState(playGround, position);
         var cellState = playGround[position] != CellState.Empty;
         
@@ -31,7 +26,7 @@ public sealed class WolframRuleSet : IRuleSet
 
         return wolframRule[ruleIndex] == 1 ? CellState.Solid : CellState.Empty;
     }
-
+    
     public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize, double probability = 1)
     {
         return playGround;
@@ -45,21 +40,21 @@ public sealed class WolframRuleSet : IRuleSet
         }
     }
     
-    private (bool left, bool right) GetNeighboursState(IPlayGround playGround, (int X, int Y) position)
+    private (bool left, bool right) GetNeighboursState(IPlayGround playGround, Vector position)
     {
-        (int X, int Y) left = (position.X - 1, position.Y);
-        (int X, int Y) right = (position.X + 1, position.Y);
+        var left = new Vector(position.X - 1, position.Y);
+        var right = new Vector(position.X + 1, position.Y);
 
-        return (IsWithinBounds(playGround.Dimension, left.X, left.Y) && playGround[left] != CellState.Empty,
-            IsWithinBounds(playGround.Dimension, right.X, right.Y) && playGround[right] != CellState.Empty);
+        return (IsWithinBounds(playGround.Dimension, left) && playGround[left] != CellState.Empty,
+            IsWithinBounds(playGround.Dimension, right) && playGround[right] != CellState.Empty);
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool IsWithinBounds(Vector dimension, int x, int y )
+    private bool IsWithinBounds(Vector dimension, Vector position)
     {
-        return x >= 0 && y >= 0 &&
-               x < dimension.X &&
-               y < dimension.Y;
+        return position.X >= 0 && position.Y >= 0 &&
+               position.X < dimension.X &&
+               position.Y < dimension.Y;
     }
     
     // Alle Regeln erzeugen!
