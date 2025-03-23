@@ -19,7 +19,5 @@ class Program
             .UsePlatformDetect()
             .UseSkia()
             .WithInterFont()
-            .LogToTrace()
-        
-            ;
+            .LogToTrace();
 }
