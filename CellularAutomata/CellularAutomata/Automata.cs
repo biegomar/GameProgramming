@@ -75,9 +75,9 @@ public sealed class Automata
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public PlayGround ApplySpawnRules(PlayGround playGround, IRuleSet ruleSet, Vector spawnPosition, Vector brushSize)
+    public PlayGround ApplySpawnRules(PlayGround playGround, IRuleSet ruleSet, Vector spawnPosition, Vector brushSize, double probability = 1)
     {
-        return (PlayGround)ruleSet.ApplySpawnRules(playGround, spawnPosition, brushSize); 
+        return (PlayGround)ruleSet.ApplySpawnRules(playGround, spawnPosition, brushSize, probability); 
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

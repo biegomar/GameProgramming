@@ -32,7 +32,7 @@ public sealed class WolframRuleSet : IRuleSet
         return wolframRule[ruleIndex] == 1 ? CellState.Solid : CellState.Empty;
     }
 
-    public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize)
+    public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize, double probability = 1)
     {
         return playGround;
     }

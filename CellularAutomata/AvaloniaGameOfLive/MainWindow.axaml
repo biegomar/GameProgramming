@@ -22,7 +22,7 @@
                            Margin="5">
         </avaloniaGameOfLive:SkiaCanvasControl>       
     
-        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Left" Spacing="5" Margin="5,0,5,5" Name="FramePanel">
+        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Left" Spacing="5" Margin="5,0,5,0" Name="FramePanel">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="10"  >
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Spacing="10" Margin="5,5,65,5" Name="ButtonStack">
                     <Button x:Name="btnStart"
@@ -118,8 +118,8 @@
                     </StackPanel>
                 </StackPanel> 
             </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12" Margin="5,15,5,5" Name="SpawnPanel">
-                <CheckBox x:Name="cbBrushActive" Content="Zeichnen" VerticalAlignment="Center" Width="97" IsChecked="True" Margin="5,0,60,5"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12" Margin="5,5,5,0" Name="SpawnPanel">
+                <CheckBox x:Name="cbBrushActive" Content="Zeichnen" VerticalAlignment="Center" Width="97" IsChecked="True" Margin="5,0,60,0"/>
                 <TextBlock x:Name="lblBrushSize" Text="Pinselsize" VerticalAlignment="Center" Width="75"/>
                 <NumericUpDown x:Name="brushSizeSelector"
                                Minimum="1"
@@ -129,6 +129,9 @@
                                Width="170"
                                />
             </StackPanel>
+            <Panel HorizontalAlignment="Left" Margin="5,0,5,0" Name="UsePanel">
+                <CheckBox x:Name="cbUseProbability" Content="Wahrscheinlichkeit nutzen" VerticalAlignment="Center" IsChecked="True" Margin="5,0,0,0"/>
+            </Panel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12" Margin="5,15,5,5" Name="StopWatchPanel">
                 <CheckBox x:Name="cbStopWatch" Content="Messung" VerticalAlignment="Center" Width="97" IsChecked="True" Margin="5,0,60,5"/>
                 <TextBlock x:Name="lblStopWatch" Text="Durchläufe" VerticalAlignment="Center" Width="75"/>

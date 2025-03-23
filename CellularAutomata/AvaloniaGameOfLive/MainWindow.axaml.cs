@@ -33,6 +33,9 @@ public partial class MainWindow : Window
     
     private SKColor aliveColor = SKColors.Chartreuse;
     private readonly SKColor emptyColor = SKColors.Red;
+
+    private double initializationProbability;
+    private double spawnProbability;
     
     private ToolTip toolTip;
     private readonly DispatcherTimer toolTipTimer = new ();
@@ -83,7 +86,9 @@ public partial class MainWindow : Window
     private void InitializeComponentValues()
     {
         processorCountSelector.Maximum = Environment.ProcessorCount;
-        maxDegreeOfParallelism = (int)processorCountSelector.Value!;
+        SetMaxDegreeOfParallelism();
+        SetInitializationProbability();
+        SetSpawnProbability();
     }
 
     private void InitializeEventHandlers()
@@ -91,8 +96,10 @@ public partial class MainWindow : Window
         cbPattern.SelectionChanged += cbPattern_SelectedValueChanged;
         cellSizeSelector.ValueChanged += cellSizeSelector_ValueChanged;
         brushSizeSelector.ValueChanged += brushSizeSelector_ValueChanged;
+        probabilitySelector.ValueChanged += probabilitySelector_ValueChanged;
         cbRuleSet.SelectionChanged += cbRuleSet_SelectedValueChanged;
         cbStopWatch.IsCheckedChanged += cbStopWatch_CheckedChanged;
+        cbUseProbability.IsCheckedChanged += cbUseProbability_IsCheckedChanged;
         cbEngine.SelectionChanged += cbEngine_SelectedIndexChanged;
         
         btnStart.Click += startGameOfLive_Click;
@@ -106,7 +113,12 @@ public partial class MainWindow : Window
         GameOfLiveView.PointerReleased += GameOfLiveView_PointerReleased;
         GameOfLiveView.PointerMoved += GameOfLiveView_PointerMoved;
     }
-    
+
+    private void cbUseProbability_IsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        SetSpawnProbability();
+    }
+
     private void btnReset_Click(object? sender, RoutedEventArgs e)
     {
         InitializePlayGround();
@@ -147,6 +159,12 @@ public partial class MainWindow : Window
         
         InitializePlayGround();
     }
+
+    private void probabilitySelector_ValueChanged(object? sender, EventArgs e)
+    {
+        SetInitializationProbability();
+        SetSpawnProbability();
+    }
     
     private void cellSizeSelector_ValueChanged(object? sender, EventArgs e)
     {
@@ -161,9 +179,24 @@ public partial class MainWindow : Window
 
     private void processorCountSelector_ValueChanged(object? sender, EventArgs e)
     {
+        SetMaxDegreeOfParallelism();
+    }
+
+    private void SetMaxDegreeOfParallelism()
+    {
         maxDegreeOfParallelism = (int)processorCountSelector.Value!;
     }
-    
+
+    private void SetInitializationProbability()
+    {
+        initializationProbability = (double)probabilitySelector.Value!;
+    }
+
+    private void SetSpawnProbability()
+    {
+        spawnProbability = cbUseProbability.IsChecked!.Value ? initializationProbability : 1f;
+    }
+
     private void cbStopWatch_CheckedChanged(object? sender, EventArgs e)
     {
         tbStopWatch.IsVisible = cbStopWatch.IsChecked!.Value;
@@ -453,7 +486,7 @@ public partial class MainWindow : Window
         switch (cbPattern.SelectedIndex)
         {
             case 0: 
-                GameOfLifeInitializer.Randomize(playGroundBool, maxDegreeOfParallelism, (double)probabilitySelector.Value!);
+                GameOfLifeInitializer.Randomize(playGroundBool, maxDegreeOfParallelism, initializationProbability);
                 break;
             case 1: 
                 GameOfLifeInitializer.AddCheckerboard(playGroundBool);
@@ -471,7 +504,7 @@ public partial class MainWindow : Window
         switch (cbPattern.SelectedIndex)
         {
             case 0: 
-                GameOfLifeInitializer.Randomize(playGroundBool, maxDegreeOfParallelism, (double)probabilitySelector.Value);
+                GameOfLifeInitializer.Randomize(playGroundBool, maxDegreeOfParallelism, initializationProbability);
                 break;
             case 1: 
                 GameOfLifeInitializer.AddCheckerboard(playGroundBool);
@@ -491,7 +524,7 @@ public partial class MainWindow : Window
         switch (cbPattern.SelectedIndex)
         {
             case 0:
-                SandInitializer.Randomize(playGroundSand, maxDegreeOfParallelism, (double)probabilitySelector.Value);
+                SandInitializer.Randomize(playGroundSand, maxDegreeOfParallelism, initializationProbability);
                 break;
             case 1:
                 SandInitializer.GenerateSandHourglass(playGroundSand);
@@ -523,7 +556,7 @@ public partial class MainWindow : Window
         switch (cbPattern.SelectedIndex)
         {
             case 0:
-                SandInitializer.Randomize(playGroundSand, maxDegreeOfParallelism, (double)probabilitySelector.Value);
+                SandInitializer.Randomize(playGroundSand, maxDegreeOfParallelism, initializationProbability);
                 break;
             case 1:
                 SandInitializer.GenerateSandHourglass(playGroundSand);
@@ -688,15 +721,15 @@ public partial class MainWindow : Window
     {
         playGroundBool = type switch
         {
-            RuleSetType.GameOfLife => automataBool.ApplySpawnRules((playGroundBool as PlayGround)!, (ruleSet as GameOfLifeRuleSet)!, spawnPosition, brushSize),
-            RuleSetType.GameOfLifeArray => automataArrayBool.ApplySpawnRules((playGroundBool as PlayGroundArray)!,(ruleSet as GameOfLifeRuleSetArray)!, spawnPosition, brushSize),
+            RuleSetType.GameOfLife => automataBool.ApplySpawnRules((playGroundBool as PlayGround)!, (ruleSet as GameOfLifeRuleSet)!, spawnPosition, brushSize, spawnProbability),
+            RuleSetType.GameOfLifeArray => automataArrayBool.ApplySpawnRules((playGroundBool as PlayGroundArray)!,(ruleSet as GameOfLifeRuleSetArray)!, spawnPosition, brushSize, spawnProbability),
             _ => playGroundBool
         };
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.ApplySpawnRules((playGroundSand as PlayGround)!, (ruleSet as SandRuleSet)!, spawnPosition, brushSize),
-            RuleSetType.SandArray => automataSandArray.ApplySpawnRules((playGroundSand as PlayGroundArray)!,(ruleSet as SandRuleSetArray)!, spawnPosition, brushSize),
+            RuleSetType.Sand => automataSand.ApplySpawnRules((playGroundSand as PlayGround)!, (ruleSet as SandRuleSet)!, spawnPosition, brushSize, spawnProbability),
+            RuleSetType.SandArray => automataSandArray.ApplySpawnRules((playGroundSand as PlayGroundArray)!,(ruleSet as SandRuleSetArray)!, spawnPosition, brushSize, spawnProbability),
             _ => playGroundSand
         };
     }

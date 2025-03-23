@@ -20,7 +20,8 @@ public class StatisticGenerator : IStatisticGenerator
         var renderingStats = CalculateStatistics(statistics.RenderingTimes, "Rendering");
 
         totalStats.AppendLine(ruleCalculationStats);
-        totalStats.AppendLine(renderingStats);
+        totalStats.AppendLine("");
+        totalStats.Append(renderingStats);
 
         return totalStats.ToString();
     }
@@ -43,10 +44,9 @@ public class StatisticGenerator : IStatisticGenerator
         statistics.AppendLine($"- Gesamtzeit: {totalFormatted} s");
         statistics.AppendLine($"- Langsamste: {maxFormatted} µs");
         statistics.AppendLine($"- Schnellste: {minFormatted} µs");
-        statistics.AppendLine($"- Durchschnitt: {averageFormatted} µs");
+        statistics.Append($"- Durchschnitt: {averageFormatted} µs");
 
         AppendRuleCountsToStatistics(ruleCounter, statistics);
-        
 
         times.Clear();
         

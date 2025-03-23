@@ -5,6 +5,8 @@ namespace CellularAutomata;
 
 public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
 {
+    private readonly Random random = new ();
+    
     private const CellState Solid = CellState.Solid;
     private const CellState Empty = CellState.Empty;
     
@@ -31,7 +33,7 @@ public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
         return liveNeighbors == 3 || (cellState == Solid && liveNeighbors == 2) ? Solid : Empty;
     }
     
-    public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize)
+    public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize, double probability)
     {
         var startX = spawnPosition.X;
         var endX = spawnPosition.X + brushSize.X - 1;
@@ -46,7 +48,10 @@ public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
                 var newPos = new Vector(x, y);
                 if (IsWithinBounds(x, y) && playGround[newPos] == Empty)
                 {
-                    playGround[newPos] = Solid;
+                    if (random.NextDouble() < probability)
+                    {
+                        playGround[newPos] = Solid;   
+                    }
                 }
             }    
         }

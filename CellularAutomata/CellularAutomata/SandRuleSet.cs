@@ -77,7 +77,7 @@ public sealed class SandRuleSet(Vector dimension) : IRuleSet
         return Empty;
     }
 
-    public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize)
+    public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize, double probability)
     {
         var startX = spawnPosition.X;
         var endX = spawnPosition.X + brushSize.X - 1;
@@ -92,7 +92,10 @@ public sealed class SandRuleSet(Vector dimension) : IRuleSet
                 var newPos = new Vector(x, y);
                 if (IsWithinBounds(newPos) && playGround[newPos] == Empty)
                 {
-                    playGround[newPos] = GetRandomSandCellState();
+                    if (random.NextDouble() < probability)
+                    {
+                        playGround[newPos] = GetRandomSandCellState();   
+                    }
                 }
             }    
         }
