@@ -180,10 +180,15 @@ public partial class MainWindow : Window
     {
         if (isSpawnActive)
         {
-            spawnPosition = GetCellPositionFromMouseCursor(e.GetPosition(GameOfLiveView));
+            GetSpawnPositionFromMouseCursor(e);
         }
     }
-    
+
+    private void GetSpawnPositionFromMouseCursor(PointerEventArgs e)
+    {
+        spawnPosition = GetCellPositionFromMouseCursor(e.GetPosition(GameOfLiveView));
+    }
+
     private void GameOfLiveView_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
         if (IsRightButtonPressed(e))
@@ -235,7 +240,7 @@ public partial class MainWindow : Window
 
         if (isSpawnActive)
         {
-            spawnPosition = GetCellPositionFromMouseCursor(e.GetPosition(GameOfLiveView));
+            GetSpawnPositionFromMouseCursor(e);
 
             HandleCellSpawnAndRender();
         }
