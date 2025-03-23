@@ -5,7 +5,7 @@
         xmlns:avaloniaGameOfLive="clr-namespace:AvaloniaGameOfLive"
         mc:Ignorable="d"
         x:Class="AvaloniaGameOfLive.MainWindow"
-        Width="1280" Height="650"
+        Width="1280" Height="720"
         Title="AvaloniaGameOfLive"
         >
     <Grid ColumnDefinitions="810, *" RowDefinitions="20, 610, *">
@@ -22,7 +22,7 @@
                            Margin="5">
         </avaloniaGameOfLive:SkiaCanvasControl>       
     
-        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Left" Spacing="5" Margin="5,0,5,5">
+        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Left" Spacing="5" Margin="5,0,5,5" Name="FramePanel">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="10"  >
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Spacing="10" Margin="5,5,65,5" Name="ButtonStack">
                     <Button x:Name="btnStart"
@@ -119,7 +119,18 @@
                     </StackPanel>
                 </StackPanel> 
             </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12" Margin="5,0,5,5">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12" Margin="5,15,5,5" Name="SpawnPanel">
+                <CheckBox x:Name="cbBrushSize" Content="Zeichnen" VerticalAlignment="Center" Width="97" IsChecked="True" Margin="5,0,60,5"/>
+                <TextBlock x:Name="lblBrushSize" Text="Pinselsize" VerticalAlignment="Center" Width="75"/>
+                <NumericUpDown x:Name="brushSizeSelector"
+                               Minimum="1"
+                               Maximum="20"
+                               Value="10"
+                               Increment="1"
+                               Width="170"
+                               />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12" Margin="5,15,5,5" Name="StopWatchPanel">
                 <CheckBox x:Name="cbStopWatch" Content="Messung" VerticalAlignment="Center" Width="97" IsChecked="True" Margin="5,0,60,5"/>
                 <TextBlock x:Name="lblStopWatch" Text="Durchläufe" VerticalAlignment="Center" Width="75"/>
                 <NumericUpDown x:Name="stopWatchCountSelector"
@@ -128,7 +139,7 @@
                                Value="50"
                                Increment="1"
                                Width="170"
-                               />
+                />
             </StackPanel>
             <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
                 <TextBox x:Name="tbStopWatch"
