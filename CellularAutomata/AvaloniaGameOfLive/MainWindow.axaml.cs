@@ -32,6 +32,7 @@ public partial class MainWindow : Window
     private Vector dimension;
     
     private SKColor aliveColor = SKColors.Chartreuse;
+    private SKColor wolframColor = SKColors.CornflowerBlue;
     private readonly SKColor emptyColor = SKColors.Red;
 
     private double initializationProbability;
@@ -50,7 +51,6 @@ public partial class MainWindow : Window
     private readonly Stopwatch generationStopwatch = new ();
     private readonly Stopwatch renderingStopwatch = new ();
     private readonly Stopwatch totalStopwatch = new ();
-    private readonly Random random = new ();
     
     private bool timingEnabled = true;
     private int currentGeneration = 0;
@@ -70,7 +70,6 @@ public partial class MainWindow : Window
     
     private CancellationTokenSource? cancellationTokenSource;
     private CancellationTokenSource? tooltipCancellationSource;
-
     
     private Vector bitmapSize => new ((int)this.GameOfLiveView.Width, (int)this.GameOfLiveView.Height);
     
@@ -154,8 +153,8 @@ public partial class MainWindow : Window
     
     private void cbRuleSet_SelectedValueChanged(object? sender, EventArgs e)
     {
-        ruleSetType = GetTypeFromSelection();
-        SetPatternItems(ruleSetType);
+        SetTypeFromSelection();
+        SetPatternItems();
         
         InitializePlayGround();
     }
@@ -173,7 +172,12 @@ public partial class MainWindow : Window
 
     private void brushSizeSelector_ValueChanged(object? sender, EventArgs e)
     {
-        var brushSquare = (int)brushSizeSelector.Value!; 
+        SetBrushSize();
+    }
+
+    private void SetBrushSize()
+    {
+        var brushSquare = (int)brushSizeSelector.Value!;
         brushSize = new Vector(brushSquare, brushSquare);
     }
 
@@ -198,6 +202,11 @@ public partial class MainWindow : Window
     }
 
     private void cbStopWatch_CheckedChanged(object? sender, EventArgs e)
+    {
+        SetStopWatchVisibility();
+    }
+
+    private void SetStopWatchVisibility()
     {
         tbStopWatch.IsVisible = cbStopWatch.IsChecked!.Value;
         stopWatchCountSelector.IsEnabled = cbStopWatch.IsChecked!.Value;
@@ -384,30 +393,47 @@ public partial class MainWindow : Window
 
     private void InitializePlayGround()
     {
-        ruleSetType = GetTypeFromSelection();
-        generation = 0;
-        dimension = new Vector(bitmapSize.X / cellSize.X, bitmapSize.Y / cellSize.Y);
+        SetTypeFromSelection();
+        
+        ResetGenerationCount();
+        
+        InitializeDimension();
 
+        InitializeSimulationRules();
+
+        RenderPlaygroundAndDisplayGeneration();
+    }
+
+    private void ResetGenerationCount()
+    {
+        generation = 0;
+    }
+
+    private void InitializeDimension()
+    {
+        dimension = new Vector(bitmapSize.X / cellSize.X, bitmapSize.Y / cellSize.Y);
+    }
+
+    private void InitializeSimulationRules()
+    {
         switch (ruleSetType)
         {
             case RuleSetType.GameOfLife:
-                InitializeForGameOfLive();
-                break;
-            case RuleSetType.Sand:
-                InitializeForSand();
+                InitializeForGameOfLive(false);
                 break;
             case RuleSetType.GameOfLifeArray:
-                InitializeForGameOfLiveArray();
+                InitializeForGameOfLive(true);
+                break;
+            case RuleSetType.Sand:
+                InitializeForSand(false);
                 break;
             case RuleSetType.SandArray:
-                InitializeForSandArray();
+                InitializeForSand(true);
                 break;
             case RuleSetType.Wolfram:
                 InitializeWolfram();
                 break;
         }
-
-        RenderPlaygroundAndDisplayGeneration();
     }
 
     private void RenderPlaygroundAndDisplayGeneration()
@@ -421,9 +447,9 @@ public partial class MainWindow : Window
         statusLabel.Text = $"Generation: {generation++}";
     }
     
-    private RuleSetType GetTypeFromSelection() 
+    private void SetTypeFromSelection() 
     {
-        return cbRuleSet.SelectedIndex switch
+        ruleSetType = cbRuleSet.SelectedIndex switch
         {
             0 => RuleSetType.GameOfLife,
             1 => RuleSetType.Sand,
@@ -434,7 +460,7 @@ public partial class MainWindow : Window
         };
     }
 
-    private void SetPatternItems(RuleSetType ruleSetType)
+    private void SetPatternItems()
     {
         cbPattern.Items.Clear();
 
@@ -442,9 +468,7 @@ public partial class MainWindow : Window
         {
             case RuleSetType.Sand:
             case RuleSetType.SandArray:
-                cbPattern.Items.Add("Random");
-                cbPattern.Items.Add("Sanduhr");
-                cbPattern.Items.Add("Freestyle");
+                AddPatternItems(["Random", "Sanduhr", "Freestyle"]);
                 break;
             case RuleSetType.Wolfram:
                 foreach (var item in Enumerable.Range(0, 256).Select(n => n.ToString()))
@@ -455,15 +479,18 @@ public partial class MainWindow : Window
             case RuleSetType.GameOfLife:
             case RuleSetType.GameOfLifeArray:
             default:
-                cbPattern.Items.Add("Random");
-                cbPattern.Items.Add("Schachbrett");
-                cbPattern.Items.Add("Freestyle");
+                AddPatternItems(["Random", "Schachbrett", "Freestyle"]);
                 break;
         }
 
         cbPattern.SelectedIndex = 0;
     }
-
+    
+    private void AddPatternItems(List<string> items)
+    {
+        items.ForEach(item => cbPattern.Items.Add(item));
+    }
+    
     private void InitializeWolfram()
     {
         automataWolframBool = new AutomataWolfram();
@@ -471,18 +498,29 @@ public partial class MainWindow : Window
 
         ruleSet = new WolframRuleSet(cbPattern.SelectedIndex);
         
-        aliveColor = SKColors.CornflowerBlue;
-        
         GameOfLifeInitializer.AddSingleCell(playGroundBool, new Vector(dimension.X/2, 0));
 
     }
-    private void InitializeForGameOfLive()
+    private void InitializeForGameOfLive(bool isArray)
     {
-        automataBool = new Automata(dimension);
-        playGroundBool = new PlayGround(dimension);
-        ruleSet = new GameOfLifeRuleSet(dimension);
+        if (isArray)
+        {
+            automataArrayBool = new AutomataArray(dimension);
+            playGroundBool = new PlayGroundArray(dimension);
+            ruleSet = new GameOfLifeRuleSetArray(dimension);
+        }
+        else
+        {
+            automataBool = new Automata(dimension);
+            playGroundBool = new PlayGround(dimension);
+            ruleSet = new GameOfLifeRuleSet(dimension);    
+        }
         
-        aliveColor = SKColors.Chartreuse;
+        InitializeGameOfLifePattern();
+    }
+    
+    private void InitializeGameOfLifePattern()
+    {
         switch (cbPattern.SelectedIndex)
         {
             case 0: 
@@ -493,34 +531,26 @@ public partial class MainWindow : Window
                 break;
         }
     }
-    
-    private void InitializeForGameOfLiveArray()
+
+    private void InitializeForSand(bool isArray)
     {
-        automataArrayBool = new AutomataArray(dimension);
-        playGroundBool = new PlayGroundArray(dimension);
-        ruleSet = new GameOfLifeRuleSetArray(dimension);
-        
-        aliveColor = SKColors.Chartreuse;
-        switch (cbPattern.SelectedIndex)
+        if (isArray)
         {
-            case 0: 
-                GameOfLifeInitializer.Randomize(playGroundBool, maxDegreeOfParallelism, initializationProbability);
-                break;
-            case 1: 
-                GameOfLifeInitializer.AddCheckerboard(playGroundBool);
-                break;
+            automataSandArray = new AutomataArray(dimension);
+            playGroundSand = new PlayGroundArray(dimension);
+            ruleSet = new SandRuleSetArray(dimension);
         }
+        else
+        {
+            automataSand = new Automata(dimension);
+            playGroundSand = new PlayGround(dimension);
+            ruleSet = new SandRuleSet(dimension);    
+        }
+        
+        InitializeSandPattern();
     }
-    
-    private void InitializeForSand()
+    private void InitializeSandPattern()
     {
-        automataSand = new Automata(dimension);
-        playGroundSand = new PlayGround(dimension);
-        ruleSet = new SandRuleSet(dimension);
-
-        var middle = playGroundSand.Dimension.X / 2;
-        aliveColor = SKColors.Bisque;
-
         switch (cbPattern.SelectedIndex)
         {
             case 0:
@@ -528,53 +558,6 @@ public partial class MainWindow : Window
                 break;
             case 1:
                 SandInitializer.GenerateSandHourglass(playGroundSand);
-                break;
-            case 2:
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 0), CellState.Sand);
-
-                // add some terrain
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle + 1, 10), CellState.Solid);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 11), CellState.Solid);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 12), CellState.Solid);
-
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 20), CellState.Solid);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 19), CellState.Solid);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 2, 18), CellState.Solid);
-                break;
-        }
-    }
-    
-    private void InitializeForSandArray()
-    {
-        automataSandArray = new AutomataArray(dimension);
-        playGroundSand = new PlayGroundArray(dimension);
-        ruleSet = new SandRuleSetArray(dimension);
-        
-        var middle = playGroundSand.Dimension.X / 2;
-        aliveColor = SKColors.Bisque;
-        
-        switch (cbPattern.SelectedIndex)
-        {
-            case 0:
-                SandInitializer.Randomize(playGroundSand, maxDegreeOfParallelism, initializationProbability);
-                break;
-            case 1:
-                SandInitializer.GenerateSandHourglass(playGroundSand);
-                break;
-            case 2:
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 0), CellState.Sand);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 1), CellState.SandDark);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 2), CellState.SandMedium);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 2), CellState.SandLight);
-
-                // add some terrain
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle + 1, 10), CellState.Solid);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 11), CellState.Solid);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 12), CellState.Solid);
-
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle, 20), CellState.Solid);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 1, 19), CellState.Solid);
-                SandInitializer.AddSandCellStateToCell(playGroundSand, new Vector(middle - 2, 18), CellState.Solid);
                 break;
         }
     }
@@ -609,20 +592,23 @@ public partial class MainWindow : Window
         switch (type)
         {
             case RuleSetType.GameOfLifeArray:
-            case RuleSetType.Wolfram:
-                PlayGroundArray localBoolPlayGroundArray = (playGroundBool as PlayGroundArray)!;
+                var localBoolPlayGroundArray = (playGroundBool as PlayGroundArray)!;
                 SkiaVisualizer.Render(localBoolPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b == CellState.Solid ? this.aliveColor : emptyColor);
                 break;
+            case RuleSetType.Wolfram:
+                var localWolframPlayGroundArray = (playGroundBool as PlayGroundArray)!;
+                SkiaVisualizer.Render(localWolframPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b == CellState.Solid ? this.wolframColor : emptyColor);
+                break;
             case RuleSetType.Sand:
-                PlayGround localSandCellStatePlayGround = (playGroundSand as PlayGround)!;
+                var localSandCellStatePlayGround = (playGroundSand as PlayGround)!;
                 SkiaVisualizer.Render(localSandCellStatePlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, ChooseSandColor);
                 break;
             case RuleSetType.GameOfLife:
-                PlayGround localBoolPlayGround = (playGroundBool as PlayGround)!;
+                var localBoolPlayGround = (playGroundBool as PlayGround)!;
                 SkiaVisualizer.Render(localBoolPlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b == CellState.Solid ? this.aliveColor : emptyColor);
                 break;
             case RuleSetType.SandArray:
-                PlayGroundArray localSandCellStatePlayGroundArray = (playGroundSand as PlayGroundArray)!;
+                var localSandCellStatePlayGroundArray = (playGroundSand as PlayGroundArray)!;
                 SkiaVisualizer.Render(localSandCellStatePlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, ChooseSandColor);
                 break;
             default:    
