@@ -73,19 +73,16 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
         }
 
         // Prio 2: grain to the top left, but only if its Prio 1 is blocked.
-        if (IsSand(cellNeighbors.TopLeft) && (IsSand(cellNeighbors.Left) || cellNeighbors.Left == Solid) &&
-            cellNeighbors.Top == Empty)
+        if (IsSand(cellNeighbors.TopLeft) && IsSandOrSolid(cellNeighbors.Left) && cellNeighbors.Top == Empty)
         {
             //RuleCounter["Prio2"]++;
             return cellNeighbors.TopLeft;
         }
 
         // Prio 3: grain to the top right, but only if its Prio 1 and Prio 2 is blocked.
-        var cellNeighborsFromRight = GetNeighboursState(playGround, position);
-        if (IsSand(cellNeighbors.TopRight) &&
-            cellNeighbors.Top == Empty &&
-            (IsSand(cellNeighbors.Right) || cellNeighbors.Right == Solid) &&
-            (IsSand(cellNeighborsFromRight.Right) || cellNeighborsFromRight.Right == Solid || 
+        var cellNeighborsFromRight = GetNeighboursState(playGround, new Vector(position.X + 1, position.Y));
+        if (IsSand(cellNeighbors.TopRight) && IsSandOrSolid(cellNeighbors.Right) && cellNeighbors.Top == Empty &&
+            (IsSandOrSolid(cellNeighborsFromRight.Right) || 
              (cellNeighborsFromRight.Right == Empty && cellNeighborsFromRight.TopRight != Empty)))
         {
             //RuleCounter["Prio3"]++;
