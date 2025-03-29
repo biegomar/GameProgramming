@@ -32,7 +32,7 @@ public static class GameOfLifeInitializer
                     for (var y = 0; y < playGroundArrayBool.Dimension.Y; y++)
                     {
                         var state = random.NextDouble() < aliveProbability;
-                        playGroundArrayBool[(x, y)] = state ? CellState.Solid : CellState.Empty;
+                        playGroundArrayBool[new Vector(x, y)] = state ? CellState.Solid : CellState.Empty;
                     }
                 }
             });

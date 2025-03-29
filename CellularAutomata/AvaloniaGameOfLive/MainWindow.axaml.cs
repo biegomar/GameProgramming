@@ -739,7 +739,7 @@ public partial class MainWindow : Window
             RuleSetType.GameOfLife => automataBool.NextGenerationParallel((playGroundBool as PlayGround)!, (ruleSet as GameOfLifeRuleSet)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
             RuleSetType.GameOfLifeArray => automataArrayBool.NextGenerationParallel((playGroundBool as PlayGroundArray)!,(ruleSet as GameOfLifeRuleSetArray)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
             RuleSetType.Wolfram => automataWolframBool.NextGenerationParallel((playGroundBool as PlayGroundArray)!, (ruleSet as WolframRuleSet)!, generation - 1, maxDegreeOfParallelism),
-            RuleSetType.NoiseGrid => automataNoiseGrid.NextGenerationParallel((playGroundBool as PlayGroundArray)!, (ruleSet as NoiseGridRuleSet)!, generation - 1, maxDegreeOfParallelism),
+            RuleSetType.NoiseGrid => automataNoiseGrid.NextGenerationParallel((playGroundBool as PlayGroundArray)!, (ruleSet as NoiseGridRuleSet)!, maxDegreeOfParallelism),
             _ => playGroundBool
         };
         

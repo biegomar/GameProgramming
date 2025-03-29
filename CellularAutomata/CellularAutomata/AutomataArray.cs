@@ -42,11 +42,12 @@ public sealed class AutomataArray(Vector dimension)
         
         Parallel.ForEach(xPartitioner, parallelOptions, range =>
         {
-            for (var x = range.Item1; x < range.Item2; x++) 
+            for (var column = range.Item1; column < range.Item2; column++) 
             {
-                for (var y = 0; y < ground.Dimension.Y; y++)
+                for (var row = 0; row < ground.Dimension.Y; row++)
                 {
-                    nextGenerationPlayGround[(x, y)] = ruleSet.ApplyRules(ground, new Vector(x, y));
+                    var posVector = new Vector(column, row);
+                    nextGenerationPlayGround[posVector] = ruleSet.ApplyRules(ground, posVector);
                 }
             }
         });

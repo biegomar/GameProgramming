@@ -28,12 +28,6 @@ public sealed class PlayGroundArray : IPlayGround
         get => Cells[this.GetIndex(position.X, position.Y)].State;
         set => Cells[this.GetIndex(position.X, position.Y)].State = value;
     }
-
-    public CellState this[(int x, int y) position]
-    {
-        get => Cells[this.GetIndex(position.x, position.y)].State;
-        set => Cells[this.GetIndex(position.x, position.y)].State = value;
-    }
     
     private void Initialize(Func<int, int, Cell>? cellFactory = null)
     {

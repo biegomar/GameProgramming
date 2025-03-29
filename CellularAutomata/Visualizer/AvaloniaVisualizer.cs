@@ -92,7 +92,7 @@ public static class AvaloniaVisualizer
                 var top = row * cellHeight;
                 var left = column * cellWidth;
             
-                var color = stateToColor(playGround[(column, row)]);
+                var color = stateToColor(playGround[new Vector(column, row)]);
                 if (color == emptyColor) continue;
             
                 var brush = new SolidColorBrush(color);
