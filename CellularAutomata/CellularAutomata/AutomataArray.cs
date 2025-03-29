@@ -14,7 +14,8 @@ public sealed class AutomataArray(Vector dimension)
         {
             for (var row = 0; row < initialPlayGround.Dimension.Y; row++)
             {
-                nextGenerationPlayGround[(column, row)] = ruleSet.ApplyRules(initialPlayGround, new Vector(column, row));    
+                var posVector = new Vector(column, row);
+                nextGenerationPlayGround[posVector] = ruleSet.ApplyRules(initialPlayGround, posVector);    
             }
         }
 

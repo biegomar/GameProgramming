@@ -15,7 +15,7 @@ public sealed class PlayGround: IPlayGround
     }
 
     public Vector Dimension { get; init; }
-    
+
     public CellState this[Vector position]
     {
         get => Cells[position].State;
@@ -25,22 +25,7 @@ public sealed class PlayGround: IPlayGround
             cell.State = value;
             Cells[position] = cell;
         }
-
     }
-
-    public CellState this[(int x, int y) position]
-    {
-        get => Cells[new Vector(position.x, position.y)].State;
-        set
-        {
-            var positionVector = new Vector(position.x, position.y);
-            var cell = Cells[positionVector];
-            cell.State = value;
-            Cells[positionVector] = cell;
-        }
-
-    }
-
 
     private void Initialize()
     {

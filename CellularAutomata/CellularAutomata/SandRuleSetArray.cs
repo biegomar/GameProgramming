@@ -51,6 +51,7 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
                 && position.Y < playGround.Dimension.Y - 1
                )
             {
+                
                 return Empty;
             }
             
