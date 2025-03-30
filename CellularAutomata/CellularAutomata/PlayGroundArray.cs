@@ -10,8 +10,7 @@ public sealed class PlayGroundArray : IPlayGround
     
     private readonly int dimensionX;
     private readonly int dimensionY;
-
-
+    
     public PlayGroundArray(Vector dimension, Func<int, int, Cell>? cellFactory = null)
     {
         Dimension = dimension;
@@ -25,8 +24,8 @@ public sealed class PlayGroundArray : IPlayGround
     
     public CellState this[Vector position]
     {
-        get => Cells[this.GetIndex(position.X, position.Y)].State;
-        set => Cells[this.GetIndex(position.X, position.Y)].State = value;
+        get => Cells[this.GetIndex(position)].State;
+        set => Cells[this.GetIndex(position)].State = value;
     }
     
     private void Initialize(Func<int, int, Cell>? cellFactory = null)
@@ -37,7 +36,7 @@ public sealed class PlayGroundArray : IPlayGround
         {
             for (ushort y = 0; y < this.dimensionY; y++)
             {
-                this.Cells[this.GetIndex(x, y)] = cellFactory != null 
+                this.Cells[this.GetIndex(new Vector(x, y))] = cellFactory != null 
                     ? cellFactory(x, y) 
                     : new Cell(defaultState);
 
@@ -46,8 +45,8 @@ public sealed class PlayGroundArray : IPlayGround
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private int GetIndex(int x, int y)
+    private int GetIndex(Vector position)
     {
-        return x * dimensionY + y;
+        return position.X * dimensionY + position.Y;
     }
 }
