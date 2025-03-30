@@ -14,7 +14,7 @@ public sealed class AutomataArray(Vector dimension)
         {
             for (var row = 0; row < initialPlayGround.Dimension.Y; row++)
             {
-                nextGenerationPlayGround[column, row] = ruleSet.ApplyRules(initialPlayGround, new Vector(column, row));    
+                nextGenerationPlayGround[new Vector(column, row)] = ruleSet.ApplyRules(initialPlayGround, new Vector(column, row));    
             }
         }
 
@@ -45,7 +45,7 @@ public sealed class AutomataArray(Vector dimension)
             {
                 for (var row = 0; row < ground.Dimension.Y; row++)
                 {
-                    nextGenerationPlayGround[column, row] = ruleSet.ApplyRules(ground, new Vector(column, row));
+                    nextGenerationPlayGround[new Vector(column, row)] = ruleSet.ApplyRules(ground, new Vector(column, row));
                 }
             }
         });

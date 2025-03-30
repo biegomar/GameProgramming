@@ -35,7 +35,7 @@ public static class GameOfLifeInitializer
                     for (var y = 0; y < playGroundArrayBool.Dimension.Y; y++)
                     {
                         var state = random.NextDouble() < aliveProbability;
-                        playGroundArrayBool[x, y] = state ? CellState.Solid : CellState.Empty;
+                        playGroundArrayBool[new Vector(x, y)] = state ? CellState.Solid : CellState.Empty;
                     }
                 }
             });
@@ -55,7 +55,7 @@ public static class GameOfLifeInitializer
     {
         for (int x = 0; x < playground.Dimension.X; x++)
         {
-            playground[x, row] = int.IsEvenInteger(x) && int.IsEvenInteger(row) || int.IsOddInteger(x) && int.IsOddInteger(row) ? CellState.Solid : CellState.Empty;
+            playground[new Vector(x, row)] = int.IsEvenInteger(x) && int.IsEvenInteger(row) || int.IsOddInteger(x) && int.IsOddInteger(row) ? CellState.Solid : CellState.Empty;
         } 
     }
 
@@ -63,7 +63,7 @@ public static class GameOfLifeInitializer
     {
         for (int x = 0; x < playground.Dimension.X; x++)
         {
-            playground[x, row] = x % distance == 0 ? CellState.Solid : CellState.Empty;
+            playground[new Vector(x, row)] = x % distance == 0 ? CellState.Solid : CellState.Empty;
         } 
     }
 
@@ -71,7 +71,7 @@ public static class GameOfLifeInitializer
     {
         for (int y = 0; y < playground.Dimension.Y; y++)
         {
-            playground[column, y] = y % distance == 0 ? CellState.Solid : CellState.Empty;
+            playground[new Vector(column, y)] = y % distance == 0 ? CellState.Solid : CellState.Empty;
         } 
     }
 

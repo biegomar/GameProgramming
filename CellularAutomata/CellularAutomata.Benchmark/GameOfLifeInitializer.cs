@@ -23,7 +23,7 @@ public class GameOfLifeInitializer
         {
             for (int y = 0; y < playground.Dimension.Y; y++)
             {
-                playground[x, y] = random.NextDouble() < aliveProbability ? CellState.Solid : CellState.Empty;
+                playground[new Vector(x, y)] = random.NextDouble() < aliveProbability ? CellState.Solid : CellState.Empty;
             }
         }
     }

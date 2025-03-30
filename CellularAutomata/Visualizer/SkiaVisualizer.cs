@@ -95,7 +95,7 @@ public static class SkiaVisualizer
         {
             for (var y = 0; y < dimensionY; y++)
             {
-                var color = stateToColor(playGround[x, y]);
+                var color = stateToColor(playGround[new Vector(x, y)]);
                 if (color == emptyColor)
                     continue;
     
@@ -182,7 +182,7 @@ public static class SkiaVisualizer
                 var left = column * cellWidth;
                 var right = left + cellWidth;
             
-                var color = stateToColor(playGround[column, row]);
+                var color = stateToColor(playGround[new Vector(column, row)]);
                 if (color == emptyColor) continue;
             
                 paint.Color = color;

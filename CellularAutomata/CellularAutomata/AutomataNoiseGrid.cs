@@ -23,7 +23,7 @@ public class AutomataNoiseGrid(Vector dimension)
             {
                 for (var row = 0; row < ground.Dimension.Y; row++)
                 {
-                    nextGenerationPlayGround[column, row] = ruleSet.ApplyRules(ground, new Vector(column, row));
+                    nextGenerationPlayGround[new Vector(column, row)] = ruleSet.ApplyRules(ground, new Vector(column, row));
                 }
             }
         });

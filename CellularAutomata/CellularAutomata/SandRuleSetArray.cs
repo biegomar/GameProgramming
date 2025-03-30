@@ -106,11 +106,11 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
         {
             for (var y = startY; y <= endY; y++)
             {
-                if (IsWithinBounds(x, y) && playGround[x, y] == Empty)
+                if (IsWithinBounds(x, y) && playGround[new Vector(x, y)] == Empty)
                 {
                     if (random.NextDouble() < probability)
                     {
-                        playGround[x, y] = GetRandomSandCellState();   
+                        playGround[new Vector(x, y)] = GetRandomSandCellState();   
                     }
                 }
             }    
@@ -133,15 +133,15 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
         //var bottomRight = new Vector(x + 1, y + 1);
         
         return new CellNeighbors(
-            TopLeft: IsWithinBounds(x - 1, y - 1) ? playGround[x - 1, y - 1] : Solid,
-            Top: IsWithinBounds(x, y - 1) ? playGround[x, y - 1] : Solid,
-            TopRight: IsWithinBounds(x + 1, y - 1) ? playGround[x + 1, y - 1] : Solid,
-            Left: IsWithinBounds(x - 1, y) ? playGround[x - 1, y] : Solid,
-            LeftLeft: IsWithinBounds(x - 2, y) ? playGround[x - 2, y] : Solid,
-            Right: IsWithinBounds(x + 1, y) ? playGround[x + 1, y] : Solid,
-            BottomLeft: IsWithinBounds(x - 1, y + 1) ? playGround[x - 1, y + 1] : Solid,
-            Bottom: IsWithinBounds(x, y + 1) ? playGround[x, y + 1] : Solid,
-            BottomRight: IsWithinBounds(x + 1, y + 1) ? playGround[x + 1, y + 1] : Solid
+            TopLeft: IsWithinBounds(x - 1, y - 1) ? playGround[new Vector(x - 1, y - 1)] : Solid,
+            Top: IsWithinBounds(x, y - 1) ? playGround[new Vector(x, y - 1)] : Solid,
+            TopRight: IsWithinBounds(x + 1, y - 1) ? playGround[new Vector(x + 1, y - 1)] : Solid,
+            Left: IsWithinBounds(x - 1, y) ? playGround[new Vector(x - 1, y)] : Solid,
+            LeftLeft: IsWithinBounds(x - 2, y) ? playGround[new Vector(x - 2, y)] : Solid,
+            Right: IsWithinBounds(x + 1, y) ? playGround[new Vector(x + 1, y)] : Solid,
+            BottomLeft: IsWithinBounds(x - 1, y + 1) ? playGround[new Vector(x - 1, y + 1)] : Solid,
+            Bottom: IsWithinBounds(x, y + 1) ? playGround[new Vector(x, y + 1)] : Solid,
+            BottomRight: IsWithinBounds(x + 1, y + 1) ? playGround[new Vector(x + 1, y + 1)] : Solid
         );
     }
     

@@ -32,7 +32,7 @@ public static class SandInitializer
                     for (var y = 0; y < playGroundArrayBool.Dimension.Y; y++)
                     {
                         var state = random.NextDouble() < aliveProbability;
-                        playGroundArrayBool[x, y] = state ? GetRandomSandCellState() : CellState.Empty;
+                        playGroundArrayBool[new Vector(x, y)] = state ? GetRandomSandCellState() : CellState.Empty;
                     }
                 }
             });

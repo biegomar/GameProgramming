@@ -75,7 +75,7 @@
                         <NumericUpDown x:Name="processorCountSelector"
                                        Minimum="1"
                                        Maximum="32"
-                                       Value="8"
+                                       Value="12"
                                        Increment="1"
                                        Width="170"
                                        HorizontalAlignment="Right"/>

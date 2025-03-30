@@ -34,7 +34,7 @@ public static class NoiseGridInitializer
                     for (var y = 0; y < playGroundArrayBool.Dimension.Y; y++)
                     {
                         var state = random.NextDouble() > density;
-                        playGroundArrayBool[x, y] = state ? CellState.Empty : CellState.Solid;
+                        playGroundArrayBool[new Vector(x, y)] = state ? CellState.Empty : CellState.Solid;
                     }
                 }
             });
@@ -53,7 +53,7 @@ public static class NoiseGridInitializer
     {
         for (int x = 0; x < playground.Dimension.X; x++)
         {
-            playground[x, row] = int.IsEvenInteger(x) && int.IsEvenInteger(row) || int.IsOddInteger(x) && int.IsOddInteger(row) ? CellState.Solid : CellState.Empty;
+            playground[new Vector(x, row)] = int.IsEvenInteger(x) && int.IsEvenInteger(row) || int.IsOddInteger(x) && int.IsOddInteger(row) ? CellState.Solid : CellState.Empty;
         } 
     }
 }
