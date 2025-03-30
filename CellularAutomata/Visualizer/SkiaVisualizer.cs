@@ -82,6 +82,7 @@ public static class SkiaVisualizer
     {
         var colorBuckets = new ConcurrentDictionary<SKColor, ConcurrentBag<SKPoint>>();
         var dimensionX = playGround.Dimension.X;
+        var dimensionY = playGround.Dimension.Y;
         var cellWidth = cellSize.X;
         var cellHeight = cellSize.Y;
     
@@ -92,7 +93,7 @@ public static class SkiaVisualizer
         
         Parallel.For(0, dimensionX, parallelOptions,x =>
         {
-            for (var y = 0; y < playGround.Dimension.Y; y++)
+            for (var y = 0; y < dimensionY; y++)
             {
                 var color = stateToColor(playGround[x, y]);
                 if (color == emptyColor)
