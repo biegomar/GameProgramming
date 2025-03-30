@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 
 namespace CellularAutomata;
 
@@ -60,8 +60,7 @@ public sealed class Automata
         {
             for (var y = 0; y < dimensionY; y++)
             {
-                var posVector = new Vector(x, y);
-                nextGenerationPlayGround[posVector] = ruleSet.ApplyRules(initialPlayGround, posVector);
+                nextGenerationPlayGround[x,y] = ruleSet.ApplyRules(initialPlayGround, new Vector(x,y));
             }
         }
 

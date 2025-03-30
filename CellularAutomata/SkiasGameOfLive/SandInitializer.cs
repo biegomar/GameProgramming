@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using CellularAutomata;
 
 namespace SkiasGameOfLive;
@@ -32,7 +32,7 @@ public static class SandInitializer
                     for (var y = 0; y < playGroundArrayBool.Dimension.Y; y++)
                     {
                         var state = random.NextDouble() < aliveProbability;
-                        playGroundArrayBool[new Vector(x, y)] = state ? GetRandomSandCellState() : CellState.Empty;
+                        playGroundArrayBool[x, y] = state ? GetRandomSandCellState() : CellState.Empty;
                     }
                 }
             });

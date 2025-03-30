@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using CellularAutomata;
@@ -60,7 +60,7 @@ public static class AvaloniaVisualizer
                 var top = row * cellHeight;
                 var left = column * cellWidth;
             
-                var color = stateToColor(playGround[new Vector(column, row)]);
+                var color = stateToColor(playGround[column, row]);
                 if (color == emptyColor) continue;
             
                 var brush = new SolidColorBrush(color);
@@ -92,7 +92,7 @@ public static class AvaloniaVisualizer
                 var top = row * cellHeight;
                 var left = column * cellWidth;
             
-                var color = stateToColor(playGround[new Vector(column, row)]);
+                var color = stateToColor(playGround[column, row]);
                 if (color == emptyColor) continue;
             
                 var brush = new SolidColorBrush(color);

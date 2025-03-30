@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using CellularAutomata;
@@ -34,16 +34,11 @@ public static class SandInitializer
                     for (var y = 0; y < playGroundArrayBool.Dimension.Y; y++)
                     {
                         var state = random.NextDouble() < aliveProbability;
-                        playGroundArrayBool[new Vector(x, y)] = state ? GetRandomSandCellState() : CellState.Empty;
+                        playGroundArrayBool[x, y] = state ? GetRandomSandCellState() : CellState.Empty;
                     }
                 }
             });
         }
-    }
-    
-    public static void AddSandCellStateToCell(IPlayGround playground, Vector position, CellState state)
-    {
-        playground[position] = state; 
     }
     
     public static void GenerateSandHourglass(IPlayGround playground)

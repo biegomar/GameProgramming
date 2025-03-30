@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using CellularAutomata;
@@ -34,7 +34,7 @@ public static class NoiseGridInitializer
                     for (var y = 0; y < playGroundArrayBool.Dimension.Y; y++)
                     {
                         var state = random.NextDouble() > density;
-                        playGroundArrayBool[new Vector(x, y)] = state ? CellState.Empty : CellState.Solid;
+                        playGroundArrayBool[x, y] = state ? CellState.Empty : CellState.Solid;
                     }
                 }
             });
@@ -53,8 +53,7 @@ public static class NoiseGridInitializer
     {
         for (int x = 0; x < playground.Dimension.X; x++)
         {
-            var posVector = new Vector(x, row);
-            playground[posVector] = int.IsEvenInteger(x) && int.IsEvenInteger(row) || int.IsOddInteger(x) && int.IsOddInteger(row) ? CellState.Solid : CellState.Empty;
+            playground[x, row] = int.IsEvenInteger(x) && int.IsEvenInteger(row) || int.IsOddInteger(x) && int.IsOddInteger(row) ? CellState.Solid : CellState.Empty;
         } 
     }
 }

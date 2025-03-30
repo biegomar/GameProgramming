@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 
 namespace CellularAutomata;
 
@@ -23,8 +23,7 @@ public class AutomataNoiseGrid(Vector dimension)
             {
                 for (var row = 0; row < ground.Dimension.Y; row++)
                 {
-                    var posVector = new Vector(column, row);
-                    nextGenerationPlayGround[posVector] = ruleSet.ApplyRules(ground, posVector);
+                    nextGenerationPlayGround[column, row] = ruleSet.ApplyRules(ground, new Vector(column, row));
                 }
             }
         });

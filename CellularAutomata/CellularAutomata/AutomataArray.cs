@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Linq;
 
@@ -14,8 +14,7 @@ public sealed class AutomataArray(Vector dimension)
         {
             for (var row = 0; row < initialPlayGround.Dimension.Y; row++)
             {
-                var posVector = new Vector(column, row);
-                nextGenerationPlayGround[posVector] = ruleSet.ApplyRules(initialPlayGround, posVector);    
+                nextGenerationPlayGround[column, row] = ruleSet.ApplyRules(initialPlayGround, new Vector(column, row));    
             }
         }
 
@@ -46,8 +45,7 @@ public sealed class AutomataArray(Vector dimension)
             {
                 for (var row = 0; row < ground.Dimension.Y; row++)
                 {
-                    var posVector = new Vector(column, row);
-                    nextGenerationPlayGround[posVector] = ruleSet.ApplyRules(ground, posVector);
+                    nextGenerationPlayGround[column, row] = ruleSet.ApplyRules(ground, new Vector(column, row));
                 }
             }
         });

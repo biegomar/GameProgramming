@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 
 namespace CellularAutomata;
 
@@ -27,6 +27,12 @@ public sealed class PlayGroundArray : IPlayGround
     {
         get => Cells[this.GetIndex(position.X, position.Y)].State;
         set => Cells[this.GetIndex(position.X, position.Y)].State = value;
+    }
+
+    public CellState this[int x, int y]
+    {
+        get => Cells[this.GetIndex(x, y)].State;
+        set => Cells[this.GetIndex(x, y)].State = value;
     }
     
     private void Initialize(Func<int, int, Cell>? cellFactory = null)

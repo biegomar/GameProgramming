@@ -1,4 +1,4 @@
-﻿namespace CellularAutomata.Benchmark;
+namespace CellularAutomata.Benchmark;
 
 public class GameOfLifeInitializer
 {
@@ -23,7 +23,7 @@ public class GameOfLifeInitializer
         {
             for (int y = 0; y < playground.Dimension.Y; y++)
             {
-                playground[new Vector(x, y)] = random.NextDouble() < aliveProbability ? CellState.Solid : CellState.Empty;
+                playground[x, y] = random.NextDouble() < aliveProbability ? CellState.Solid : CellState.Empty;
             }
         }
     }
