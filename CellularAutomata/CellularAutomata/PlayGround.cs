@@ -27,20 +27,6 @@ public sealed class PlayGround: IPlayGround
         }
     }
 
-    public CellState this[int x, int y]
-    {
-        get => Cells[new Vector(x, y)].State;
-        set
-        {
-            var positionVector = new Vector(x, y);
-            var cell = Cells[positionVector];
-            cell.State = value;
-            Cells[positionVector] = cell;
-        }
-
-    }
-
-
     private void Initialize()
     {
         const CellState defaultState = CellState.Empty;
