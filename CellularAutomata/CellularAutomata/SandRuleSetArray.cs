@@ -37,7 +37,7 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
     {
         var cellState = playGround[position];
 
-        var cellNeighbors = GetNeighboursState(playGround, position.X, position.Y);
+        var cellNeighbors = GetNeighboursState(playGround, position);
         
         // First look at a cell with state
 
@@ -81,7 +81,7 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
         }
 
         // Prio 3: grain to the top right, but only if its Prio 1 and Prio 2 is blocked.
-        var cellNeighborsFromRight = GetNeighboursState(playGround, position.X + 1, position.Y);
+        var cellNeighborsFromRight = GetNeighboursState(playGround, new Vector(position.X + 1, position.Y));
         if (IsSand(cellNeighbors.TopRight) && IsSandOrSolid(cellNeighbors.Right) && cellNeighbors.Top == Empty &&
             (IsSandOrSolid(cellNeighborsFromRight.Right) || 
              (cellNeighborsFromRight.Right == Empty && cellNeighborsFromRight.TopRight != Empty)))
@@ -106,7 +106,7 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
         {
             for (var y = startY; y <= endY; y++)
             {
-                if (IsWithinBounds(x, y) && playGround[new Vector(x, y)] == Empty)
+                if (IsWithinBounds(new Vector(x, y)) && playGround[new Vector(x, y)] == Empty)
                 {
                     if (random.NextDouble() < probability)
                     {
@@ -120,38 +120,25 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private CellNeighbors GetNeighboursState(IPlayGround playGround, int x, int y)
+    private CellNeighbors GetNeighboursState(IPlayGround playGround, Vector position)
     {
-        //var topLeft = new Vector(x - 1, y - 1);
-        //var top = new Vector(x, y - 1);
-        //var topRight = new Vector(x + 1, y - 1);
-        //var left = new Vector(x - 1, y);
-        //var leftleft = new Vector(x - 2, y);
-        //var right = new Vector(x + 1, y);
-        //var bottomLeft = new Vector(x - 1, y + 1);
-        //var bottom = new Vector(x, y + 1);
-        //var bottomRight = new Vector(x + 1, y + 1);
-        
         return new CellNeighbors(
-            TopLeft: IsWithinBounds(x - 1, y - 1) ? playGround[new Vector(x - 1, y - 1)] : Solid,
-            Top: IsWithinBounds(x, y - 1) ? playGround[new Vector(x, y - 1)] : Solid,
-            TopRight: IsWithinBounds(x + 1, y - 1) ? playGround[new Vector(x + 1, y - 1)] : Solid,
-            Left: IsWithinBounds(x - 1, y) ? playGround[new Vector(x - 1, y)] : Solid,
-            LeftLeft: IsWithinBounds(x - 2, y) ? playGround[new Vector(x - 2, y)] : Solid,
-            Right: IsWithinBounds(x + 1, y) ? playGround[new Vector(x + 1, y)] : Solid,
-            BottomLeft: IsWithinBounds(x - 1, y + 1) ? playGround[new Vector(x - 1, y + 1)] : Solid,
-            Bottom: IsWithinBounds(x, y + 1) ? playGround[new Vector(x, y + 1)] : Solid,
-            BottomRight: IsWithinBounds(x + 1, y + 1) ? playGround[new Vector(x + 1, y + 1)] : Solid
+            TopLeft: IsWithinBounds(new Vector(position.X - 1, position.Y - 1)) ? playGround[new Vector(position.X - 1, position.Y - 1)] : Solid,
+            Top: IsWithinBounds(new Vector(position.X, position.Y - 1)) ? playGround[new Vector(position.X, position.Y - 1)] : Solid,
+            TopRight: IsWithinBounds(new Vector(position.X + 1, position.Y - 1)) ? playGround[new Vector(position.X + 1, position.Y - 1)] : Solid,
+            Left: IsWithinBounds(new Vector(position.X - 1, position.Y)) ? playGround[new Vector(position.X - 1, position.Y)] : Solid,
+            LeftLeft: IsWithinBounds(new Vector(position.X - 2, position.Y)) ? playGround[new Vector(position.X - 2, position.Y)] : Solid,
+            Right: IsWithinBounds(new Vector(position.X + 1, position.Y)) ? playGround[new Vector(position.X + 1, position.Y)] : Solid,
+            BottomLeft: IsWithinBounds(new Vector(position.X - 1, position.Y + 1)) ? playGround[new Vector(position.X - 1, position.Y + 1)] : Solid,
+            Bottom: IsWithinBounds(new Vector(position.X, position.Y + 1)) ? playGround[new Vector(position.X, position.Y + 1)] : Solid,
+            BottomRight: IsWithinBounds(new Vector(position.X + 1, position.Y + 1)) ? playGround[new Vector(position.X + 1, position.Y + 1)] : Solid
         );
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool IsWithinBounds(int x, int y)
+    private bool IsWithinBounds(Vector position )
     {
-        var withinX = (uint)x < (uint)dimension.X; 
-        var withinY = (uint)y < (uint)dimension.Y;
-    
-        return withinX && withinY;
+        return (uint)position.X < (uint)dimension.X && (uint)position.Y < (uint)dimension.Y;
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
