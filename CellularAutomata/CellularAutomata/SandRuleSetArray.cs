@@ -39,7 +39,7 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
 
         var cellNeighbors = GetNeighboursState(playGround, position);
         
-        // First look at a cell with state
+        // First look at a cell with state - so we push the grain.
 
         if (IsSand(cellState))
         {
@@ -64,7 +64,7 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
             return Solid;
         }
         
-        // We are sure. That cell is empty.
+        // We are sure. That cell is empty. Now we pull the grain.
         
         // Prio 1: grain above me
         if (IsSand(cellNeighbors.Top))
@@ -82,13 +82,28 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
 
         // Prio 3: grain to the top right, but only if its Prio 1 and Prio 2 is blocked.
         var cellNeighborsFromRight = GetNeighboursState(playGround, new Vector(position.X + 1, position.Y));
-        if (IsSand(cellNeighbors.TopRight) && IsSandOrSolid(cellNeighbors.Right) && cellNeighbors.Top == Empty &&
-            (IsSandOrSolid(cellNeighborsFromRight.Right) || 
-             (cellNeighborsFromRight.Right == Empty && cellNeighborsFromRight.TopRight != Empty)))
+        
+        var canPullFromRight = IsSand(cellNeighbors.TopRight) && IsSandOrSolid(cellNeighbors.Right) && cellNeighbors.Top == Empty;
+        var isStrongCriteriaToPullFromRight = IsSandOrSolid(cellNeighborsFromRight.Right) ||
+                                              (cellNeighborsFromRight.Right == Empty && IsSand(cellNeighborsFromRight.TopRight));
+
+        if (IsStrongPullCriteriaNeeded())
         {
-            //RuleCounter["Prio3"]++;
-            return cellNeighbors.TopRight; 
+            if (canPullFromRight && isStrongCriteriaToPullFromRight)
+            {
+                //RuleCounter["Prio3"]++;
+                return cellNeighbors.TopRight; 
+            }    
         }
+        else
+        {
+            if (canPullFromRight)
+            {
+                //RuleCounter["Prio3"]++;
+                return cellNeighbors.TopRight; 
+            }
+        }
+        
 
         //RuleCounter["Empty"]++;
         return Empty;
@@ -166,5 +181,12 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
 
         return (CellState)randomValue;
 
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool IsStrongPullCriteriaNeeded()
+    {
+        var result = random.Next(0, 2) == 0;
+        return result;
     }
 }
