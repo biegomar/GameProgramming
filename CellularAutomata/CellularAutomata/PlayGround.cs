@@ -27,6 +27,28 @@ public sealed class PlayGround: IPlayGround
         }
     }
 
+    public void SetCellToMoved(Vector position)
+    {
+        UpdateCellMovementStatus(position, true);
+    }
+    
+    public void ClearCellToNotMoved(Vector position)
+    {
+        UpdateCellMovementStatus(position, false);
+    }
+
+    public bool HasMoved(Vector position)
+    {
+        return Cells[position].HasMoved;
+    }
+    
+    private void UpdateCellMovementStatus(Vector position, bool hasMoved = true)
+    {
+        var cell = Cells[position];
+        cell.HasMoved = hasMoved;
+        Cells[position] = cell;
+    }
+
     private void Initialize()
     {
         const CellState defaultState = CellState.Empty;

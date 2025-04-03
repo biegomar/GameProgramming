@@ -36,6 +36,7 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
     public CellState ApplyRules(IPlayGround playGround, Vector position)
     {
         var cellState = playGround[position];
+        playGround.ClearCellToNotMoved(position);
 
         var cellNeighbors = GetNeighboursState(playGround, position);
         
@@ -74,7 +75,7 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
         }
 
         // Prio 2: grain to the top left, but only if its Prio 1 is blocked.
-        if (IsSand(cellNeighbors.TopLeft) && IsSandOrSolid(cellNeighbors.Left) && cellNeighbors.Top == Empty)
+        if (IsSand(cellNeighbors.TopLeft) && IsSandOrSolid(cellNeighbors.Left) && cellNeighbors.Top == Empty && !playGround.HasMoved(new Vector(position.X - 1, position.Y - 1)))
         {
             //RuleCounter["Prio2"]++;
             return cellNeighbors.TopLeft;
@@ -84,11 +85,11 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
         var cellNeighborsFromRight = GetNeighboursState(playGround, new Vector(position.X + 1, position.Y));
         
         var canPullFromRight = IsSand(cellNeighbors.TopRight) && IsSandOrSolid(cellNeighbors.Right) && cellNeighbors.Top == Empty;
-        var isStrongCriteriaToPullFromRight = IsSandOrSolid(cellNeighborsFromRight.Right) ||
-                                              (cellNeighborsFromRight.Right == Empty && IsSand(cellNeighborsFromRight.TopRight));
 
         if (IsStrongPullCriteriaNeeded())
         {
+            var isStrongCriteriaToPullFromRight = IsSandOrSolid(cellNeighborsFromRight.Right) || (cellNeighborsFromRight.Right == Empty && IsSand(cellNeighborsFromRight.TopRight));
+            
             if (canPullFromRight && isStrongCriteriaToPullFromRight)
             {
                 //RuleCounter["Prio3"]++;
@@ -100,6 +101,7 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
             if (canPullFromRight)
             {
                 //RuleCounter["Prio3"]++;
+                playGround.SetCellToMoved(new Vector(position.X + 1, position.Y - 1));
                 return cellNeighbors.TopRight; 
             }
         }
@@ -186,7 +188,6 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool IsStrongPullCriteriaNeeded()
     {
-        var result = random.Next(0, 2) == 0;
-        return result;
+        return (Environment.TickCount & 1) == 0;
     }
 }

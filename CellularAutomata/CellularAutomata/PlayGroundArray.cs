@@ -27,7 +27,22 @@ public sealed class PlayGroundArray : IPlayGround
         get => Cells[this.GetIndex(position)].State;
         set => Cells[this.GetIndex(position)].State = value;
     }
-    
+
+    public void SetCellToMoved(Vector position)
+    {
+        Cells[this.GetIndex(position)].HasMoved = true;
+    }
+
+    public void ClearCellToNotMoved(Vector position)
+    {
+        Cells[this.GetIndex(position)].HasMoved = false;
+    }
+
+    public bool HasMoved(Vector position)
+    {
+        return Cells[this.GetIndex(position)].HasMoved;
+    }
+
     private void Initialize(Func<int, int, Cell>? cellFactory = null)
     {
         const CellState defaultState = CellState.Empty;
