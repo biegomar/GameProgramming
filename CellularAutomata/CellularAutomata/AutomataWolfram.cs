@@ -2,7 +2,7 @@ namespace CellularAutomata;
 
 public sealed class AutomataWolfram
 {
-    public PlayGroundArray NextGenerationParallel(PlayGroundArray initialPlayGround, IRuleSet ruleSet, int row, int maxDegreeOfParallelism)
+    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, IRuleSet ruleSet, int row, int maxDegreeOfParallelism)
     {
         if (row >= initialPlayGround.Dimension.Y - 1)
         {

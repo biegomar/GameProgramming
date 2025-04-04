@@ -2,7 +2,7 @@ using CellularAutomata;
 
 public class GameOfLifeInitializer
 {
-    public static void Randomize(PlayGroundArray playground, double aliveProbability = 0.2)
+    public static void Randomize(PlayGround playground, double aliveProbability = 0.2)
     {
         var random = new Random();
 
@@ -16,7 +16,7 @@ public class GameOfLifeInitializer
     }
     
     // **Muster 1: Blinker (kleiner Oszillator)**
-    public static void AddBlinker(PlayGroundArray playground, Vector startPosition)
+    public static void AddBlinker(PlayGround playground, Vector startPosition)
     {
         playground[new Vector(startPosition.X, startPosition.Y)] = CellState.Solid;
         playground[new Vector(startPosition.X + 1, startPosition.Y)] = CellState.Solid;
@@ -24,7 +24,7 @@ public class GameOfLifeInitializer
     }
 
     // **Muster 2: Glider (bewegliches Muster)**
-    public static void AddGlider(PlayGroundArray playground, Vector startPosition)
+    public static void AddGlider(PlayGround playground, Vector startPosition)
     {
         playground[new Vector(startPosition.X + 2, startPosition.Y)] = CellState.Solid;        // Zelle oben rechts
         playground[new Vector(startPosition.X, startPosition.Y + 1)] = CellState.Solid;        // Zelle Mitte links
@@ -34,7 +34,7 @@ public class GameOfLifeInitializer
     }
 
     // **Muster 3: Toad (größerer Oszillator)**
-    public static void AddToad(PlayGroundArray playground, Vector startPosition)
+    public static void AddToad(PlayGround playground, Vector startPosition)
     {
         playground[new Vector(startPosition.X + 1, startPosition.Y)] = CellState.Solid;
         playground[new Vector(startPosition.X + 2, startPosition.Y)] = CellState.Solid;
@@ -45,7 +45,7 @@ public class GameOfLifeInitializer
     }
 
     // **Muster 4: Block (stabiler Zustand)**
-    public static void AddBlock(PlayGroundArray playground, Vector startPosition)
+    public static void AddBlock(PlayGround playground, Vector startPosition)
     {
         playground[new Vector(startPosition.X, startPosition.Y)] = CellState.Solid;
         playground[new Vector(startPosition.X + 1, startPosition.Y)] = CellState.Solid;
@@ -54,7 +54,7 @@ public class GameOfLifeInitializer
     }
 
     // **Muster 5: Beacon (kleiner oszillierender Zustand)**
-    public static void AddBeacon(PlayGroundArray playground, Vector startPosition)
+    public static void AddBeacon(PlayGround playground, Vector startPosition)
     {
         // Oberer linker Block
         playground[new Vector(startPosition.X, startPosition.Y)] = CellState.Solid;

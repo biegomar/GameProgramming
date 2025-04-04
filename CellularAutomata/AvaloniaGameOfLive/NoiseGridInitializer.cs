@@ -7,7 +7,7 @@ namespace AvaloniaGameOfLive;
 
 public static class NoiseGridInitializer
 {
-    public static void Randomize(PlayGroundArray playground, int maxDegreeOfParallelism, double density = 0.65)
+    public static void Randomize(PlayGround playground, int maxDegreeOfParallelism, double density = 0.65)
     {
         var random = new Random();
 

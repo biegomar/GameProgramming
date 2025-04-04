@@ -6,9 +6,9 @@ namespace CellularAutomata;
 
 public sealed class Automata(Vector dimension)
 {
-    private PlayGroundArray nextGenerationPlayGround = new(dimension);
+    private PlayGround nextGenerationPlayGround = new(dimension);
 
-    public PlayGroundArray NextGeneration(PlayGroundArray initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize)
+    public PlayGround NextGeneration(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize)
     {
         for (var column = 0; column < initialPlayGround.Dimension.X; column++)
         {
@@ -28,7 +28,7 @@ public sealed class Automata(Vector dimension)
         return initialPlayGround;
     }
     
-    public PlayGroundArray NextGenerationParallel(PlayGroundArray initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize, int maxDegreeOfParallelism)
+    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize, int maxDegreeOfParallelism)
     {
         var parallelOptions = new ParallelOptions()
         {
@@ -62,13 +62,13 @@ public sealed class Automata(Vector dimension)
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public PlayGroundArray ApplySpawnRules(PlayGroundArray playGround, IRuleSet ruleSet, Vector spawnPosition, Vector brushSize, double probability = 1)
+    public PlayGround ApplySpawnRules(PlayGround playGround, IRuleSet ruleSet, Vector spawnPosition, Vector brushSize, double probability = 1)
     {
-        return (PlayGroundArray)ruleSet.ApplySpawnRules(playGround, spawnPosition, brushSize, probability); 
+        return (PlayGround)ruleSet.ApplySpawnRules(playGround, spawnPosition, brushSize, probability); 
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void Swap(ref PlayGroundArray instanceOne, ref PlayGroundArray instanceTwo)
+    private static void Swap(ref PlayGround instanceOne, ref PlayGround instanceTwo)
     { 
         (instanceOne, instanceTwo) = (instanceTwo, instanceOne);
     }

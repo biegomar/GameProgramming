@@ -8,7 +8,7 @@ namespace AvaloniaGameOfLive;
 
 public static class GameOfLifeInitializer
 {
-    public static void Randomize(PlayGroundArray playground, int maxDegreeOfParallelism, double aliveProbability = 0.2)
+    public static void Randomize(PlayGround playground, int maxDegreeOfParallelism, double aliveProbability = 0.2)
     {
         var random = new Random();
 

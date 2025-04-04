@@ -4,9 +4,9 @@ namespace CellularAutomata;
 
 public class AutomataNoiseGrid(Vector dimension)
 {
-    private PlayGroundArray nextGenerationPlayGround = new(dimension);
+    private PlayGround nextGenerationPlayGround = new(dimension);
 
-    public PlayGroundArray NextGenerationParallel(PlayGroundArray initialPlayGround, IRuleSet ruleSet, int maxDegreeOfParallelism)
+    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, IRuleSet ruleSet, int maxDegreeOfParallelism)
     {
         var parallelOptions = new ParallelOptions()
         {
@@ -33,7 +33,7 @@ public class AutomataNoiseGrid(Vector dimension)
         return initialPlayGround;
     } 
     
-    private static void Swap(ref PlayGroundArray instanceOne, ref PlayGroundArray instanceTwo)
+    private static void Swap(ref PlayGround instanceOne, ref PlayGround instanceTwo)
     { 
         (instanceOne, instanceTwo) = (instanceTwo, instanceOne);
     }

@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace CellularAutomata;
 
-public sealed class PlayGroundArray : IPlayGround
+public sealed class PlayGround : IPlayGround
 {
     public Cell[] Cells { get; }
     private readonly BitArray movedCells;
@@ -14,7 +14,7 @@ public sealed class PlayGroundArray : IPlayGround
     private readonly int dimensionX;
     private readonly int dimensionY;
     
-    public PlayGroundArray(Vector dimension, Func<int, int, Cell>? cellFactory = null)
+    public PlayGround(Vector dimension, Func<int, int, Cell>? cellFactory = null)
     {
         Dimension = dimension;
         dimensionX = dimension.X;

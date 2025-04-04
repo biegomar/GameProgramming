@@ -7,7 +7,7 @@ var dimension = new Vector(100,40);
 var screenSize = new Vector(dimension.X + 5, dimension.Y + 5);
 var spawnPosition = new Vector(5,5);
 var brushSize = new Vector(1,1);
-var playGround = new PlayGroundArray(dimension);
+var playGround = new PlayGround(dimension);
 var ruleSet = new GameOfLifeRuleSet(dimension);
 Automata automataBool = new (dimension);
 
