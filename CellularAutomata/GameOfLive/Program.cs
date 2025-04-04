@@ -9,7 +9,7 @@ var spawnPosition = new Vector(5,5);
 var brushSize = new Vector(1,1);
 var playGround = new PlayGroundArray(dimension);
 var ruleSet = new GameOfLifeRuleSetArray(dimension);
-AutomataArray automataBool = new (dimension);
+Automata automataBool = new (dimension);
 
 GameOfLifeInitializer.Randomize(playGround, 0.2);
 

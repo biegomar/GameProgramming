@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace CellularAutomata;
 
-public sealed class AutomataArray(Vector dimension)
+public sealed class Automata(Vector dimension)
 {
     private PlayGroundArray nextGenerationPlayGround = new(dimension);
 
