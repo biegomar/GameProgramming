@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Runtime.CompilerServices;
 
 namespace CellularAutomata;
@@ -5,6 +6,8 @@ namespace CellularAutomata;
 public sealed class PlayGroundArray : IPlayGround
 {
     public Cell[] Cells { get; }
+    private readonly BitArray movedCells;
+
     
     public Vector Dimension { get; }
     
@@ -18,6 +21,8 @@ public sealed class PlayGroundArray : IPlayGround
         dimensionY = dimension.Y;
         
         Cells = new Cell[dimensionX * dimensionY];
+        movedCells = new BitArray(dimensionX * dimensionY);
+
         
         Initialize(cellFactory);
     }
@@ -30,17 +35,17 @@ public sealed class PlayGroundArray : IPlayGround
 
     public void SetCellToMoved(Vector position)
     {
-        Cells[this.GetIndex(position)].HasMoved = true;
+        movedCells.Set(GetIndex(position), true);
     }
 
-    public void ClearCellToNotMoved(Vector position)
+    public void ResetMovedCells()
     {
-        Cells[this.GetIndex(position)].HasMoved = false;
+        movedCells.SetAll(false);
     }
 
     public bool HasMoved(Vector position)
     {
-        return Cells[this.GetIndex(position)].HasMoved;
+        return movedCells.Get(GetIndex(position));
     }
 
     private void Initialize(Func<int, int, Cell>? cellFactory = null)
@@ -54,7 +59,6 @@ public sealed class PlayGroundArray : IPlayGround
                 this.Cells[this.GetIndex(new Vector(x, y))] = cellFactory != null 
                     ? cellFactory(x, y) 
                     : new Cell(defaultState);
-
             }
         }
     }

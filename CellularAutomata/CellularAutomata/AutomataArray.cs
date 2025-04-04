@@ -55,6 +55,7 @@ public sealed class AutomataArray(Vector dimension)
             nextGenerationPlayGround = ApplySpawnRules(nextGenerationPlayGround, ruleSet, spawnPosition, brushSize);   
         }
         
+        initialPlayGround.ResetMovedCells();
         Swap(ref initialPlayGround, ref nextGenerationPlayGround); 
         
         return initialPlayGround;

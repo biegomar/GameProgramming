@@ -8,7 +8,7 @@ public interface IPlayGround
 
     void SetCellToMoved(Vector position);
     
-    void ClearCellToNotMoved(Vector position);
+    void ResetMovedCells();
 
     bool HasMoved(Vector position);
 }

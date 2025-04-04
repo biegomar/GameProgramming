@@ -3,18 +3,20 @@ namespace CellularAutomata;
 public sealed class PlayGround: IPlayGround
 {
     public Dictionary<Vector, Cell> Cells { get; init; }
+    private Dictionary<Vector, Cell?> MovedCells;
 
+    public Vector Dimension { get; init; }
+    
     public PlayGround(Vector dimension)
     {
         Dimension = dimension;
         
         var capacity = dimension.X * dimension.Y;
         Cells = new Dictionary<Vector, Cell>(capacity);
+        MovedCells = new Dictionary<Vector, Cell?>(capacity);
         
         Initialize();
     }
-
-    public Vector Dimension { get; init; }
 
     public CellState this[Vector position]
     {
@@ -31,10 +33,10 @@ public sealed class PlayGround: IPlayGround
     {
         UpdateCellMovementStatus(position, true);
     }
-    
-    public void ClearCellToNotMoved(Vector position)
+
+    public void ResetMovedCells()
     {
-        UpdateCellMovementStatus(position, false);
+        MovedCells = new Dictionary<Vector, Cell?>(Dimension.X * Dimension.Y);
     }
 
     public bool HasMoved(Vector position)

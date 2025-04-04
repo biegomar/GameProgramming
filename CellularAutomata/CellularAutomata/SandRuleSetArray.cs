@@ -36,7 +36,6 @@ public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
     public CellState ApplyRules(IPlayGround playGround, Vector position)
     {
         var cellState = playGround[position];
-        playGround.ClearCellToNotMoved(position);
 
         var cellNeighbors = GetNeighboursState(playGround, position);
         
