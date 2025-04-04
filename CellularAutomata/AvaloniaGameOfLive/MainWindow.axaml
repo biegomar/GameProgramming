@@ -62,10 +62,8 @@
                             <ComboBox.Items>
                                 <ComboBoxItem Content="Game of Life" />
                                 <ComboBoxItem Content="Sand" />
-                                <ComboBoxItem Content="Game of Life Array" />
-                                <ComboBoxItem Content="Sand Array" />
-                                <ComboBoxItem Content="Wolfram Array" />
-                                <ComboBoxItem Content="NoiseGrid Array" />
+                                <ComboBoxItem Content="Wolfram" />
+                                <ComboBoxItem Content="NoiseGrid" />
                             </ComboBox.Items>
                         </ComboBox>
                     </StackPanel>
@@ -138,7 +136,7 @@
                 <TextBlock x:Name="lblStopWatch" Text="Durchläufe" VerticalAlignment="Center" Width="75"/>
                 <NumericUpDown x:Name="stopWatchCountSelector"
                                Minimum="1"
-                               Maximum="10000"
+                               Maximum="100000"
                                Value="50"
                                Increment="1"
                                Width="170"

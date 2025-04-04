@@ -7,38 +7,27 @@ namespace AvaloniaGameOfLive;
 
 public static class NoiseGridInitializer
 {
-    public static void Randomize(IPlayGround playground, int maxDegreeOfParallelism, double density = 0.65)
+    public static void Randomize(PlayGroundArray playground, int maxDegreeOfParallelism, double density = 0.65)
     {
         var random = new Random();
 
-        if (playground is PlayGround playGroundBool)
+        var parallelOptions = new ParallelOptions()
         {
-            Parallel.ForEach(playGroundBool.Cells, cell =>
-            {
-                var state = random.NextDouble() > density;
-                playground[cell.Key] = state ? CellState.Empty : CellState.Solid;
-            });
-        }
-        else if (playground is PlayGroundArray playGroundArrayBool)
-        {
-            var parallelOptions = new ParallelOptions()
-            {
-                MaxDegreeOfParallelism = Math.Min(maxDegreeOfParallelism, Environment.ProcessorCount)
-            };
+            MaxDegreeOfParallelism = Math.Min(maxDegreeOfParallelism, Environment.ProcessorCount)
+        };
             
-            var xPartitioner = Partitioner.Create(0, playGroundArrayBool.Dimension.X);
-            Parallel.ForEach(xPartitioner, parallelOptions, range =>
+        var xPartitioner = Partitioner.Create(0, playground.Dimension.X);
+        Parallel.ForEach(xPartitioner, parallelOptions, range =>
+        {
+            for (var x = range.Item1; x < range.Item2; x++) 
             {
-                for (var x = range.Item1; x < range.Item2; x++) 
+                for (var y = 0; y < playground.Dimension.Y; y++)
                 {
-                    for (var y = 0; y < playGroundArrayBool.Dimension.Y; y++)
-                    {
-                        var state = random.NextDouble() > density;
-                        playGroundArrayBool[new Vector(x, y)] = state ? CellState.Empty : CellState.Solid;
-                    }
+                    var state = random.NextDouble() > density;
+                    playground[new Vector(x, y)] = state ? CellState.Empty : CellState.Solid;
                 }
-            });
-        }
+            }
+        });
     } 
     
     public static void AddCheckerboard(IPlayGround playground)

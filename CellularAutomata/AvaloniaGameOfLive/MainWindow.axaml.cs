@@ -23,8 +23,6 @@ public partial class MainWindow : Window
     {
         Sand,
         GameOfLife,
-        SandArray,
-        GameOfLifeArray,
         Wolfram,
         NoiseGrid,
     }
@@ -59,14 +57,12 @@ public partial class MainWindow : Window
     private int generation = 0;
     private int maxDegreeOfParallelism = 2;
     
-    private IPlayGround playGroundBool;
-    private IPlayGround playGroundSand;
+    private PlayGroundArray playGroundBool;
+    private PlayGroundArray playGroundSand;
     private IBaseRuleSet ruleSet;
     private RuleSetType ruleSetType;
     
-    private Automata automataBool;
     private AutomataArray automataArrayBool;
-    private Automata automataSand;
     private AutomataArray automataSandArray;
     private AutomataWolfram automataWolframBool;
     private AutomataNoiseGrid automataNoiseGrid;
@@ -335,10 +331,8 @@ public partial class MainWindow : Window
         switch (ruleSetType)
         {
             case RuleSetType.Sand:
-            case RuleSetType.SandArray:
                 return GetCellStateFromSand(cellPosition);
             case RuleSetType.GameOfLife:
-            case RuleSetType.GameOfLifeArray:
             case RuleSetType.Wolfram:
             case RuleSetType.NoiseGrid:
                 return GetCellStateForGameOfLive(cellPosition);
@@ -425,16 +419,10 @@ public partial class MainWindow : Window
         switch (ruleSetType)
         {
             case RuleSetType.GameOfLife:
-                InitializeForGameOfLive(false);
-                break;
-            case RuleSetType.GameOfLifeArray:
-                InitializeForGameOfLive(true);
+                InitializeForGameOfLive();
                 break;
             case RuleSetType.Sand:
-                InitializeForSand(false);
-                break;
-            case RuleSetType.SandArray:
-                InitializeForSand(true);
+                InitializeForSand();
                 break;
             case RuleSetType.Wolfram:
                 InitializeWolfram();
@@ -467,10 +455,8 @@ public partial class MainWindow : Window
         {
             0 => RuleSetType.GameOfLife,
             1 => RuleSetType.Sand,
-            2 => RuleSetType.GameOfLifeArray,
-            3 => RuleSetType.SandArray,
-            4 => RuleSetType.Wolfram,
-            5 => RuleSetType.NoiseGrid,
+            2 => RuleSetType.Wolfram,
+            3 => RuleSetType.NoiseGrid,
             _ => RuleSetType.GameOfLife,
         };
     }
@@ -482,7 +468,6 @@ public partial class MainWindow : Window
         switch (ruleSetType)
         {
             case RuleSetType.Sand:
-            case RuleSetType.SandArray:
                 AddPatternItems(["Random", "Sanduhr", "Freestyle"]);
                 break;
             case RuleSetType.Wolfram:
@@ -493,7 +478,6 @@ public partial class MainWindow : Window
                 break;
             case RuleSetType.NoiseGrid:
             case RuleSetType.GameOfLife:
-            case RuleSetType.GameOfLifeArray:
             default:
                 AddPatternItems(["Random", "Schachbrett", "Freestyle"]);
                 break;
@@ -507,20 +491,11 @@ public partial class MainWindow : Window
         items.ForEach(item => cbPattern.Items.Add(item));
     }
     
-    private void InitializeForGameOfLive(bool isArray)
+    private void InitializeForGameOfLive()
     {
-        if (isArray)
-        {
-            automataArrayBool = new AutomataArray(dimension);
-            playGroundBool = new PlayGroundArray(dimension);
-            ruleSet = new GameOfLifeRuleSetArray(dimension);
-        }
-        else
-        {
-            automataBool = new Automata(dimension);
-            playGroundBool = new PlayGround(dimension);
-            ruleSet = new GameOfLifeRuleSet(dimension);    
-        }
+        automataArrayBool = new AutomataArray(dimension);
+        playGroundBool = new PlayGroundArray(dimension);
+        ruleSet = new GameOfLifeRuleSetArray(dimension);
         
         InitializeGameOfLifePattern();
     }
@@ -538,20 +513,11 @@ public partial class MainWindow : Window
         }
     }
 
-    private void InitializeForSand(bool isArray)
+    private void InitializeForSand()
     {
-        if (isArray)
-        {
-            automataSandArray = new AutomataArray(dimension);
-            playGroundSand = new PlayGroundArray(dimension);
-            ruleSet = new SandRuleSetArray(dimension);
-        }
-        else
-        {
-            automataSand = new Automata(dimension);
-            playGroundSand = new PlayGround(dimension);
-            ruleSet = new SandRuleSet(dimension);    
-        }
+        automataSandArray = new AutomataArray(dimension);
+        playGroundSand = new PlayGroundArray(dimension);
+        ruleSet = new SandRuleSetArray(dimension);
         
         InitializeSandPattern();
     }
@@ -634,7 +600,7 @@ public partial class MainWindow : Window
     {
         switch (ruleSetType)
         {
-            case RuleSetType.GameOfLifeArray:
+            case RuleSetType.GameOfLife:
                 var localBoolPlayGroundArray = (playGroundBool as PlayGroundArray)!;
                 SkiaVisualizer.Render(localBoolPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b == CellState.Solid ? this.aliveColor : emptyColor);
                 break;
@@ -647,14 +613,6 @@ public partial class MainWindow : Window
                 SkiaVisualizer.Render(localNoiseGridPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b == CellState.Solid ? this.noiseGridColor : emptyColor);
                 break;
             case RuleSetType.Sand:
-                var localSandCellStatePlayGround = (playGroundSand as PlayGround)!;
-                SkiaVisualizer.Render(localSandCellStatePlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, ChooseSandColor);
-                break;
-            case RuleSetType.GameOfLife:
-                var localBoolPlayGround = (playGroundBool as PlayGround)!;
-                SkiaVisualizer.Render(localBoolPlayGround, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b == CellState.Solid ? this.aliveColor : emptyColor);
-                break;
-            case RuleSetType.SandArray:
                 var localSandCellStatePlayGroundArray = (playGroundSand as PlayGroundArray)!;
                 SkiaVisualizer.Render(localSandCellStatePlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, ChooseSandColor);
                 break;
@@ -736,8 +694,7 @@ public partial class MainWindow : Window
     {
         playGroundBool = type switch
         {
-            RuleSetType.GameOfLife => automataBool.NextGenerationParallel((playGroundBool as PlayGround)!, (ruleSet as GameOfLifeRuleSet)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
-            RuleSetType.GameOfLifeArray => automataArrayBool.NextGenerationParallel((playGroundBool as PlayGroundArray)!,(ruleSet as GameOfLifeRuleSetArray)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
+            RuleSetType.GameOfLife => automataArrayBool.NextGenerationParallel((playGroundBool as PlayGroundArray)!,(ruleSet as GameOfLifeRuleSetArray)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
             RuleSetType.Wolfram => automataWolframBool.NextGenerationParallel((playGroundBool as PlayGroundArray)!, (ruleSet as WolframRuleSet)!, generation - 1, maxDegreeOfParallelism),
             RuleSetType.NoiseGrid => automataNoiseGrid.NextGenerationParallel((playGroundBool as PlayGroundArray)!, (ruleSet as NoiseGridRuleSet)!, maxDegreeOfParallelism),
             _ => playGroundBool
@@ -745,8 +702,7 @@ public partial class MainWindow : Window
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.NextGenerationParallel((playGroundSand as PlayGround)!, (ruleSet as SandRuleSet)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
-            RuleSetType.SandArray => automataSandArray.NextGenerationParallel((playGroundSand as PlayGroundArray)!,(ruleSet as SandRuleSetArray)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
+            RuleSetType.Sand => automataSandArray.NextGenerationParallel((playGroundSand as PlayGroundArray)!,(ruleSet as SandRuleSetArray)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
             _ => playGroundSand
         };
     }
@@ -755,15 +711,13 @@ public partial class MainWindow : Window
     {
         playGroundBool = type switch
         {
-            RuleSetType.GameOfLife => automataBool.ApplySpawnRules((playGroundBool as PlayGround)!, (ruleSet as GameOfLifeRuleSet)!, spawnPosition, brushSize, spawnProbability),
-            RuleSetType.GameOfLifeArray => automataArrayBool.ApplySpawnRules((playGroundBool as PlayGroundArray)!,(ruleSet as GameOfLifeRuleSetArray)!, spawnPosition, brushSize, spawnProbability),
+            RuleSetType.GameOfLife => automataArrayBool.ApplySpawnRules((playGroundBool as PlayGroundArray)!,(ruleSet as GameOfLifeRuleSetArray)!, spawnPosition, brushSize, spawnProbability),
             _ => playGroundBool
         };
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.ApplySpawnRules((playGroundSand as PlayGround)!, (ruleSet as SandRuleSet)!, spawnPosition, brushSize, spawnProbability),
-            RuleSetType.SandArray => automataSandArray.ApplySpawnRules((playGroundSand as PlayGroundArray)!,(ruleSet as SandRuleSetArray)!, spawnPosition, brushSize, spawnProbability),
+            RuleSetType.Sand => automataSandArray.ApplySpawnRules((playGroundSand as PlayGroundArray)!,(ruleSet as SandRuleSetArray)!, spawnPosition, brushSize, spawnProbability),
             _ => playGroundSand
         };
     }

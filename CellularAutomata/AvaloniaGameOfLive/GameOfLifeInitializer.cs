@@ -8,38 +8,27 @@ namespace AvaloniaGameOfLive;
 
 public static class GameOfLifeInitializer
 {
-    public static void Randomize(IPlayGround playground, int maxDegreeOfParallelism, double aliveProbability = 0.2)
+    public static void Randomize(PlayGroundArray playground, int maxDegreeOfParallelism, double aliveProbability = 0.2)
     {
         var random = new Random();
 
-        if (playground is PlayGround playGroundBool)
+        var parallelOptions = new ParallelOptions()
         {
-            Parallel.ForEach(playGroundBool.Cells, cell =>
-            {
-                var state = random.NextDouble() < aliveProbability;
-                playground[cell.Key] = state ? CellState.Solid : CellState.Empty;
-            });
-        }
-        else if (playground is PlayGroundArray playGroundArrayBool)
-        {
-            var parallelOptions = new ParallelOptions()
-            {
-                MaxDegreeOfParallelism = Math.Min(maxDegreeOfParallelism, Environment.ProcessorCount)
-            };
+            MaxDegreeOfParallelism = Math.Min(maxDegreeOfParallelism, Environment.ProcessorCount)
+        };
             
-            var xPartitioner = Partitioner.Create(0, playGroundArrayBool.Dimension.X);
-            Parallel.ForEach(xPartitioner, parallelOptions, range =>
+        var xPartitioner = Partitioner.Create(0, playground.Dimension.X);
+        Parallel.ForEach(xPartitioner, parallelOptions, range =>
+        {
+            for (var x = range.Item1; x < range.Item2; x++) 
             {
-                for (var x = range.Item1; x < range.Item2; x++) 
+                for (var y = 0; y < playground.Dimension.Y; y++)
                 {
-                    for (var y = 0; y < playGroundArrayBool.Dimension.Y; y++)
-                    {
-                        var state = random.NextDouble() < aliveProbability;
-                        playGroundArrayBool[new Vector(x, y)] = state ? CellState.Solid : CellState.Empty;
-                    }
+                    var state = random.NextDouble() < aliveProbability;
+                    playground[new Vector(x, y)] = state ? CellState.Solid : CellState.Empty;
                 }
-            });
-        }
+            }
+        });
         
     }
 
