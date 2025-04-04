@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace CellularAutomata;
 
-public sealed class GameOfLifeRuleSetArray(Vector dimension) : IRuleSet
+public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
 {
     private readonly Random random = new ();
     

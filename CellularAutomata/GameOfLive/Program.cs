@@ -8,7 +8,7 @@ var screenSize = new Vector(dimension.X + 5, dimension.Y + 5);
 var spawnPosition = new Vector(5,5);
 var brushSize = new Vector(1,1);
 var playGround = new PlayGroundArray(dimension);
-var ruleSet = new GameOfLifeRuleSetArray(dimension);
+var ruleSet = new GameOfLifeRuleSet(dimension);
 Automata automataBool = new (dimension);
 
 GameOfLifeInitializer.Randomize(playGround, 0.2);
