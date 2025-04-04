@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace CellularAutomata;
 
-public sealed class SandRuleSetArray(Vector dimension) : IRuleSet
+public sealed class SandRuleSet(Vector dimension) : IRuleSet
 {
     private const CellState Solid = CellState.Solid;
     private const CellState Empty = CellState.Empty;

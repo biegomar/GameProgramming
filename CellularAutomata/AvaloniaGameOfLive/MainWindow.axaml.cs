@@ -517,7 +517,7 @@ public partial class MainWindow : Window
     {
         automataSand = new Automata(dimension);
         playGroundSand = new PlayGround(dimension);
-        ruleSet = new SandRuleSetArray(dimension);
+        ruleSet = new SandRuleSet(dimension);
         
         InitializeSandPattern();
     }
@@ -702,7 +702,7 @@ public partial class MainWindow : Window
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.NextGenerationParallel((playGroundSand as PlayGround)!,(ruleSet as SandRuleSetArray)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
+            RuleSetType.Sand => automataSand.NextGenerationParallel((playGroundSand as PlayGround)!,(ruleSet as SandRuleSet)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
             _ => playGroundSand
         };
     }
@@ -717,7 +717,7 @@ public partial class MainWindow : Window
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.ApplySpawnRules((playGroundSand as PlayGround)!,(ruleSet as SandRuleSetArray)!, spawnPosition, brushSize, spawnProbability),
+            RuleSetType.Sand => automataSand.ApplySpawnRules((playGroundSand as PlayGround)!,(ruleSet as SandRuleSet)!, spawnPosition, brushSize, spawnProbability),
             _ => playGroundSand
         };
     }
