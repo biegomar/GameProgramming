@@ -6,9 +6,13 @@ public interface IPlayGround
     
     CellState this[Vector position] { get; set; }
 
-    void SetCellToMoved(Vector position);
+    void MarkAsProcessedRight(Vector position);
+    void MarkAsProcessedLeft(Vector position);
     
     void ResetMovedCells();
 
-    bool HasMoved(Vector position);
+    bool IsProcessedRight(Vector position);
+    bool IsProcessedLeft(Vector position);
+    
+    Cell GetCell(Vector position);
 }

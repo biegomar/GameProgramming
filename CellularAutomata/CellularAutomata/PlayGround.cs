@@ -6,7 +6,8 @@ namespace CellularAutomata;
 public sealed class PlayGround : IPlayGround
 {
     public Cell[] Cells { get; }
-    private readonly BitArray movedCells;
+    private readonly BitArray processedRightCells;
+    private readonly BitArray processedLeftCells;
 
     
     public Vector Dimension { get; }
@@ -21,8 +22,8 @@ public sealed class PlayGround : IPlayGround
         dimensionY = dimension.Y;
         
         Cells = new Cell[dimensionX * dimensionY];
-        movedCells = new BitArray(dimensionX * dimensionY);
-
+        processedRightCells = new BitArray(dimensionX * dimensionY);
+        processedLeftCells = new BitArray(dimensionX * dimensionY);
         
         Initialize(cellFactory);
     }
@@ -33,19 +34,36 @@ public sealed class PlayGround : IPlayGround
         set => Cells[this.GetIndex(position)].State = value;
     }
 
-    public void SetCellToMoved(Vector position)
+    public void MarkAsProcessedRight(Vector position)
     {
-        movedCells.Set(GetIndex(position), true);
+        processedRightCells.Set(GetIndex(position), true);
+    }
+
+    public void MarkAsProcessedLeft(Vector position)
+    {
+        processedLeftCells.Set(GetIndex(position), true);
     }
 
     public void ResetMovedCells()
     {
-        movedCells.SetAll(false);
+        processedRightCells.SetAll(false);
+        processedLeftCells.SetAll(false);
     }
 
-    public bool HasMoved(Vector position)
+    public bool IsProcessedRight(Vector position)
     {
-        return movedCells.Get(GetIndex(position));
+        return IsWithinBounds(position) && processedRightCells.Get(GetIndex(position));
+    }
+
+    public bool IsProcessedLeft(Vector position)
+    {
+        return IsWithinBounds(position) && processedLeftCells.Get(GetIndex(position));
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Cell GetCell(Vector position)
+    {
+        return Cells[this.GetIndex(position)];
     }
 
     private void Initialize(Func<int, int, Cell>? cellFactory = null)
@@ -67,5 +85,11 @@ public sealed class PlayGround : IPlayGround
     private int GetIndex(Vector position)
     {
         return position.X * dimensionY + position.Y;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool IsWithinBounds(Vector position )
+    {
+        return (uint)position.X < (uint)Dimension.X && (uint)position.Y < (uint)Dimension.Y;
     }
 }

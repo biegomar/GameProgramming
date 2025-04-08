@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace CellularAutomata;
@@ -8,17 +9,6 @@ public sealed class SandRuleSet(Vector dimension) : IRuleSet
     private const CellState Solid = CellState.Solid;
     private const CellState Empty = CellState.Empty;
     private readonly Random random = new ();
-    
-    public IDictionary<string, uint> RuleCounter { get; init; } = new Dictionary<string, uint>
-    {
-        // ["Solid"] = 0,
-        // ["Prio0"] = 0,
-        // ["Prio1"] = 0,
-        // ["Prio2"] = 0,
-        // ["Prio3"] = 0,
-        // ["Empty"] = 0,
-    };
-    
     
     [StructLayout(LayoutKind.Sequential, Size = 9, Pack = 1)]
     private record struct CellNeighbors(
@@ -32,26 +22,67 @@ public sealed class SandRuleSet(Vector dimension) : IRuleSet
         CellState Bottom,
         CellState BottomRight
     );
+    
+    [StructLayout(LayoutKind.Sequential, Size = 4, Pack = 1)]
+    private record struct TopRowNeighbors(
+        CellState TopLeft,
+        CellState Top,
+        CellState TopRight
+    );
+    
+    [StructLayout(LayoutKind.Sequential, Size = 6, Pack = 1)]
+    private record struct PushCellNeighbors(
+        CellState Left,
+        CellState LeftOpponent,
+        CellState Right,
+        CellState BottomLeft,
+        CellState Bottom,
+        CellState BottomRight
+    );
+    
+    [StructLayout(LayoutKind.Sequential, Size = 6, Pack = 1)]
+    private record struct RightOpponentCellNeighbors(
+        CellState Top,
+        CellState Opponent
+    );
 
     public CellState ApplyRules(IPlayGround playGround, Vector position)
     {
         var cellState = playGround[position];
 
-        var cellNeighbors = GetNeighboursState(playGround, position);
+        var pushCellNeighbors = GetPushCellNeighboursState(playGround, position);
         
         // First look at a cell with state - so we push the grain.
 
         if (IsSand(cellState))
         {
-            //RuleCounter["Prio0"]++;
-            if (
-                (cellNeighbors.Bottom == Empty ||
-                 cellNeighbors is { BottomRight: Empty, Right: Empty } 
-                     or { BottomLeft: Empty, Left: Empty, LeftLeft: Empty })
-                && position.Y < playGround.Dimension.Y - 1
-               )
+            if (pushCellNeighbors.Bottom == Empty)
             {
+                return Empty;
+            }
+
+            if (pushCellNeighbors is { BottomRight: Empty, Right: Empty } && position.Y < playGround.Dimension.Y - 1)
+            {
+                if (pushCellNeighbors is { BottomLeft: Empty, Left: Empty } && !playGround.IsProcessedRight(new Vector(position.X - 2, position.Y)) && position.Y < playGround.Dimension.Y - 1)
+                {
+                    if (WillMoveRight())
+                    {
+                        playGround.MarkAsProcessedRight(position); 
+                    }
+                    else
+                    {
+                        playGround.MarkAsProcessedLeft(position);
+                    }
+                    return Empty;
+                }
                 
+                playGround.MarkAsProcessedRight(position);
+                return Empty;
+            }
+            
+            if (pushCellNeighbors is { BottomLeft: Empty, Left: Empty } && !playGround.IsProcessedRight(new Vector(position.X - 2, position.Y)) && position.Y < playGround.Dimension.Y - 1)
+            {
+                playGround.MarkAsProcessedLeft(position);
                 return Empty;
             }
             
@@ -60,54 +91,60 @@ public sealed class SandRuleSet(Vector dimension) : IRuleSet
         
         if (IsSolid(cellState))
         {
-            //RuleCounter["Solid"]++;
             return Solid;
         }
         
         // We are sure. That cell is empty. Now we pull the grain.
         
+        var topRowNeighbors = GetTopRowNeighborsState(playGround, position);
+        
         // Prio 1: grain above me
-        if (IsSand(cellNeighbors.Top))
+        if (IsSand(topRowNeighbors.Top))
         {
-            //RuleCounter["Prio1"]++;
-            return cellNeighbors.Top;
+            return topRowNeighbors.Top;
         }
 
-        // Prio 2: grain to the top left, but only if its Prio 1 is blocked.
-        if (IsSand(cellNeighbors.TopLeft) && IsSandOrSolid(cellNeighbors.Left) && cellNeighbors.Top == Empty && !playGround.HasMoved(new Vector(position.X - 1, position.Y - 1)))
+        if (playGround.IsProcessedRight(new Vector(position.X - 1, position.Y - 1)))
         {
-            //RuleCounter["Prio2"]++;
-            return cellNeighbors.TopLeft;
-        }
-
-        // Prio 3: grain to the top right, but only if its Prio 1 and Prio 2 is blocked.
-        var cellNeighborsFromRight = GetNeighboursState(playGround, new Vector(position.X + 1, position.Y));
-        
-        var canPullFromRight = IsSand(cellNeighbors.TopRight) && IsSandOrSolid(cellNeighbors.Right) && cellNeighbors.Top == Empty;
-
-        if (IsStrongPullCriteriaNeeded())
-        {
-            var isStrongCriteriaToPullFromRight = IsSandOrSolid(cellNeighborsFromRight.Right) || (cellNeighborsFromRight.Right == Empty && IsSand(cellNeighborsFromRight.TopRight));
-            
-            if (canPullFromRight && isStrongCriteriaToPullFromRight)
-            {
-                //RuleCounter["Prio3"]++;
-                return cellNeighbors.TopRight; 
-            }    
-        }
-        else
-        {
-            if (canPullFromRight)
-            {
-                //RuleCounter["Prio3"]++;
-                playGround.SetCellToMoved(new Vector(position.X + 1, position.Y - 1));
-                return cellNeighbors.TopRight; 
-            }
+            return topRowNeighbors.TopLeft;
         }
         
-
-        //RuleCounter["Empty"]++;
+        if (playGround.IsProcessedLeft(new Vector(position.X + 1, position.Y - 1)))
+        {
+            return topRowNeighbors.TopRight;
+        }
+        
         return Empty;
+
+        // // Prio 2: grain to the top left, but only if its Prio 1 is blocked.
+        // if (IsSand(topRowNeighbors.TopLeft) && IsSandOrSolid(pushCellNeighbors.Left) && topRowNeighbors.Top == Empty && !playGround.HasMovedRight(new Vector(position.X - 1, position.Y - 1)))
+        // {
+        //     return topRowNeighbors.TopLeft;
+        // }
+        //
+        // // Prio 3: grain to the top right, but only if its Prio 1 and Prio 2 is blocked.
+        //
+        // var canPullFromRight = IsSand(topRowNeighbors.TopRight) && IsSandOrSolid(pushCellNeighbors.Right) && topRowNeighbors.Top == Empty;
+        //
+        // if (WillMoveRight())
+        // {
+        //     
+        //     var cellNeighborsFromRight = GetRightOpponentCellNeighborsState(playGround, new Vector(position.X, position.Y));
+        //     var isStrongCriteriaToPullFromRight = IsSandOrSolid(cellNeighborsFromRight.Opponent) || (cellNeighborsFromRight.Opponent == Empty && IsSand(cellNeighborsFromRight.Top));
+        //     
+        //     if (canPullFromRight && isStrongCriteriaToPullFromRight)
+        //     {
+        //         return topRowNeighbors.TopRight; 
+        //     }    
+        // }
+        // else
+        // {
+        //     if (canPullFromRight)
+        //     {
+        //         playGround.MarkAsMovedRight(new Vector(position.X + 1, position.Y - 1));
+        //         return topRowNeighbors.TopRight; 
+        //     }
+        // }
     }
     
     public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize, double probability)
@@ -138,7 +175,7 @@ public sealed class SandRuleSet(Vector dimension) : IRuleSet
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private CellNeighbors GetNeighboursState(IPlayGround playGround, Vector position)
     {
-        return new CellNeighbors(
+        return new (
             TopLeft: IsWithinBounds(new Vector(position.X - 1, position.Y - 1)) ? playGround[new Vector(position.X - 1, position.Y - 1)] : Solid,
             Top: IsWithinBounds(new Vector(position.X, position.Y - 1)) ? playGround[new Vector(position.X, position.Y - 1)] : Solid,
             TopRight: IsWithinBounds(new Vector(position.X + 1, position.Y - 1)) ? playGround[new Vector(position.X + 1, position.Y - 1)] : Solid,
@@ -148,6 +185,38 @@ public sealed class SandRuleSet(Vector dimension) : IRuleSet
             BottomLeft: IsWithinBounds(new Vector(position.X - 1, position.Y + 1)) ? playGround[new Vector(position.X - 1, position.Y + 1)] : Solid,
             Bottom: IsWithinBounds(new Vector(position.X, position.Y + 1)) ? playGround[new Vector(position.X, position.Y + 1)] : Solid,
             BottomRight: IsWithinBounds(new Vector(position.X + 1, position.Y + 1)) ? playGround[new Vector(position.X + 1, position.Y + 1)] : Solid
+        );
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private RightOpponentCellNeighbors GetRightOpponentCellNeighborsState(IPlayGround playGround, Vector position)
+    {
+        return new RightOpponentCellNeighbors(
+            Opponent: IsWithinBounds(new Vector(position.X + 2, position.Y)) ? playGround[new Vector(position.X + 2, position.Y)] : Solid,
+            Top: IsWithinBounds(new Vector(position.X + 2, position.Y - 1)) ? playGround[new Vector(position.X + 2, position.Y - 1)] : Solid
+        );
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private PushCellNeighbors GetPushCellNeighboursState(IPlayGround playGround, Vector position)
+    {
+        return new PushCellNeighbors(
+            Left: IsWithinBounds(new Vector(position.X - 1, position.Y)) ? playGround[new Vector(position.X - 1, position.Y)] : Solid,
+            LeftOpponent: IsWithinBounds(new Vector(position.X - 2, position.Y)) ? playGround[new Vector(position.X - 2, position.Y)] : Solid,
+            Right: IsWithinBounds(new Vector(position.X + 1, position.Y)) ? playGround[new Vector(position.X + 1, position.Y)] : Solid,
+            BottomLeft: IsWithinBounds(new Vector(position.X - 1, position.Y + 1)) ? playGround[new Vector(position.X - 1, position.Y + 1)] : Solid,
+            Bottom: IsWithinBounds(new Vector(position.X, position.Y + 1)) ? playGround[new Vector(position.X, position.Y + 1)] : Solid,
+            BottomRight: IsWithinBounds(new Vector(position.X + 1, position.Y + 1)) ? playGround[new Vector(position.X + 1, position.Y + 1)] : Solid
+        );
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private TopRowNeighbors GetTopRowNeighborsState(IPlayGround playGround, Vector position)
+    {
+        return new TopRowNeighbors(
+            TopLeft: IsWithinBounds(new Vector(position.X - 1, position.Y - 1)) ? playGround[new Vector(position.X - 1, position.Y - 1)] : Solid,
+            Top: IsWithinBounds(new Vector(position.X, position.Y - 1)) ? playGround[new Vector(position.X, position.Y - 1)] : Solid,
+            TopRight: IsWithinBounds(new Vector(position.X + 1, position.Y - 1)) ? playGround[new Vector(position.X + 1, position.Y - 1)] : Solid
         );
     }
     
@@ -185,7 +254,7 @@ public sealed class SandRuleSet(Vector dimension) : IRuleSet
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool IsStrongPullCriteriaNeeded()
+    private bool WillMoveRight()
     {
         return (Environment.TickCount & 1) == 0;
     }

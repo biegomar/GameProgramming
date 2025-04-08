@@ -16,12 +16,6 @@ public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
         ( 0, -1),          ( 0, 1),
         ( 1, -1), ( 1, 0), ( 1, 1),
     };
-
-    public IDictionary<string, uint> RuleCounter { get; init; } = new Dictionary<string, uint>
-    {
-        ["CellEmpty"] = 0,
-        ["CellAlive"] = 0
-    };
     
     public CellState ApplyRules(IPlayGround playGround, Vector position)
     {
