@@ -51,7 +51,8 @@ public partial class MainWindow : Window
     private readonly Stopwatch generationStopwatch = new ();
     private readonly Stopwatch renderingStopwatch = new ();
     private readonly Stopwatch totalStopwatch = new ();
-    
+
+    private bool shouldDraw = true;
     private bool timingEnabled = true;
     private int currentGeneration = 0;
     private int generation = 0;
@@ -59,7 +60,7 @@ public partial class MainWindow : Window
     
     private PlayGround playGroundBool;
     private PlayGround playGroundSand;
-    private IBaseRuleSet ruleSet;
+    private IRuleSet ruleSet;
     private RuleSetType ruleSetType;
     
     private Automata automataBool;
@@ -446,7 +447,7 @@ public partial class MainWindow : Window
 
     private void DisplayGeneration()
     {
-        statusLabel.Text = $"Generation: {generation++}";
+        statusLabel.Text = $"Generation: {generation}";
     }
     
     private void SetTypeFromSelection() 
@@ -625,14 +626,14 @@ public partial class MainWindow : Window
     private async Task ProcessNextGenerationAsync()
     {
         cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken token = cancellationTokenSource.Token;
+        var token = cancellationTokenSource.Token;
         
         var maxGenerations = stopWatchCountSelector.Value == null ? 50 : (int)stopWatchCountSelector.Value;
         
         currentGeneration = 0;
         
-        generationTimes = new List<long>(2000);
-        renderingTimes = new List<long>(2000);
+        generationTimes = new List<long>(maxGenerations);
+        renderingTimes = new List<long>(maxGenerations);
         
         await Task.Run(async () =>
         {
@@ -651,13 +652,18 @@ public partial class MainWindow : Window
                         generationTimes.Add(generationStopwatch.ElapsedTicks);
                         
                         renderingStopwatch.Restart();
-                        
-                        await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.MaxValue);
+
+                        //await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.MaxValue);
+                        if (currentGeneration % 10 == 0)
+                        {
+                            await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.MaxValue);    
+                        }
                         
                         renderingStopwatch.Stop();
                         renderingTimes.Add(renderingStopwatch.ElapsedTicks);
                     
                         currentGeneration++;
+                        generation++;
                     }
                     else
                     {
@@ -669,6 +675,7 @@ public partial class MainWindow : Window
             finally
             {
                 totalStopwatch.Stop();
+                await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.MaxValue);
             }
         }, token);
         
@@ -686,7 +693,7 @@ public partial class MainWindow : Window
             var statisticGenerator = new StatisticGenerator();
 
             tbStopWatch.Text = statisticGenerator.Generate(new AutomataStatistics(totalStopwatch.ElapsedTicks, currentGeneration, maxDegreeOfParallelism,
-                generationTimes, renderingTimes));
+                renderingTimes, generationTimes));
         }
     }
 
@@ -694,15 +701,15 @@ public partial class MainWindow : Window
     {
         playGroundBool = type switch
         {
-            RuleSetType.GameOfLife => automataBool.NextGenerationParallel((playGroundBool as PlayGround)!,(ruleSet as GameOfLifeRuleSet)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
-            RuleSetType.Wolfram => automataWolframBool.NextGenerationParallel((playGroundBool as PlayGround)!, (ruleSet as WolframRuleSet)!, generation - 1, maxDegreeOfParallelism),
-            RuleSetType.NoiseGrid => automataNoiseGrid.NextGenerationParallel((playGroundBool as PlayGround)!, (ruleSet as NoiseGridRuleSet)!, maxDegreeOfParallelism),
+            RuleSetType.GameOfLife => automataBool.NextGenerationParallel(playGroundBool,(ruleSet as GameOfLifeRuleSet)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
+            RuleSetType.Wolfram => automataWolframBool.NextGenerationParallel(playGroundBool, (ruleSet as WolframRuleSet)!, generation - 1, maxDegreeOfParallelism),
+            RuleSetType.NoiseGrid => automataNoiseGrid.NextGenerationParallel(playGroundBool, (ruleSet as NoiseGridRuleSet)!, maxDegreeOfParallelism),
             _ => playGroundBool
         };
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.NextGenerationParallel((playGroundSand as PlayGround)!,(ruleSet as SandRuleSet)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
+            RuleSetType.Sand => automataSand.NextGenerationParallel(playGroundSand,(ruleSet as SandRuleSet)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
             _ => playGroundSand
         };
     }
@@ -711,13 +718,13 @@ public partial class MainWindow : Window
     {
         playGroundBool = type switch
         {
-            RuleSetType.GameOfLife => automataBool.ApplySpawnRules((playGroundBool as PlayGround)!,(ruleSet as GameOfLifeRuleSet)!, spawnPosition, brushSize, spawnProbability),
+            RuleSetType.GameOfLife => automataBool.ApplySpawnRules(playGroundBool,(ruleSet as GameOfLifeRuleSet)!, spawnPosition, brushSize, spawnProbability),
             _ => playGroundBool
         };
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.ApplySpawnRules((playGroundSand as PlayGround)!,(ruleSet as SandRuleSet)!, spawnPosition, brushSize, spawnProbability),
+            RuleSetType.Sand => automataSand.ApplySpawnRules(playGroundSand,(ruleSet as SandRuleSet)!, spawnPosition, brushSize, spawnProbability),
             _ => playGroundSand
         };
     }

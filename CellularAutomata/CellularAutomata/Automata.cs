@@ -10,9 +10,9 @@ public sealed class Automata(Vector dimension)
 
     public PlayGround NextGeneration(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize)
     {
-        for (var column = 0; column < initialPlayGround.Dimension.X; column++)
+        for (var row = 0; row < initialPlayGround.Dimension.Y; row++)
         {
-            for (var row = 0; row < initialPlayGround.Dimension.Y; row++)
+            for (var column = 0; column < initialPlayGround.Dimension.X; column++)
             {
                 nextGenerationPlayGround[new Vector(column, row)] = ruleSet.ApplyRules(initialPlayGround, new Vector(column, row));    
             }
@@ -23,6 +23,7 @@ public sealed class Automata(Vector dimension)
             nextGenerationPlayGround = ApplySpawnRules(nextGenerationPlayGround, ruleSet, spawnPosition, brushSize);    
         }
         
+        initialPlayGround.ResetMovedCells();
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
         
         return initialPlayGround;
@@ -37,13 +38,13 @@ public sealed class Automata(Vector dimension)
 
         var ground = initialPlayGround;
         
-        var xPartitioner = Partitioner.Create(0, initialPlayGround.Dimension.X);
+        var yPartitioner = Partitioner.Create(0, initialPlayGround.Dimension.Y);
         
-        Parallel.ForEach(xPartitioner, parallelOptions, range =>
+        Parallel.ForEach(yPartitioner, parallelOptions, (range, loopState) =>
         {
-            for (var column = range.Item1; column < range.Item2; column++) 
+            for (var row = range.Item1; row < range.Item2; row++) 
             {
-                for (var row = 0; row < ground.Dimension.Y; row++)
+                for (var column = 0; column < ground.Dimension.X; column++)
                 {
                     nextGenerationPlayGround[new Vector(column, row)] = ruleSet.ApplyRules(ground, new Vector(column, row));
                 }
