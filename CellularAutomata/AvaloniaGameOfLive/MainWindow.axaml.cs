@@ -701,15 +701,15 @@ public partial class MainWindow : Window
     {
         playGroundBool = type switch
         {
-            RuleSetType.GameOfLife => automataBool.NextGenerationParallel((playGroundBool as PlayGround)!,(ruleSet as GameOfLifeRuleSet)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
-            RuleSetType.Wolfram => automataWolframBool.NextGenerationParallel((playGroundBool as PlayGround)!, (ruleSet as WolframRuleSet)!, generation - 1, maxDegreeOfParallelism),
-            RuleSetType.NoiseGrid => automataNoiseGrid.NextGenerationParallel((playGroundBool as PlayGround)!, (ruleSet as NoiseGridRuleSet)!, maxDegreeOfParallelism),
+            RuleSetType.GameOfLife => automataBool.NextGenerationParallel(playGroundBool,(ruleSet as GameOfLifeRuleSet)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
+            RuleSetType.Wolfram => automataWolframBool.NextGenerationParallel(playGroundBool, (ruleSet as WolframRuleSet)!, generation - 1, maxDegreeOfParallelism),
+            RuleSetType.NoiseGrid => automataNoiseGrid.NextGenerationParallel(playGroundBool, (ruleSet as NoiseGridRuleSet)!, maxDegreeOfParallelism),
             _ => playGroundBool
         };
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.NextGenerationParallel((playGroundSand as PlayGround)!,(ruleSet as SandRuleSet)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
+            RuleSetType.Sand => automataSand.NextGenerationParallel(playGroundSand,(ruleSet as SandRuleSet)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
             _ => playGroundSand
         };
     }
@@ -718,13 +718,13 @@ public partial class MainWindow : Window
     {
         playGroundBool = type switch
         {
-            RuleSetType.GameOfLife => automataBool.ApplySpawnRules((playGroundBool as PlayGround)!,(ruleSet as GameOfLifeRuleSet)!, spawnPosition, brushSize, spawnProbability),
+            RuleSetType.GameOfLife => automataBool.ApplySpawnRules(playGroundBool,(ruleSet as GameOfLifeRuleSet)!, spawnPosition, brushSize, spawnProbability),
             _ => playGroundBool
         };
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.ApplySpawnRules((playGroundSand as PlayGround)!,(ruleSet as SandRuleSet)!, spawnPosition, brushSize, spawnProbability),
+            RuleSetType.Sand => automataSand.ApplySpawnRules(playGroundSand,(ruleSet as SandRuleSet)!, spawnPosition, brushSize, spawnProbability),
             _ => playGroundSand
         };
     }

@@ -8,7 +8,6 @@ public sealed class PlayGround : IPlayGround
     public Cell[] Cells { get; }
     private readonly BitArray processedRightCells;
     private readonly BitArray processedLeftCells;
-
     
     public Vector Dimension { get; }
     
@@ -84,7 +83,7 @@ public sealed class PlayGround : IPlayGround
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private int GetIndex(Vector position)
     {
-        return position.X * dimensionY + position.Y;
+        return position.Y * dimensionX + position.X;
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

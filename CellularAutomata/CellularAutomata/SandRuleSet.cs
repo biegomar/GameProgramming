@@ -103,7 +103,7 @@ public sealed class SandRuleSet(Vector dimension) : IRuleSet
         {
             return topRowNeighbors.Top;
         }
-
+        
         if (playGround.IsProcessedRight(new Vector(position.X - 1, position.Y - 1)))
         {
             return topRowNeighbors.TopLeft;
@@ -115,36 +115,6 @@ public sealed class SandRuleSet(Vector dimension) : IRuleSet
         }
         
         return Empty;
-
-        // // Prio 2: grain to the top left, but only if its Prio 1 is blocked.
-        // if (IsSand(topRowNeighbors.TopLeft) && IsSandOrSolid(pushCellNeighbors.Left) && topRowNeighbors.Top == Empty && !playGround.HasMovedRight(new Vector(position.X - 1, position.Y - 1)))
-        // {
-        //     return topRowNeighbors.TopLeft;
-        // }
-        //
-        // // Prio 3: grain to the top right, but only if its Prio 1 and Prio 2 is blocked.
-        //
-        // var canPullFromRight = IsSand(topRowNeighbors.TopRight) && IsSandOrSolid(pushCellNeighbors.Right) && topRowNeighbors.Top == Empty;
-        //
-        // if (WillMoveRight())
-        // {
-        //     
-        //     var cellNeighborsFromRight = GetRightOpponentCellNeighborsState(playGround, new Vector(position.X, position.Y));
-        //     var isStrongCriteriaToPullFromRight = IsSandOrSolid(cellNeighborsFromRight.Opponent) || (cellNeighborsFromRight.Opponent == Empty && IsSand(cellNeighborsFromRight.Top));
-        //     
-        //     if (canPullFromRight && isStrongCriteriaToPullFromRight)
-        //     {
-        //         return topRowNeighbors.TopRight; 
-        //     }    
-        // }
-        // else
-        // {
-        //     if (canPullFromRight)
-        //     {
-        //         playGround.MarkAsMovedRight(new Vector(position.X + 1, position.Y - 1));
-        //         return topRowNeighbors.TopRight; 
-        //     }
-        // }
     }
     
     public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize, double probability)
