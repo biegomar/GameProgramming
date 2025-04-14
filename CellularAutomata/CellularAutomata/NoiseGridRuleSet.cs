@@ -1,9 +1,13 @@
-﻿namespace CellularAutomata;
+﻿using CellularAutomata.Cells;
+using CellularAutomata.Interfaces;
+using CellularAutomata.MaterialFlow;
+
+namespace CellularAutomata;
 
 public class NoiseGridRuleSet(Vector dimension) : IRuleSet
 {
-    private const CellState Solid = CellState.Solid;
-    private const CellState Empty = CellState.Empty;
+    private const CellBrightness Solid = CellBrightness.Solid;
+    private const CellBrightness Empty = CellBrightness.Empty;
     
     private static readonly (int DX, int DY)[] NeighborOffsets = 
     {
@@ -13,11 +17,16 @@ public class NoiseGridRuleSet(Vector dimension) : IRuleSet
     };
     
     public IDictionary<string, uint> RuleCounter { get; init; }
-    public CellState ApplyRules(IPlayGround playGround, Vector position)
+    public CellBrightness ApplyRules(IPlayGround playGround, Vector position)
     {
         var neighborWallCount = CountNeighborWalls(playGround, position);
         
         return neighborWallCount > 4 ? Solid : Empty;
+    }
+
+    public MaterialMovement? ApplyMaterialRules(IPlayGround playGround, Vector position)
+    {
+        throw new NotImplementedException();
     }
 
     public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize, double probability)

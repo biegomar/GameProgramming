@@ -1,6 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using CellularAutomata;
+using CellularAutomata.Cells;
+using CellularAutomata.GameOfLive;
 using GameOfLive;
 
 var dimension = new Vector(100,40);
@@ -27,7 +29,7 @@ Console.CursorVisible = false;
 do
 {
     //ConsoleVisualizer.Render(playGround, x => x ? 'X' : ' ');
-    ConsoleVisualizer.RenderWithColors(playGround, x => x == CellState.Solid ? ConsoleColor.Green : ConsoleColor.Black);
+    ConsoleVisualizer.RenderWithColors(playGround, x => x == CellBrightness.Solid ? ConsoleColor.Green : ConsoleColor.Black);
     playGround = automataBool.NextGeneration(playGround, ruleSet, false, spawnPosition, brushSize);
     Thread.Sleep(250);
     

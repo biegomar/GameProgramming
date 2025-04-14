@@ -1,14 +1,13 @@
-using System.Numerics;
 using System.Runtime.CompilerServices;
+using CellularAutomata.Cells;
+using CellularAutomata.Interfaces;
+using CellularAutomata.MaterialFlow;
 
-namespace CellularAutomata;
+namespace CellularAutomata.GameOfLive;
 
 public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
 {
     private readonly Random random = new ();
-    
-    private const CellState Solid = CellState.Solid;
-    private const CellState Empty = CellState.Empty;
     
     private static readonly (int DX, int DY)[] NeighborOffsets = 
     {
@@ -17,15 +16,24 @@ public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
         ( 1, -1), ( 1, 0), ( 1, 1),
     };
     
-    public CellState ApplyRules(IPlayGround playGround, Vector position)
+    public CellBrightness ApplyRules(IPlayGround playGround, Vector position)
     {
         var cellState = playGround[position];
         
         var liveNeighbors = CountLivingNeighbors(playGround, position);
         
-        return liveNeighbors == 3 || (cellState == Solid && liveNeighbors == 2) ? Solid : Empty;
+        return liveNeighbors == 3 || (cellState == CellBrightness.Solid && liveNeighbors == 2) ? CellBrightness.Solid : CellBrightness.Empty;
     }
-    
+
+    public MaterialMovement? ApplyMaterialRules(IPlayGround playGround, Vector position)
+    {
+        var liveNeighbors = CountLivingNeighbors(playGround, position);
+        
+        return liveNeighbors == 3 || (liveNeighbors == 2 && playGround.GetCell(position).Type == CellType.Solid) 
+            ? new MaterialMovement(new Material(position, new Cell(CellType.Solid, CellBrightness.Solid)), null) 
+            : new MaterialMovement(new Material(position, new Cell(CellType.Empty, CellBrightness.Empty)), null);
+    }
+
     public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize, double probability)
     {
         var startX = spawnPosition.X;
@@ -39,11 +47,11 @@ public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
             for (var y = startY; y <= endY; y++)
             {
                 var newPos = new Vector(x, y);
-                if (IsWithinBounds(newPos) && playGround[newPos] == Empty)
+                if (IsWithinBounds(newPos) && playGround[newPos] == CellBrightness.Empty)
                 {
                     if (random.NextDouble() < probability)
                     {
-                        playGround[newPos] = Solid;   
+                        playGround[newPos] = CellBrightness.Solid;   
                     }
                 }
             }    
@@ -61,7 +69,7 @@ public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
         {
             var neighbor = new Vector(position.X + dx, position.Y + dy);
     
-            if (IsWithinBounds(neighbor) && playGround[neighbor] == Solid)
+            if (IsWithinBounds(neighbor) && playGround.GetCell(neighbor).Type == CellType.Solid)
             {
                 liveNeighbors++;
                 if (liveNeighbors == 4)
@@ -75,9 +83,6 @@ public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool IsWithinBounds(Vector neighbor)
     {
-        var withinX = (uint)neighbor.X < (uint)dimension.X; 
-        var withinY = (uint)neighbor.Y < (uint)dimension.Y;
-
-        return withinX && withinY;
+        return (uint)neighbor.X < (uint)dimension.X && (uint)neighbor.Y < (uint)dimension.Y;
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using CellularAutomata.Interfaces;
 
 namespace CellularAutomata;
 

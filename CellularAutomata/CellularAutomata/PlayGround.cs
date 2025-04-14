@@ -1,13 +1,13 @@
 using System.Collections;
 using System.Runtime.CompilerServices;
+using CellularAutomata.Cells;
+using CellularAutomata.Interfaces;
 
 namespace CellularAutomata;
 
 public sealed class PlayGround : IPlayGround
 {
     public Cell[] Cells { get; }
-    private readonly BitArray processedRightCells;
-    private readonly BitArray processedLeftCells;
     
     public Vector Dimension { get; }
     
@@ -21,53 +21,31 @@ public sealed class PlayGround : IPlayGround
         dimensionY = dimension.Y;
         
         Cells = new Cell[dimensionX * dimensionY];
-        processedRightCells = new BitArray(dimensionX * dimensionY);
-        processedLeftCells = new BitArray(dimensionX * dimensionY);
         
         Initialize(cellFactory);
     }
     
-    public CellState this[Vector position]
+    public CellBrightness this[Vector position]
     {
-        get => Cells[this.GetIndex(position)].State;
-        set => Cells[this.GetIndex(position)].State = value;
+        get => Cells[this.GetIndex(position)].Brightness;
+        set => Cells[this.GetIndex(position)].Brightness = value;
     }
-
-    public void MarkAsProcessedRight(Vector position)
-    {
-        processedRightCells.Set(GetIndex(position), true);
-    }
-
-    public void MarkAsProcessedLeft(Vector position)
-    {
-        processedLeftCells.Set(GetIndex(position), true);
-    }
-
-    public void ResetMovedCells()
-    {
-        processedRightCells.SetAll(false);
-        processedLeftCells.SetAll(false);
-    }
-
-    public bool IsProcessedRight(Vector position)
-    {
-        return IsWithinBounds(position) && processedRightCells.Get(GetIndex(position));
-    }
-
-    public bool IsProcessedLeft(Vector position)
-    {
-        return IsWithinBounds(position) && processedLeftCells.Get(GetIndex(position));
-    }
-
+    
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Cell GetCell(Vector position)
     {
         return Cells[this.GetIndex(position)];
     }
 
+    public void SetCell(Vector position, Cell cell)
+    {
+        Cells[this.GetIndex(position)] = cell;
+    }
+
     private void Initialize(Func<int, int, Cell>? cellFactory = null)
     {
-        const CellState defaultState = CellState.Empty;
+        const CellBrightness cellBrightness = CellBrightness.Empty;
+        const CellType cellType = CellType.Empty;
 
         for (ushort x = 0; x < this.dimensionX; x++)
         {
@@ -75,7 +53,7 @@ public sealed class PlayGround : IPlayGround
             {
                 this.Cells[this.GetIndex(new Vector(x, y))] = cellFactory != null 
                     ? cellFactory(x, y) 
-                    : new Cell(defaultState);
+                    : new Cell(cellType, cellBrightness);
             }
         }
     }
