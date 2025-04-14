@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
@@ -10,6 +11,10 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using CellularAutomata;
+using CellularAutomata.Cells;
+using CellularAutomata.GameOfLive;
+using CellularAutomata.Interfaces;
+using CellularAutomata.MaterialFlow;
 using SkiaSharp;
 using Supporter;
 using Visualizer;
@@ -64,7 +69,7 @@ public partial class MainWindow : Window
     private RuleSetType ruleSetType;
     
     private Automata automataBool;
-    private Automata automataSand;
+    private AutomataMaterialGrid automataSand;
     private AutomataWolfram automataWolframBool;
     private AutomataNoiseGrid automataNoiseGrid;
     
@@ -75,6 +80,8 @@ public partial class MainWindow : Window
     
     public MainWindow()
     {
+        //var test = Marshal.SizeOf<CellularAutomata.MaterialFlow.MaterialMovement>();
+
         InitializeComponent();
         InitializeComponentValues();
         InitializeEventHandlers();
@@ -516,7 +523,7 @@ public partial class MainWindow : Window
 
     private void InitializeForSand()
     {
-        automataSand = new Automata(dimension);
+        automataSand = new AutomataMaterialGrid(dimension);
         playGroundSand = new PlayGround(dimension);
         ruleSet = new SandRuleSet(dimension);
         
@@ -603,19 +610,19 @@ public partial class MainWindow : Window
         {
             case RuleSetType.GameOfLife:
                 var localBoolPlayGroundArray = (playGroundBool as PlayGround)!;
-                SkiaVisualizer.Render(localBoolPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b == CellState.Solid ? this.aliveColor : emptyColor);
+                SkiaVisualizer.Render(localBoolPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, (b, _) => b == CellType.Solid ? this.aliveColor : emptyColor);
                 break;
             case RuleSetType.Wolfram:
                 var localWolframPlayGroundArray = (playGroundBool as PlayGround)!;
-                SkiaVisualizer.Render(localWolframPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b == CellState.Solid ? this.wolframColor : emptyColor);
+                SkiaVisualizer.Render(localWolframPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, (b, _) => b == CellType.Solid ? this.wolframColor : emptyColor);
                 break;
             case RuleSetType.NoiseGrid:
                 var localNoiseGridPlayGroundArray = (playGroundBool as PlayGround)!;
-                SkiaVisualizer.Render(localNoiseGridPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b == CellState.Solid ? this.noiseGridColor : emptyColor);
+                SkiaVisualizer.Render(localNoiseGridPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, (b, _) => b == CellType.Solid ? this.noiseGridColor : emptyColor);
                 break;
             case RuleSetType.Sand:
                 var localSandCellStatePlayGroundArray = (playGroundSand as PlayGround)!;
-                SkiaVisualizer.Render(localSandCellStatePlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, ChooseSandColor);
+                SkiaVisualizer.Render(localSandCellStatePlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, (_, b) => ChooseSandColor(b));
                 break;
             default:    
                 break;
@@ -729,16 +736,16 @@ public partial class MainWindow : Window
         };
     }
     
-    private SKColor ChooseSandColor(CellState state)
+    private SKColor ChooseSandColor(CellBrightness brightness)
     {
-        return state switch
+        return brightness switch
         {
-            CellState.Empty => emptyColor,
-            CellState.Sand => SKColors.Goldenrod,
-            CellState.SandDark => SKColors.DarkGoldenrod,
-            CellState.SandLight => SKColors.LightGoldenrodYellow,
-            CellState.SandMedium => SKColors.Chocolate,
-            CellState.Solid => SKColors.Gray,
+            CellBrightness.Empty => emptyColor,
+            CellBrightness.Normal => SKColors.Goldenrod,
+            CellBrightness.Dark => SKColors.DarkGoldenrod,
+            CellBrightness.Light => SKColors.LightGoldenrodYellow,
+            CellBrightness.Medium => SKColors.Chocolate,
+            CellBrightness.Solid => SKColors.Gray,
             _ => emptyColor
         };
     }

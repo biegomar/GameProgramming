@@ -1,4 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
+using CellularAutomata.Cells;
+using CellularAutomata.Interfaces;
+using CellularAutomata.MaterialFlow;
 
 namespace CellularAutomata;
 
@@ -17,16 +20,21 @@ public sealed class WolframRuleSet : IRuleSet
         InitializeWolframRule(rule);
     }
     
-    public CellState ApplyRules(IPlayGround playGround, Vector position)
+    public CellBrightness ApplyRules(IPlayGround playGround, Vector position)
     {
         var (leftState, rightState) = GetNeighboursState(playGround, position);
-        var cellState = playGround[position] != CellState.Empty;
+        var cellState = playGround[position] != CellBrightness.Empty;
         
         int ruleIndex = (leftState ? 4 : 0) | (cellState ? 2 : 0) | (rightState ? 1 : 0);
 
-        return wolframRule[ruleIndex] == 1 ? CellState.Solid : CellState.Empty;
+        return wolframRule[ruleIndex] == 1 ? CellBrightness.Solid : CellBrightness.Empty;
     }
-    
+
+    public MaterialMovement? ApplyMaterialRules(IPlayGround playGround, Vector position)
+    {
+        throw new NotImplementedException();
+    }
+
     public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize, double probability = 1)
     {
         return playGround;
@@ -45,8 +53,8 @@ public sealed class WolframRuleSet : IRuleSet
         var left = new Vector(position.X - 1, position.Y);
         var right = new Vector(position.X + 1, position.Y);
 
-        return (IsWithinBounds(playGround.Dimension, left) && playGround[left] != CellState.Empty,
-            IsWithinBounds(playGround.Dimension, right) && playGround[right] != CellState.Empty);
+        return (IsWithinBounds(playGround.Dimension, left) && playGround[left] != CellBrightness.Empty,
+            IsWithinBounds(playGround.Dimension, right) && playGround[right] != CellBrightness.Empty);
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

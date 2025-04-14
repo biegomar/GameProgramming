@@ -1,8 +1,8 @@
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
-using System.Linq;
+using CellularAutomata.Interfaces;
 
-namespace CellularAutomata;
+namespace CellularAutomata.GameOfLive;
 
 public sealed class Automata(Vector dimension)
 {
@@ -10,11 +10,16 @@ public sealed class Automata(Vector dimension)
 
     public PlayGround NextGeneration(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize)
     {
+        InitializeNextGenerationPlayGround(initialPlayGround, 16);
         for (var row = 0; row < initialPlayGround.Dimension.Y; row++)
         {
             for (var column = 0; column < initialPlayGround.Dimension.X; column++)
             {
-                nextGenerationPlayGround[new Vector(column, row)] = ruleSet.ApplyRules(initialPlayGround, new Vector(column, row));    
+                var result = ruleSet.ApplyMaterialRules(initialPlayGround, new Vector(column, row));
+                if (result.HasValue)
+                {
+                    nextGenerationPlayGround.SetCell(new Vector(column, row), result.Value.Source.Body);
+                }
             }
         }
 
@@ -23,7 +28,6 @@ public sealed class Automata(Vector dimension)
             nextGenerationPlayGround = ApplySpawnRules(nextGenerationPlayGround, ruleSet, spawnPosition, brushSize);    
         }
         
-        initialPlayGround.ResetMovedCells();
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
         
         return initialPlayGround;
@@ -31,6 +35,8 @@ public sealed class Automata(Vector dimension)
     
     public PlayGround NextGenerationParallel(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize, int maxDegreeOfParallelism)
     {
+        InitializeNextGenerationPlayGround(initialPlayGround, maxDegreeOfParallelism);
+        
         var parallelOptions = new ParallelOptions()
         {
             MaxDegreeOfParallelism = Math.Min(maxDegreeOfParallelism, Environment.ProcessorCount)
@@ -46,7 +52,11 @@ public sealed class Automata(Vector dimension)
             {
                 for (var column = 0; column < ground.Dimension.X; column++)
                 {
-                    nextGenerationPlayGround[new Vector(column, row)] = ruleSet.ApplyRules(ground, new Vector(column, row));
+                    var result = ruleSet.ApplyMaterialRules(ground, new Vector(column, row));
+                    if (result.HasValue)
+                    {
+                        nextGenerationPlayGround.SetCell(new Vector(column, row), result.Value.Source.Body);
+                    }
                 }
             }
         });
@@ -56,7 +66,6 @@ public sealed class Automata(Vector dimension)
             nextGenerationPlayGround = ApplySpawnRules(nextGenerationPlayGround, ruleSet, spawnPosition, brushSize);   
         }
         
-        initialPlayGround.ResetMovedCells();
         Swap(ref initialPlayGround, ref nextGenerationPlayGround); 
         
         return initialPlayGround;
@@ -72,5 +81,27 @@ public sealed class Automata(Vector dimension)
     private static void Swap(ref PlayGround instanceOne, ref PlayGround instanceTwo)
     { 
         (instanceOne, instanceTwo) = (instanceTwo, instanceOne);
+    }
+    
+    private void InitializeNextGenerationPlayGround(PlayGround playGround, int maxDegreeOfParallelism)
+    {
+        var parallelOptions = new ParallelOptions()
+        {
+            MaxDegreeOfParallelism = Math.Min(maxDegreeOfParallelism, Environment.ProcessorCount)
+        };
+        
+        
+        var yPartitioner = Partitioner.Create(0, playGround.Dimension.Y);
+        
+        Parallel.ForEach(yPartitioner, parallelOptions, (range, loopState) =>
+        {
+            for (var row = range.Item1; row < range.Item2; row++) 
+            {
+                for (var column = 0; column < playGround.Dimension.X; column++)
+                {
+                    nextGenerationPlayGround.SetCell(new Vector(column, row), playGround.GetCell(new Vector(column, row)) with {});
+                }
+            }
+        });
     }
 }

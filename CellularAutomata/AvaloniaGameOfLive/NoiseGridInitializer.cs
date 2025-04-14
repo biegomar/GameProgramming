@@ -2,6 +2,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using CellularAutomata;
+using CellularAutomata.Cells;
+using CellularAutomata.Interfaces;
 
 namespace AvaloniaGameOfLive;
 
@@ -24,7 +26,7 @@ public static class NoiseGridInitializer
                 for (var y = 0; y < playground.Dimension.Y; y++)
                 {
                     var state = random.NextDouble() > density;
-                    playground[new Vector(x, y)] = state ? CellState.Empty : CellState.Solid;
+                    playground[new Vector(x, y)] = state ? CellBrightness.Empty : CellBrightness.Solid;
                 }
             }
         });
@@ -42,7 +44,7 @@ public static class NoiseGridInitializer
     {
         for (int x = 0; x < playground.Dimension.X; x++)
         {
-            playground[new Vector(x, row)] = int.IsEvenInteger(x) && int.IsEvenInteger(row) || int.IsOddInteger(x) && int.IsOddInteger(row) ? CellState.Solid : CellState.Empty;
+            playground[new Vector(x, row)] = int.IsEvenInteger(x) && int.IsEvenInteger(row) || int.IsOddInteger(x) && int.IsOddInteger(row) ? CellBrightness.Solid : CellBrightness.Empty;
         } 
     }
 }

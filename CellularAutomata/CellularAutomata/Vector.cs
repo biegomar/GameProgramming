@@ -5,7 +5,7 @@ namespace CellularAutomata;
     /// <summary>
     /// The vector class.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential, Size = 2)]
+    [StructLayout(LayoutKind.Sequential, Size = 8)]
     public readonly struct Vector : IEquatable<Vector>
     {
         /// <summary>

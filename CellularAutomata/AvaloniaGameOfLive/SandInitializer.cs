@@ -2,6 +2,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using CellularAutomata;
+using CellularAutomata.Cells;
+using CellularAutomata.Interfaces;
 
 namespace AvaloniaGameOfLive;
 
@@ -24,7 +26,7 @@ public static class SandInitializer
                 for (var y = 0; y < playground.Dimension.Y; y++)
                 {
                     var state = random.NextDouble() < aliveProbability;
-                    playground[new Vector(x, y)] = state ? GetRandomSandCellState() : CellState.Empty;
+                    playground.SetCell(new Vector(x, y), new Cell(state ? CellType.Sand : CellType.Empty, state ? GenerateRandomBrightness() : CellBrightness.Empty));
                 }
             }
         });
@@ -46,19 +48,19 @@ public static class SandInitializer
             {
                 if (IsOutline(x, y, width, height) && !IsConnection(x, y, midX, midY))
                 {
-                    playground[new Vector(x, y)] = CellState.Solid;
+                    playground.SetCell(new Vector(x, y), new Cell(CellType.Solid, CellBrightness.Solid));
                 }
                 else if (IsTopSand(x, y, midX, midY))
                 {
-                    playground[new Vector(x, y)] = GetRandomSandCellState();
+                    playground.SetCell(new Vector(x, y), new Cell(CellType.Sand, GenerateRandomBrightness()));
                 }
                 else if (IsConnection(x, y, midX, midY))
                 {
-                    playground[new Vector(x, y)] = GetRandomSandCellState();
+                    playground.SetCell(new Vector(x, y), new Cell(CellType.Sand, GenerateRandomBrightness()));
                 }
                 else if (IsBottomEmpty(x, y, midX, midY))
                 {
-                    playground[new Vector(x, y)] = CellState.Empty;
+                    playground.SetCell(new Vector(x, y), new Cell(CellType.Empty, CellBrightness.Empty));
                 }
             }
         }
@@ -107,12 +109,12 @@ public static class SandInitializer
         return y > midY && Math.Abs(x - midX) <= (y - midY - 1);
     }
     
-    private static CellState GetRandomSandCellState()
+    private static CellBrightness GenerateRandomBrightness()
     {
         var random = new Random();
         var randomValue = random.Next(2, 6);
 
-        return (CellState)randomValue;
+        return (CellBrightness)randomValue;
 
     }
 }
