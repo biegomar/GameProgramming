@@ -3,17 +3,11 @@ using CellularAutomata.Cells;
 using CellularAutomata.Interfaces;
 using CellularAutomata.MaterialFlow;
 
-namespace CellularAutomata;
+namespace CellularAutomata.Wolfram;
 
 public sealed class WolframRuleSet : IRuleSet
 {
     private readonly int[] wolframRule = new int[8];
-    
-    public IDictionary<string, uint> RuleCounter { get; init; } = new Dictionary<string, uint>
-    {
-        ["CellEmpty"] = 0,
-        ["CellAlive"] = 0
-    };
     
     public WolframRuleSet(int rule)
     {
@@ -32,7 +26,21 @@ public sealed class WolframRuleSet : IRuleSet
 
     public MaterialMovement? ApplyMaterialRules(IPlayGround playGround, Vector position)
     {
-        throw new NotImplementedException();
+        var (leftState, rightState) = GetNeighboursState(playGround, position);
+        try
+        {
+            var cellType = playGround.GetCell(position).Type != CellType.Empty;
+            var ruleIndex = (leftState ? 4 : 0) | (cellType ? 2 : 0) | (rightState ? 1 : 0);
+
+            return wolframRule[ruleIndex] == 1 
+                ? new MaterialMovement(new Material(position, new Cell(CellType.Solid, CellBrightness.Solid)), null) 
+                : new MaterialMovement(new Material(position, new Cell(CellType.Empty, CellBrightness.Empty)), null);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize, double probability = 1)
@@ -53,8 +61,8 @@ public sealed class WolframRuleSet : IRuleSet
         var left = new Vector(position.X - 1, position.Y);
         var right = new Vector(position.X + 1, position.Y);
 
-        return (IsWithinBounds(playGround.Dimension, left) && playGround[left] != CellBrightness.Empty,
-            IsWithinBounds(playGround.Dimension, right) && playGround[right] != CellBrightness.Empty);
+        return (IsWithinBounds(playGround.Dimension, left) && playGround.GetCell(left).Type != CellType.Empty,
+            IsWithinBounds(playGround.Dimension, right) && playGround.GetCell(right).Type != CellType.Empty);
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
