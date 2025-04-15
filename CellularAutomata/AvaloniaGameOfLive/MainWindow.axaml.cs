@@ -518,6 +518,9 @@ public partial class MainWindow : Window
             case 1: 
                 GameOfLifeInitializer.AddCheckerboard(playGroundBool);
                 break;
+            case 2: 
+                GameOfLifeInitializer.PrepareFreestyle(playGroundBool);
+                break;
         }
     }
 
