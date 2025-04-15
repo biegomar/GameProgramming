@@ -15,6 +15,7 @@ using CellularAutomata.Cells;
 using CellularAutomata.GameOfLive;
 using CellularAutomata.Interfaces;
 using CellularAutomata.MaterialFlow;
+using CellularAutomata.Wolfram;
 using SkiaSharp;
 using Supporter;
 using Visualizer;
@@ -133,6 +134,8 @@ public partial class MainWindow : Window
     private void btnSingleStep_Click(object? sender, RoutedEventArgs e)
     {
         GenerateNextPlaygroundState(ruleSetType);
+        
+        generation++;
                 
         RenderPlaygroundAndDisplayGeneration();
     }
