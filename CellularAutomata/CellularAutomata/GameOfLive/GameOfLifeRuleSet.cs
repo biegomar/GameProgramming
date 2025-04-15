@@ -51,7 +51,7 @@ public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
                 {
                     if (random.NextDouble() < probability)
                     {
-                        playGround[newPos] = CellBrightness.Solid;   
+                        playGround.SetCell(newPos, new Cell(CellType.Solid, CellBrightness.Solid));
                     }
                 }
             }    
