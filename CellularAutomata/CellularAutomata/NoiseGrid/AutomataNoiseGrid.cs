@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using CellularAutomata.Interfaces;
 
-namespace CellularAutomata;
+namespace CellularAutomata.NoiseGrid;
 
 public class AutomataNoiseGrid(Vector dimension)
 {
@@ -24,7 +24,11 @@ public class AutomataNoiseGrid(Vector dimension)
             {
                 for (var row = 0; row < ground.Dimension.Y; row++)
                 {
-                    nextGenerationPlayGround[new Vector(column, row)] = ruleSet.ApplyRules(ground, new Vector(column, row));
+                    var result = ruleSet.ApplyMaterialRules(ground, new Vector(column, row));
+                    if (result.HasValue)
+                    {
+                        nextGenerationPlayGround.SetCell(new Vector(column, row), result.Value.Source.Body);
+                    }
                 }
             }
         });
