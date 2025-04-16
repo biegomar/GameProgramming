@@ -15,6 +15,7 @@ using CellularAutomata.Cells;
 using CellularAutomata.GameOfLive;
 using CellularAutomata.Interfaces;
 using CellularAutomata.MaterialFlow;
+using CellularAutomata.NoiseGrid;
 using CellularAutomata.Wolfram;
 using SkiaSharp;
 using Supporter;

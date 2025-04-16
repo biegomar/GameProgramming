@@ -2,7 +2,7 @@
 using CellularAutomata.Interfaces;
 using CellularAutomata.MaterialFlow;
 
-namespace CellularAutomata;
+namespace CellularAutomata.NoiseGrid;
 
 public class NoiseGridRuleSet(Vector dimension) : IRuleSet
 {
@@ -16,7 +16,6 @@ public class NoiseGridRuleSet(Vector dimension) : IRuleSet
         ( 1, -1), ( 1, 0), ( 1, 1),
     };
     
-    public IDictionary<string, uint> RuleCounter { get; init; }
     public CellBrightness ApplyRules(IPlayGround playGround, Vector position)
     {
         var neighborWallCount = CountNeighborWalls(playGround, position);
@@ -26,7 +25,11 @@ public class NoiseGridRuleSet(Vector dimension) : IRuleSet
 
     public MaterialMovement? ApplyMaterialRules(IPlayGround playGround, Vector position)
     {
-        throw new NotImplementedException();
+        var neighborWallCount = CountNeighborWalls(playGround, position);
+        
+        return neighborWallCount > 4 
+            ? new MaterialMovement(new Material(position, new Cell(CellType.Solid, CellBrightness.Solid)), null) 
+            : new MaterialMovement(new Material(position, new Cell(CellType.Empty, CellBrightness.Empty)), null);
     }
 
     public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize, double probability)
@@ -44,7 +47,7 @@ public class NoiseGridRuleSet(Vector dimension) : IRuleSet
 
             if (IsWithinBounds(neighbor))
             {
-                if (playGround[neighbor] == Solid)
+                if (playGround.GetCell(neighbor).Type == CellType.Solid)
                 {
                     neighborWallCount++;
                 }
