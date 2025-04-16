@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Runtime.CompilerServices;
 using CellularAutomata.Cells;
-using CellularAutomata.Interfaces;
 
 namespace CellularAutomata;
 
-public sealed class PlayGround : IPlayGround
+public sealed class PlayGround
 {
     public Cell[] Cells { get; }
     

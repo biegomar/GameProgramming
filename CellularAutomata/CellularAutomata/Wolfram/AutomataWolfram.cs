@@ -1,5 +1,3 @@
-using CellularAutomata.Interfaces;
-
 namespace CellularAutomata.Wolfram;
 
 public sealed class AutomataWolfram

@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using CellularAutomata;
 using CellularAutomata.Cells;
-using CellularAutomata.Interfaces;
 
 namespace AvaloniaGameOfLive;
 
@@ -34,7 +33,7 @@ public static class NoiseGridInitializer
         });
     } 
     
-    public static void AddCheckerboard(IPlayGround playground)
+    public static void AddCheckerboard(PlayGround playground)
     {
         for (int y = 0; y < playground.Dimension.Y; y++)
         {
@@ -42,7 +41,7 @@ public static class NoiseGridInitializer
         }
     }
     
-    private static void AddCheckerLine(IPlayGround playground, int row)
+    private static void AddCheckerLine(PlayGround playground, int row)
     {
         for (int x = 0; x < playground.Dimension.X; x++)
         {

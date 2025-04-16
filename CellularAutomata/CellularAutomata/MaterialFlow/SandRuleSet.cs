@@ -1,7 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using CellularAutomata.Cells;
-using CellularAutomata.Interfaces;
 
 namespace CellularAutomata.MaterialFlow;
 
@@ -11,7 +9,7 @@ public sealed class SandRuleSet(Vector dimension)
     private const CellBrightness Empty = CellBrightness.Empty;
     private readonly Random random = new ();
 
-    public CellBrightness ApplyRules(IPlayGround playGround, Vector position)
+    public CellBrightness ApplyRules(PlayGround playGround, Vector position)
     {
         // var cellState = playGround[position];
         //
@@ -83,7 +81,7 @@ public sealed class SandRuleSet(Vector dimension)
         return Empty;
     }
 
-    public MaterialMovement? ApplyMaterialRules(IPlayGround playGround, Vector position)
+    public MaterialMovement? ApplyMaterialRules(PlayGround playGround, Vector position)
     {
         var cell = playGround.GetCell(position);
 
@@ -118,7 +116,7 @@ public sealed class SandRuleSet(Vector dimension)
         return new MaterialMovement(new Material(position, cell with {}), null);
     }
 
-    public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize, double probability)
+    public PlayGround ApplySpawnRules(PlayGround playGround, Vector spawnPosition, Vector brushSize, double probability)
     {
         var startX = spawnPosition.X;
         var endX = spawnPosition.X + brushSize.X - 1;
@@ -144,7 +142,7 @@ public sealed class SandRuleSet(Vector dimension)
         return playGround;
     }
 
-    private Cell GetCell(IPlayGround playGround, Vector position)
+    private Cell GetCell(PlayGround playGround, Vector position)
     {
         return IsWithinBounds(position) ? playGround.GetCell(position) : new Cell(CellType.Solid, CellBrightness.Solid);
     }

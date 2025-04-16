@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using CellularAutomata.Cells;
-using CellularAutomata.Interfaces;
 using CellularAutomata.MaterialFlow;
 
 namespace CellularAutomata.Wolfram;
@@ -14,7 +13,7 @@ public sealed class WolframRuleSet
         InitializeWolframRule(rule);
     }
     
-    public CellBrightness ApplyRules(IPlayGround playGround, Vector position)
+    public CellBrightness ApplyRules(PlayGround playGround, Vector position)
     {
         var (leftState, rightState) = GetNeighboursState(playGround, position);
         var cellType = playGround.GetCellType(position) != CellType.Empty;
@@ -24,7 +23,7 @@ public sealed class WolframRuleSet
         return wolframRule[ruleIndex] == 1 ? CellBrightness.Solid : CellBrightness.Empty;
     }
 
-    public MaterialMovement? ApplyMaterialRules(IPlayGround playGround, Vector position)
+    public MaterialMovement? ApplyMaterialRules(PlayGround playGround, Vector position)
     {
         var (leftState, rightState) = GetNeighboursState(playGround, position);
         try
@@ -43,7 +42,7 @@ public sealed class WolframRuleSet
         }
     }
 
-    public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize, double probability = 1)
+    public PlayGround ApplySpawnRules(PlayGround playGround, Vector spawnPosition, Vector brushSize, double probability = 1)
     {
         return playGround;
     }
@@ -56,7 +55,7 @@ public sealed class WolframRuleSet
         }
     }
     
-    private (bool left, bool right) GetNeighboursState(IPlayGround playGround, Vector position)
+    private (bool left, bool right) GetNeighboursState(PlayGround playGround, Vector position)
     {
         var left = new Vector(position.X - 1, position.Y);
         var right = new Vector(position.X + 1, position.Y);

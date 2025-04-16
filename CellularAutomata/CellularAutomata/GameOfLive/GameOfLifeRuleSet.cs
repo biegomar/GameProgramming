@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
 using CellularAutomata.Cells;
-using CellularAutomata.Interfaces;
 using CellularAutomata.MaterialFlow;
 
 namespace CellularAutomata.GameOfLive;
@@ -16,7 +15,7 @@ public sealed class GameOfLifeRuleSet(Vector dimension)
         ( 1, -1), ( 1, 0), ( 1, 1),
     };
     
-    public CellType ApplyRules(IPlayGround playGround, Vector position)
+    public CellType ApplyRules(PlayGround playGround, Vector position)
     {
         var cellType = playGround.GetCellType(position);
         
@@ -25,7 +24,7 @@ public sealed class GameOfLifeRuleSet(Vector dimension)
         return liveNeighbors == 3 || (cellType == CellType.Solid && liveNeighbors == 2) ? CellType.Solid : CellType.Empty;
     }
 
-    public MaterialMovement? ApplyMaterialRules(IPlayGround playGround, Vector position)
+    public MaterialMovement? ApplyMaterialRules(PlayGround playGround, Vector position)
     {
         var liveNeighbors = CountLivingNeighbors(playGround, position);
         
@@ -34,7 +33,7 @@ public sealed class GameOfLifeRuleSet(Vector dimension)
             : new MaterialMovement(new Material(position, new Cell(CellType.Empty, CellBrightness.Empty)), null);
     }
 
-    public IPlayGround ApplySpawnRules(IPlayGround playGround, Vector spawnPosition, Vector brushSize, double probability)
+    public PlayGround ApplySpawnRules(PlayGround playGround, Vector spawnPosition, Vector brushSize, double probability)
     {
         var startX = spawnPosition.X;
         var endX = spawnPosition.X + brushSize.X - 1;
@@ -61,7 +60,7 @@ public sealed class GameOfLifeRuleSet(Vector dimension)
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private int CountLivingNeighbors(IPlayGround playGround, Vector position)
+    private int CountLivingNeighbors(PlayGround playGround, Vector position)
     {
         int liveNeighbors = 0;
     

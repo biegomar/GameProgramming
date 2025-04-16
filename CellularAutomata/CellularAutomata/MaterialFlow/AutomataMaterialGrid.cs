@@ -1,7 +1,5 @@
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
-using CellularAutomata.Cells;
-using CellularAutomata.Interfaces;
 
 namespace CellularAutomata.MaterialFlow;
 
