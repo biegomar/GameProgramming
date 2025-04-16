@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using CellularAutomata;
 using CellularAutomata.Cells;
+using CellularAutomata.PlayGrounds;
 
 namespace AvaloniaGameOfLive;
 

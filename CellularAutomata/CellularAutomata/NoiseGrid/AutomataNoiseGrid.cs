@@ -1,12 +1,13 @@
 using System.Collections.Concurrent;
+using CellularAutomata.PlayGrounds;
 
 namespace CellularAutomata.NoiseGrid;
 
 public class AutomataNoiseGrid(Vector dimension)
 {
-    private PlayGround nextGenerationPlayGround = new(dimension);
+    private SimplePlayGround nextGenerationPlayGround = new(dimension);
 
-    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, NoiseGridRuleSet ruleSet, int maxDegreeOfParallelism)
+    public SimplePlayGround NextGenerationParallel(SimplePlayGround initialPlayGround, NoiseGridRuleSet ruleSet, int maxDegreeOfParallelism)
     {
         var parallelOptions = new ParallelOptions()
         {
@@ -23,11 +24,8 @@ public class AutomataNoiseGrid(Vector dimension)
             {
                 for (var row = 0; row < ground.Dimension.Y; row++)
                 {
-                    var result = ruleSet.ApplyMaterialRules(ground, new Vector(column, row));
-                    if (result.HasValue)
-                    {
-                        nextGenerationPlayGround.SetCell(new Vector(column, row), result.Value.Source.Body);
-                    }
+                    var state = ruleSet.ApplyRules(ground, new Vector(column, row));
+                    nextGenerationPlayGround.SetState(new Vector(column, row), state);
                 }
             }
         });
@@ -37,7 +35,7 @@ public class AutomataNoiseGrid(Vector dimension)
         return initialPlayGround;
     } 
     
-    private static void Swap(ref PlayGround instanceOne, ref PlayGround instanceTwo)
+    private static void Swap(ref SimplePlayGround instanceOne, ref SimplePlayGround instanceTwo)
     { 
         (instanceOne, instanceTwo) = (instanceTwo, instanceOne);
     }

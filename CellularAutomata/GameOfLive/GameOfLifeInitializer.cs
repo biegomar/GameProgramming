@@ -1,11 +1,12 @@
 using CellularAutomata;
 using CellularAutomata.Cells;
+using CellularAutomata.PlayGrounds;
 
 namespace GameOfLive;
 
 public class GameOfLifeInitializer
 {
-    public static void Randomize(PlayGround playground, double aliveProbability = 0.2)
+    public static void Randomize(SimplePlayGround playground, double aliveProbability = 0.2)
     {
         var random = new Random();
 
@@ -14,64 +15,62 @@ public class GameOfLifeInitializer
             for (int y = 0; y < playground.Dimension.Y; y++)
             {
                 var state = random.NextDouble() < aliveProbability;
-                playground.SetCell(new Vector(x, y), state 
-                    ? new Cell(CellType.Solid, CellBrightness.Solid)
-                    : new Cell(CellType.Empty, CellBrightness.Empty));
+                playground.SetState(new Vector(x, y), state);
             }
         }
     }
     
     // **Muster 1: Blinker (kleiner Oszillator)**
-    public static void AddBlinker(PlayGround playground, Vector startPosition)
+    public static void AddBlinker(SimplePlayGround playground, Vector startPosition)
     { 
-        playground.SetCell(new Vector(startPosition.X, startPosition.Y), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X + 1, startPosition.Y), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X + 2, startPosition.Y), new Cell(CellType.Solid, CellBrightness.Solid));
+        playground.SetState(new Vector(startPosition.X, startPosition.Y), true);
+        playground.SetState(new Vector(startPosition.X + 1, startPosition.Y), true);
+        playground.SetState(new Vector(startPosition.X + 2, startPosition.Y), true);
     }
 
     // **Muster 2: Glider (bewegliches Muster)**
-    public static void AddGlider(PlayGround playground, Vector startPosition)
+    public static void AddGlider(SimplePlayGround playground, Vector startPosition)
     {
-        playground.SetCell(new Vector(startPosition.X + 2, startPosition.Y), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X, startPosition.Y + 1), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X + 2, startPosition.Y + 1), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X + 1, startPosition.Y + 2), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X + 2, startPosition.Y + 2), new Cell(CellType.Solid, CellBrightness.Solid));
+        playground.SetState(new Vector(startPosition.X + 2, startPosition.Y), true);
+        playground.SetState(new Vector(startPosition.X, startPosition.Y + 1), true);
+        playground.SetState(new Vector(startPosition.X + 2, startPosition.Y + 1), true);
+        playground.SetState(new Vector(startPosition.X + 1, startPosition.Y + 2), true);
+        playground.SetState(new Vector(startPosition.X + 2, startPosition.Y + 2), true);
     }
 
     // **Muster 3: Toad (größerer Oszillator)**
-    public static void AddToad(PlayGround playground, Vector startPosition)
+    public static void AddToad(SimplePlayGround playground, Vector startPosition)
     {
-        playground.SetCell(new Vector(startPosition.X + 1, startPosition.Y), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X + 2, startPosition.Y), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X + 3, startPosition.Y), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X, startPosition.Y + 1), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X + 1, startPosition.Y + 1), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X + 2, startPosition.Y + 1), new Cell(CellType.Solid, CellBrightness.Solid));
+        playground.SetState(new Vector(startPosition.X + 1, startPosition.Y), true);
+        playground.SetState(new Vector(startPosition.X + 2, startPosition.Y), true);
+        playground.SetState(new Vector(startPosition.X + 3, startPosition.Y), true);
+        playground.SetState(new Vector(startPosition.X, startPosition.Y + 1), true);
+        playground.SetState(new Vector(startPosition.X + 1, startPosition.Y + 1), true);
+        playground.SetState(new Vector(startPosition.X + 2, startPosition.Y + 1), true);
     }
 
     // **Muster 4: Block (stabiler Zustand)**
-    public static void AddBlock(PlayGround playground, Vector startPosition)
+    public static void AddBlock(SimplePlayGround playground, Vector startPosition)
     {
-        playground.SetCell(new Vector(startPosition.X, startPosition.Y), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X + 1, startPosition.Y), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X, startPosition.Y + 1), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X + 1, startPosition.Y + 1), new Cell(CellType.Solid, CellBrightness.Solid));
+        playground.SetState(new Vector(startPosition.X, startPosition.Y), true);
+        playground.SetState(new Vector(startPosition.X + 1, startPosition.Y), true);
+        playground.SetState(new Vector(startPosition.X, startPosition.Y + 1), true);
+        playground.SetState(new Vector(startPosition.X + 1, startPosition.Y + 1), true);
     }
 
     // **Muster 5: Beacon (kleiner oszillierender Zustand)**
-    public static void AddBeacon(PlayGround playground, Vector startPosition)
+    public static void AddBeacon(SimplePlayGround playground, Vector startPosition)
     {
         // Oberer linker Block
-        playground.SetCell(new Vector(startPosition.X, startPosition.Y), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X + 1, startPosition.Y), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X, startPosition.Y + 1), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X + 1, startPosition.Y + 1), new Cell(CellType.Solid, CellBrightness.Solid));
+        playground.SetState(new Vector(startPosition.X, startPosition.Y), true);
+        playground.SetState(new Vector(startPosition.X + 1, startPosition.Y), true);
+        playground.SetState(new Vector(startPosition.X, startPosition.Y + 1), true);
+        playground.SetState(new Vector(startPosition.X + 1, startPosition.Y + 1), true);
 
         // Unterer rechter Block
-        playground.SetCell(new Vector(startPosition.X + 2, startPosition.Y + 2), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X + 3, startPosition.Y + 2), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X + 2, startPosition.Y + 3), new Cell(CellType.Solid, CellBrightness.Solid));
-        playground.SetCell(new Vector(startPosition.X + 3, startPosition.Y + 3), new Cell(CellType.Solid, CellBrightness.Solid));
+        playground.SetState(new Vector(startPosition.X + 2, startPosition.Y + 2), true);
+        playground.SetState(new Vector(startPosition.X + 3, startPosition.Y + 2), true);
+        playground.SetState(new Vector(startPosition.X + 2, startPosition.Y + 3), true);
+        playground.SetState(new Vector(startPosition.X + 3, startPosition.Y + 3), true);
     }
 }

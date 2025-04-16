@@ -1,8 +1,13 @@
+using System.Runtime.CompilerServices;
+using CellularAutomata.PlayGrounds;
+
 namespace CellularAutomata.Wolfram;
 
-public sealed class AutomataWolfram
+public sealed class AutomataWolfram(SimplePlayGround initialPlayGround)
 {
-    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, WolframRuleSet ruleSet, int row, int maxDegreeOfParallelism)
+    private SimplePlayGround nextGenerationPlayGround = new(initialPlayGround);
+    
+    public SimplePlayGround NextGenerationParallel(SimplePlayGround initialPlayGround, WolframRuleSet ruleSet, int row, int maxDegreeOfParallelism)
     {
         if (row >= initialPlayGround.Dimension.Y - 1 || row < 0)
         {
@@ -14,15 +19,27 @@ public sealed class AutomataWolfram
             MaxDegreeOfParallelism = Math.Min(maxDegreeOfParallelism, Environment.ProcessorCount)
         };
         
-        Parallel.For(0, initialPlayGround.Dimension.X, parallelOptions, column =>
+        var ground = initialPlayGround;
+
+        // for (var column = 0; column < ground.Dimension.X; column++)
+        // {
+        //     var state = ruleSet.ApplyRules(ground, new Vector(column, row));
+        //     nextGenerationPlayGround.SetState(new Vector(column, row + 1), state);
+        // }
+        
+        Parallel.For(0, ground.Dimension.X, parallelOptions, column =>
         {
-            var result = ruleSet.ApplyMaterialRules(initialPlayGround, new Vector(column, row));
-            if (result.HasValue)
-            {
-                initialPlayGround.SetCell(new Vector(column, row + 1), result.Value.Source.Body);
-            }
+            nextGenerationPlayGround.SetState(new Vector(column, row + 1), ruleSet.ApplyRules(ground, new Vector(column, row)));
         });
         
+        Swap(ref initialPlayGround, ref nextGenerationPlayGround); 
+        
         return initialPlayGround;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void Swap(ref SimplePlayGround instanceOne, ref SimplePlayGround instanceTwo)
+    { 
+        (instanceOne, instanceTwo) = (instanceTwo, instanceOne);
     }
 }
