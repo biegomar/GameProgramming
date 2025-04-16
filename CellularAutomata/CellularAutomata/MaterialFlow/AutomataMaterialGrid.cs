@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
+using CellularAutomata.PlayGrounds;
 
 namespace CellularAutomata.MaterialFlow;
 
@@ -22,7 +23,7 @@ public sealed class AutomataMaterialGrid(Vector dimension)
         {
             for (var column = 0; column < initialPlayGround.Dimension.X; column++)
             {
-                var result = ruleSet.ApplyMaterialRules(ground, new Vector(column, row));
+                var result = ruleSet.ApplyRules(ground, new Vector(column, row));
                 if (result.HasValue)
                 {
                     nextGenerationPlayGround.SetCell(new Vector(column, row), result.Value.Source.Body);
@@ -63,7 +64,7 @@ public sealed class AutomataMaterialGrid(Vector dimension)
             {
                 for (var column = 0; column < ground.Dimension.X; column++)
                 {
-                     var result = ruleSet.ApplyMaterialRules(ground, new Vector(column, row));
+                     var result = ruleSet.ApplyRules(ground, new Vector(column, row));
                      if (result.HasValue)
                      {
                          nextGenerationPlayGround.SetCell(new Vector(column, row), result.Value.Source.Body);

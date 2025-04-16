@@ -1,8 +1,7 @@
-using System.Collections;
 using System.Runtime.CompilerServices;
 using CellularAutomata.Cells;
 
-namespace CellularAutomata;
+namespace CellularAutomata.PlayGrounds;
 
 public sealed class PlayGround
 {

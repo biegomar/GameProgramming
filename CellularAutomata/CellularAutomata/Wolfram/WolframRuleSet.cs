@@ -1,11 +1,13 @@
 ﻿using System.Runtime.CompilerServices;
 using CellularAutomata.Cells;
 using CellularAutomata.MaterialFlow;
+using CellularAutomata.PlayGrounds;
 
 namespace CellularAutomata.Wolfram;
 
 public sealed class WolframRuleSet 
 {
+    
     private readonly int[] wolframRule = new int[8];
     
     public WolframRuleSet(int rule)
@@ -13,38 +15,14 @@ public sealed class WolframRuleSet
         InitializeWolframRule(rule);
     }
     
-    public CellBrightness ApplyRules(PlayGround playGround, Vector position)
+    public bool ApplyRules(SimplePlayGround playGround, Vector position)
     {
         var (leftState, rightState) = GetNeighboursState(playGround, position);
-        var cellType = playGround.GetCellType(position) != CellType.Empty;
+        var state = playGround.GetState(position);
         
-        int ruleIndex = (leftState ? 4 : 0) | (cellType ? 2 : 0) | (rightState ? 1 : 0);
+        var ruleIndex = (leftState ? 4 : 0) | (state ? 2 : 0) | (rightState ? 1 : 0);
 
-        return wolframRule[ruleIndex] == 1 ? CellBrightness.Solid : CellBrightness.Empty;
-    }
-
-    public MaterialMovement? ApplyMaterialRules(PlayGround playGround, Vector position)
-    {
-        var (leftState, rightState) = GetNeighboursState(playGround, position);
-        try
-        {
-            var cellType = playGround.GetCell(position).Type != CellType.Empty;
-            var ruleIndex = (leftState ? 4 : 0) | (cellType ? 2 : 0) | (rightState ? 1 : 0);
-
-            return wolframRule[ruleIndex] == 1 
-                ? new MaterialMovement(new Material(position, new Cell(CellType.Solid, CellBrightness.Solid)), null) 
-                : new MaterialMovement(new Material(position, new Cell(CellType.Empty, CellBrightness.Empty)), null);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    public PlayGround ApplySpawnRules(PlayGround playGround, Vector spawnPosition, Vector brushSize, double probability = 1)
-    {
-        return playGround;
+        return wolframRule[ruleIndex] == 1;
     }
 
     private void InitializeWolframRule(int rule)
@@ -55,13 +33,13 @@ public sealed class WolframRuleSet
         }
     }
     
-    private (bool left, bool right) GetNeighboursState(PlayGround playGround, Vector position)
+    private (bool left, bool right) GetNeighboursState(SimplePlayGround playGround, Vector position)
     {
         var left = new Vector(position.X - 1, position.Y);
         var right = new Vector(position.X + 1, position.Y);
 
-        return (IsWithinBounds(playGround.Dimension, left) && playGround.GetCell(left).Type != CellType.Empty,
-            IsWithinBounds(playGround.Dimension, right) && playGround.GetCell(right).Type != CellType.Empty);
+        return (IsWithinBounds(playGround.Dimension, left) && playGround.GetState(left),
+            IsWithinBounds(playGround.Dimension, right) && playGround.GetState(right));
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -70,6 +48,11 @@ public sealed class WolframRuleSet
         return position.X >= 0 && position.Y >= 0 &&
                position.X < dimension.X &&
                position.Y < dimension.Y;
+    }
+    
+    private static void Swap(ref SimplePlayGround instanceOne, ref SimplePlayGround instanceTwo)
+    { 
+        (instanceOne, instanceTwo) = (instanceTwo, instanceOne);
     }
     
     // Alle Regeln erzeugen!

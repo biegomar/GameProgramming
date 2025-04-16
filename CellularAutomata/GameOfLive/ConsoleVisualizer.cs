@@ -1,13 +1,14 @@
 using System.Text;
 using CellularAutomata;
 using CellularAutomata.Cells;
+using CellularAutomata.PlayGrounds;
 
 namespace GameOfLive;
 
 public static class ConsoleVisualizer
 {
     static int counter = 0;
-    public static void Render(PlayGround playGround, Func<CellType, char> typeToChar)
+    public static void Render(SimplePlayGround playGround, Func<bool, char> typeToChar)
     {
         Console.SetCursorPosition(0, 0);
         Console.Write($"Generation {counter++}");
@@ -25,7 +26,7 @@ public static class ConsoleVisualizer
             for (var x = 0; x < playGround.Dimension.X; x++)
             {
                 var positionToCheck = new Vector(x, y);
-                lineBuilder.Append(typeToChar(playGround.GetCellType(positionToCheck)));
+                lineBuilder.Append(typeToChar(playGround.GetState(positionToCheck)));
             }
             
             Console.SetCursorPosition(startX, startY + y);
@@ -35,7 +36,7 @@ public static class ConsoleVisualizer
         Console.SetCursorPosition(actualX, actualY);
     }
 
-    public static void RenderWithColors(PlayGround playGround, Func<CellType, ConsoleColor> typeToChar)
+    public static void RenderWithColors(SimplePlayGround playGround, Func<bool, ConsoleColor> typeToChar)
     {
         Console.SetCursorPosition(0, 0);
         Console.Write($"Generation {counter++}");
@@ -53,7 +54,7 @@ public static class ConsoleVisualizer
             for (int x = 0; x < playGround.Dimension.X; x++)
             {
                 var positionToCheck = new Vector(x, y);
-                var cellColor = typeToChar(playGround.GetCellType(positionToCheck));
+                var cellColor = typeToChar(playGround.GetState(positionToCheck));
 
                 // Wenn es ein neuer Farbbereich ist, wird die bisherige Farbe ausgegeben
                 if (lineBuilder.Length > 0 && cellColor != currentColor)

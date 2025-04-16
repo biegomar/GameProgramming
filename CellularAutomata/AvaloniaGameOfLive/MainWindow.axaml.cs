@@ -9,11 +9,11 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using CellularAutomata;
 using CellularAutomata.Cells;
 using CellularAutomata.GameOfLive;
 using CellularAutomata.MaterialFlow;
 using CellularAutomata.NoiseGrid;
+using CellularAutomata.PlayGrounds;
 using CellularAutomata.Wolfram;
 using SkiaSharp;
 using Supporter;
@@ -63,10 +63,10 @@ public partial class MainWindow : Window
     private int generation = 0;
     private int maxDegreeOfParallelism = 2;
     
-    private PlayGround playGroundBool;
     private PlayGround playGroundSand;
     private RuleSetType ruleSetType;
     
+    private SimplePlayGround playGroundBool;
     private Automata automataBool;
     private GameOfLifeRuleSet ruleSetBool;
     
@@ -359,7 +359,7 @@ public partial class MainWindow : Window
     
     private string GetCellStateForGameOfLive(Vector cellPosition)
     {
-        return playGroundBool.GetCellType(cellPosition).ToString();
+        return playGroundBool.GetState(cellPosition).ToString();
     }
 
     private string GetCellStateFromSand(Vector cellPosition)
@@ -510,7 +510,7 @@ public partial class MainWindow : Window
     private void InitializeForGameOfLive()
     {
         automataBool = new Automata(dimension);
-        playGroundBool = new PlayGround(dimension);
+        playGroundBool = new SimplePlayGround(dimension);
         ruleSetBool = new GameOfLifeRuleSet(dimension);
         
         InitializeGameOfLifePattern();
@@ -521,7 +521,7 @@ public partial class MainWindow : Window
         switch (cbPattern.SelectedIndex)
         {
             case 0: 
-                GameOfLifeInitializer.Randomize(playGroundBool, maxDegreeOfParallelism, initializationProbability);
+                GameOfLifeInitializer.Randomize(playGroundBool, initializationProbability);
                 break;
             case 1: 
                 GameOfLifeInitializer.AddCheckerboard(playGroundBool);
@@ -556,22 +556,22 @@ public partial class MainWindow : Window
     
     private void InitializeWolfram()
     {
-        automataWolframBool = new AutomataWolfram();
-        playGroundBool = new PlayGround(dimension);
-        ruleSetWolfram = new WolframRuleSet(cbPattern.SelectedIndex);
-        
         InitializeWolframPattern();
+        
+        automataWolframBool = new AutomataWolfram(playGroundBool);
+        ruleSetWolfram = new WolframRuleSet(cbPattern.SelectedIndex);
     }
     
     private void InitializeWolframPattern()
     {
+        playGroundBool = new SimplePlayGround(dimension);
         GameOfLifeInitializer.AddSingleCell(playGroundBool, new Vector(dimension.X/2, 0));
     }
 
     private void InitializeNoise()
     {
         automataNoiseGrid = new AutomataNoiseGrid(dimension);
-        playGroundBool = new PlayGround(dimension);
+        playGroundBool = new SimplePlayGround(dimension);
         ruleSetNoise = new NoiseGridRuleSet(dimension);
         
         InitializeNoisePattern();
@@ -582,7 +582,7 @@ public partial class MainWindow : Window
         switch (cbPattern.SelectedIndex)
         {
             case 0: 
-                NoiseGridInitializer.Randomize(playGroundBool, maxDegreeOfParallelism, initializationProbability);
+                NoiseGridInitializer.Randomize(playGroundBool, initializationProbability);
                 break;
             case 1: 
                 NoiseGridInitializer.AddCheckerboard(playGroundBool);
@@ -620,16 +620,13 @@ public partial class MainWindow : Window
         switch (ruleSetType)
         {
             case RuleSetType.GameOfLife:
-                var localBoolPlayGroundArray = (playGroundBool as PlayGround)!;
-                SkiaVisualizer.Render(localBoolPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, (b, _) => b == CellType.Solid ? this.aliveColor : emptyColor);
+                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b ? this.aliveColor : emptyColor);
                 break;
             case RuleSetType.Wolfram:
-                var localWolframPlayGroundArray = (playGroundBool as PlayGround)!;
-                SkiaVisualizer.Render(localWolframPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, (b, _) => b == CellType.Solid ? this.wolframColor : emptyColor);
+                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b  ? this.wolframColor : emptyColor);
                 break;
             case RuleSetType.NoiseGrid:
-                var localNoiseGridPlayGroundArray = (playGroundBool as PlayGround)!;
-                SkiaVisualizer.Render(localNoiseGridPlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, (b, _) => b == CellType.Solid ? this.noiseGridColor : emptyColor);
+                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b  ? this.noiseGridColor : emptyColor);
                 break;
             case RuleSetType.Sand:
                 var localSandCellStatePlayGroundArray = (playGroundSand as PlayGround)!;
@@ -670,8 +667,7 @@ public partial class MainWindow : Window
                         generationTimes.Add(generationStopwatch.ElapsedTicks);
                         
                         renderingStopwatch.Restart();
-
-                        //await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.MaxValue);
+                        
                         if (currentGeneration % 10 == 0)
                         {
                             await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.MaxValue);    
@@ -686,7 +682,10 @@ public partial class MainWindow : Window
                     else
                     {
                         GenerateNextPlaygroundState(ruleSetType);
-                        await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.MaxValue);
+                        if (currentGeneration % 10 == 0)
+                        {
+                            await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.MaxValue);    
+                        }
                     }
                 }
             }

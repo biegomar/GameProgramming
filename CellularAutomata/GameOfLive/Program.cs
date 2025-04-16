@@ -3,13 +3,14 @@
 using CellularAutomata;
 using CellularAutomata.Cells;
 using CellularAutomata.GameOfLive;
+using CellularAutomata.PlayGrounds;
 using GameOfLive;
 
 var dimension = new Vector(100,40);
 var screenSize = new Vector(dimension.X + 5, dimension.Y + 5);
 var spawnPosition = new Vector(5,5);
 var brushSize = new Vector(1,1);
-var playGround = new PlayGround(dimension);
+var playGround = new SimplePlayGround(dimension);
 var ruleSet = new GameOfLifeRuleSet(dimension);
 Automata automataBool = new (dimension);
 
@@ -29,7 +30,7 @@ Console.CursorVisible = false;
 do
 {
     //ConsoleVisualizer.Render(playGround, x => x ? 'X' : ' ');
-    ConsoleVisualizer.RenderWithColors(playGround, x => x == CellType.Solid ? ConsoleColor.Green : ConsoleColor.Black);
+    ConsoleVisualizer.RenderWithColors(playGround, x => x ? ConsoleColor.Green : ConsoleColor.Black);
     playGround = automataBool.NextGeneration(playGround, ruleSet, false, spawnPosition, brushSize);
     Thread.Sleep(250);
     

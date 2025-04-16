@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
-using CellularAutomata.Cells;
-using CellularAutomata.MaterialFlow;
+using CellularAutomata.PlayGrounds;
 
 namespace CellularAutomata.GameOfLive;
 
@@ -15,25 +14,16 @@ public sealed class GameOfLifeRuleSet(Vector dimension)
         ( 1, -1), ( 1, 0), ( 1, 1),
     };
     
-    public CellType ApplyRules(PlayGround playGround, Vector position)
+    public bool ApplyRules(SimplePlayGround playGround, Vector position)
     {
-        var cellType = playGround.GetCellType(position);
+        var isAlive = playGround.GetState(position);
         
         var liveNeighbors = CountLivingNeighbors(playGround, position);
         
-        return liveNeighbors == 3 || (cellType == CellType.Solid && liveNeighbors == 2) ? CellType.Solid : CellType.Empty;
+        return liveNeighbors == 3 || (isAlive && liveNeighbors == 2);
     }
 
-    public MaterialMovement? ApplyMaterialRules(PlayGround playGround, Vector position)
-    {
-        var liveNeighbors = CountLivingNeighbors(playGround, position);
-        
-        return liveNeighbors == 3 || (liveNeighbors == 2 && playGround.GetCell(position).Type == CellType.Solid) 
-            ? new MaterialMovement(new Material(position, new Cell(CellType.Solid, CellBrightness.Solid)), null) 
-            : new MaterialMovement(new Material(position, new Cell(CellType.Empty, CellBrightness.Empty)), null);
-    }
-
-    public PlayGround ApplySpawnRules(PlayGround playGround, Vector spawnPosition, Vector brushSize, double probability)
+    public SimplePlayGround ApplySpawnRules(SimplePlayGround playGround, Vector spawnPosition, Vector brushSize, double probability)
     {
         var startX = spawnPosition.X;
         var endX = spawnPosition.X + brushSize.X - 1;
@@ -46,11 +36,11 @@ public sealed class GameOfLifeRuleSet(Vector dimension)
             for (var y = startY; y <= endY; y++)
             {
                 var newPos = new Vector(x, y);
-                if (IsWithinBounds(newPos) && playGround.GetCell(newPos).Type == CellType.Empty)
+                if (IsWithinBounds(newPos) && !playGround.GetState(newPos))
                 {
                     if (random.NextDouble() < probability)
                     {
-                        playGround.SetCell(newPos, new Cell(CellType.Solid, CellBrightness.Solid));
+                        playGround.SetState(newPos, true);
                     }
                 }
             }    
@@ -60,7 +50,7 @@ public sealed class GameOfLifeRuleSet(Vector dimension)
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private int CountLivingNeighbors(PlayGround playGround, Vector position)
+    private int CountLivingNeighbors(SimplePlayGround playGround, Vector position)
     {
         int liveNeighbors = 0;
     
@@ -68,7 +58,7 @@ public sealed class GameOfLifeRuleSet(Vector dimension)
         {
             var neighbor = new Vector(position.X + dx, position.Y + dy);
     
-            if (IsWithinBounds(neighbor) && playGround.GetCell(neighbor).Type == CellType.Solid)
+            if (IsWithinBounds(neighbor) && playGround.GetState(neighbor))
             {
                 liveNeighbors++;
                 if (liveNeighbors == 4)

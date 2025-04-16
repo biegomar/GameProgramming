@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using CellularAutomata.Cells;
+using CellularAutomata.PlayGrounds;
 
 namespace CellularAutomata.MaterialFlow;
 
@@ -9,79 +10,78 @@ public sealed class SandRuleSet(Vector dimension)
     private const CellBrightness Empty = CellBrightness.Empty;
     private readonly Random random = new ();
 
-    public CellBrightness ApplyRules(PlayGround playGround, Vector position)
-    {
-        // var cellState = playGround[position];
-        //
-        // var pushCellNeighbors = GetPushCellNeighboursState(playGround, position);
-        //
-        // // First look at a cell with state - so we push the grain.
-        //
-        // if (IsSand(cellState))
-        // {
-        //     if (pushCellNeighbors.Bottom == Empty)
-        //     {
-        //         return Empty;
-        //     }
-        //
-        //     if (pushCellNeighbors is { BottomRight: Empty, Right: Empty } && position.Y < playGround.Dimension.Y - 1)
-        //     {
-        //         if (pushCellNeighbors is { BottomLeft: Empty, Left: Empty } && !playGround.IsProcessedRight(new Vector(position.X - 2, position.Y)) && position.Y < playGround.Dimension.Y - 1)
-        //         {
-        //             if (WillMoveRight())
-        //             {
-        //                 playGround.MarkAsProcessedRight(position); 
-        //             }
-        //             else
-        //             {
-        //                 playGround.MarkAsProcessedLeft(position);
-        //             }
-        //             return Empty;
-        //         }
-        //         
-        //         playGround.MarkAsProcessedRight(position);
-        //         return Empty;
-        //     }
-        //     
-        //     if (pushCellNeighbors is { BottomLeft: Empty, Left: Empty } && !playGround.IsProcessedRight(new Vector(position.X - 2, position.Y)) && position.Y < playGround.Dimension.Y - 1)
-        //     {
-        //         playGround.MarkAsProcessedLeft(position);
-        //         return Empty;
-        //     }
-        //     
-        //     return cellState;
-        // }
-        //
-        // if (IsSolid(cellState))
-        // {
-        //     return Solid;
-        // }
-        //
-        // // We are sure. That cell is empty. Now we pull the grain.
-        //
-        // var topRowNeighbors = GetTopRowNeighborsState(playGround, position);
-        //
-        // // Prio 1: grain above me
-        // if (IsSand(topRowNeighbors.Top))
-        // {
-        //     return topRowNeighbors.Top;
-        // }
-        //
-        // if (playGround.IsProcessedRight(new Vector(position.X - 1, position.Y - 1)))
-        // {
-        //     return topRowNeighbors.TopLeft;
-        // }
-        //
-        // if (playGround.IsProcessedLeft(new Vector(position.X + 1, position.Y - 1)))
-        // {
-        //     return topRowNeighbors.TopRight;
-        // }
-        //
-        // return Empty;
-        return Empty;
-    }
+    // public CellBrightness ApplyRules(PlayGround playGround, Vector position)
+    // {
+    //     var cellState = playGround[position];
+    //     
+    //     var pushCellNeighbors = GetPushCellNeighboursState(playGround, position);
+    //     
+    //     // First look at a cell with state - so we push the grain.
+    //     
+    //     if (IsSand(cellState))
+    //     {
+    //         if (pushCellNeighbors.Bottom == Empty)
+    //         {
+    //             return Empty;
+    //         }
+    //     
+    //         if (pushCellNeighbors is { BottomRight: Empty, Right: Empty } && position.Y < playGround.Dimension.Y - 1)
+    //         {
+    //             if (pushCellNeighbors is { BottomLeft: Empty, Left: Empty } && !playGround.IsProcessedRight(new Vector(position.X - 2, position.Y)) && position.Y < playGround.Dimension.Y - 1)
+    //             {
+    //                 if (WillMoveRight())
+    //                 {
+    //                     playGround.MarkAsProcessedRight(position); 
+    //                 }
+    //                 else
+    //                 {
+    //                     playGround.MarkAsProcessedLeft(position);
+    //                 }
+    //                 return Empty;
+    //             }
+    //             
+    //             playGround.MarkAsProcessedRight(position);
+    //             return Empty;
+    //         }
+    //         
+    //         if (pushCellNeighbors is { BottomLeft: Empty, Left: Empty } && !playGround.IsProcessedRight(new Vector(position.X - 2, position.Y)) && position.Y < playGround.Dimension.Y - 1)
+    //         {
+    //             playGround.MarkAsProcessedLeft(position);
+    //             return Empty;
+    //         }
+    //         
+    //         return cellState;
+    //     }
+    //     
+    //     if (IsSolid(cellState))
+    //     {
+    //         return Solid;
+    //     }
+    //     
+    //     // We are sure. That cell is empty. Now we pull the grain.
+    //     
+    //     var topRowNeighbors = GetTopRowNeighborsState(playGround, position);
+    //     
+    //     // Prio 1: grain above me
+    //     if (IsSand(topRowNeighbors.Top))
+    //     {
+    //         return topRowNeighbors.Top;
+    //     }
+    //     
+    //     if (playGround.IsProcessedRight(new Vector(position.X - 1, position.Y - 1)))
+    //     {
+    //         return topRowNeighbors.TopLeft;
+    //     }
+    //     
+    //     if (playGround.IsProcessedLeft(new Vector(position.X + 1, position.Y - 1)))
+    //     {
+    //         return topRowNeighbors.TopRight;
+    //     }
+    //     
+    //     return Empty;
+    // }
 
-    public MaterialMovement? ApplyMaterialRules(PlayGround playGround, Vector position)
+    public MaterialMovement? ApplyRules(PlayGround playGround, Vector position)
     {
         var cell = playGround.GetCell(position);
 
