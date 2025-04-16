@@ -4,7 +4,7 @@ namespace CellularAutomata.Wolfram;
 
 public sealed class AutomataWolfram
 {
-    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, IRuleSet ruleSet, int row, int maxDegreeOfParallelism)
+    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, WolframRuleSet ruleSet, int row, int maxDegreeOfParallelism)
     {
         if (row >= initialPlayGround.Dimension.Y - 1 || row < 0)
         {

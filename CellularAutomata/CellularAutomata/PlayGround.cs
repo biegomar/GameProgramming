@@ -25,12 +25,6 @@ public sealed class PlayGround : IPlayGround
         Initialize(cellFactory);
     }
     
-    public CellBrightness this[Vector position]
-    {
-        get => Cells[this.GetIndex(position)].Brightness;
-        set => Cells[this.GetIndex(position)].Brightness = value;
-    }
-    
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Cell GetCell(Vector position)
     {
@@ -40,6 +34,16 @@ public sealed class PlayGround : IPlayGround
     public void SetCell(Vector position, Cell cell)
     {
         Cells[this.GetIndex(position)] = cell;
+    }
+
+    public CellType GetCellType(Vector position)
+    {
+        return Cells[this.GetIndex(position)].Type;
+    }
+
+    public void SetCellType(Vector position, CellType cellType)
+    {
+        Cells[this.GetIndex(position)].Type = cellType;
     }
 
     private void Initialize(Func<int, int, Cell>? cellFactory = null)

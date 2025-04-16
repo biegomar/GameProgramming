@@ -5,7 +5,7 @@ using CellularAutomata.MaterialFlow;
 
 namespace CellularAutomata.GameOfLive;
 
-public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
+public sealed class GameOfLifeRuleSet(Vector dimension) 
 {
     private readonly Random random = new ();
     
@@ -16,13 +16,13 @@ public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
         ( 1, -1), ( 1, 0), ( 1, 1),
     };
     
-    public CellBrightness ApplyRules(IPlayGround playGround, Vector position)
+    public CellType ApplyRules(IPlayGround playGround, Vector position)
     {
-        var cellState = playGround[position];
+        var cellType = playGround.GetCellType(position);
         
         var liveNeighbors = CountLivingNeighbors(playGround, position);
         
-        return liveNeighbors == 3 || (cellState == CellBrightness.Solid && liveNeighbors == 2) ? CellBrightness.Solid : CellBrightness.Empty;
+        return liveNeighbors == 3 || (cellType == CellType.Solid && liveNeighbors == 2) ? CellType.Solid : CellType.Empty;
     }
 
     public MaterialMovement? ApplyMaterialRules(IPlayGround playGround, Vector position)
@@ -47,7 +47,7 @@ public sealed class GameOfLifeRuleSet(Vector dimension) : IRuleSet
             for (var y = startY; y <= endY; y++)
             {
                 var newPos = new Vector(x, y);
-                if (IsWithinBounds(newPos) && playGround[newPos] == CellBrightness.Empty)
+                if (IsWithinBounds(newPos) && playGround.GetCell(newPos).Type == CellType.Empty)
                 {
                     if (random.NextDouble() < probability)
                     {
