@@ -4,7 +4,7 @@ using CellularAutomata.MaterialFlow;
 
 namespace CellularAutomata.NoiseGrid;
 
-public class NoiseGridRuleSet(Vector dimension) : IRuleSet
+public class NoiseGridRuleSet(Vector dimension) 
 {
     private const CellBrightness Solid = CellBrightness.Solid;
     private const CellBrightness Empty = CellBrightness.Empty;

@@ -67,13 +67,19 @@ public partial class MainWindow : Window
     
     private PlayGround playGroundBool;
     private PlayGround playGroundSand;
-    private IRuleSet ruleSet;
     private RuleSetType ruleSetType;
     
     private Automata automataBool;
+    private GameOfLifeRuleSet ruleSetBool;
+    
     private AutomataMaterialGrid automataSand;
+    private SandRuleSet ruleSetSand;
+    
     private AutomataWolfram automataWolframBool;
+    private WolframRuleSet ruleSetWolfram;
+    
     private AutomataNoiseGrid automataNoiseGrid;
+    private NoiseGridRuleSet ruleSetNoise;
     
     private CancellationTokenSource? cancellationTokenSource;
     private CancellationTokenSource? tooltipCancellationSource;
@@ -355,12 +361,12 @@ public partial class MainWindow : Window
     
     private string GetCellStateForGameOfLive(Vector cellPosition)
     {
-        return playGroundBool[cellPosition].ToString();
+        return playGroundBool.GetCellType(cellPosition).ToString();
     }
 
     private string GetCellStateFromSand(Vector cellPosition)
     {
-        return playGroundSand[cellPosition].ToString();
+        return playGroundSand.GetCellType(cellPosition).ToString();
     }
 
     private async Task ShowTooltipWithTimeout(string tooltipText)
@@ -507,7 +513,7 @@ public partial class MainWindow : Window
     {
         automataBool = new Automata(dimension);
         playGroundBool = new PlayGround(dimension);
-        ruleSet = new GameOfLifeRuleSet(dimension);
+        ruleSetBool = new GameOfLifeRuleSet(dimension);
         
         InitializeGameOfLifePattern();
     }
@@ -532,7 +538,7 @@ public partial class MainWindow : Window
     {
         automataSand = new AutomataMaterialGrid(dimension);
         playGroundSand = new PlayGround(dimension);
-        ruleSet = new SandRuleSet(dimension);
+        ruleSetSand = new SandRuleSet(dimension);
         
         InitializeSandPattern();
     }
@@ -554,7 +560,7 @@ public partial class MainWindow : Window
     {
         automataWolframBool = new AutomataWolfram();
         playGroundBool = new PlayGround(dimension);
-        ruleSet = new WolframRuleSet(cbPattern.SelectedIndex);
+        ruleSetWolfram = new WolframRuleSet(cbPattern.SelectedIndex);
         
         InitializeWolframPattern();
     }
@@ -568,7 +574,7 @@ public partial class MainWindow : Window
     {
         automataNoiseGrid = new AutomataNoiseGrid(dimension);
         playGroundBool = new PlayGround(dimension);
-        ruleSet = new NoiseGridRuleSet(dimension);
+        ruleSetNoise = new NoiseGridRuleSet(dimension);
         
         InitializeNoisePattern();
     }
@@ -715,15 +721,15 @@ public partial class MainWindow : Window
     {
         playGroundBool = type switch
         {
-            RuleSetType.GameOfLife => automataBool.NextGenerationParallel(playGroundBool,(ruleSet as GameOfLifeRuleSet)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
-            RuleSetType.Wolfram => automataWolframBool.NextGenerationParallel(playGroundBool, (ruleSet as WolframRuleSet)!, generation - 1, maxDegreeOfParallelism),
-            RuleSetType.NoiseGrid => automataNoiseGrid.NextGenerationParallel(playGroundBool, (ruleSet as NoiseGridRuleSet)!, maxDegreeOfParallelism),
+            RuleSetType.GameOfLife => automataBool.NextGenerationParallel(playGroundBool, ruleSetBool, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
+            RuleSetType.Wolfram => automataWolframBool.NextGenerationParallel(playGroundBool, ruleSetWolfram, generation - 1, maxDegreeOfParallelism),
+            RuleSetType.NoiseGrid => automataNoiseGrid.NextGenerationParallel(playGroundBool, ruleSetNoise, maxDegreeOfParallelism),
             _ => playGroundBool
         };
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.NextGenerationParallel(playGroundSand,(ruleSet as SandRuleSet)!, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
+            RuleSetType.Sand => automataSand.NextGenerationParallel(playGroundSand, ruleSetSand, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
             _ => playGroundSand
         };
     }
@@ -732,13 +738,13 @@ public partial class MainWindow : Window
     {
         playGroundBool = type switch
         {
-            RuleSetType.GameOfLife => automataBool.ApplySpawnRules(playGroundBool,(ruleSet as GameOfLifeRuleSet)!, spawnPosition, brushSize, spawnProbability),
+            RuleSetType.GameOfLife => automataBool.ApplySpawnRules(playGroundBool, ruleSetBool, spawnPosition, brushSize, spawnProbability),
             _ => playGroundBool
         };
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.ApplySpawnRules(playGroundSand,(ruleSet as SandRuleSet)!, spawnPosition, brushSize, spawnProbability),
+            RuleSetType.Sand => automataSand.ApplySpawnRules(playGroundSand, ruleSetSand, spawnPosition, brushSize, spawnProbability),
             _ => playGroundSand
         };
     }

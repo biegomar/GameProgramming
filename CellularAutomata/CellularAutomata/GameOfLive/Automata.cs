@@ -8,7 +8,7 @@ public sealed class Automata(Vector dimension)
 {
     private PlayGround nextGenerationPlayGround = new(dimension);
 
-    public PlayGround NextGeneration(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize)
+    public PlayGround NextGeneration(PlayGround initialPlayGround, GameOfLifeRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize)
     {
         InitializeNextGenerationPlayGround(initialPlayGround, 16);
         for (var row = 0; row < initialPlayGround.Dimension.Y; row++)
@@ -33,7 +33,7 @@ public sealed class Automata(Vector dimension)
         return initialPlayGround;
     }
     
-    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, IRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize, int maxDegreeOfParallelism)
+    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, GameOfLifeRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize, int maxDegreeOfParallelism)
     {
         InitializeNextGenerationPlayGround(initialPlayGround, maxDegreeOfParallelism);
         
@@ -72,7 +72,7 @@ public sealed class Automata(Vector dimension)
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public PlayGround ApplySpawnRules(PlayGround playGround, IRuleSet ruleSet, Vector spawnPosition, Vector brushSize, double probability = 1)
+    public PlayGround ApplySpawnRules(PlayGround playGround, GameOfLifeRuleSet ruleSet, Vector spawnPosition, Vector brushSize, double probability = 1)
     {
         return (PlayGround)ruleSet.ApplySpawnRules(playGround, spawnPosition, brushSize, probability); 
     }

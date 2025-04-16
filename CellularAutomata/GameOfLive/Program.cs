@@ -29,7 +29,7 @@ Console.CursorVisible = false;
 do
 {
     //ConsoleVisualizer.Render(playGround, x => x ? 'X' : ' ');
-    ConsoleVisualizer.RenderWithColors(playGround, x => x == CellBrightness.Solid ? ConsoleColor.Green : ConsoleColor.Black);
+    ConsoleVisualizer.RenderWithColors(playGround, x => x == CellType.Solid ? ConsoleColor.Green : ConsoleColor.Black);
     playGround = automataBool.NextGeneration(playGround, ruleSet, false, spawnPosition, brushSize);
     Thread.Sleep(250);
     

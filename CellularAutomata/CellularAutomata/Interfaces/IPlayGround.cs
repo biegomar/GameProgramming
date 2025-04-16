@@ -6,9 +6,11 @@ public interface IPlayGround
 {
     Vector Dimension { get; }
     
-    CellBrightness this[Vector position] { get; set; }
-    
     Cell GetCell(Vector position);
     
     void SetCell(Vector position, Cell cell);
+    
+    CellType GetCellType(Vector position);
+    
+    void SetCellType(Vector position, CellType cellType);
 }

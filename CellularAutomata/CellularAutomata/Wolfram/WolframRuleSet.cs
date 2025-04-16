@@ -5,7 +5,7 @@ using CellularAutomata.MaterialFlow;
 
 namespace CellularAutomata.Wolfram;
 
-public sealed class WolframRuleSet : IRuleSet
+public sealed class WolframRuleSet 
 {
     private readonly int[] wolframRule = new int[8];
     
@@ -17,9 +17,9 @@ public sealed class WolframRuleSet : IRuleSet
     public CellBrightness ApplyRules(IPlayGround playGround, Vector position)
     {
         var (leftState, rightState) = GetNeighboursState(playGround, position);
-        var cellState = playGround[position] != CellBrightness.Empty;
+        var cellType = playGround.GetCellType(position) != CellType.Empty;
         
-        int ruleIndex = (leftState ? 4 : 0) | (cellState ? 2 : 0) | (rightState ? 1 : 0);
+        int ruleIndex = (leftState ? 4 : 0) | (cellType ? 2 : 0) | (rightState ? 1 : 0);
 
         return wolframRule[ruleIndex] == 1 ? CellBrightness.Solid : CellBrightness.Empty;
     }

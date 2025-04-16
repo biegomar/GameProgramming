@@ -7,7 +7,7 @@ public class AutomataNoiseGrid(Vector dimension)
 {
     private PlayGround nextGenerationPlayGround = new(dimension);
 
-    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, IRuleSet ruleSet, int maxDegreeOfParallelism)
+    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, NoiseGridRuleSet ruleSet, int maxDegreeOfParallelism)
     {
         var parallelOptions = new ParallelOptions()
         {

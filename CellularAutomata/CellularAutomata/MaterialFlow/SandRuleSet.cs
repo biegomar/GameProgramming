@@ -5,7 +5,7 @@ using CellularAutomata.Interfaces;
 
 namespace CellularAutomata.MaterialFlow;
 
-public sealed class SandRuleSet(Vector dimension) : IRuleSet
+public sealed class SandRuleSet(Vector dimension)
 {
     private const CellBrightness Solid = CellBrightness.Solid;
     private const CellBrightness Empty = CellBrightness.Empty;
