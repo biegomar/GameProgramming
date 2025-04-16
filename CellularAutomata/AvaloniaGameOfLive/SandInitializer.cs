@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using CellularAutomata;
 using CellularAutomata.Cells;
-using CellularAutomata.Interfaces;
 
 namespace AvaloniaGameOfLive;
 
@@ -32,7 +31,7 @@ public static class SandInitializer
         });
     }
     
-    public static void GenerateSandHourglass(IPlayGround playground)
+    public static void GenerateSandHourglass(PlayGround playground)
     {
         var dimension = playground.Dimension;
         var width = dimension.X;

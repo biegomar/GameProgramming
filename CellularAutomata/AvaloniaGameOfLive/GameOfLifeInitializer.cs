@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Concurrent;
-using System.Linq;
 using System.Threading.Tasks;
 using CellularAutomata;
 using CellularAutomata.Cells;
-using CellularAutomata.Interfaces;
 
 namespace AvaloniaGameOfLive;
 
@@ -36,14 +34,14 @@ public static class GameOfLifeInitializer
         
     }
 
-    public static void PrepareFreestyle(IPlayGround playground)
+    public static void PrepareFreestyle(PlayGround playground)
     {
         AddBlinker(playground, new Vector(4, 4));
         AddBlinker(playground, new Vector(8, 4));
         AddGlider(playground, new Vector(4, 8));
     }
 
-    public static void AddCheckerboard(IPlayGround playground)
+    public static void AddCheckerboard(PlayGround playground)
     {
         for (int y = 0; y < playground.Dimension.Y; y++)
         {
@@ -51,7 +49,7 @@ public static class GameOfLifeInitializer
         }
     }
     
-    private static void AddCheckerLine(IPlayGround playground, int row)
+    private static void AddCheckerLine(PlayGround playground, int row)
     {
         for (int x = 0; x < playground.Dimension.X; x++)
         {
@@ -61,13 +59,13 @@ public static class GameOfLifeInitializer
         } 
     }
 
-    public static void AddSingleCell(IPlayGround playground, Vector position)
+    public static void AddSingleCell(PlayGround playground, Vector position)
     {
         playground.SetCell(new Vector(position.X, position.Y), new Cell(CellType.Solid, CellBrightness.Solid));
     }
     
     // **Muster 1: Blinker (kleiner Oszillator)**
-    public static void AddBlinker(IPlayGround playground, Vector startPosition)
+    public static void AddBlinker(PlayGround playground, Vector startPosition)
     { 
         playground.SetCell(new Vector(startPosition.X, startPosition.Y), new Cell(CellType.Solid, CellBrightness.Solid));
         playground.SetCell(new Vector(startPosition.X + 1, startPosition.Y), new Cell(CellType.Solid, CellBrightness.Solid));
@@ -75,7 +73,7 @@ public static class GameOfLifeInitializer
     }
 
     // **Muster 2: Glider (bewegliches Muster)**
-    public static void AddGlider(IPlayGround playground, Vector startPosition)
+    public static void AddGlider(PlayGround playground, Vector startPosition)
     {
         playground.SetCell(new Vector(startPosition.X + 2, startPosition.Y), new Cell(CellType.Solid, CellBrightness.Solid));
         playground.SetCell(new Vector(startPosition.X, startPosition.Y + 1), new Cell(CellType.Solid, CellBrightness.Solid));
@@ -85,7 +83,7 @@ public static class GameOfLifeInitializer
     }
 
     // **Muster 3: Toad (größerer Oszillator)**
-    public static void AddToad(IPlayGround playground, Vector startPosition)
+    public static void AddToad(PlayGround playground, Vector startPosition)
     {
         playground.SetCell(new Vector(startPosition.X + 1, startPosition.Y), new Cell(CellType.Solid, CellBrightness.Solid));
         playground.SetCell(new Vector(startPosition.X + 2, startPosition.Y), new Cell(CellType.Solid, CellBrightness.Solid));
@@ -96,7 +94,7 @@ public static class GameOfLifeInitializer
     }
 
     // **Muster 4: Block (stabiler Zustand)**
-    public static void AddBlock(IPlayGround playground, Vector startPosition)
+    public static void AddBlock(PlayGround playground, Vector startPosition)
     {
         playground.SetCell(new Vector(startPosition.X, startPosition.Y), new Cell(CellType.Solid, CellBrightness.Solid));
         playground.SetCell(new Vector(startPosition.X + 1, startPosition.Y), new Cell(CellType.Solid, CellBrightness.Solid));
@@ -105,7 +103,7 @@ public static class GameOfLifeInitializer
     }
 
     // **Muster 5: Beacon (kleiner oszillierender Zustand)**
-    public static void AddBeacon(IPlayGround playground, Vector startPosition)
+    public static void AddBeacon(PlayGround playground, Vector startPosition)
     {
         // Oberer linker Block
         playground.SetCell(new Vector(startPosition.X, startPosition.Y), new Cell(CellType.Solid, CellBrightness.Solid));

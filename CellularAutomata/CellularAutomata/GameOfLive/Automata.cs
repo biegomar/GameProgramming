@@ -1,6 +1,5 @@
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
-using CellularAutomata.Interfaces;
 
 namespace CellularAutomata.GameOfLive;
 
