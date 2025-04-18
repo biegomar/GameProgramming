@@ -47,6 +47,9 @@ public static class SkiaVisualizer
         var dimensionY = playGround.Dimension.Y;
         var cellWidth = cellSize.X;
         var cellHeight = cellSize.Y;
+        var halfCellHeight = cellHeight / 2;
+        var halfCellWidth = cellWidth / 2;
+
     
         ParallelOptions parallelOptions = new ParallelOptions
         {
@@ -61,7 +64,7 @@ public static class SkiaVisualizer
                 if (color == emptyColor)
                     continue;
     
-                var point = new SKPoint(x * cellHeight, y * cellWidth);
+                var point = new SKPoint(x * cellHeight + halfCellHeight, y * cellWidth + halfCellWidth);
                 colorBuckets.GetOrAdd(color, _ => new ConcurrentBag<SKPoint>()).Add(point);
             }
         });
@@ -71,32 +74,13 @@ public static class SkiaVisualizer
         paint.IsAntialias = false;
         paint.Style = SKPaintStyle.Fill;
         paint.StrokeCap = SKStrokeCap.Square;
-        paint.StrokeWidth = cellSize.X;
+        paint.StrokeWidth = cellWidth;
     
         foreach (var (color, pointList) in colorBuckets)
         {
             paint.Color = color;
             canvas.DrawPoints(SKPointMode.Points, pointList.ToArray(), paint);
         }
-
-        
-        // Parallel.ForEach(colorBuckets, parallelOptions, bucket =>
-        // {
-        //     var (color, pointList) = bucket;
-        //
-        //     // Lokaler Paint für jeden Thread
-        //     var localPaint = new SKPaint
-        //     {
-        //         IsAntialias = false,
-        //         Style = SKPaintStyle.Fill,
-        //         StrokeCap = SKStrokeCap.Square,
-        //         Color = color
-        //     };
-        //
-        //     canvas.DrawPoints(SKPointMode.Points, pointList.ToArray(), localPaint);
-        // });
-
-
     }
     
     private static void RenderSimplePixel(SimplePlayGround playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, int maxDegreeOfParallelism, Func<bool, SKColor> stateToColor)
