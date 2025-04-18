@@ -99,6 +99,7 @@ public sealed class SandRuleSet(Vector dimension)
             
             var rightCell = GetCell(playGround, new Vector(position.X + 1, position.Y));
             var rightBottomCell = GetCell(playGround, new Vector(position.X + 1, position.Y + 1));
+            var rightOpponentCell = GetCell(playGround, new Vector(position.X + 2, position.Y));
             var leftCell = GetCell(playGround, new Vector(position.X - 1, position.Y));
             var leftBottomCell = GetCell(playGround, new Vector(position.X - 1, position.Y + 1));
             var leftOpponentCell = GetCell(playGround, new Vector(position.X - 2, position.Y));
@@ -109,20 +110,33 @@ public sealed class SandRuleSet(Vector dimension)
                 // the left way as well
                 if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || playGround.IsMarkedCell(new Vector(position.X - 2, position.Y))))
                 {
-                    // pseudo-random choice
-                    if (WillMoveRight())
+                    // move by 80%
+                    if (WillMoveAtAll(50))
                     {
-                        // go right
-                        return new MaterialMovement(new Material(position, new Cell(Empty, CellBrightness.Empty)), new Material(new Vector(position.X + 1, position.Y + 1), cell with { }));        
+                        // pseudo-random choice
+                        if (WillMoveRight())
+                        {
+                            // go right
+                            return new MaterialMovement(new Material(position, new Cell(Empty, CellBrightness.Empty)), new Material(new Vector(position.X + 1, position.Y + 1), cell with { }));        
+                        }
+                    
+                        // go left
+                        playGround.MarkCell(position);
+                        return new MaterialMovement(new Material(position, new Cell(Empty, CellBrightness.Empty)), new Material(new Vector(position.X - 1, position.Y + 1), cell with { }));    
                     }
                     
-                    // go left
-                    playGround.MarkCell(position);
-                    return new MaterialMovement(new Material(position, new Cell(Empty, CellBrightness.Empty)), new Material(new Vector(position.X - 1, position.Y + 1), cell with { }));
+                    // dont move
+                    return DontMove(position, cell);
+                }
+
+                // go right by 90%
+                if (WillMoveAtAll(50))
+                {
+                    return new MaterialMovement(new Material(position, new Cell(Empty, CellBrightness.Empty)), new Material(new Vector(position.X + 1, position.Y + 1), cell with { }));    
                 }
                 
-                // go right
-                return new MaterialMovement(new Material(position, new Cell(Empty, CellBrightness.Empty)), new Material(new Vector(position.X + 1, position.Y + 1), cell with { }));
+                // dont move
+                return DontMove(position, cell);
             }
 
             if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || playGround.IsMarkedCell(new Vector(position.X - 2, position.Y))))
@@ -133,7 +147,8 @@ public sealed class SandRuleSet(Vector dimension)
             }
         }
 
-        return new MaterialMovement(new Material(position, cell with {}), null);
+        // dont move
+        return DontMove(position, cell);
     }
 
     public PlayGround ApplySpawnRules(PlayGround playGround, Vector spawnPosition, Vector brushSize, double probability)
@@ -162,9 +177,16 @@ public sealed class SandRuleSet(Vector dimension)
         return playGround;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private Cell GetCell(PlayGround playGround, Vector position)
     {
         return IsWithinBounds(position) ? playGround.GetCell(position) : new Cell(Solid, CellBrightness.Solid);
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private MaterialMovement DontMove(Vector position, Cell cell)
+    {
+        return new MaterialMovement(new Material(position, cell with {}), null);
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -205,4 +227,11 @@ public sealed class SandRuleSet(Vector dimension)
     {
         return (Environment.TickCount & 1) == 0;
     }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool WillMoveAtAll(int probability)
+    {
+        return (Environment.TickCount % 100) < probability;
+    }
+
 }

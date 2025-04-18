@@ -730,7 +730,7 @@ public partial class MainWindow : Window
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.NextGeneration(playGroundSand, ruleSetSand, isSpawnActive, spawnPosition, brushSize),
+            RuleSetType.Sand => automataSand.NextGenerationParallel(playGroundSand, ruleSetSand, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
             _ => playGroundSand
         };
     }
