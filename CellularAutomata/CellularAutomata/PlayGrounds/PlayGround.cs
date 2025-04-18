@@ -65,7 +65,7 @@ public sealed class PlayGround
 
     private void Initialize(Func<int, int, Cell>? cellFactory = null)
     {
-        const CellBrightness cellBrightness = CellBrightness.Empty;
+        const CellColor cellBrightness = CellColor.Empty;
         const CellType cellType = CellType.Empty;
 
         for (ushort x = 0; x < this.dimensionX; x++)

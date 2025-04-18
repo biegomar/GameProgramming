@@ -47,12 +47,12 @@ public sealed class SandRuleSet(Vector dimension, uint seed = 100)
                         if (WillMoveRight())
                         {
                             // go right
-                            return new MaterialMovement(new Material(position, new Cell(Empty, CellBrightness.Empty)), new Material(new Vector(position.X + 1, position.Y + 1), cell with { }));        
+                            return new MaterialMovement(new Material(position, new Cell(Empty, CellColor.Empty)), new Material(new Vector(position.X + 1, position.Y + 1), cell with { }));        
                         }
                     
                         // go left
                         playGround.MarkCell(position);
-                        return new MaterialMovement(new Material(position, new Cell(Empty, CellBrightness.Empty)), new Material(new Vector(position.X - 1, position.Y + 1), cell with { }));    
+                        return new MaterialMovement(new Material(position, new Cell(Empty, CellColor.Empty)), new Material(new Vector(position.X - 1, position.Y + 1), cell with { }));    
                     }
                     
                     // dont move
@@ -62,7 +62,7 @@ public sealed class SandRuleSet(Vector dimension, uint seed = 100)
                 // go right by 90%
                 if (WillMoveAtAll(50))
                 {
-                    return new MaterialMovement(new Material(position, new Cell(Empty, CellBrightness.Empty)), new Material(new Vector(position.X + 1, position.Y + 1), cell with { }));    
+                    return new MaterialMovement(new Material(position, new Cell(Empty, CellColor.Empty)), new Material(new Vector(position.X + 1, position.Y + 1), cell with { }));    
                 }
                 
                 // dont move
@@ -73,7 +73,7 @@ public sealed class SandRuleSet(Vector dimension, uint seed = 100)
             {
                 // go left
                 playGround.MarkCell(position);
-                return new MaterialMovement(new Material(position, new Cell(Empty, CellBrightness.Empty)), new Material(new Vector(position.X - 1, position.Y + 1), cell with { }));
+                return new MaterialMovement(new Material(position, new Cell(Empty, CellColor.Empty)), new Material(new Vector(position.X - 1, position.Y + 1), cell with { }));
             }
         }
 
@@ -98,7 +98,7 @@ public sealed class SandRuleSet(Vector dimension, uint seed = 100)
                 {
                     if (random.NextDouble() < probability)
                     {
-                        playGround.SetCell(new Vector(x, y), new Cell(Sand, ShadeProvider.GenerateRandomBrightness(CellType.Sand)));   
+                        playGround.SetCell(new Vector(x, y), new Cell(Sand, ShadeProvider.GenerateRandomColor(CellType.Sand)));   
                     }
                 }
             }    
@@ -110,7 +110,7 @@ public sealed class SandRuleSet(Vector dimension, uint seed = 100)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private Cell GetCell(PlayGround playGround, Vector position)
     {
-        return IsWithinBounds(position) ? playGround.GetCell(position) : new Cell(Solid, CellBrightness.Solid);
+        return IsWithinBounds(position) ? playGround.GetCell(position) : new Cell(Solid, CellColor.Solid);
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -6,8 +6,8 @@ namespace CellularAutomata.NoiseGrid;
 
 public class NoiseGridRuleSet(Vector dimension) 
 {
-    private const CellBrightness Solid = CellBrightness.Solid;
-    private const CellBrightness Empty = CellBrightness.Empty;
+    private const CellColor Solid = CellColor.Solid;
+    private const CellColor Empty = CellColor.Empty;
     
     private static readonly (int DX, int DY)[] NeighborOffsets = 
     {

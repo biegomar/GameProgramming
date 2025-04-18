@@ -750,24 +750,39 @@ public partial class MainWindow : Window
         };
     }
     
-    private SKColor ChooseSandColor(CellBrightness brightness)
-    {
-        return brightness switch
+    private SKColor ChooseSandColor(CellColor color) =>
+        color switch
         {
-            CellBrightness.Empty => emptyColor,
-            CellBrightness.Solid => SKColors.Gray,
-            CellBrightness.GoldenSand => new SKColor(210, 168, 105), 
-            CellBrightness.DesertGold => new SKColor(214, 171, 107),
-            CellBrightness.Wheatfield => new SKColor(206, 165, 103),
-            CellBrightness.SaharaDune => new SKColor(212, 170, 106),   
-            CellBrightness.HoneyBeige => new SKColor(208, 166, 104), 
-            CellBrightness.ToastedAlmond => new SKColor(207, 166, 104), 
-            CellBrightness.AmberGrain => new SKColor(216, 173, 108), 
-            CellBrightness.ClayOchre => new SKColor(209, 167, 104), 
-            CellBrightness.GoldenWheat => new SKColor(213, 170, 106), 
-            CellBrightness.SunlitSandstone => new SKColor(211, 169, 106),
+            CellColor.Empty => emptyColor,
+            CellColor.Solid => SKColors.Gray,
+            CellColor.GoldenSand => new SKColor(210, 168, 105), 
+            CellColor.DesertGold => new SKColor(214, 171, 107),
+            CellColor.Wheatfield => new SKColor(206, 165, 103),
+            CellColor.SaharaDune => new SKColor(212, 170, 106),   
+            CellColor.HoneyBeige => new SKColor(208, 166, 104), 
+            CellColor.ToastedAlmond => new SKColor(207, 166, 104), 
+            CellColor.AmberGrain => new SKColor(216, 173, 108), 
+            CellColor.ClayOchre => new SKColor(209, 167, 104), 
+            CellColor.GoldenWheat => new SKColor(213, 170, 106), 
+            CellColor.SunlitSandstone => new SKColor(211, 169, 106),
             _ => emptyColor
         };
 
-    }
+    private SKColor ChooseWaterColor(CellColor color) =>
+        color switch
+        {
+            CellColor.Empty => emptyColor,
+            CellColor.Solid => SKColors.Gray,
+            CellColor.CoolBlue => new SKColor(81, 130, 203, 255), 
+            CellColor.OceanBlue => new SKColor(87, 139, 217, 255), 
+            CellColor.DeepSky => new SKColor(80, 128, 200, 255), 
+            CellColor.CrystalLake => new SKColor(83, 133, 208, 255), 
+            CellColor.SurfBlue => new SKColor(84, 134, 209, 255), 
+            CellColor.BlueCurrent => new SKColor(82, 132, 206, 255), 
+            CellColor.SplashBlue => new SKColor(89, 142, 222, 255), 
+            CellColor.AzureDrift => new SKColor(88, 140, 219, 255), 
+            CellColor.Wavestone => new SKColor(85, 136, 212, 255), 
+            CellColor.RippleBlue => new SKColor(81, 129, 202, 255), 
+            _ => emptyColor
+        };
 }

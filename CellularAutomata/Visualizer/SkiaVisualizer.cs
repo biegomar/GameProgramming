@@ -8,7 +8,7 @@ namespace Visualizer;
 
 public static class SkiaVisualizer
 {
-    public static void Render(PlayGround playGround, Vector cellSize, SKCanvas canvas, int renderEngineIndex, SKColor emptyColor, int maxDegreeOfParallelism, Func<CellType, CellBrightness, SKColor> typeToColor)
+    public static void Render(PlayGround playGround, Vector cellSize, SKCanvas canvas, int renderEngineIndex, SKColor emptyColor, int maxDegreeOfParallelism, Func<CellType, CellColor, SKColor> typeToColor)
     {
         switch (renderEngineIndex)
         {
@@ -40,7 +40,7 @@ public static class SkiaVisualizer
         }
     }
     
-    private static void RenderPixel(PlayGround playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, int maxDegreeOfParallelism, Func<CellType, CellBrightness, SKColor> typeToColor)
+    private static void RenderPixel(PlayGround playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, int maxDegreeOfParallelism, Func<CellType, CellColor, SKColor> typeToColor)
     {
         var colorBuckets = new ConcurrentDictionary<SKColor, ConcurrentBag<SKPoint>>();
         var dimensionX = playGround.Dimension.X;
@@ -60,7 +60,7 @@ public static class SkiaVisualizer
         {
             for (var y = 0; y < dimensionY; y++)
             {
-                var color = typeToColor(playGround.GetCell(new Vector(x, y)).Type, playGround.GetCell(new Vector(x, y)).Brightness);
+                var color = typeToColor(playGround.GetCell(new Vector(x, y)).Type, playGround.GetCell(new Vector(x, y)).Color);
                 if (color == emptyColor)
                     continue;
     
@@ -122,7 +122,7 @@ public static class SkiaVisualizer
         }
     }
     
-    private static void RenderAsRectangles(PlayGround playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, int maxDegreeOfParallelism, Func<CellType, CellBrightness, SKColor> typeToColor)
+    private static void RenderAsRectangles(PlayGround playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, int maxDegreeOfParallelism, Func<CellType, CellColor, SKColor> typeToColor)
     {
         using var paint = new SKPaint();
         var cellWidth = cellSize.X;
@@ -140,7 +140,7 @@ public static class SkiaVisualizer
                 var right = left + cellWidth;
 
                 var cell = playGround.GetCell(new Vector(column, row));
-                var color = typeToColor(cell.Type, cell.Brightness);
+                var color = typeToColor(cell.Type, cell.Color);
                 if (color == emptyColor) continue;
             
                 paint.Color = color;
