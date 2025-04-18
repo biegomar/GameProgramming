@@ -71,7 +71,7 @@ public partial class MainWindow : Window
     private GameOfLifeRuleSet ruleSetBool;
     
     private AutomataMaterialGrid automataSand;
-    private SandRuleSet ruleSetSand;
+    private MaterialRuleSet ruleSetMaterial;
     
     private AutomataWolfram automataWolframBool;
     private WolframRuleSet ruleSetWolfram;
@@ -541,7 +541,7 @@ public partial class MainWindow : Window
     {
         automataSand = new AutomataMaterialGrid(dimension);
         playGroundSand = new PlayGround(dimension);
-        ruleSetSand = new SandRuleSet(dimension);
+        ruleSetMaterial = new MaterialRuleSet(dimension);
         
         InitializeSandPattern();
     }
@@ -730,7 +730,7 @@ public partial class MainWindow : Window
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.NextGenerationParallel(playGroundSand, ruleSetSand, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
+            RuleSetType.Sand => automataSand.NextGenerationParallel(playGroundSand, ruleSetMaterial, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
             _ => playGroundSand
         };
     }
@@ -745,7 +745,7 @@ public partial class MainWindow : Window
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.ApplySpawnRules(playGroundSand, ruleSetSand, spawnPosition, brushSize, spawnProbability),
+            RuleSetType.Sand => automataSand.ApplySpawnRules(playGroundSand, ruleSetMaterial, spawnPosition, brushSize, spawnProbability),
             _ => playGroundSand
         };
     }
