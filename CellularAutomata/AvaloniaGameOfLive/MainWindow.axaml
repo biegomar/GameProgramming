@@ -100,7 +100,7 @@
                         <NumericUpDown x:Name="cellSizeSelector"
                                        Minimum="1"
                                        Maximum="64"
-                                       Value="4"
+                                       Value="1"
                                        Increment="1"
                                        Width="170"
                                        HorizontalAlignment="Right"/>
@@ -108,7 +108,7 @@
             
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12">
                         <TextBlock x:Name="lblEngine" Text="Engine" VerticalAlignment="Center" Width="75"/>
-                        <ComboBox x:Name="cbEngine" HorizontalAlignment="Right" Width="170" SelectedIndex="0">
+                        <ComboBox x:Name="cbEngine" HorizontalAlignment="Right" Width="170" SelectedIndex="1">
                             <ComboBox.Items>
                                 <ComboBoxItem Content="Rect" />
                                 <ComboBoxItem Content="Point" />
