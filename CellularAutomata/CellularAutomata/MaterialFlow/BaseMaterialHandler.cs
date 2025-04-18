@@ -1,0 +1,64 @@
+﻿using System.Runtime.CompilerServices;
+using CellularAutomata.Cells;
+using CellularAutomata.PlayGrounds;
+
+namespace CellularAutomata.MaterialFlow;
+
+public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
+{
+    private readonly PseudoRandom pseudoRandom = new (seed);
+    
+    protected const CellType Solid = CellType.Solid;
+    protected const CellType Empty = CellType.Empty;
+    protected const CellType Sand = CellType.Sand;
+
+    public abstract MaterialMovement ApplyRules(PlayGround playGround, Vector position, Cell cell);
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Cell GetCell(PlayGround playGround, Vector position)
+    {
+        return IsWithinBounds(position) ? playGround.GetCell(position) : new Cell(Solid, CellColor.Solid);
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsWithinBounds(Vector position )
+    {
+        return (uint)position.X < (uint)dimension.X && (uint)position.Y < (uint)dimension.Y;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected MaterialMovement DontMove(Vector position, Cell cell)
+    {
+        return new MaterialMovement(new Material(position, cell), null);
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected bool IsSolidOrEmpty(CellType cellType)
+    {
+        return (byte)cellType <= 1;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsEmpty(CellType cellType)
+    {
+        return (byte)cellType == 0;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsSand(CellType cellType)
+    {
+        return (byte)cellType == 2;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected bool WillMoveRight()
+    {
+        return pseudoRandom.Chance(50);
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected bool WillMoveAtAll(int probability)
+    {
+        return pseudoRandom.Chance(probability);
+    }
+}
