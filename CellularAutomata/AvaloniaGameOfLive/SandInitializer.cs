@@ -26,7 +26,7 @@ public static class SandInitializer
                 for (var y = 0; y < playground.Dimension.Y; y++)
                 {
                     var state = random.NextDouble() < aliveProbability;
-                    playground.SetCell(new Vector(x, y), new Cell(state ? CellType.Sand : CellType.Empty, state ? GenerateRandomBrightness() : CellBrightness.Empty));
+                    playground.SetCell(new Vector(x, y), new Cell(state ? CellType.Sand : CellType.Empty, state ? ShadeProvider.GenerateRandomBrightness(CellType.Sand) : CellBrightness.Empty));
                 }
             }
         });
@@ -52,11 +52,11 @@ public static class SandInitializer
                 }
                 else if (IsTopSand(x, y, midX, midY))
                 {
-                    playground.SetCell(new Vector(x, y), new Cell(CellType.Sand, GenerateRandomBrightness()));
+                    playground.SetCell(new Vector(x, y), new Cell(CellType.Sand, ShadeProvider.GenerateRandomBrightness(CellType.Sand)));
                 }
                 else if (IsConnection(x, y, midX, midY))
                 {
-                    playground.SetCell(new Vector(x, y), new Cell(CellType.Sand, GenerateRandomBrightness()));
+                    playground.SetCell(new Vector(x, y), new Cell(CellType.Sand, ShadeProvider.GenerateRandomBrightness(CellType.Sand)));
                 }
                 else if (IsBottomEmpty(x, y, midX, midY))
                 {
@@ -107,14 +107,5 @@ public static class SandInitializer
     private static bool IsBottomEmpty(int x, int y, int midX, int midY)
     {
         return y > midY && Math.Abs(x - midX) <= (y - midY - 1);
-    }
-    
-    private static CellBrightness GenerateRandomBrightness()
-    {
-        var random = new Random();
-        var randomValue = random.Next(2, 6);
-
-        return (CellBrightness)randomValue;
-
     }
 }

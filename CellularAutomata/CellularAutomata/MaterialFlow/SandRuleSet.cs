@@ -98,7 +98,7 @@ public sealed class SandRuleSet(Vector dimension, uint seed = 100)
                 {
                     if (random.NextDouble() < probability)
                     {
-                        playGround.SetCell(new Vector(x, y), new Cell(Sand, GetRandomSandCellState()));   
+                        playGround.SetCell(new Vector(x, y), new Cell(Sand, ShadeProvider.GenerateRandomBrightness(CellType.Sand)));   
                     }
                 }
             }    
@@ -141,15 +141,6 @@ public sealed class SandRuleSet(Vector dimension, uint seed = 100)
     private bool IsSolidOrEmpty(CellType cellType)
     {
         return (byte)cellType <= 1;
-    }
-    
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private CellBrightness GetRandomSandCellState()
-    {
-        var randomValue = random.Next(2, 6);
-
-        return (CellBrightness)randomValue;
-
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

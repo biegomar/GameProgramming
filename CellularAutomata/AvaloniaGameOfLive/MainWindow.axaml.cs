@@ -755,12 +755,19 @@ public partial class MainWindow : Window
         return brightness switch
         {
             CellBrightness.Empty => emptyColor,
-            CellBrightness.Normal => SKColors.Goldenrod,
-            CellBrightness.Dark => SKColors.DarkGoldenrod,
-            CellBrightness.Light => SKColors.LightGoldenrodYellow,
-            CellBrightness.Medium => SKColors.Chocolate,
             CellBrightness.Solid => SKColors.Gray,
+            CellBrightness.GoldenSand => new SKColor(210, 168, 105), 
+            CellBrightness.DesertGold => new SKColor(214, 171, 107),
+            CellBrightness.Wheatfield => new SKColor(206, 165, 103),
+            CellBrightness.SaharaDune => new SKColor(212, 170, 106),   
+            CellBrightness.HoneyBeige => new SKColor(208, 166, 104), 
+            CellBrightness.ToastedAlmond => new SKColor(207, 166, 104), 
+            CellBrightness.AmberGrain => new SKColor(216, 173, 108), 
+            CellBrightness.ClayOchre => new SKColor(209, 167, 104), 
+            CellBrightness.GoldenWheat => new SKColor(213, 170, 106), 
+            CellBrightness.SunlitSandstone => new SKColor(211, 169, 106),
             _ => emptyColor
         };
+
     }
 }
