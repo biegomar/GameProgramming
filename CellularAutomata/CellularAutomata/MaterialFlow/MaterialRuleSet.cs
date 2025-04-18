@@ -30,11 +30,13 @@ public sealed class MaterialRuleSet(Vector dimension, uint seed = 100)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private MaterialMovement HandleSand(PlayGround playGround, Vector position, Cell cell)
     {
+        var emptyCell = new Cell(Empty, CellColor.Empty);
+        
         // direct way: bottom cell is free
         var bottomCell = GetCell(playGround, new Vector(position.X, position.Y + 1));
         if (bottomCell.Type == Empty)
         {
-            return new MaterialMovement(new Material(position, bottomCell with {}), new Material(new Vector(position.X, position.Y + 1), cell with {}));
+            return new MaterialMovement(new Material(position, bottomCell), new Material(new Vector(position.X, position.Y + 1), cell));
         }
             
         var rightCell = GetCell(playGround, new Vector(position.X + 1, position.Y));
@@ -56,12 +58,12 @@ public sealed class MaterialRuleSet(Vector dimension, uint seed = 100)
                     if (WillMoveRight())
                     {
                         // go right
-                        return new MaterialMovement(new Material(position, new Cell(Empty, CellColor.Empty)), new Material(new Vector(position.X + 1, position.Y + 1), cell with { }));
+                        return new MaterialMovement(new Material(position, emptyCell), new Material(new Vector(position.X + 1, position.Y + 1), cell));
                     }
                     
                     // go left
                     playGround.MarkCell(position);
-                    return new MaterialMovement(new Material(position, new Cell(Empty, CellColor.Empty)), new Material(new Vector(position.X - 1, position.Y + 1), cell with { }));    
+                    return new MaterialMovement(new Material(position, emptyCell), new Material(new Vector(position.X - 1, position.Y + 1), cell));    
                 }
                     
                 // dont move
@@ -71,7 +73,7 @@ public sealed class MaterialRuleSet(Vector dimension, uint seed = 100)
             // go right by 90%
             if (WillMoveAtAll(50))
             {
-                return new MaterialMovement(new Material(position, new Cell(Empty, CellColor.Empty)), new Material(new Vector(position.X + 1, position.Y + 1), cell with { }));
+                return new MaterialMovement(new Material(position, emptyCell), new Material(new Vector(position.X + 1, position.Y + 1), cell));
             }
                 
             // dont move
@@ -82,7 +84,7 @@ public sealed class MaterialRuleSet(Vector dimension, uint seed = 100)
         {
             // go left
             playGround.MarkCell(position);
-            return new MaterialMovement(new Material(position, new Cell(Empty, CellColor.Empty)), new Material(new Vector(position.X - 1, position.Y + 1), cell with { }));
+            return new MaterialMovement(new Material(position, emptyCell), new Material(new Vector(position.X - 1, position.Y + 1), cell));
         }
 
         return DontMove(position, cell);
