@@ -97,10 +97,15 @@ public partial class MainWindow : Window
 
     private void InitializeComponentValues()
     {
-        processorCountSelector.Maximum = Environment.ProcessorCount;
+        SetProcessorCountSelectorMax();
         SetMaxDegreeOfParallelism();
         SetInitializationProbability();
         SetSpawnProbability();
+    }
+
+    private void SetProcessorCountSelectorMax()
+    {
+        processorCountSelector.Maximum = Environment.ProcessorCount;
     }
 
     private void InitializeEventHandlers()
@@ -336,8 +341,8 @@ public partial class MainWindow : Window
         var mouseX = position.X;
         var mouseY = position.Y;
         
-        var cellX = (int)(mouseX / viewWidth * dimension.X);
-        var cellY = (int)(mouseY / viewHeight * dimension.Y);
+        var cellX = (int)Math.Floor(mouseX / viewWidth * dimension.X); 
+        var cellY = (int)Math.Floor(mouseY / viewHeight * dimension.Y);
         
         return new Vector(cellX, cellY);
     }
@@ -629,8 +634,7 @@ public partial class MainWindow : Window
                 SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b  ? this.noiseGridColor : emptyColor);
                 break;
             case RuleSetType.Sand:
-                var localSandCellStatePlayGroundArray = (playGroundSand as PlayGround)!;
-                SkiaVisualizer.Render(localSandCellStatePlayGroundArray, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, (_, b) => ChooseSandColor(b));
+                SkiaVisualizer.Render(playGroundSand, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, (_, b) => ChooseSandColor(b));
                 break;
             default:    
                 break;
@@ -726,7 +730,7 @@ public partial class MainWindow : Window
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.NextGenerationParallel(playGroundSand, ruleSetSand, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
+            RuleSetType.Sand => automataSand.NextGeneration(playGroundSand, ruleSetSand, isSpawnActive, spawnPosition, brushSize),
             _ => playGroundSand
         };
     }
