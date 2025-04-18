@@ -4,83 +4,13 @@ using CellularAutomata.PlayGrounds;
 
 namespace CellularAutomata.MaterialFlow;
 
-public sealed class SandRuleSet(Vector dimension)
+public sealed class SandRuleSet(Vector dimension, uint seed = 100)
 {
     private const CellType Solid = CellType.Solid;
     private const CellType Empty = CellType.Empty;
     private const CellType Sand = CellType.Sand;
     private readonly Random random = new ();
-
-    // public CellBrightness ApplyRules(PlayGround playGround, Vector position)
-    // {
-    //     var cellState = playGround[position];
-    //     
-    //     var pushCellNeighbors = GetPushCellNeighboursState(playGround, position);
-    //     
-    //     // First look at a cell with state - so we push the grain.
-    //     
-    //     if (IsSand(cellState))
-    //     {
-    //         if (pushCellNeighbors.Bottom == Empty)
-    //         {
-    //             return Empty;
-    //         }
-    //     
-    //         if (pushCellNeighbors is { BottomRight: Empty, Right: Empty } && position.Y < playGround.Dimension.Y - 1)
-    //         {
-    //             if (pushCellNeighbors is { BottomLeft: Empty, Left: Empty } && !playGround.IsProcessedRight(new Vector(position.X - 2, position.Y)) && position.Y < playGround.Dimension.Y - 1)
-    //             {
-    //                 if (WillMoveRight())
-    //                 {
-    //                     playGround.MarkAsProcessedRight(position); 
-    //                 }
-    //                 else
-    //                 {
-    //                     playGround.MarkAsProcessedLeft(position);
-    //                 }
-    //                 return Empty;
-    //             }
-    //             
-    //             playGround.MarkAsProcessedRight(position);
-    //             return Empty;
-    //         }
-    //         
-    //         if (pushCellNeighbors is { BottomLeft: Empty, Left: Empty } && !playGround.IsProcessedRight(new Vector(position.X - 2, position.Y)) && position.Y < playGround.Dimension.Y - 1)
-    //         {
-    //             playGround.MarkAsProcessedLeft(position);
-    //             return Empty;
-    //         }
-    //         
-    //         return cellState;
-    //     }
-    //     
-    //     if (IsSolid(cellState))
-    //     {
-    //         return Solid;
-    //     }
-    //     
-    //     // We are sure. That cell is empty. Now we pull the grain.
-    //     
-    //     var topRowNeighbors = GetTopRowNeighborsState(playGround, position);
-    //     
-    //     // Prio 1: grain above me
-    //     if (IsSand(topRowNeighbors.Top))
-    //     {
-    //         return topRowNeighbors.Top;
-    //     }
-    //     
-    //     if (playGround.IsProcessedRight(new Vector(position.X - 1, position.Y - 1)))
-    //     {
-    //         return topRowNeighbors.TopLeft;
-    //     }
-    //     
-    //     if (playGround.IsProcessedLeft(new Vector(position.X + 1, position.Y - 1)))
-    //     {
-    //         return topRowNeighbors.TopRight;
-    //     }
-    //     
-    //     return Empty;
-    // }
+    private readonly PseudoRandom pseudoRandom = new (seed);
 
     public MaterialMovement? ApplyRules(PlayGround playGround, Vector position)
     {
@@ -225,13 +155,13 @@ public sealed class SandRuleSet(Vector dimension)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool WillMoveRight()
     {
-        return (Environment.TickCount & 1) == 0;
+        return pseudoRandom.Chance(50);
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool WillMoveAtAll(int probability)
     {
-        return (Environment.TickCount % 100) < probability;
+        return pseudoRandom.Chance(probability);
     }
 
 }
