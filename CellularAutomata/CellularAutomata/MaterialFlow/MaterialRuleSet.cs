@@ -103,9 +103,9 @@ public sealed class MaterialRuleSet(Vector dimension, uint seed = 100)
             for (var y = startY; y <= endY; y++)
             {
                 var cell = GetCell(playGround, new Vector(x, y));
-                if (cell.Type == Empty)
+                if (cell.Type == Empty || type == Empty)
                 {
-                    if (random.NextDouble() < probability)
+                    if (IsWithinBounds(new Vector(x, y)) && random.NextDouble() < probability)
                     {
                         playGround.SetCell(new Vector(x, y), new Cell(type, ShadeProvider.GenerateColor(type)));   
                     }
