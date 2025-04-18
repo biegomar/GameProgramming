@@ -46,9 +46,11 @@ public partial class MainWindow : Window
     private ToolTip toolTip;
     private readonly DispatcherTimer toolTipTimer = new ();
     private bool isTooltipVisible = false;
+    
     private bool isSpawnActive = false;
     private Vector spawnPosition = new (0, 0);
-    private Vector brushSize = new Vector(10,10);
+    private Vector brushSize = new (10,10);
+    private CellType actualSpawnType = CellType.Empty;
 
     private IList<long> generationTimes;
     private IList<long> renderingTimes;
@@ -118,6 +120,7 @@ public partial class MainWindow : Window
         cbStopWatch.IsCheckedChanged += cbStopWatch_CheckedChanged;
         cbUseProbability.IsCheckedChanged += cbUseProbability_IsCheckedChanged;
         cbEngine.SelectionChanged += cbEngine_SelectedIndexChanged;
+        cbMaterial.SelectionChanged += cbMaterial_SelectedValueChanged;
         
         btnStart.Click += startGameOfLive_Click;
         btnStop.Click += btnStop_Click;
@@ -194,11 +197,21 @@ public partial class MainWindow : Window
     {
         SetBrushSize();
     }
+    
+    private void cbMaterial_SelectedValueChanged(object? sender, EventArgs e)
+    {
+        SetSpawnType();
+    }
 
     private void SetBrushSize()
     {
         var brushSquare = (int)brushSizeSelector.Value!;
         brushSize = new Vector(brushSquare, brushSquare);
+    }
+
+    private void SetSpawnType()
+    {
+        actualSpawnType = (CellType)cbMaterial.SelectedIndex;
     }
 
     private void processorCountSelector_ValueChanged(object? sender, EventArgs e)
@@ -634,7 +647,7 @@ public partial class MainWindow : Window
                 SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b  ? this.noiseGridColor : emptyColor);
                 break;
             case RuleSetType.Sand:
-                SkiaVisualizer.Render(playGroundSand, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, (_, b) => ChooseSandColor(b));
+                SkiaVisualizer.Render(playGroundSand, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, ChooseSandColor);
                 break;
             default:    
                 break;
@@ -730,7 +743,7 @@ public partial class MainWindow : Window
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.NextGenerationParallel(playGroundSand, ruleSetMaterial, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
+            RuleSetType.Sand => automataSand.NextGenerationParallel(playGroundSand, ruleSetMaterial, spawnPosition, brushSize, maxDegreeOfParallelism),
             _ => playGroundSand
         };
     }
@@ -745,7 +758,7 @@ public partial class MainWindow : Window
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.ApplySpawnRules(playGroundSand, ruleSetMaterial, spawnPosition, brushSize, spawnProbability),
+            RuleSetType.Sand => automataSand.ApplySpawnRules(playGroundSand, ruleSetMaterial, actualSpawnType, spawnPosition, brushSize, spawnProbability),
             _ => playGroundSand
         };
     }
@@ -765,14 +778,6 @@ public partial class MainWindow : Window
             CellColor.ClayOchre => new SKColor(209, 167, 104), 
             CellColor.GoldenWheat => new SKColor(213, 170, 106), 
             CellColor.SunlitSandstone => new SKColor(211, 169, 106),
-            _ => emptyColor
-        };
-
-    private SKColor ChooseWaterColor(CellColor color) =>
-        color switch
-        {
-            CellColor.Empty => emptyColor,
-            CellColor.Solid => SKColors.Gray,
             CellColor.CoolBlue => new SKColor(81, 130, 203, 255), 
             CellColor.OceanBlue => new SKColor(87, 139, 217, 255), 
             CellColor.DeepSky => new SKColor(80, 128, 200, 255), 
@@ -782,7 +787,7 @@ public partial class MainWindow : Window
             CellColor.SplashBlue => new SKColor(89, 142, 222, 255), 
             CellColor.AzureDrift => new SKColor(88, 140, 219, 255), 
             CellColor.Wavestone => new SKColor(85, 136, 212, 255), 
-            CellColor.RippleBlue => new SKColor(81, 129, 202, 255), 
+            CellColor.RippleBlue => new SKColor(81, 129, 202, 255),
             _ => emptyColor
         };
 }

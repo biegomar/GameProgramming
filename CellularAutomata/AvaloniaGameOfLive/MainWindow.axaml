@@ -26,9 +26,10 @@
                 <TextBlock x:Name="lblMaterial" Text="Material" VerticalAlignment="Center" Width="60"/>
                 <ComboBox x:Name="cbMaterial" HorizontalAlignment="Right" Width="100" SelectedIndex="0">
                     <ComboBox.Items>
+                        <ComboBoxItem Content="Leer" />
+                        <ComboBoxItem Content="Wand" />
                         <ComboBoxItem Content="Sand" />
                         <ComboBoxItem Content="Wasser" />
-                        <ComboBoxItem Content="Leer" />
                     </ComboBox.Items>
                 </ComboBox>
                 <Panel HorizontalAlignment="Left" Margin="5,0,5,0" Name="UsePanel">

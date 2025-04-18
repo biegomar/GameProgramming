@@ -90,7 +90,7 @@ public sealed class MaterialRuleSet(Vector dimension, uint seed = 100)
         return DontMove(position, cell);
     }
 
-    public PlayGround ApplySpawnRules(PlayGround playGround, Vector spawnPosition, Vector brushSize, double probability)
+    public PlayGround ApplySpawnRules(PlayGround playGround, CellType type, Vector spawnPosition, Vector brushSize, double probability)
     {
         var startX = spawnPosition.X;
         var endX = spawnPosition.X + brushSize.X - 1;
@@ -107,7 +107,7 @@ public sealed class MaterialRuleSet(Vector dimension, uint seed = 100)
                 {
                     if (random.NextDouble() < probability)
                     {
-                        playGround.SetCell(new Vector(x, y), new Cell(Sand, ShadeProvider.GenerateRandomColor(CellType.Sand)));   
+                        playGround.SetCell(new Vector(x, y), new Cell(type, ShadeProvider.GenerateColor(type)));   
                     }
                 }
             }    

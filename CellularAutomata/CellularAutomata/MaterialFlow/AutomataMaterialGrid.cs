@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
+using CellularAutomata.Cells;
 using CellularAutomata.PlayGrounds;
 
 namespace CellularAutomata.MaterialFlow;
@@ -9,7 +10,7 @@ public sealed class AutomataMaterialGrid(Vector dimension)
     private PlayGround nextGenerationPlayGround = new(dimension);
     private bool isNextGenerationPlayGroundInitialized = false;
 
-    public PlayGround NextGeneration(PlayGround initialPlayGround, MaterialRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize)
+    public PlayGround NextGeneration(PlayGround initialPlayGround, MaterialRuleSet ruleSet, Vector spawnPosition, Vector brushSize)
     {
         // if (!isNextGenerationPlayGroundInitialized)
         // {
@@ -34,11 +35,6 @@ public sealed class AutomataMaterialGrid(Vector dimension)
                 }
             }
         }
-
-        if (isSpawn)
-        {
-            nextGenerationPlayGround = ApplySpawnRules(nextGenerationPlayGround, ruleSet, spawnPosition, brushSize);    
-        }
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
         
@@ -47,7 +43,7 @@ public sealed class AutomataMaterialGrid(Vector dimension)
         return initialPlayGround;
     }
     
-    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, MaterialRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize, int maxDegreeOfParallelism)
+    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, MaterialRuleSet ruleSet, Vector spawnPosition, Vector brushSize, int maxDegreeOfParallelism)
     {
         InitializeNextGenerationPlayGround(initialPlayGround, maxDegreeOfParallelism);
         
@@ -78,11 +74,6 @@ public sealed class AutomataMaterialGrid(Vector dimension)
                 }
             }
         });
-
-        if (isSpawn)
-        {
-            nextGenerationPlayGround = ApplySpawnRules(nextGenerationPlayGround, ruleSet, spawnPosition, brushSize);   
-        }
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround); 
         
@@ -92,9 +83,9 @@ public sealed class AutomataMaterialGrid(Vector dimension)
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public PlayGround ApplySpawnRules(PlayGround playGround, MaterialRuleSet ruleSet, Vector spawnPosition, Vector brushSize, double probability = 1)
+    public PlayGround ApplySpawnRules(PlayGround playGround, MaterialRuleSet ruleSet, CellType type, Vector spawnPosition, Vector brushSize, double probability = 1)
     {
-        return ruleSet.ApplySpawnRules(playGround, spawnPosition, brushSize, probability); 
+        return ruleSet.ApplySpawnRules(playGround, type, spawnPosition, brushSize, probability); 
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
