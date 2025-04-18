@@ -23,8 +23,8 @@ public sealed class MaterialRuleSet(Vector dimension, uint seed = 100)
             return HandleSand(playGround, position, cell);
         }
 
-        // dont move
-        return DontMove(position, cell);
+        // do nothing!
+        return null;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -87,6 +87,11 @@ public sealed class MaterialRuleSet(Vector dimension, uint seed = 100)
             return new MaterialMovement(new Material(position, emptyCell), new Material(new Vector(position.X - 1, position.Y + 1), cell));
         }
 
+        if (bottomCell.Type == CellType.Water)
+        {
+            return new MaterialMovement(new Material(position, bottomCell), new Material(new Vector(position.X, position.Y + 1), cell));
+        }
+
         return DontMove(position, cell);
     }
 
@@ -125,7 +130,7 @@ public sealed class MaterialRuleSet(Vector dimension, uint seed = 100)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private MaterialMovement DontMove(Vector position, Cell cell)
     {
-        return new MaterialMovement(new Material(position, cell with {}), null);
+        return new MaterialMovement(new Material(position, cell), null);
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
