@@ -42,6 +42,8 @@ public sealed class AutomataMaterialGrid(Vector dimension)
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
         
+        initialPlayGround.ResetMarkedCells();
+        
         return initialPlayGround;
     }
     
@@ -84,13 +86,15 @@ public sealed class AutomataMaterialGrid(Vector dimension)
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround); 
         
+        initialPlayGround.ResetMarkedCells();
+        
         return initialPlayGround;
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public PlayGround ApplySpawnRules(PlayGround playGround, SandRuleSet ruleSet, Vector spawnPosition, Vector brushSize, double probability = 1)
     {
-        return (PlayGround)ruleSet.ApplySpawnRules(playGround, spawnPosition, brushSize, probability); 
+        return ruleSet.ApplySpawnRules(playGround, spawnPosition, brushSize, probability); 
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
