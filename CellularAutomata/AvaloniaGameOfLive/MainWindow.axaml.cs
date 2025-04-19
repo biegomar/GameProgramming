@@ -44,7 +44,6 @@ public partial class MainWindow : Window
     private double spawnProbability;
     
     private ToolTip toolTip;
-    private readonly DispatcherTimer toolTipTimer = new ();
     private bool isTooltipVisible = false;
     
     private bool isSpawnActive = false;
@@ -54,10 +53,6 @@ public partial class MainWindow : Window
 
     private IList<long> generationTimes;
     private IList<long> renderingTimes;
-    
-    private readonly Stopwatch generationStopwatch = new ();
-    private readonly Stopwatch renderingStopwatch = new ();
-    private readonly Stopwatch totalStopwatch = new ();
 
     private bool shouldDraw = true;
     private bool timingEnabled = true;
@@ -661,37 +656,38 @@ public partial class MainWindow : Window
         var token = cancellationTokenSource.Token;
         
         var maxGenerations = stopWatchCountSelector.Value == null ? 50 : (int)stopWatchCountSelector.Value;
+
+        var totalTicks = 0L;
         
         currentGeneration = 0;
         
         generationTimes = new List<long>(maxGenerations);
         renderingTimes = new List<long>(maxGenerations);
         
+        
         await Task.Run(async () =>
         {
-            totalStopwatch.Restart();
+            var totalStartTimestamp = Stopwatch.GetTimestamp();
             try
             {
                 while (!token.IsCancellationRequested && currentGeneration < maxGenerations)
                 {
                     if (timingEnabled)
                     {
-                        generationStopwatch.Restart();
+                        var generationStartTimestamp = Stopwatch.GetTimestamp();
                     
                         GenerateNextPlaygroundState(ruleSetType);
-                    
-                        generationStopwatch.Stop();
-                        generationTimes.Add(generationStopwatch.ElapsedTicks);
                         
-                        renderingStopwatch.Restart();
+                        generationTimes.Add(Stopwatch.GetElapsedTime(generationStartTimestamp).Ticks);
+                        
+                        var renderingStartTimestamp = Stopwatch.GetTimestamp();
                         
                         if (currentGeneration % 10 == 0)
                         {
                             await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.MaxValue);    
                         }
                         
-                        renderingStopwatch.Stop();
-                        renderingTimes.Add(renderingStopwatch.ElapsedTicks);
+                        renderingTimes.Add(Stopwatch.GetElapsedTime(renderingStartTimestamp).Ticks);
                     
                         currentGeneration++;
                         generation++;
@@ -708,25 +704,25 @@ public partial class MainWindow : Window
             }
             finally
             {
-                totalStopwatch.Stop();
+                totalTicks = Stopwatch.GetElapsedTime(totalStartTimestamp).Ticks;
                 await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.MaxValue);
             }
         }, token);
         
-        GenerateStatisticsReport();
-
+        GenerateStatisticsReport(totalTicks);
+        
         SetButtonState(false);
 
         cancellationTokenSource = null;
     }
 
-    private void GenerateStatisticsReport()
+    private void GenerateStatisticsReport(long totalTicks)
     {
         if (timingEnabled)
         {
             var statisticGenerator = new StatisticGenerator();
 
-            tbStopWatch.Text = statisticGenerator.Generate(new AutomataStatistics(totalStopwatch.ElapsedTicks, currentGeneration, maxDegreeOfParallelism,
+            tbStopWatch.Text = statisticGenerator.Generate(new AutomataStatistics(totalTicks, currentGeneration, maxDegreeOfParallelism,
                 renderingTimes, generationTimes));
         }
     }
