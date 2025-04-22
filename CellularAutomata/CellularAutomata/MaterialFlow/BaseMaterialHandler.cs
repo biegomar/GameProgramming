@@ -12,7 +12,7 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     protected const CellType Empty = CellType.Empty;
     protected const CellType Sand = CellType.Sand;
 
-    public abstract MaterialMovement ApplyRules(PlayGround playGround, Vector position, Cell cell);
+    public abstract MaterialMovement? ApplyRules(PlayGround playGround, Vector position, Cell cell);
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Cell GetCell(PlayGround playGround, Vector position)
@@ -45,9 +45,27 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected bool IsLiquidOrEmpty(CellType cellType)
+    {
+        return (byte)cellType == 0 || (byte)cellType == 3;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsSand(CellType cellType)
     {
         return (byte)cellType == 2;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsWater(CellType cellType)
+    {
+        return (byte)cellType == 3;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected bool IsLiquid(CellType cellType)
+    {
+        return (byte)cellType == 3;
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -60,5 +78,25 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     protected bool WillMoveAtAll(int probability)
     {
         return pseudoRandom.Chance(probability);
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected uint GetIndex(Vector position)
+    {
+        return (uint)position.Y * (uint)dimension.X + (uint)position.X;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected bool IsOccupied(Vector position, bool[] occupiedCells)
+    {
+        return occupiedCells[GetIndex(position)];
+    }
+    
+    private void AddToOccupiedCells(Vector position, bool[] occupiedCells)
+    {
+        if (occupiedCells[GetIndex(position)])
+            return;
+        
+        occupiedCells[GetIndex(position)] = true;
     }
 }

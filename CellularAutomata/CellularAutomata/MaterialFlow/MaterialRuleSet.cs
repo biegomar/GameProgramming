@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using CellularAutomata.Cells;
+﻿using CellularAutomata.Cells;
 using CellularAutomata.PlayGrounds;
 
 namespace CellularAutomata.MaterialFlow;
@@ -8,16 +7,21 @@ public sealed class MaterialRuleSet(Vector dimension)
 {
     private readonly Random random = new ();
     private readonly SandHandler sandHandler = new(dimension);
+    private readonly WaterHandler waterHandler = new(dimension);
 
     public MaterialMovement? ApplyRules(PlayGround playGround, Vector position)
     {
         var cell = playGround.GetCell(position);
 
         if (sandHandler.IsEmpty(cell.Type)) return null;
-
+        
         if (sandHandler.IsSand(cell.Type))
         {
             return sandHandler.ApplyRules(playGround, position, cell);
+        }
+        else if (sandHandler.IsWater(cell.Type))
+        {
+            return waterHandler.ApplyRules(playGround, position, cell);
         }
 
         // do nothing!

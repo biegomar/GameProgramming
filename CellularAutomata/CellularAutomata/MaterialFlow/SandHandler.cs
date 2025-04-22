@@ -7,42 +7,48 @@ namespace CellularAutomata.MaterialFlow;
 public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMaterialHandler(dimension, seed)
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public override MaterialMovement ApplyRules(PlayGround playGround, Vector position, Cell cell)
+    public override MaterialMovement? ApplyRules(PlayGround playGround, Vector position, Cell cell)
     {
-        var emptyCell = new Cell(Empty, CellColor.Empty);
+        var bottomCell = GetCell(playGround, new Vector(position.X, position.Y + 1));
         
         // direct way: bottom cell is free
-        var bottomCell = GetCell(playGround, new Vector(position.X, position.Y + 1));
-        if (bottomCell.Type == Empty)
+        if (IsEmpty(bottomCell.Type))
         {
             return new MaterialMovement(new Material(position, bottomCell), new Material(new Vector(position.X, position.Y + 1), cell));
         }
-            
-        var rightCell = GetCell(playGround, new Vector(position.X + 1, position.Y));
-        var rightBottomCell = GetCell(playGround, new Vector(position.X + 1, position.Y + 1));
-        var leftCell = GetCell(playGround, new Vector(position.X - 1, position.Y));
-        var leftBottomCell = GetCell(playGround, new Vector(position.X - 1, position.Y + 1));
-        var leftOpponentCell = GetCell(playGround, new Vector(position.X - 2, position.Y));
+     
+        var rightPosition = new Vector(position.X + 1, position.Y);
+        var rightBottomPosition = new Vector(position.X + 1, position.Y + 1);
+        var leftPosition = new Vector(position.X - 1, position.Y);
+        var leftBottomPosition = new Vector(position.X - 1, position.Y + 1);
+        var leftOpponentPosition = new Vector(position.X - 2, position.Y);
+        
+        var emptyCell = new Cell(Empty, CellColor.Empty);
+        var rightCell = GetCell(playGround, rightPosition);
+        var rightBottomCell = GetCell(playGround, rightBottomPosition);
+        var leftCell = GetCell(playGround, leftPosition);
+        var leftBottomCell = GetCell(playGround, leftBottomPosition);
+        var leftOpponentCell = GetCell(playGround, leftOpponentPosition);
 
-        // right way is free
+        // the right way is free
         if (rightCell.Type == Empty && rightBottomCell.Type == Empty)
         {
             // the left way as well
-            if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || playGround.IsMarkedCell(new Vector(position.X - 2, position.Y))))
+            if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || playGround.IsMarkedCell(leftOpponentPosition)))
             {
                 // move by 80%
-                if (WillMoveAtAll(50))
+                if (WillMoveAtAll(80))
                 {
                     // pseudo-random choice
                     if (WillMoveRight())
                     {
                         // go right
-                        return new MaterialMovement(new Material(position, emptyCell), new Material(new Vector(position.X + 1, position.Y + 1), cell));
+                        return new MaterialMovement(new Material(position, emptyCell), new Material(rightBottomPosition, cell));
                     }
                     
                     // go left
                     playGround.MarkCell(position);
-                    return new MaterialMovement(new Material(position, emptyCell), new Material(new Vector(position.X - 1, position.Y + 1), cell));    
+                    return new MaterialMovement(new Material(position, emptyCell), new Material(leftBottomPosition, cell));    
                 }
                     
                 // dont move
@@ -50,27 +56,22 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
             }
 
             // go right by 90%
-            if (WillMoveAtAll(50))
+            if (WillMoveAtAll(90))
             {
-                return new MaterialMovement(new Material(position, emptyCell), new Material(new Vector(position.X + 1, position.Y + 1), cell));
+                return new MaterialMovement(new Material(position, emptyCell), new Material(rightBottomPosition, cell));
             }
                 
             // dont move
             return DontMove(position, cell);
         }
 
-        if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || playGround.IsMarkedCell(new Vector(position.X - 2, position.Y))))
+        if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || playGround.IsMarkedCell(leftOpponentPosition)))
         {
             // go left
             playGround.MarkCell(position);
-            return new MaterialMovement(new Material(position, emptyCell), new Material(new Vector(position.X - 1, position.Y + 1), cell));
+            return new MaterialMovement(new Material(position, emptyCell), new Material(leftBottomPosition, cell));
         }
-
-        if (bottomCell.Type == CellType.Water)
-        {
-            return new MaterialMovement(new Material(position, bottomCell), new Material(new Vector(position.X, position.Y + 1), cell));
-        }
-
+        
         return DontMove(position, cell);
     }
 }

@@ -7,6 +7,8 @@ public sealed class PlayGround
 {
     private readonly Cell[] cells;
     private bool[] markedCells;
+    private readonly object markedCellsLock = new object();
+
     
     public Vector Dimension { get; }
     
@@ -30,39 +32,42 @@ public sealed class PlayGround
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Cell GetCell(Vector position)
     {
-        return cells[this.GetIndex(position)];
+        return cells[this.GetIndex(position)]; 
     }
 
     public void SetCell(Vector position, Cell cell)
     {
-        cells[this.GetIndex(position)] = cell;
+        if (IsWithinBounds(position))
+        {
+            cells[this.GetIndex(position)] = cell;    
+        }
     }
 
-    public CellType GetCellType(Vector position)
-    {
-        return cells[this.GetIndex(position)].Type;
-    }
-
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void MarkCell(Vector position)
     {
-        markedCells[this.GetIndex(position)] = true;
+        if (IsWithinBounds(position))
+        {
+            markedCells[this.GetIndex(position)] = true;
+        }
     }
-
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsMarkedCell(Vector position)
     {
-        return markedCells[this.GetIndex(position)];
+        if (IsWithinBounds(position))
+        {
+            return markedCells[this.GetIndex(position)];
+        }
+
+        return true;
     }
 
     public void ResetMarkedCells()
     {
         markedCells = new bool[fieldSize];
     }
-
-    public void SetCellType(Vector position, CellType cellType)
-    {
-        cells[this.GetIndex(position)].Type = cellType;
-    }
-
+    
     private void Initialize(Func<int, int, Cell>? cellFactory = null)
     {
         const CellColor cellBrightness = CellColor.Empty;
@@ -86,7 +91,7 @@ public sealed class PlayGround
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool IsWithinBounds(Vector position )
+    private bool IsWithinBounds(Vector position)
     {
         return (uint)position.X < Dimension.X && (uint)position.Y < Dimension.Y;
     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
@@ -83,7 +84,7 @@ public partial class MainWindow : Window
     
     public MainWindow()
     {
-        //var test = Marshal.SizeOf<CellularAutomata.MaterialFlow.MaterialMovement>();
+        //var test = Marshal.SizeOf<Cell>();
 
         InitializeComponent();
         InitializeComponentValues();
@@ -377,7 +378,7 @@ public partial class MainWindow : Window
 
     private string GetCellStateFromSand(Vector cellPosition)
     {
-        return playGroundSand.GetCellType(cellPosition).ToString();
+        return playGroundSand.GetCell(cellPosition).Type.ToString();
     }
 
     private async Task ShowTooltipWithTimeout(string tooltipText)
@@ -739,7 +740,7 @@ public partial class MainWindow : Window
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.NextGenerationParallel(playGroundSand, ruleSetMaterial, spawnPosition, brushSize, maxDegreeOfParallelism),
+            RuleSetType.Sand => automataSand.NextGenerationParallel(playGroundSand, ruleSetMaterial, maxDegreeOfParallelism),
             _ => playGroundSand
         };
     }
