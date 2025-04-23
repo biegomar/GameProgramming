@@ -2,5 +2,5 @@
 
 namespace CellularAutomata.Cells;
 
-[StructLayout(LayoutKind.Sequential, Size = 12)]
-public record struct Cell(CellType Type, CellColor Color);
+[StructLayout(LayoutKind.Sequential, Size = 3)]
+public record struct Cell(CellType Type, CellColor Color, byte State = 0);

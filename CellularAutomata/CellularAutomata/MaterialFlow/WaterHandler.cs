@@ -73,70 +73,47 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
             return new MaterialMovement(new Material(position, emptyCell), new Material(leftBottomPosition, cell));
         }
         
-        var topCell = GetCell(playGround, new Vector(position.X, position.Y - 1));
-
-        if (IsSand(topCell.Type))
-        {
-            
-        }
-        
         //Sliding
         
         //var topRightPosition = new Vector(position.X + 1, position.Y - 1);
         //var topLeftPosition = new Vector(position.X - 1, position.Y - 1);
         //var topPosition = new Vector(position.X, position.Y - 1);
         
+        var topCell = GetCell(playGround, new Vector(position.X, position.Y - 1));
         var topRightCell = GetCell(playGround, new Vector(position.X + 1, position.Y - 1));
         var topRightOpponentCell = GetCell(playGround, new Vector(position.X + 2, position.Y - 1));
         var topLeftCell = GetCell(playGround, new Vector(position.X - 1, position.Y - 1));
         var topLeftOpponentCell = GetCell(playGround, new Vector(position.X - 2, position.Y - 1));
         
         // the right way is free
-        if (IsEmpty(rightCell.Type) && IsSolidOrEmpty(topCell.Type) && IsSolidOrEmpty(topRightCell.Type) && IsSolidOrEmpty(topRightOpponentCell.Type))
+        if (cell.State == 0 && IsEmpty(rightCell.Type) && IsSolidOrEmpty(topCell.Type) && IsSolidOrEmpty(topRightCell.Type) && IsSolidOrEmpty(topRightOpponentCell.Type))
         {
-            // the left way as well
-            if (IsEmpty(leftCell.Type) 
-                && IsSolidOrEmpty(topCell.Type) 
-                && (IsSolidOrEmpty(leftOpponentCell.Type) || playGround.IsMarkedCell(leftOpponentPosition)) 
-                && IsSolidOrEmpty(topLeftCell.Type) 
-                && IsSolidOrEmpty(topLeftOpponentCell.Type))
-            {
-                // move by 80%
-                if (WillMoveAtAll(80))
-                {
-                    // pseudo-random choice
-                    if (WillMoveRight())
-                    {
-                        // go right
-                        return new MaterialMovement(new Material(position, emptyCell), new Material(rightPosition, cell));
-                    }
-                    
-                    // go left
-                    playGround.MarkCell(leftPosition);
-                    return new MaterialMovement(new Material(position, emptyCell), new Material(leftPosition, cell));    
-                }
-                    
-                return DontMove(position, cell);
-            }
-            
             // go right by 90%
             if (WillMoveAtAll(90))
             {
                 return new MaterialMovement(new Material(position, emptyCell), new Material(rightPosition, cell));
             }
         }
+        else
+        {
+            cell = cell with { State = 1 };
+        }
 
-        if (IsEmpty(leftCell.Type) 
-            && IsSolidOrEmpty(topCell.Type) 
-            && (IsSolidOrEmpty(leftOpponentCell.Type) || playGround.IsMarkedCell(leftOpponentPosition)) 
-            && IsSolidOrEmpty(topLeftCell.Type) 
+        if (cell.State == 1
+            && IsEmpty(leftCell.Type)
+            && IsSolidOrEmpty(topCell.Type)
+            && (IsSolidOrEmpty(leftOpponentCell.Type) || playGround.IsMarkedCell(leftOpponentPosition))
+            && IsSolidOrEmpty(topLeftCell.Type)
             && IsSolidOrEmpty(topLeftOpponentCell.Type))
         {
-            // go left
-            playGround.MarkCell(leftPosition);
-            return new MaterialMovement(new Material(position, emptyCell), new Material(leftPosition, cell));
+            // go left by 90%
+            if (WillMoveAtAll(90))
+            {
+                playGround.MarkCell(leftPosition);
+                return new MaterialMovement(new Material(position, emptyCell), new Material(leftPosition, cell));
+            }
         }
-        
-        return DontMove(position, cell);
+
+        return DontMove(position, cell with { State = 0 });
     }
 }
