@@ -634,16 +634,16 @@ public partial class MainWindow : Window
         switch (ruleSetType)
         {
             case RuleSetType.GameOfLife:
-                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b ? this.aliveColor : emptyColor);
+                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, maxDegreeOfParallelism, b => b ? this.aliveColor : emptyColor);
                 break;
             case RuleSetType.Wolfram:
-                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b  ? this.wolframColor : emptyColor);
+                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, maxDegreeOfParallelism, b => b  ? this.wolframColor : emptyColor);
                 break;
             case RuleSetType.NoiseGrid:
-                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b  ? this.noiseGridColor : emptyColor);
+                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, maxDegreeOfParallelism, b => b  ? this.noiseGridColor : emptyColor);
                 break;
             case RuleSetType.Sand:
-                SkiaVisualizer.Render(playGroundSand, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, ChooseSandColor);
+                SkiaVisualizer.Render(playGroundSand, cellSize, canvas, cbEngine.SelectedIndex, maxDegreeOfParallelism, ChooseSandColor);
                 break;
             default:    
                 break;

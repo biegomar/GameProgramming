@@ -8,39 +8,39 @@ namespace Visualizer;
 
 public static class SkiaVisualizer
 {
-    public static void Render(PlayGround playGround, Vector cellSize, SKCanvas canvas, int renderEngineIndex, SKColor emptyColor, int maxDegreeOfParallelism, Func<CellColor, SKColor> typeToColor)
+    public static void Render(PlayGround playGround, Vector cellSize, SKCanvas canvas, int renderEngineIndex, int maxDegreeOfParallelism, Func<CellColor, SKColor> typeToColor)
     {
         switch (renderEngineIndex)
         {
             case 0:
-                RenderAsRectangles(playGround, cellSize, canvas, emptyColor, maxDegreeOfParallelism, typeToColor);
+                RenderAsRectangles(playGround, cellSize, canvas, maxDegreeOfParallelism, typeToColor);
                 break;
             case 1:
-                RenderPixel(playGround, cellSize, canvas, emptyColor, maxDegreeOfParallelism, typeToColor);
+                RenderPixel(playGround, cellSize, canvas, maxDegreeOfParallelism, typeToColor);
                 break;
             default:
-                RenderAsRectangles(playGround, cellSize, canvas, emptyColor, maxDegreeOfParallelism, typeToColor);
+                RenderAsRectangles(playGround, cellSize, canvas, maxDegreeOfParallelism, typeToColor);
                 break;
         }
     }
     
-    public static void RenderSimplePlayGround(SimplePlayGround playGround, Vector cellSize, SKCanvas canvas, int renderEngineIndex, SKColor emptyColor, int maxDegreeOfParallelism, Func<bool, SKColor> stateToColor)
+    public static void RenderSimplePlayGround(SimplePlayGround playGround, Vector cellSize, SKCanvas canvas, int renderEngineIndex, int maxDegreeOfParallelism, Func<bool, SKColor> stateToColor)
     {
         switch (renderEngineIndex)
         {
             case 0:
-                RenderSimpleRectangles(playGround, cellSize, canvas, emptyColor, maxDegreeOfParallelism, stateToColor);
+                RenderSimpleRectangles(playGround, cellSize, canvas, maxDegreeOfParallelism, stateToColor);
                 break;
             case 1:
-                RenderSimplePixel(playGround, cellSize, canvas, emptyColor, maxDegreeOfParallelism, stateToColor);
+                RenderSimplePixel(playGround, cellSize, canvas, maxDegreeOfParallelism, stateToColor);
                 break;
             default:
-                RenderSimpleRectangles(playGround, cellSize, canvas, emptyColor, maxDegreeOfParallelism, stateToColor);
+                RenderSimpleRectangles(playGround, cellSize, canvas, maxDegreeOfParallelism, stateToColor);
                 break;
         }
     }
     
-    private static void RenderPixel(PlayGround playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, int maxDegreeOfParallelism, Func<CellColor, SKColor> typeToColor)
+    private static void RenderPixel(PlayGround playGround, Vector cellSize, SKCanvas canvas, int maxDegreeOfParallelism, Func<CellColor, SKColor> typeToColor)
     {
         var colorBuckets = new ConcurrentDictionary<SKColor, ConcurrentBag<SKPoint>>();
         var dimensionX = playGround.Dimension.X;
@@ -60,15 +60,14 @@ public static class SkiaVisualizer
         {
             for (var y = 0; y < dimensionY; y++)
             {
-                var color = typeToColor(playGround.GetCell(new Vector(x, y)).Color);
-                if (color == emptyColor)
+                var actualCellColor = playGround.GetCell(new Vector(x, y)).Color;
+                if (actualCellColor == CellColor.Empty)
                     continue;
-    
+                
                 var point = new SKPoint(x * cellHeight + halfCellHeight, y * cellWidth + halfCellWidth);
-                colorBuckets.GetOrAdd(color, _ => new ConcurrentBag<SKPoint>()).Add(point);
+                colorBuckets.GetOrAdd(typeToColor(actualCellColor), _ => new ConcurrentBag<SKPoint>()).Add(point);
             }
         });
-    
         
         using var paint = new SKPaint();
         paint.IsAntialias = false;
@@ -83,7 +82,7 @@ public static class SkiaVisualizer
         }
     }
     
-    private static void RenderSimplePixel(SimplePlayGround playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, int maxDegreeOfParallelism, Func<bool, SKColor> stateToColor)
+    private static void RenderSimplePixel(SimplePlayGround playGround, Vector cellSize, SKCanvas canvas, int maxDegreeOfParallelism, Func<bool, SKColor> stateToColor)
     {
         var colorBuckets = new ConcurrentDictionary<SKColor, ConcurrentBag<SKPoint>>();
         var dimensionX = playGround.Dimension.X;
@@ -100,12 +99,12 @@ public static class SkiaVisualizer
         {
             for (var y = 0; y < dimensionY; y++)
             {
-                var color = stateToColor(playGround.GetState(new Vector(x, y)));
-                if (color == emptyColor)
+                var actualState = playGround.GetState(new Vector(x, y));
+                if (!actualState)
                     continue;
-    
+                
                 var point = new SKPoint(x * cellHeight, y * cellWidth);
-                colorBuckets.GetOrAdd(color, _ => new ConcurrentBag<SKPoint>()).Add(point);
+                colorBuckets.GetOrAdd(stateToColor(actualState), _ => new ConcurrentBag<SKPoint>()).Add(point);
             }
         });
         
@@ -122,36 +121,7 @@ public static class SkiaVisualizer
         }
     }
     
-    private static void RenderAsRectangles(PlayGround playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, int maxDegreeOfParallelism, Func<CellColor, SKColor> typeToColor)
-    {
-        using var paint = new SKPaint();
-        var cellWidth = cellSize.X;
-        var cellHeight = cellSize.Y;
-        var dimensionX = playGround.Dimension.X;
-        var dimensionY = playGround.Dimension.Y;
-
-        for (var column = 0; column < dimensionX; column++)
-        {
-            for (var row = 0; row < dimensionY; row++)
-            {
-                var top = row * cellHeight;
-                var bottom = top + cellHeight;
-                var left = column * cellWidth;
-                var right = left + cellWidth;
-
-                var cell = playGround.GetCell(new Vector(column, row));
-                var color = typeToColor(cell.Color);
-                if (color == emptyColor) continue;
-            
-                paint.Color = color;
-                var rect = new SKRect(left, top, right, bottom);
-        
-                canvas.DrawRect(rect, paint);
-            }
-        }
-    }
-    
-    private static void RenderSimpleRectangles(SimplePlayGround playGround, Vector cellSize, SKCanvas canvas, SKColor emptyColor, int maxDegreeOfParallelism, Func<bool, SKColor> stateToColor)
+    private static void RenderAsRectangles(PlayGround playGround, Vector cellSize, SKCanvas canvas, int maxDegreeOfParallelism, Func<CellColor, SKColor> typeToColor)
     {
         using var paint = new SKPaint();
         var cellWidth = cellSize.X;
@@ -168,10 +138,40 @@ public static class SkiaVisualizer
                 var left = column * cellWidth;
                 var right = left + cellWidth;
                 
-                var color = stateToColor(playGround.GetState(new Vector(column, row)));
-                if (color == emptyColor) continue;
+                var actualCellColor = playGround.GetCell(new Vector(column, row)).Color;
+                if (actualCellColor == CellColor.Empty)
+                    continue;
+             
+                paint.Color = typeToColor(actualCellColor);
+                var rect = new SKRect(left, top, right, bottom);
+        
+                canvas.DrawRect(rect, paint);
+            }
+        }
+    }
+    
+    private static void RenderSimpleRectangles(SimplePlayGround playGround, Vector cellSize, SKCanvas canvas, int maxDegreeOfParallelism, Func<bool, SKColor> stateToColor)
+    {
+        using var paint = new SKPaint();
+        var cellWidth = cellSize.X;
+        var cellHeight = cellSize.Y;
+        var dimensionX = playGround.Dimension.X;
+        var dimensionY = playGround.Dimension.Y;
+
+        for (var column = 0; column < dimensionX; column++)
+        {
+            for (var row = 0; row < dimensionY; row++)
+            {
+                var top = row * cellHeight;
+                var bottom = top + cellHeight;
+                var left = column * cellWidth;
+                var right = left + cellWidth;
+
+                var actualState = playGround.GetState(new Vector(column, row));
+                if (!actualState)
+                    continue;
             
-                paint.Color = color;
+                paint.Color = stateToColor(actualState);
                 var rect = new SKRect(left, top, right, bottom);
         
                 canvas.DrawRect(rect, paint);
