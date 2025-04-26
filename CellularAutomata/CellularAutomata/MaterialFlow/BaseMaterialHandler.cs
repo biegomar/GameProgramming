@@ -51,18 +51,6 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsSand(CellType cellType)
-    {
-        return (byte)cellType == 2;
-    }
-    
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsWater(CellType cellType)
-    {
-        return (byte)cellType == 3;
-    }
-    
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected bool IsLiquid(CellType cellType)
     {
         return (byte)cellType == 3;

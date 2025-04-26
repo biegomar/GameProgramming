@@ -1,4 +1,5 @@
-﻿using CellularAutomata.Cells;
+﻿using System.Runtime.CompilerServices;
+using CellularAutomata.Cells;
 using CellularAutomata.PlayGrounds;
 
 namespace CellularAutomata.MaterialFlow;
@@ -15,11 +16,11 @@ public sealed class MaterialRuleSet(Vector dimension)
 
         if (sandHandler.IsEmpty(cell.Type)) return null;
         
-        if (sandHandler.IsSand(cell.Type))
+        if (IsSand(cell.Type))
         {
             return sandHandler.ApplyRules(playGround, position, cell);
         }
-        else if (sandHandler.IsWater(cell.Type))
+        else if (IsWater(cell.Type))
         {
             return waterHandler.ApplyRules(playGround, position, cell);
         }
@@ -52,5 +53,17 @@ public sealed class MaterialRuleSet(Vector dimension)
         }
         
         return playGround;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool IsSand(CellType cellType)
+    {
+        return (byte)cellType == 2;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool IsWater(CellType cellType)
+    {
+        return (byte)cellType == 3;
     }
 }

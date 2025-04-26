@@ -8,18 +8,33 @@ namespace Visualizer;
 
 public static class SkiaVisualizer
 {
-    public static void Render(PlayGround playGround, Vector cellSize, SKCanvas canvas, int renderEngineIndex, int maxDegreeOfParallelism, Func<CellColor, SKColor> typeToColor)
+    private static CellColor[] blueShades =
+    [
+        CellColor.CoolBlue, 
+        CellColor.OceanBlue, 
+        CellColor.DeepSky, 
+        CellColor.CrystalLake, 
+        CellColor.BlueCurrent, 
+        CellColor.SplashBlue, 
+        CellColor.AzureDrift,
+        CellColor.Wavestone, 
+        CellColor.RippleBlue
+    ];
+
+    private static readonly SKColor EmptyColor = SKColors.Black;
+    
+    public static void Render(PlayGround playGround, Vector cellSize, SKCanvas canvas, int renderEngineIndex, int maxDegreeOfParallelism, Func<CellColor, SKColor>? typeToColor = null)
     {
         switch (renderEngineIndex)
         {
             case 0:
-                RenderAsRectangles(playGround, cellSize, canvas, maxDegreeOfParallelism, typeToColor);
+                RenderAsRectangles(playGround, cellSize, canvas, maxDegreeOfParallelism, typeToColor ?? ChooseMaterialColor);
                 break;
             case 1:
-                RenderPixel(playGround, cellSize, canvas, maxDegreeOfParallelism, typeToColor);
+                RenderPixel(playGround, cellSize, canvas, maxDegreeOfParallelism, typeToColor ?? ChooseMaterialColor);
                 break;
             default:
-                RenderAsRectangles(playGround, cellSize, canvas, maxDegreeOfParallelism, typeToColor);
+                RenderAsRectangles(playGround, cellSize, canvas, maxDegreeOfParallelism, typeToColor ?? ChooseMaterialColor);
                 break;
         }
     }
@@ -60,9 +75,17 @@ public static class SkiaVisualizer
         {
             for (var y = 0; y < dimensionY; y++)
             {
-                var actualCellColor = playGround.GetCell(new Vector(x, y)).Color;
+                var actualCell = playGround.GetCell(new Vector(x, y));
+                
+                var actualCellColor = actualCell.Color;
                 if (actualCellColor == CellColor.Empty)
                     continue;
+             
+                var newCellColor = SparklingBlue(actualCellColor);
+                if (newCellColor != actualCellColor)
+                {
+                    playGround.SetCell(new Vector(x, y), actualCell with { Color = newCellColor });
+                }
                 
                 var point = new SKPoint(x * cellHeight + halfCellHeight, y * cellWidth + halfCellWidth);
                 colorBuckets.GetOrAdd(typeToColor(actualCellColor), _ => new ConcurrentBag<SKPoint>()).Add(point);
@@ -137,12 +160,20 @@ public static class SkiaVisualizer
                 var bottom = top + cellHeight;
                 var left = column * cellWidth;
                 var right = left + cellWidth;
+
+                var actualCell = playGround.GetCell(new Vector(column, row));
                 
-                var actualCellColor = playGround.GetCell(new Vector(column, row)).Color;
+                var actualCellColor = actualCell.Color;
                 if (actualCellColor == CellColor.Empty)
                     continue;
              
-                paint.Color = typeToColor(actualCellColor);
+                var newCellColor = SparklingBlue(actualCellColor);
+                if (newCellColor != actualCellColor)
+                {
+                    playGround.SetCell(new Vector(column, row), actualCell with { Color = newCellColor });
+                }
+                
+                paint.Color = typeToColor(newCellColor);
                 var rect = new SKRect(left, top, right, bottom);
         
                 canvas.DrawRect(rect, paint);
@@ -177,5 +208,47 @@ public static class SkiaVisualizer
                 canvas.DrawRect(rect, paint);
             }
         }
+    }
+    
+    private static CellColor SparklingBlue(CellColor color)
+    {
+        if (blueShades.Contains(color))
+        {
+            int currentIndex = Array.IndexOf(blueShades, color);
+
+            return blueShades[(currentIndex + 1) % blueShades.Length];
+        }
+        
+        return color;
+    }
+    
+    private static SKColor ChooseMaterialColor(CellColor color)
+    {
+        return color switch
+        {
+            CellColor.Empty => EmptyColor,
+            CellColor.Solid => SKColors.Gray,
+            CellColor.GoldenSand => new SKColor(210, 168, 105),
+            CellColor.DesertGold => new SKColor(214, 171, 107),
+            CellColor.Wheatfield => new SKColor(206, 165, 103),
+            CellColor.SaharaDune => new SKColor(212, 170, 106),
+            CellColor.HoneyBeige => new SKColor(208, 166, 104),
+            CellColor.ToastedAlmond => new SKColor(207, 166, 104),
+            CellColor.AmberGrain => new SKColor(216, 173, 108),
+            CellColor.ClayOchre => new SKColor(209, 167, 104),
+            CellColor.GoldenWheat => new SKColor(213, 170, 106),
+            CellColor.SunlitSandstone => new SKColor(211, 169, 106),
+            CellColor.CoolBlue => new SKColor(81, 130, 203, 255),
+            CellColor.OceanBlue => new SKColor(87, 139, 217, 255),
+            CellColor.DeepSky => new SKColor(80, 128, 200, 255),
+            CellColor.CrystalLake => new SKColor(83, 133, 208, 255),
+            CellColor.SurfBlue => new SKColor(84, 134, 209, 255),
+            CellColor.BlueCurrent => new SKColor(82, 132, 206, 255),
+            CellColor.SplashBlue => new SKColor(89, 142, 222, 255),
+            CellColor.AzureDrift => new SKColor(88, 140, 219, 255),
+            CellColor.Wavestone => new SKColor(85, 136, 212, 255),
+            CellColor.RippleBlue => new SKColor(81, 129, 202, 255),
+            _ => EmptyColor
+        };
     }
 }
