@@ -88,8 +88,6 @@ public sealed class AutomataMaterialGrid(Vector dimension)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ResetNextGenerationPlayGround(PlayGround playGround, int maxDegreeOfParallelism)
     {
-        playGround.ResetMarkedCells();
-        
         var parallelOptions = new ParallelOptions()
         {
             MaxDegreeOfParallelism = Math.Min(maxDegreeOfParallelism, Environment.ProcessorCount)

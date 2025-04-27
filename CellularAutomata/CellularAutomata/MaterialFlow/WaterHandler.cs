@@ -7,21 +7,19 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
 {
     public override MaterialMovement? ApplyRules(PlayGround playGround, Vector position, Cell cell)
     {
-        if (playGround.IsMarkedCell(position)) return null;
         
         var bottomCell = GetCell(playGround, new Vector(position.X, position.Y + 1));
         
         // direct way: bottom cell is free
         if (bottomCell.Type == Empty)
         {
-            return new MaterialMovement(new Material(position, bottomCell), new Material(new Vector(position.X, position.Y + 1), cell));
+            return new MaterialMovement(new Material(position, bottomCell), new Material(new Vector(position.X, position.Y + 1), cell.WithFlag(0, true)));
         }
         
         var rightPosition = new Vector(position.X + 1, position.Y);
         var rightBottomPosition = new Vector(position.X + 1, position.Y + 1);
         var leftPosition = new Vector(position.X - 1, position.Y);
         var leftBottomPosition = new Vector(position.X - 1, position.Y + 1);
-        var leftOpponentPosition = new Vector(position.X - 2, position.Y);
         
         var emptyCell = new Cell(Empty, CellColor.Empty);
         var rightCell = GetCell(playGround, rightPosition);
@@ -34,7 +32,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         if (rightCell.Type == Empty && rightBottomCell.Type == Empty)
         {
             // the left way as well
-            if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || playGround.IsMarkedCell(leftOpponentPosition)))
+            if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3)))
             {
                 // move by 80%
                 if (WillMoveAtAll(80))
@@ -43,12 +41,12 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
                     if (WillMoveRight())
                     {
                         // go right
-                        return new MaterialMovement(new Material(position, emptyCell), new Material(rightBottomPosition, cell));
+                        return new MaterialMovement(new Material(position, emptyCell), new Material(rightBottomPosition, cell.WithFlag(0, true)));
                     }
                     
                     // go left
-                    playGround.MarkCell(position);
-                    return new MaterialMovement(new Material(position, emptyCell), new Material(leftBottomPosition, cell));    
+                    cell = cell.WithFlag(3, true);
+                    return new MaterialMovement(new Material(position, emptyCell), new Material(leftBottomPosition, cell.WithFlag(0, true)));    
                 }
                     
                 // dont move
@@ -58,7 +56,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
             // go right by 90%
             if (WillMoveAtAll(90))
             {
-                return new MaterialMovement(new Material(position, emptyCell), new Material(rightBottomPosition, cell));
+                return new MaterialMovement(new Material(position, emptyCell), new Material(rightBottomPosition, cell.WithFlag(0, true)));
             }
                 
             // dont move
@@ -66,18 +64,14 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         }
 
         // the left bottom way is free 
-        if (IsEmpty(leftCell.Type) && IsEmpty(leftBottomCell.Type) && (IsSolidOrEmpty(leftOpponentCell.Type) || playGround.IsMarkedCell(leftOpponentPosition)))
+        if (IsEmpty(leftCell.Type) && IsEmpty(leftBottomCell.Type) && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3)))
         {
             // go left
-            playGround.MarkCell(position);
-            return new MaterialMovement(new Material(position, emptyCell), new Material(leftBottomPosition, cell));
+            cell = cell.WithFlag(3, true);
+            return new MaterialMovement(new Material(position, emptyCell), new Material(leftBottomPosition, cell.WithFlag(0, true)));
         }
         
         //Sliding
-        
-        //var topRightPosition = new Vector(position.X + 1, position.Y - 1);
-        //var topLeftPosition = new Vector(position.X - 1, position.Y - 1);
-        //var topPosition = new Vector(position.X, position.Y - 1);
         
         var topCell = GetCell(playGround, new Vector(position.X, position.Y - 1));
         var topRightCell = GetCell(playGround, new Vector(position.X + 1, position.Y - 1));
@@ -86,34 +80,22 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         var topLeftOpponentCell = GetCell(playGround, new Vector(position.X - 2, position.Y - 1));
         
         // the right way is free
-        if (cell.State == 0 && IsEmpty(rightCell.Type) && IsSolidOrEmpty(topCell.Type) && IsSolidOrEmpty(topRightCell.Type) && IsSolidOrEmpty(topRightOpponentCell.Type))
+        if (!cell.IsFlagSet(4) && IsEmpty(rightCell.Type) && IsSolidOrEmpty(topCell.Type) && IsSolidOrEmpty(topRightCell.Type) && IsSolidOrEmpty(topRightOpponentCell.Type))
         {
-            // go right by 90%
-            if (WillMoveAtAll(90))
-            {
-                return new MaterialMovement(new Material(position, emptyCell), new Material(rightPosition, cell));
-            }
-        }
-        else
-        {
-            cell = cell with { State = 1 };
+            return new MaterialMovement(new Material(position, emptyCell), new Material(rightPosition, cell.WithFlag(0, true)));
         }
 
-        if (cell.State == 1
-            && IsEmpty(leftCell.Type)
+        // the left way is free
+        if (IsEmpty(leftCell.Type)
             && IsSolidOrEmpty(topCell.Type)
-            && (IsSolidOrEmpty(leftOpponentCell.Type) || playGround.IsMarkedCell(leftOpponentPosition))
+            && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(2))
             && IsSolidOrEmpty(topLeftCell.Type)
             && IsSolidOrEmpty(topLeftOpponentCell.Type))
         {
-            // go left by 90%
-            if (WillMoveAtAll(90))
-            {
-                playGround.MarkCell(leftPosition);
-                return new MaterialMovement(new Material(position, emptyCell), new Material(leftPosition, cell));
-            }
+            cell = cell.WithFlag(4, true);
+            return new MaterialMovement(new Material(position, emptyCell), new Material(leftPosition, cell.WithFlag(0, true)));
         }
 
-        return DontMove(position, cell with { State = 0 });
+        return DontMove(position, cell with { Flags = 0 });
     }
 }

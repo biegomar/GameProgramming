@@ -29,7 +29,7 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected MaterialMovement DontMove(Vector position, Cell cell)
     {
-        return new MaterialMovement(new Material(position, cell), null);
+        return new MaterialMovement(new Material(position, cell.WithFlag(0, true)), null);
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -48,6 +48,12 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     protected bool IsLiquidOrEmpty(CellType cellType)
     {
         return (byte)cellType == 0 || (byte)cellType == 3;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected bool IsSolidOrLiquidOrEmpty(CellType cellType)
+    {
+        return (byte)cellType <= 1 || (byte)cellType == 3;
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

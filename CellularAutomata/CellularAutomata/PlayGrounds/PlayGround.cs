@@ -6,25 +6,19 @@ namespace CellularAutomata.PlayGrounds;
 public sealed class PlayGround
 {
     private readonly Cell[] cells;
-    private bool[] markedCells;
-    private readonly object markedCellsLock = new object();
-
     
     public Vector Dimension { get; }
     
     private readonly uint dimensionX;
     private readonly uint dimensionY;
-    private readonly uint fieldSize;
     
     public PlayGround(Vector dimension, Func<int, int, Cell>? cellFactory = null)
     {
         Dimension = dimension;
         dimensionX = (uint)dimension.X;
         dimensionY = (uint)dimension.Y;
-        fieldSize = dimensionX * dimensionY;
         
-        cells = new Cell[fieldSize];
-        ResetMarkedCells();
+        cells = new Cell[dimensionX * dimensionY];
         
         Initialize(cellFactory);
     }
@@ -41,31 +35,6 @@ public sealed class PlayGround
         {
             cells[this.GetIndex(position)] = cell;    
         }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void MarkCell(Vector position)
-    {
-        if (IsWithinBounds(position))
-        {
-            markedCells[this.GetIndex(position)] = true;
-        }
-    }
-    
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsMarkedCell(Vector position)
-    {
-        if (IsWithinBounds(position))
-        {
-            return markedCells[this.GetIndex(position)];
-        }
-
-        return true;
-    }
-
-    public void ResetMarkedCells()
-    {
-        markedCells = new bool[fieldSize];
     }
     
     private void Initialize(Func<int, int, Cell>? cellFactory = null)

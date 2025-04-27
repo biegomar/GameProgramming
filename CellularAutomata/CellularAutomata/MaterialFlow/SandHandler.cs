@@ -14,7 +14,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
         // direct way: bottom cell is free
         if (IsEmpty(bottomCell.Type))
         {
-            return new MaterialMovement(new Material(position, bottomCell), new Material(new Vector(position.X, position.Y + 1), cell));
+            return new MaterialMovement(new Material(position, bottomCell), new Material(new Vector(position.X, position.Y + 1), cell.WithFlag(0, true)));
         }
      
         var rightPosition = new Vector(position.X + 1, position.Y);
@@ -34,7 +34,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
         if (rightCell.Type == Empty && rightBottomCell.Type == Empty)
         {
             // the left way as well
-            if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || playGround.IsMarkedCell(leftOpponentPosition)))
+            if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3)))
             {
                 // move by 80%
                 if (WillMoveAtAll(80))
@@ -43,12 +43,12 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
                     if (WillMoveRight())
                     {
                         // go right
-                        return new MaterialMovement(new Material(position, emptyCell), new Material(rightBottomPosition, cell));
+                        return new MaterialMovement(new Material(position, emptyCell), new Material(rightBottomPosition, cell.WithFlag(0, true)));
                     }
                     
                     // go left
-                    playGround.MarkCell(position);
-                    return new MaterialMovement(new Material(position, emptyCell), new Material(leftBottomPosition, cell));    
+                    cell = cell.WithFlag(3, true);
+                    return new MaterialMovement(new Material(position, emptyCell), new Material(leftBottomPosition, cell.WithFlag(0, true)));    
                 }
                     
                 // dont move
@@ -58,19 +58,28 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
             // go right by 90%
             if (WillMoveAtAll(90))
             {
-                return new MaterialMovement(new Material(position, emptyCell), new Material(rightBottomPosition, cell));
+                return new MaterialMovement(new Material(position, emptyCell), new Material(rightBottomPosition, cell.WithFlag(0, true)));
             }
                 
             // dont move
             return DontMove(position, cell);
         }
 
-        if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || playGround.IsMarkedCell(leftOpponentPosition)))
+        if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3)))
         {
             // go left
-            playGround.MarkCell(position);
-            return new MaterialMovement(new Material(position, emptyCell), new Material(leftBottomPosition, cell));
+            cell = cell.WithFlag(3, true);
+            return new MaterialMovement(new Material(position, emptyCell), new Material(leftBottomPosition, cell.WithFlag(0, true)));
         }
+        
+        // Last option: sink into liquid
+        
+        // var bottomBelowNextCell = GetCell(playGround, new Vector(position.X, position.Y + 2));
+        //
+        // if (IsLiquid(bottomCell.Type) && IsSolidOrLiquidOrEmpty(bottomBelowNextCell.Type))
+        // {
+        //     return new MaterialMovement(new Material(position, bottomCell), new Material(new Vector(position.X, position.Y + 1), cell.WithFlag(0, true))); 
+        // }
         
         return DontMove(position, cell);
     }
