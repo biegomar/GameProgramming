@@ -31,10 +31,10 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
         var leftOpponentCell = GetCell(playGround, leftOpponentPosition);
 
         // the right way is free
-        if (rightCell.Type == Empty && rightBottomCell.Type == Empty)
+        if (IsEmpty(rightCell.Type) && IsEmpty(rightBottomCell.Type))
         {
             // the left way as well
-            if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3)))
+            if (IsEmpty(leftCell.Type) && IsEmpty(leftBottomCell.Type) && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3)))
             {
                 // move by 80%
                 if (WillMoveAtAll(80))
@@ -65,7 +65,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
             return DontMove(position, cell);
         }
 
-        if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3)))
+        if (IsEmpty(leftCell.Type) && IsEmpty(leftBottomCell.Type) && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3)))
         {
             // go left
             cell = cell.WithFlag(3, true);
@@ -82,6 +82,31 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
             return new MaterialMovement(new Material(position, bottomCell.WithFlag(0, true)), new Material(new Vector(position.X, position.Y + 1), cell.WithFlag(0, true))); 
         }
         
+        // the right way is free
+        if ((IsEmpty(rightCell.Type) || IsLiquid(rightCell.Type) && rightCell.IsFlagSet(2)) 
+            && IsLiquid(rightBottomCell.Type) && rightBottomCell.IsFlagSet(2) && cell.IsFlagSet(2))
+        {
+            rightBottomCell = rightBottomCell.WithFlag(2, false);
+            rightBottomCell = rightBottomCell.WithFlag(1, false);
+            cell = cell.WithFlag(2, false);
+            cell = cell.WithFlag(1, false);
+            return new MaterialMovement(new Material(position, rightBottomCell.WithFlag(0, true)), new Material(rightBottomPosition, cell.WithFlag(0, true)));
+        }
+
+        // the left way is free
+        if ((IsEmpty(leftCell.Type) || IsLiquid(leftCell.Type) && leftCell.IsFlagSet(2)) 
+            && IsLiquid(leftBottomCell.Type) && leftBottomCell.IsFlagSet(2)
+            && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3)))
+        {
+            // go left
+            leftBottomCell = leftBottomCell.WithFlag(2, false);
+            leftBottomCell = leftBottomCell.WithFlag(1, false);
+            cell = cell.WithFlag(3, true);
+            cell = cell.WithFlag(2, false);
+            cell = cell.WithFlag(1, false);
+            return new MaterialMovement(new Material(position, leftBottomCell.WithFlag(0, true)), new Material(leftBottomPosition, cell.WithFlag(0, true)));
+        }
+
         return DontMove(position, cell);
     }
 }

@@ -67,6 +67,12 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected bool IsLiquidOrSolid(CellType cellType)
+    {
+        return (byte)cellType == 1 || (byte)cellType == 3;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected bool IsSolidOrLiquidOrEmpty(CellType cellType)
     {
         return (byte)cellType <= 1 || (byte)cellType == 3;
