@@ -82,20 +82,34 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         // the right way is free
         if (!cell.IsFlagSet(4) && IsEmpty(rightCell.Type) && IsSolidOrEmpty(topCell.Type) && IsSolidOrEmpty(topRightCell.Type) && IsSolidOrEmpty(topRightOpponentCell.Type))
         {
+            cell = cell.WithFlag(3, false);
             return new MaterialMovement(new Material(position, emptyCell), new Material(rightPosition, cell.WithFlag(0, true)));
         }
+        
+        // flag to move only left until blocked
+        cell = cell.WithFlag(4, true);
 
         // the left way is free
-        if (IsEmpty(leftCell.Type)
+        if (cell.IsFlagSet(4) &&
+            IsEmpty(leftCell.Type)
             && IsSolidOrEmpty(topCell.Type)
-            && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(2))
+            && (IsSolid(leftOpponentCell.Type) || IsEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3))
             && IsSolidOrEmpty(topLeftCell.Type)
             && IsSolidOrEmpty(topLeftOpponentCell.Type))
         {
-            cell = cell.WithFlag(4, true);
+            cell = cell.WithFlag(3, true);
             return new MaterialMovement(new Material(position, emptyCell), new Material(leftPosition, cell.WithFlag(0, true)));
         }
+        
+        // reset flag to enable moving right
+        cell = cell.WithFlag(4, false);
+        
+        // let other materials sink in.
+        if (topCell.IsFlagSet(2) && cell.IsFlagSet(2))
+        {
+            return null;
+        }
 
-        return DontMove(position, cell with { Flags = 0 });
+        return DontMove(position, cell);
     }
 }

@@ -73,13 +73,14 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
         }
         
         // Last option: sink into liquid
-        
-        // var bottomBelowNextCell = GetCell(playGround, new Vector(position.X, position.Y + 2));
-        //
-        // if (IsLiquid(bottomCell.Type) && IsSolidOrLiquidOrEmpty(bottomBelowNextCell.Type))
-        // {
-        //     return new MaterialMovement(new Material(position, bottomCell), new Material(new Vector(position.X, position.Y + 1), cell.WithFlag(0, true))); 
-        // }
+        if (IsLiquid(bottomCell.Type) && bottomCell.IsFlagSet(2) && cell.IsFlagSet(2))
+        {
+            bottomCell = bottomCell.WithFlag(2, false);
+            bottomCell = bottomCell.WithFlag(1, false);
+            cell = cell.WithFlag(2, false);
+            cell = cell.WithFlag(1, false);
+            return new MaterialMovement(new Material(position, bottomCell.WithFlag(0, true)), new Material(new Vector(position.X, position.Y + 1), cell.WithFlag(0, true))); 
+        }
         
         return DontMove(position, cell);
     }

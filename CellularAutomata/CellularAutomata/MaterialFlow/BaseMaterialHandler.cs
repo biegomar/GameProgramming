@@ -29,7 +29,17 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected MaterialMovement DontMove(Vector position, Cell cell)
     {
-        return new MaterialMovement(new Material(position, cell.WithFlag(0, true)), null);
+        var immobileCell = cell;
+        if (!cell.IsFlagSet(1))
+        {
+            immobileCell = immobileCell.WithFlag(1, true);
+        }
+        else if (!cell.IsFlagSet(2))
+        {
+            immobileCell = immobileCell.WithFlag(2, true);
+        }
+        
+        return new MaterialMovement(new Material(position, immobileCell.WithFlag(0, true)), null);
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -42,6 +52,12 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     public bool IsEmpty(CellType cellType)
     {
         return (byte)cellType == 0;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsSolid(CellType cellType)
+    {
+        return (byte)cellType == 1;
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
