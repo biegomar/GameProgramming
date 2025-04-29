@@ -30,11 +30,15 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
         var leftBottomCell = GetCell(playGround, leftBottomPosition);
         var leftOpponentCell = GetCell(playGround, leftOpponentPosition);
 
+        var isRightBottomWayFree = IsEmpty(rightCell.Type) && IsEmpty(rightBottomCell.Type);
+        var isLeftBottomWayFree = IsEmpty(leftCell.Type) && IsEmpty(leftBottomCell.Type) &&
+                                  (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3));
+        
         // the right way is free
-        if (IsEmpty(rightCell.Type) && IsEmpty(rightBottomCell.Type))
+        if (isRightBottomWayFree)
         {
             // the left way as well
-            if (IsEmpty(leftCell.Type) && IsEmpty(leftBottomCell.Type) && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3)))
+            if (isLeftBottomWayFree)
             {
                 // move by 80%
                 if (WillMoveAtAll(80))
@@ -65,7 +69,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
             return DontMove(position, cell);
         }
 
-        if (IsEmpty(leftCell.Type) && IsEmpty(leftBottomCell.Type) && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3)))
+        if (isLeftBottomWayFree)
         {
             // go left
             cell = cell.WithFlag(3, true);
