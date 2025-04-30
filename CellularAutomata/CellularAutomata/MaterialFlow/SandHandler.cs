@@ -101,7 +101,8 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
 
         var isLeftBottomWayFreeToSink = (IsEmpty(leftCell.Type) || IsLiquid(leftCell.Type) && leftCell.IsFlagSet(2))
                                         && IsLiquid(leftBottomCell.Type) && leftBottomCell.IsFlagSet(2)
-                                        && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3));
+                                        && (IsSolidOrLiquidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3))
+                                        && cell.IsFlagSet(2);
         
         if (isLeftBottomWayFreeToSink)
         {
