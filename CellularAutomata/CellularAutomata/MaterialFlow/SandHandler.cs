@@ -77,7 +77,8 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
         }
         
         // Last option: sink into liquid
-        if (IsLiquid(bottomCell.Type) && bottomCell.IsFlagSet(2) && cell.IsFlagSet(2))
+        var isBottomFreeToSink = IsLiquid(bottomCell.Type) && bottomCell.IsFlagSet(2) && cell.IsFlagSet(2);
+        if (isBottomFreeToSink)
         {
             bottomCell = bottomCell.WithFlag(2, false);
             bottomCell = bottomCell.WithFlag(1, false);
@@ -86,9 +87,10 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
             return new MaterialMovement(new Material(position, bottomCell.WithFlag(0, true)), new Material(new Vector(position.X, position.Y + 1), cell.WithFlag(0, true))); 
         }
         
-        // the right way is free
-        if ((IsEmpty(rightCell.Type) || IsLiquid(rightCell.Type) && rightCell.IsFlagSet(2)) 
-            && IsLiquid(rightBottomCell.Type) && rightBottomCell.IsFlagSet(2) && cell.IsFlagSet(2))
+        var isRightBottomWayFreeToSink = (IsEmpty(rightCell.Type) || IsLiquid(rightCell.Type) && rightCell.IsFlagSet(2))
+                                         && IsLiquid(rightBottomCell.Type) && rightBottomCell.IsFlagSet(2) && cell.IsFlagSet(2);
+        
+        if (isRightBottomWayFreeToSink)
         {
             rightBottomCell = rightBottomCell.WithFlag(2, false);
             rightBottomCell = rightBottomCell.WithFlag(1, false);
@@ -97,10 +99,11 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
             return new MaterialMovement(new Material(position, rightBottomCell.WithFlag(0, true)), new Material(rightBottomPosition, cell.WithFlag(0, true)));
         }
 
-        // the left way is free
-        if ((IsEmpty(leftCell.Type) || IsLiquid(leftCell.Type) && leftCell.IsFlagSet(2)) 
-            && IsLiquid(leftBottomCell.Type) && leftBottomCell.IsFlagSet(2)
-            && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3)))
+        var isLeftBottomWayFreeToSink = (IsEmpty(leftCell.Type) || IsLiquid(leftCell.Type) && leftCell.IsFlagSet(2))
+                                        && IsLiquid(leftBottomCell.Type) && leftBottomCell.IsFlagSet(2)
+                                        && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3));
+        
+        if (isLeftBottomWayFreeToSink)
         {
             // go left
             leftBottomCell = leftBottomCell.WithFlag(2, false);
@@ -108,9 +111,14 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
             cell = cell.WithFlag(3, true);
             cell = cell.WithFlag(2, false);
             cell = cell.WithFlag(1, false);
-            return new MaterialMovement(new Material(position, leftBottomCell.WithFlag(0, true)), new Material(leftBottomPosition, cell.WithFlag(0, true)));
+            return SetNewMaterialPositions(position, leftBottomCell, leftBottomPosition, cell);
         }
 
         return DontMove(position, cell);
+    }
+
+    private static MaterialMovement? SetNewMaterialPositions(Vector fromPosition, Cell cellForSource, Vector toPosition, Cell cellForDestination)
+    {
+        return new MaterialMovement(new Material(fromPosition, cellForSource.WithFlag(0, true)), new Material(toPosition, cellForDestination.WithFlag(0, true)));
     }
 }
