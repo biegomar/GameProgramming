@@ -14,7 +14,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
         // direct way: bottom cell is free
         if (IsEmpty(bottomCell.Type))
         {
-            return new MaterialMovement(new Material(position, bottomCell), new Material(new Vector(position.X, position.Y + 1), cell.WithFlag(0, true)));
+            return SetNewMaterialPositions(position, bottomCell, new Vector(position.X, position.Y + 1), cell);
         }
      
         var rightPosition = new Vector(position.X + 1, position.Y);
@@ -47,12 +47,12 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
                     if (WillMoveRight())
                     {
                         // go right
-                        return new MaterialMovement(new Material(position, emptyCell), new Material(rightBottomPosition, cell.WithFlag(0, true)));
+                        return SetNewMaterialPositions(position, emptyCell, rightBottomPosition, cell);
                     }
                     
                     // go left
                     cell = cell.WithFlag(3, true);
-                    return new MaterialMovement(new Material(position, emptyCell), new Material(leftBottomPosition, cell.WithFlag(0, true)));    
+                    return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
                 }
                     
                 // dont move
@@ -62,7 +62,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
             // go right by 90%
             if (WillMoveAtAll(90))
             {
-                return new MaterialMovement(new Material(position, emptyCell), new Material(rightBottomPosition, cell.WithFlag(0, true)));
+                return SetNewMaterialPositions(position, emptyCell, rightBottomPosition, cell);
             }
                 
             // dont move
@@ -73,7 +73,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
         {
             // go left
             cell = cell.WithFlag(3, true);
-            return new MaterialMovement(new Material(position, emptyCell), new Material(leftBottomPosition, cell.WithFlag(0, true)));
+            return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
         }
         
         // Last option: sink into liquid
@@ -84,7 +84,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
             bottomCell = bottomCell.WithFlag(1, false);
             cell = cell.WithFlag(2, false);
             cell = cell.WithFlag(1, false);
-            return new MaterialMovement(new Material(position, bottomCell.WithFlag(0, true)), new Material(new Vector(position.X, position.Y + 1), cell.WithFlag(0, true))); 
+            return SetNewMaterialPositions(position, bottomCell, new Vector(position.X, position.Y + 1), cell);
         }
         
         var isRightBottomWayFreeToSink = (IsEmpty(rightCell.Type) || IsLiquid(rightCell.Type) && rightCell.IsFlagSet(2))
@@ -96,7 +96,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
             rightBottomCell = rightBottomCell.WithFlag(1, false);
             cell = cell.WithFlag(2, false);
             cell = cell.WithFlag(1, false);
-            return new MaterialMovement(new Material(position, rightBottomCell.WithFlag(0, true)), new Material(rightBottomPosition, cell.WithFlag(0, true)));
+            return SetNewMaterialPositions(position, rightBottomCell, rightBottomPosition, cell);
         }
 
         var isLeftBottomWayFreeToSink = (IsEmpty(leftCell.Type) || IsLiquid(leftCell.Type) && leftCell.IsFlagSet(2))
@@ -115,10 +115,5 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
         }
 
         return DontMove(position, cell);
-    }
-
-    private static MaterialMovement? SetNewMaterialPositions(Vector fromPosition, Cell cellForSource, Vector toPosition, Cell cellForDestination)
-    {
-        return new MaterialMovement(new Material(fromPosition, cellForSource.WithFlag(0, true)), new Material(toPosition, cellForDestination.WithFlag(0, true)));
     }
 }

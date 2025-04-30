@@ -14,7 +14,7 @@ public sealed class MaterialRuleSet(Vector dimension)
     {
         var cell = playGround.GetCell(position);
 
-        if (sandHandler.IsEmpty(cell.Type)) return null;
+        if (IsEmpty(cell.Type)) return null;
         
         if (IsSand(cell.Type))
         {
@@ -53,6 +53,12 @@ public sealed class MaterialRuleSet(Vector dimension)
         }
         
         return playGround;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool IsEmpty(CellType cellType)
+    {
+        return (byte)cellType == 0;
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

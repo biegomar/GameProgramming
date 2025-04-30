@@ -7,13 +7,12 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
 {
     public override MaterialMovement? ApplyRules(PlayGround playGround, Vector position, Cell cell)
     {
-        
         var bottomCell = GetCell(playGround, new Vector(position.X, position.Y + 1));
         
         // direct way: bottom cell is free
         if (bottomCell.Type == Empty)
         {
-            return new MaterialMovement(new Material(position, bottomCell), new Material(new Vector(position.X, position.Y + 1), cell.WithFlag(0, true)));
+            return SetNewMaterialPositions(position, bottomCell, new Vector(position.X, position.Y + 1), cell);
         }
         
         var rightPosition = new Vector(position.X + 1, position.Y);
@@ -41,12 +40,12 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
                     if (WillMoveRight())
                     {
                         // go right
-                        return new MaterialMovement(new Material(position, emptyCell), new Material(rightBottomPosition, cell.WithFlag(0, true)));
+                        return SetNewMaterialPositions(position, emptyCell, rightBottomPosition, cell);
                     }
                     
                     // go left
                     cell = cell.WithFlag(3, true);
-                    return new MaterialMovement(new Material(position, emptyCell), new Material(leftBottomPosition, cell.WithFlag(0, true)));    
+                    return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
                 }
                     
                 // dont move
@@ -56,7 +55,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
             // go right by 90%
             if (WillMoveAtAll(90))
             {
-                return new MaterialMovement(new Material(position, emptyCell), new Material(rightBottomPosition, cell.WithFlag(0, true)));
+                return SetNewMaterialPositions(position, emptyCell, rightBottomPosition, cell);
             }
                 
             // dont move
@@ -68,7 +67,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         {
             // go left
             cell = cell.WithFlag(3, true);
-            return new MaterialMovement(new Material(position, emptyCell), new Material(leftBottomPosition, cell.WithFlag(0, true)));
+            return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
         }
         
         //Sliding
@@ -83,7 +82,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         if (!cell.IsFlagSet(4) && IsEmpty(rightCell.Type) && IsSolidOrEmpty(topCell.Type) && IsSolidOrEmpty(topRightCell.Type) && IsSolidOrEmpty(topRightOpponentCell.Type))
         {
             cell = cell.WithFlag(3, false);
-            return new MaterialMovement(new Material(position, emptyCell), new Material(rightPosition, cell.WithFlag(0, true)));
+            return SetNewMaterialPositions(position, emptyCell, rightPosition, cell);
         }
         
         // flag to move only left until blocked
@@ -98,7 +97,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
             && IsSolidOrEmpty(topLeftOpponentCell.Type))
         {
             cell = cell.WithFlag(3, true);
-            return new MaterialMovement(new Material(position, emptyCell), new Material(leftPosition, cell.WithFlag(0, true)));
+            return SetNewMaterialPositions(position, emptyCell, leftPosition, cell);
         }
         
         // reset flag to enable moving right

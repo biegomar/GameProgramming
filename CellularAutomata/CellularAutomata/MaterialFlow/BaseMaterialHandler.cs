@@ -43,19 +43,25 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected static MaterialMovement? SetNewMaterialPositions(Vector fromPosition, Cell cellForSource, Vector toPosition, Cell cellForDestination)
+    {
+        return new MaterialMovement(new Material(fromPosition, cellForSource.WithFlag(0, true)), new Material(toPosition, cellForDestination.WithFlag(0, true)));
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected bool IsSolidOrEmpty(CellType cellType)
     {
         return (byte)cellType <= 1;
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsEmpty(CellType cellType)
+    protected bool IsEmpty(CellType cellType)
     {
         return (byte)cellType == 0;
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsSolid(CellType cellType)
+    protected bool IsSolid(CellType cellType)
     {
         return (byte)cellType == 1;
     }
