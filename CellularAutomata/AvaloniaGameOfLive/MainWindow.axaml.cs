@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
@@ -35,11 +34,8 @@ public partial class MainWindow : Window
     
     private Vector cellSize => new ((int)cellSizeSelector.Value, (int)cellSizeSelector.Value);
     private Vector dimension;
+    private readonly SKColor sandBackgroundColor = new (243, 229, 229, 255);
     
-    private SKColor aliveColor = SKColors.Chartreuse;
-    private SKColor wolframColor = SKColors.CornflowerBlue;
-    private SKColor noiseGridColor = SKColors.Aquamarine;
-    private readonly SKColor emptyColor = SKColors.Black;
 
     private double initializationProbability;
     private double spawnProbability;
@@ -446,6 +442,8 @@ public partial class MainWindow : Window
 
     private void InitializeSimulationRules()
     {
+        GameOfLiveView.ClearColor = SKColors.Black;
+        
         switch (ruleSetType)
         {
             case RuleSetType.GameOfLife:
@@ -548,6 +546,7 @@ public partial class MainWindow : Window
 
     private void InitializeForSand()
     {
+        GameOfLiveView.ClearColor = sandBackgroundColor;
         automataSand = new AutomataMaterialGrid(dimension);
         playGroundSand = new PlayGround(dimension);
         ruleSetMaterial = new MaterialRuleSet(dimension);
@@ -634,13 +633,13 @@ public partial class MainWindow : Window
         switch (ruleSetType)
         {
             case RuleSetType.GameOfLife:
-                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, maxDegreeOfParallelism, b => b ? this.aliveColor : emptyColor);
+                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, maxDegreeOfParallelism, SKColors.Chartreuse);
                 break;
             case RuleSetType.Wolfram:
-                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, maxDegreeOfParallelism, b => b  ? this.wolframColor : emptyColor);
+                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, maxDegreeOfParallelism, SKColors.CornflowerBlue);
                 break;
             case RuleSetType.NoiseGrid:
-                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, maxDegreeOfParallelism, b => b  ? this.noiseGridColor : emptyColor);
+                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, maxDegreeOfParallelism, SKColors.Aquamarine);
                 break;
             case RuleSetType.Sand:
                 SkiaVisualizer.Render(playGroundSand, cellSize, canvas, cbEngine.SelectedIndex, maxDegreeOfParallelism);

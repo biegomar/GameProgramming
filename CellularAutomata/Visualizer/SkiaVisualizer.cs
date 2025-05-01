@@ -20,8 +20,6 @@ public static class SkiaVisualizer
         CellColor.Wavestone, 
         CellColor.RippleBlue
     ];
-
-    private static readonly SKColor EmptyColor = SKColors.Black;
     
     public static void Render(PlayGround playGround, Vector cellSize, SKCanvas canvas, int renderEngineIndex, int maxDegreeOfParallelism, Func<CellColor, SKColor>? typeToColor = null)
     {
@@ -39,18 +37,18 @@ public static class SkiaVisualizer
         }
     }
     
-    public static void RenderSimplePlayGround(SimplePlayGround playGround, Vector cellSize, SKCanvas canvas, int renderEngineIndex, int maxDegreeOfParallelism, Func<bool, SKColor> stateToColor)
+    public static void RenderSimplePlayGround(SimplePlayGround playGround, Vector cellSize, SKCanvas canvas, int renderEngineIndex, int maxDegreeOfParallelism, SKColor stateColor)
     {
         switch (renderEngineIndex)
         {
             case 0:
-                RenderSimpleRectangles(playGround, cellSize, canvas, maxDegreeOfParallelism, stateToColor);
+                RenderSimpleRectangles(playGround, cellSize, canvas, maxDegreeOfParallelism, stateColor);
                 break;
             case 1:
-                RenderSimplePixel(playGround, cellSize, canvas, maxDegreeOfParallelism, stateToColor);
+                RenderSimplePixel(playGround, cellSize, canvas, maxDegreeOfParallelism, stateColor);
                 break;
             default:
-                RenderSimpleRectangles(playGround, cellSize, canvas, maxDegreeOfParallelism, stateToColor);
+                RenderSimpleRectangles(playGround, cellSize, canvas, maxDegreeOfParallelism, stateColor);
                 break;
         }
     }
@@ -105,7 +103,7 @@ public static class SkiaVisualizer
         }
     }
     
-    private static void RenderSimplePixel(SimplePlayGround playGround, Vector cellSize, SKCanvas canvas, int maxDegreeOfParallelism, Func<bool, SKColor> stateToColor)
+    private static void RenderSimplePixel(SimplePlayGround playGround, Vector cellSize, SKCanvas canvas, int maxDegreeOfParallelism, SKColor stateColor)
     {
         var colorBuckets = new ConcurrentDictionary<SKColor, ConcurrentBag<SKPoint>>();
         var dimensionX = playGround.Dimension.X;
@@ -127,7 +125,7 @@ public static class SkiaVisualizer
                     continue;
                 
                 var point = new SKPoint(x * cellHeight, y * cellWidth);
-                colorBuckets.GetOrAdd(stateToColor(actualState), _ => new ConcurrentBag<SKPoint>()).Add(point);
+                colorBuckets.GetOrAdd(stateColor, _ => new ConcurrentBag<SKPoint>()).Add(point);
             }
         });
         
@@ -181,7 +179,7 @@ public static class SkiaVisualizer
         }
     }
     
-    private static void RenderSimpleRectangles(SimplePlayGround playGround, Vector cellSize, SKCanvas canvas, int maxDegreeOfParallelism, Func<bool, SKColor> stateToColor)
+    private static void RenderSimpleRectangles(SimplePlayGround playGround, Vector cellSize, SKCanvas canvas, int maxDegreeOfParallelism, SKColor stateColor)
     {
         using var paint = new SKPaint();
         var cellWidth = cellSize.X;
@@ -202,7 +200,7 @@ public static class SkiaVisualizer
                 if (!actualState)
                     continue;
             
-                paint.Color = stateToColor(actualState);
+                paint.Color = stateColor;
                 var rect = new SKRect(left, top, right, bottom);
         
                 canvas.DrawRect(rect, paint);
@@ -226,7 +224,6 @@ public static class SkiaVisualizer
     {
         return color switch
         {
-            CellColor.Empty => EmptyColor,
             CellColor.Solid => SKColors.Gray,
             CellColor.GoldenSand => new SKColor(210, 168, 105),
             CellColor.DesertGold => new SKColor(214, 171, 107),
@@ -247,8 +244,7 @@ public static class SkiaVisualizer
             CellColor.SplashBlue => new SKColor(89, 142, 222, 255),
             CellColor.AzureDrift => new SKColor(88, 140, 219, 255),
             CellColor.Wavestone => new SKColor(85, 136, 212, 255),
-            CellColor.RippleBlue => new SKColor(81, 129, 202, 255),
-            _ => EmptyColor
+            CellColor.RippleBlue => new SKColor(81, 129, 202, 255)
         };
     }
 }

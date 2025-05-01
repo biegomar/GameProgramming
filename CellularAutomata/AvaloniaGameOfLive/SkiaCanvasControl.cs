@@ -9,9 +9,12 @@ namespace AvaloniaGameOfLive;
 
 public class SkiaCanvasControl : Control
 {
+    private static readonly SKColor EmptyColor = new SKColor(243, 229, 229, 255);
     private WriteableBitmap? _bitmap;
 
     public event Action<SKCanvas>? PaintSurface;
+
+    public SKColor? ClearColor { get; set; }
 
     public override void Render(DrawingContext context)
     {
@@ -34,7 +37,7 @@ public class SkiaCanvasControl : Control
             {
                 var canvas = surface.Canvas;
                 
-                canvas.Clear(SKColors.Black);
+                canvas.Clear(ClearColor ?? SKColors.Black);
 
                 PaintSurface?.Invoke(canvas);
 
