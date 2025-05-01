@@ -91,6 +91,12 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected bool IsNonSlidingOrEmpty(CellType cellType)
+    {
+        return (byte)cellType <= 2;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected bool WillMoveRight()
     {
         return pseudoRandom.Chance(50);

@@ -72,14 +72,21 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         
         //Sliding
         
+        var rightOpponentCell = GetCell(playGround, new Vector(position.X + 2, position.Y));
         var topCell = GetCell(playGround, new Vector(position.X, position.Y - 1));
         var topRightCell = GetCell(playGround, new Vector(position.X + 1, position.Y - 1));
         var topRightOpponentCell = GetCell(playGround, new Vector(position.X + 2, position.Y - 1));
         var topLeftCell = GetCell(playGround, new Vector(position.X - 1, position.Y - 1));
         var topLeftOpponentCell = GetCell(playGround, new Vector(position.X - 2, position.Y - 1));
+
+        var isRightWayFree = !cell.IsFlagSet(4) 
+                             && IsSolidOrEmpty(topCell.Type) 
+                             && IsEmpty(rightCell.Type) 
+                             && IsSolidOrEmpty(topRightCell.Type) 
+                             && IsSolidOrEmpty(topRightOpponentCell.Type);
         
         // the right way is free
-        if (!cell.IsFlagSet(4) && IsEmpty(rightCell.Type) && IsSolidOrEmpty(topCell.Type) && IsSolidOrEmpty(topRightCell.Type) && IsSolidOrEmpty(topRightOpponentCell.Type))
+        if (isRightWayFree)
         {
             cell = cell.WithFlag(3, false);
             return SetNewMaterialPositions(position, emptyCell, rightPosition, cell);
@@ -89,12 +96,14 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         cell = cell.WithFlag(4, true);
 
         // the left way is free
-        if (cell.IsFlagSet(4) &&
-            IsEmpty(leftCell.Type)
-            && IsSolidOrEmpty(topCell.Type)
-            && (IsSolid(leftOpponentCell.Type) || IsEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3))
-            && IsSolidOrEmpty(topLeftCell.Type)
-            && IsSolidOrEmpty(topLeftOpponentCell.Type))
+        var isLeftWayFree = cell.IsFlagSet(4)
+                            && IsSolidOrEmpty(topCell.Type)
+                            && IsEmpty(leftCell.Type)
+                            && IsSolidOrEmpty(topLeftCell.Type)
+                            && IsSolidOrEmpty(topLeftOpponentCell.Type)
+                            && (IsNonSlidingOrEmpty(leftOpponentCell.Type) || IsLiquid(leftOpponentCell.Type) && leftOpponentCell.IsFlagSet(4));
+        
+        if (isLeftWayFree)
         {
             cell = cell.WithFlag(3, true);
             return SetNewMaterialPositions(position, emptyCell, leftPosition, cell);
