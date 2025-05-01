@@ -9,19 +9,35 @@
         Title="AvaloniaGameOfLive"
         >
     <Grid ColumnDefinitions="810, *" RowDefinitions="20, 610, *">
-        <TextBlock x:Name="statusLabel"
-               Grid.Column="0" 
-               Grid.Row="0"  Text="Generation"
-               Margin="5"
-               />
-        <avaloniaGameOfLive:SkiaCanvasControl x:Name="GameOfLiveView" 
-                           Grid.Column="0" 
-                           Grid.Row="1"
-                           Height="600"
-                           Width="800"
-                           Margin="5">
-        </avaloniaGameOfLive:SkiaCanvasControl>       
+        <TextBlock x:Name="statusLabel" Grid.Column="0" Grid.Row="0"  Text="Generation" Margin="5"/>
+        <avaloniaGameOfLive:SkiaCanvasControl x:Name="GameOfLiveView" Grid.Column="0" Grid.Row="1" Height="600" Width="800" Margin="5"/>
     
+        <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Vertical" HorizontalAlignment="Left" Spacing="5" Margin="5,0,5,0" Name="SpawnPanel">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12" Margin="5,5,5,0" Name="SpawnPanel2">
+                <CheckBox x:Name="cbBrushActive" Content="Zeichnen" VerticalAlignment="Center" Width="97" IsChecked="True" />
+                <TextBlock x:Name="lblBrushSize" Text="Pinselgröße" VerticalAlignment="Center" Width="80"/>
+                <NumericUpDown x:Name="brushSizeSelector"
+                               Minimum="1"
+                               Maximum="20"
+                               Value="10"
+                               Increment="1"
+                               Width="75"
+                />
+                <TextBlock x:Name="lblMaterial" Text="Material" VerticalAlignment="Center" Width="60"/>
+                <ComboBox x:Name="cbMaterial" HorizontalAlignment="Right" Width="100" SelectedIndex="0">
+                    <ComboBox.Items>
+                        <ComboBoxItem Content="Leer" />
+                        <ComboBoxItem Content="Wand" />
+                        <ComboBoxItem Content="Sand" />
+                        <ComboBoxItem Content="Wasser" />
+                    </ComboBox.Items>
+                </ComboBox>
+                <Panel HorizontalAlignment="Left" Margin="5,0,5,0" Name="UsePanel">
+                    <CheckBox x:Name="cbUseProbability" Content="Wahrscheinlichkeit nutzen" VerticalAlignment="Center" IsChecked="True" Margin="5,0,0,0"/>
+                </Panel>
+            </StackPanel>
+        </StackPanel>
+        
         <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Left" Spacing="5" Margin="5,0,5,0" Name="FramePanel">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="10"  >
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Spacing="10" Margin="5,5,65,5" Name="ButtonStack">
@@ -117,21 +133,7 @@
                     </StackPanel>
                 </StackPanel> 
             </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12" Margin="5,5,5,0" Name="SpawnPanel">
-                <CheckBox x:Name="cbBrushActive" Content="Zeichnen" VerticalAlignment="Center" Width="97" IsChecked="True" Margin="5,0,60,0"/>
-                <TextBlock x:Name="lblBrushSize" Text="Pinselsize" VerticalAlignment="Center" Width="75"/>
-                <NumericUpDown x:Name="brushSizeSelector"
-                               Minimum="1"
-                               Maximum="20"
-                               Value="10"
-                               Increment="1"
-                               Width="170"
-                               />
-            </StackPanel>
-            <Panel HorizontalAlignment="Left" Margin="5,0,5,0" Name="UsePanel">
-                <CheckBox x:Name="cbUseProbability" Content="Wahrscheinlichkeit nutzen" VerticalAlignment="Center" IsChecked="True" Margin="5,0,0,0"/>
-            </Panel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12" Margin="5,15,5,5" Name="StopWatchPanel">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12" Margin="5" Name="StopWatchPanel">
                 <CheckBox x:Name="cbStopWatch" Content="Messung" VerticalAlignment="Center" Width="97" IsChecked="True" Margin="5,0,60,5"/>
                 <TextBlock x:Name="lblStopWatch" Text="Durchläufe" VerticalAlignment="Center" Width="75"/>
                 <NumericUpDown x:Name="stopWatchCountSelector"
@@ -142,13 +144,13 @@
                                Width="170"
                 />
             </StackPanel>
-            <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
+            <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" Margin="5,2">
                 <TextBox x:Name="tbStopWatch"
                          Text="Statistik"
                          AcceptsReturn="True"
                          TextWrapping="Wrap"
                          IsReadOnly="True"
-                         Height="305"
+                         Height="300"
                          Width="430" />
 
             </ScrollViewer>

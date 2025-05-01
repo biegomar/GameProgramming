@@ -1,6 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using CellularAutomata.Cells;
-using CellularAutomata.MaterialFlow;
 using CellularAutomata.PlayGrounds;
 
 namespace CellularAutomata.Wolfram;

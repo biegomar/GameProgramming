@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
+using CellularAutomata.Cells;
 using CellularAutomata.PlayGrounds;
 
 namespace CellularAutomata.MaterialFlow;
@@ -7,15 +8,10 @@ namespace CellularAutomata.MaterialFlow;
 public sealed class AutomataMaterialGrid(Vector dimension)
 {
     private PlayGround nextGenerationPlayGround = new(dimension);
-    private bool isNextGenerationPlayGroundInitialized = false;
-
-    public PlayGround NextGeneration(PlayGround initialPlayGround, SandRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize)
+    
+    public PlayGround NextGeneration(PlayGround initialPlayGround, MaterialRuleSet ruleSet, int maxDegreeOfParallelism)
     {
-        // if (!isNextGenerationPlayGroundInitialized)
-        // {
-        //     InitializeNextGenerationPlayGround(initialPlayGround, maxDegreeOfParallelism);
-        // }
-        InitializeNextGenerationPlayGround(initialPlayGround, 16);
+        ResetNextGenerationPlayGround(initialPlayGround, maxDegreeOfParallelism);
         
         var ground = initialPlayGround;
         
@@ -34,22 +30,15 @@ public sealed class AutomataMaterialGrid(Vector dimension)
                 }
             }
         }
-
-        if (isSpawn)
-        {
-            nextGenerationPlayGround = ApplySpawnRules(nextGenerationPlayGround, ruleSet, spawnPosition, brushSize);    
-        }
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround);
-        
-        initialPlayGround.ResetMarkedCells();
         
         return initialPlayGround;
     }
     
-    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, SandRuleSet ruleSet, bool isSpawn, Vector spawnPosition, Vector brushSize, int maxDegreeOfParallelism)
+    public PlayGround NextGenerationParallel(PlayGround initialPlayGround, MaterialRuleSet ruleSet, int maxDegreeOfParallelism)
     {
-        InitializeNextGenerationPlayGround(initialPlayGround, maxDegreeOfParallelism);
+        ResetNextGenerationPlayGround(initialPlayGround, maxDegreeOfParallelism);
         
         var parallelOptions = new ParallelOptions()
         {
@@ -69,7 +58,7 @@ public sealed class AutomataMaterialGrid(Vector dimension)
                      var result = ruleSet.ApplyRules(ground, new Vector(column, row));
                      if (result.HasValue)
                      {
-                         nextGenerationPlayGround.SetCell(new Vector(column, row), result.Value.Source.Body);
+                         nextGenerationPlayGround.SetCell(result.Value.Source.Position, result.Value.Source.Body);
                          if (result.Value.Destination.HasValue)
                          {
                              nextGenerationPlayGround.SetCell(result.Value.Destination.Value.Position, result.Value.Destination.Value.Body);    
@@ -78,23 +67,16 @@ public sealed class AutomataMaterialGrid(Vector dimension)
                 }
             }
         });
-
-        if (isSpawn)
-        {
-            nextGenerationPlayGround = ApplySpawnRules(nextGenerationPlayGround, ruleSet, spawnPosition, brushSize);   
-        }
         
         Swap(ref initialPlayGround, ref nextGenerationPlayGround); 
-        
-        initialPlayGround.ResetMarkedCells();
         
         return initialPlayGround;
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public PlayGround ApplySpawnRules(PlayGround playGround, SandRuleSet ruleSet, Vector spawnPosition, Vector brushSize, double probability = 1)
+    public PlayGround ApplySpawnRules(PlayGround playGround, MaterialRuleSet ruleSet, CellType type, Vector spawnPosition, Vector brushSize, double probability = 1)
     {
-        return ruleSet.ApplySpawnRules(playGround, spawnPosition, brushSize, probability); 
+        return ruleSet.ApplySpawnRules(playGround, type, spawnPosition, brushSize, probability); 
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -103,13 +85,13 @@ public sealed class AutomataMaterialGrid(Vector dimension)
         (instanceOne, instanceTwo) = (instanceTwo, instanceOne);
     }
 
-    private void InitializeNextGenerationPlayGround(PlayGround playGround, int maxDegreeOfParallelism)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ResetNextGenerationPlayGround(PlayGround playGround, int maxDegreeOfParallelism)
     {
         var parallelOptions = new ParallelOptions()
         {
             MaxDegreeOfParallelism = Math.Min(maxDegreeOfParallelism, Environment.ProcessorCount)
         };
-        
         
         var yPartitioner = Partitioner.Create(0, playGround.Dimension.Y);
         
@@ -119,11 +101,9 @@ public sealed class AutomataMaterialGrid(Vector dimension)
             {
                 for (var column = 0; column < playGround.Dimension.X; column++)
                 {
-                    nextGenerationPlayGround.SetCell(new Vector(column, row), playGround.GetCell(new Vector(column, row)) with {});
+                    nextGenerationPlayGround.SetCell(new Vector(column, row), playGround.GetCell(new Vector(column, row)));
                 }
             }
         });
-        
-        isNextGenerationPlayGroundInitialized = true;
     }
 }

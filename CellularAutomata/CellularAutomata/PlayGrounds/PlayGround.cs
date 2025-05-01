@@ -6,23 +6,19 @@ namespace CellularAutomata.PlayGrounds;
 public sealed class PlayGround
 {
     private readonly Cell[] cells;
-    private bool[] markedCells;
     
     public Vector Dimension { get; }
     
     private readonly uint dimensionX;
     private readonly uint dimensionY;
-    private readonly uint fieldSize;
     
     public PlayGround(Vector dimension, Func<int, int, Cell>? cellFactory = null)
     {
         Dimension = dimension;
         dimensionX = (uint)dimension.X;
         dimensionY = (uint)dimension.Y;
-        fieldSize = dimensionX * dimensionY;
         
-        cells = new Cell[fieldSize];
-        ResetMarkedCells();
+        cells = new Cell[dimensionX * dimensionY];
         
         Initialize(cellFactory);
     }
@@ -30,42 +26,20 @@ public sealed class PlayGround
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Cell GetCell(Vector position)
     {
-        return cells[this.GetIndex(position)];
+        return cells[this.GetIndex(position)]; 
     }
 
     public void SetCell(Vector position, Cell cell)
     {
-        cells[this.GetIndex(position)] = cell;
+        if (IsWithinBounds(position))
+        {
+            cells[this.GetIndex(position)] = cell;    
+        }
     }
-
-    public CellType GetCellType(Vector position)
-    {
-        return cells[this.GetIndex(position)].Type;
-    }
-
-    public void MarkCell(Vector position)
-    {
-        markedCells[this.GetIndex(position)] = true;
-    }
-
-    public bool IsMarkedCell(Vector position)
-    {
-        return markedCells[this.GetIndex(position)];
-    }
-
-    public void ResetMarkedCells()
-    {
-        markedCells = new bool[fieldSize];
-    }
-
-    public void SetCellType(Vector position, CellType cellType)
-    {
-        cells[this.GetIndex(position)].Type = cellType;
-    }
-
+    
     private void Initialize(Func<int, int, Cell>? cellFactory = null)
     {
-        const CellBrightness cellBrightness = CellBrightness.Empty;
+        const CellColor cellBrightness = CellColor.Empty;
         const CellType cellType = CellType.Empty;
 
         for (ushort x = 0; x < this.dimensionX; x++)
@@ -86,7 +60,7 @@ public sealed class PlayGround
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool IsWithinBounds(Vector position )
+    private bool IsWithinBounds(Vector position)
     {
         return (uint)position.X < Dimension.X && (uint)position.Y < Dimension.Y;
     }

@@ -34,28 +34,22 @@ public partial class MainWindow : Window
     
     private Vector cellSize => new ((int)cellSizeSelector.Value, (int)cellSizeSelector.Value);
     private Vector dimension;
+    private readonly SKColor sandBackgroundColor = new (243, 229, 229, 255);
     
-    private SKColor aliveColor = SKColors.Chartreuse;
-    private SKColor wolframColor = SKColors.CornflowerBlue;
-    private SKColor noiseGridColor = SKColors.Aquamarine;
-    private readonly SKColor emptyColor = SKColors.Black;
 
     private double initializationProbability;
     private double spawnProbability;
     
     private ToolTip toolTip;
-    private readonly DispatcherTimer toolTipTimer = new ();
     private bool isTooltipVisible = false;
+    
     private bool isSpawnActive = false;
     private Vector spawnPosition = new (0, 0);
-    private Vector brushSize = new Vector(10,10);
+    private Vector brushSize = new (10,10);
+    private CellType actualSpawnType = CellType.Empty;
 
     private IList<long> generationTimes;
     private IList<long> renderingTimes;
-    
-    private readonly Stopwatch generationStopwatch = new ();
-    private readonly Stopwatch renderingStopwatch = new ();
-    private readonly Stopwatch totalStopwatch = new ();
 
     private bool shouldDraw = true;
     private bool timingEnabled = true;
@@ -71,7 +65,7 @@ public partial class MainWindow : Window
     private GameOfLifeRuleSet ruleSetBool;
     
     private AutomataMaterialGrid automataSand;
-    private SandRuleSet ruleSetSand;
+    private MaterialRuleSet ruleSetMaterial;
     
     private AutomataWolfram automataWolframBool;
     private WolframRuleSet ruleSetWolfram;
@@ -86,7 +80,7 @@ public partial class MainWindow : Window
     
     public MainWindow()
     {
-        //var test = Marshal.SizeOf<CellularAutomata.MaterialFlow.MaterialMovement>();
+        //var test = Marshal.SizeOf<Cell>();
 
         InitializeComponent();
         InitializeComponentValues();
@@ -118,6 +112,7 @@ public partial class MainWindow : Window
         cbStopWatch.IsCheckedChanged += cbStopWatch_CheckedChanged;
         cbUseProbability.IsCheckedChanged += cbUseProbability_IsCheckedChanged;
         cbEngine.SelectionChanged += cbEngine_SelectedIndexChanged;
+        cbMaterial.SelectionChanged += cbMaterial_SelectedValueChanged;
         
         btnStart.Click += startGameOfLive_Click;
         btnStop.Click += btnStop_Click;
@@ -194,11 +189,21 @@ public partial class MainWindow : Window
     {
         SetBrushSize();
     }
+    
+    private void cbMaterial_SelectedValueChanged(object? sender, EventArgs e)
+    {
+        SetSpawnType();
+    }
 
     private void SetBrushSize()
     {
         var brushSquare = (int)brushSizeSelector.Value!;
         brushSize = new Vector(brushSquare, brushSquare);
+    }
+
+    private void SetSpawnType()
+    {
+        actualSpawnType = (CellType)cbMaterial.SelectedIndex;
     }
 
     private void processorCountSelector_ValueChanged(object? sender, EventArgs e)
@@ -369,7 +374,7 @@ public partial class MainWindow : Window
 
     private string GetCellStateFromSand(Vector cellPosition)
     {
-        return playGroundSand.GetCellType(cellPosition).ToString();
+        return playGroundSand.GetCell(cellPosition).Type.ToString();
     }
 
     private async Task ShowTooltipWithTimeout(string tooltipText)
@@ -437,6 +442,8 @@ public partial class MainWindow : Window
 
     private void InitializeSimulationRules()
     {
+        GameOfLiveView.ClearColor = SKColors.Black;
+        
         switch (ruleSetType)
         {
             case RuleSetType.GameOfLife:
@@ -539,9 +546,10 @@ public partial class MainWindow : Window
 
     private void InitializeForSand()
     {
+        GameOfLiveView.ClearColor = sandBackgroundColor;
         automataSand = new AutomataMaterialGrid(dimension);
         playGroundSand = new PlayGround(dimension);
-        ruleSetSand = new SandRuleSet(dimension);
+        ruleSetMaterial = new MaterialRuleSet(dimension);
         
         InitializeSandPattern();
     }
@@ -625,16 +633,16 @@ public partial class MainWindow : Window
         switch (ruleSetType)
         {
             case RuleSetType.GameOfLife:
-                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b ? this.aliveColor : emptyColor);
+                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, maxDegreeOfParallelism, SKColors.Chartreuse);
                 break;
             case RuleSetType.Wolfram:
-                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b  ? this.wolframColor : emptyColor);
+                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, maxDegreeOfParallelism, SKColors.CornflowerBlue);
                 break;
             case RuleSetType.NoiseGrid:
-                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, b => b  ? this.noiseGridColor : emptyColor);
+                SkiaVisualizer.RenderSimplePlayGround(playGroundBool, cellSize, canvas, cbEngine.SelectedIndex, maxDegreeOfParallelism, SKColors.Aquamarine);
                 break;
             case RuleSetType.Sand:
-                SkiaVisualizer.Render(playGroundSand, cellSize, canvas, cbEngine.SelectedIndex, emptyColor, maxDegreeOfParallelism, (_, b) => ChooseSandColor(b));
+                SkiaVisualizer.Render(playGroundSand, cellSize, canvas, cbEngine.SelectedIndex, maxDegreeOfParallelism);
                 break;
             default:    
                 break;
@@ -648,37 +656,38 @@ public partial class MainWindow : Window
         var token = cancellationTokenSource.Token;
         
         var maxGenerations = stopWatchCountSelector.Value == null ? 50 : (int)stopWatchCountSelector.Value;
+
+        var totalTicks = 0L;
         
         currentGeneration = 0;
         
         generationTimes = new List<long>(maxGenerations);
         renderingTimes = new List<long>(maxGenerations);
         
+        
         await Task.Run(async () =>
         {
-            totalStopwatch.Restart();
+            var totalStartTimestamp = Stopwatch.GetTimestamp();
             try
             {
                 while (!token.IsCancellationRequested && currentGeneration < maxGenerations)
                 {
                     if (timingEnabled)
                     {
-                        generationStopwatch.Restart();
+                        var generationStartTimestamp = Stopwatch.GetTimestamp();
                     
                         GenerateNextPlaygroundState(ruleSetType);
-                    
-                        generationStopwatch.Stop();
-                        generationTimes.Add(generationStopwatch.ElapsedTicks);
                         
-                        renderingStopwatch.Restart();
+                        generationTimes.Add(Stopwatch.GetElapsedTime(generationStartTimestamp).Ticks);
+                        
+                        var renderingStartTimestamp = Stopwatch.GetTimestamp();
                         
                         if (currentGeneration % 10 == 0)
                         {
                             await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.MaxValue);    
                         }
                         
-                        renderingStopwatch.Stop();
-                        renderingTimes.Add(renderingStopwatch.ElapsedTicks);
+                        renderingTimes.Add(Stopwatch.GetElapsedTime(renderingStartTimestamp).Ticks);
                     
                         currentGeneration++;
                         generation++;
@@ -695,25 +704,25 @@ public partial class MainWindow : Window
             }
             finally
             {
-                totalStopwatch.Stop();
+                totalTicks = Stopwatch.GetElapsedTime(totalStartTimestamp).Ticks;
                 await Dispatcher.UIThread.InvokeAsync(RenderPlaygroundAndDisplayGeneration, DispatcherPriority.MaxValue);
             }
         }, token);
         
-        GenerateStatisticsReport();
-
+        GenerateStatisticsReport(totalTicks);
+        
         SetButtonState(false);
 
         cancellationTokenSource = null;
     }
 
-    private void GenerateStatisticsReport()
+    private void GenerateStatisticsReport(long totalTicks)
     {
         if (timingEnabled)
         {
             var statisticGenerator = new StatisticGenerator();
 
-            tbStopWatch.Text = statisticGenerator.Generate(new AutomataStatistics(totalStopwatch.ElapsedTicks, currentGeneration, maxDegreeOfParallelism,
+            tbStopWatch.Text = statisticGenerator.Generate(new AutomataStatistics(totalTicks, currentGeneration, maxDegreeOfParallelism,
                 renderingTimes, generationTimes));
         }
     }
@@ -730,7 +739,7 @@ public partial class MainWindow : Window
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.NextGenerationParallel(playGroundSand, ruleSetSand, isSpawnActive, spawnPosition, brushSize, maxDegreeOfParallelism),
+            RuleSetType.Sand => automataSand.NextGenerationParallel(playGroundSand, ruleSetMaterial, maxDegreeOfParallelism),
             _ => playGroundSand
         };
     }
@@ -745,29 +754,8 @@ public partial class MainWindow : Window
         
         playGroundSand = type switch
         {
-            RuleSetType.Sand => automataSand.ApplySpawnRules(playGroundSand, ruleSetSand, spawnPosition, brushSize, spawnProbability),
+            RuleSetType.Sand => automataSand.ApplySpawnRules(playGroundSand, ruleSetMaterial, actualSpawnType, spawnPosition, brushSize, spawnProbability),
             _ => playGroundSand
         };
-    }
-    
-    private SKColor ChooseSandColor(CellBrightness brightness)
-    {
-        return brightness switch
-        {
-            CellBrightness.Empty => emptyColor,
-            CellBrightness.Solid => SKColors.Gray,
-            CellBrightness.GoldenSand => new SKColor(210, 168, 105), 
-            CellBrightness.DesertGold => new SKColor(214, 171, 107),
-            CellBrightness.Wheatfield => new SKColor(206, 165, 103),
-            CellBrightness.SaharaDune => new SKColor(212, 170, 106),   
-            CellBrightness.HoneyBeige => new SKColor(208, 166, 104), 
-            CellBrightness.ToastedAlmond => new SKColor(207, 166, 104), 
-            CellBrightness.AmberGrain => new SKColor(216, 173, 108), 
-            CellBrightness.ClayOchre => new SKColor(209, 167, 104), 
-            CellBrightness.GoldenWheat => new SKColor(213, 170, 106), 
-            CellBrightness.SunlitSandstone => new SKColor(211, 169, 106),
-            _ => emptyColor
-        };
-
     }
 }

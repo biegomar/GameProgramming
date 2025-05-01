@@ -26,7 +26,7 @@ public static class SandInitializer
                 for (var y = 0; y < playground.Dimension.Y; y++)
                 {
                     var state = random.NextDouble() < aliveProbability;
-                    playground.SetCell(new Vector(x, y), new Cell(state ? CellType.Sand : CellType.Empty, state ? ShadeProvider.GenerateRandomBrightness(CellType.Sand) : CellBrightness.Empty));
+                    playground.SetCell(new Vector(x, y), new Cell(state ? CellType.Sand : CellType.Empty, state ? ShadeProvider.GenerateColor(CellType.Sand) : CellColor.Empty));
                 }
             }
         });
@@ -48,19 +48,19 @@ public static class SandInitializer
             {
                 if (IsOutline(x, y, width, height) && !IsConnection(x, y, midX, midY))
                 {
-                    playground.SetCell(new Vector(x, y), new Cell(CellType.Solid, CellBrightness.Solid));
+                    playground.SetCell(new Vector(x, y), new Cell(CellType.Solid, CellColor.Solid));
                 }
                 else if (IsTopSand(x, y, midX, midY))
                 {
-                    playground.SetCell(new Vector(x, y), new Cell(CellType.Sand, ShadeProvider.GenerateRandomBrightness(CellType.Sand)));
+                    playground.SetCell(new Vector(x, y), new Cell(CellType.Sand, ShadeProvider.GenerateColor(CellType.Sand)));
                 }
                 else if (IsConnection(x, y, midX, midY))
                 {
-                    playground.SetCell(new Vector(x, y), new Cell(CellType.Sand, ShadeProvider.GenerateRandomBrightness(CellType.Sand)));
+                    playground.SetCell(new Vector(x, y), new Cell(CellType.Sand, ShadeProvider.GenerateColor(CellType.Sand)));
                 }
                 else if (IsBottomEmpty(x, y, midX, midY))
                 {
-                    playground.SetCell(new Vector(x, y), new Cell(CellType.Empty, CellBrightness.Empty));
+                    playground.SetCell(new Vector(x, y), new Cell(CellType.Empty, CellColor.Empty));
                 }
             }
         }
