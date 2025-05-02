@@ -36,7 +36,7 @@ namespace CellularAutomata.Cells;
 /// <description>Indicates if the cell is sliding to the left.</description>
 /// </item>
 /// <item>
-/// <term>5-255</term>
+/// <term>5-7</term>
 /// <description>Reserved for future use or custom cell behavior.</description>
 /// </item>
 /// </list>

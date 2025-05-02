@@ -45,7 +45,7 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected static MaterialMovement? SetNewMaterialPositions(Vector fromPosition, Cell cellForSource, Vector toPosition, Cell cellForDestination)
     {
-        return new MaterialMovement(new Material(fromPosition, cellForSource.WithFlag(0, true)), new Material(toPosition, cellForDestination.WithFlag(0, true)));
+        return new MaterialMovement(new Material(fromPosition, cellForSource), new Material(toPosition, cellForDestination));
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
