@@ -29,17 +29,7 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected MaterialMovement DontMove(Vector position, Cell cell)
     {
-        var immobileCell = cell;
-        if (!cell.IsFlagSet(1))
-        {
-            immobileCell = immobileCell.WithFlag(1, true);
-        }
-        else if (!cell.IsFlagSet(2))
-        {
-            immobileCell = immobileCell.WithFlag(2, true);
-        }
-        
-        return new MaterialMovement(new Material(position, immobileCell), null);
+        return new MaterialMovement(new Material(position, cell.WithCounter(Math.Min(15, cell.GetCounter() + 1))), null);
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

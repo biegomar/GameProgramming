@@ -29,22 +29,20 @@ namespace CellularAutomata.Cells;
 /// </item>
 /// <item>
 /// <term>3</term>
-/// <description>-</description>
-/// </item>
-/// <item>
-/// <term>4</term>
 /// <description>Indicates if the cell is sliding to the left.</description>
 /// </item>
 /// <item>
-/// <term>5-7</term>
-/// <description>Reserved for future use or custom cell behavior.</description>
+/// <term>4-7</term>
+/// <description>A 4-bit counter.</description>
 /// </item>
 /// </list>
 /// </param>
 
 [StructLayout(LayoutKind.Sequential, Size = 3)]
-public record struct Cell(CellType Type, CellColor Color, byte Flags = 0)
+public readonly record struct Cell(CellType Type, CellColor Color, byte Flags = 0)
 {
+    private const int CounterMask = 0b1111_0000;
+
     public bool IsFlagSet(int bitPosition)
     {
         return (Flags & (1 << bitPosition)) != 0;
@@ -53,9 +51,33 @@ public record struct Cell(CellType Type, CellColor Color, byte Flags = 0)
     public Cell WithFlag(int bitPosition, bool value)
     {
         var newFlags = value 
-            ? (byte)(Flags | (1 << bitPosition))         // Setzen
-            : (byte)(Flags & ~(1 << bitPosition));        // Zurücksetzen
+            ? (byte)(Flags | (1 << bitPosition))
+            : (byte)(Flags & ~(1 << bitPosition));
         
         return this with { Flags = newFlags };
     }
+    
+    /// <summary>
+    /// Reads the counter from bits 4-7.
+    /// </summary>
+    public int GetCounter()
+    {
+        return (Flags & CounterMask) >> 4; // Verschiebt Bits 4-7 nach rechts
+    }
+    
+    /// <summary>
+    /// Sets the counter in bits 4-7.
+    /// </summary>
+    public Cell WithCounter(int counterValue)
+    {
+        if (counterValue < 0 || counterValue > 15)
+        {
+            throw new ArgumentOutOfRangeException(nameof(counterValue), "Value must be between 0 and 15.");
+        }
+        
+        var newFlags = (byte)((Flags & ~CounterMask) | (counterValue << 4)); 
+        return this with { Flags = newFlags };
+    }
+
+
 }

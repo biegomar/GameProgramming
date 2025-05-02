@@ -72,7 +72,6 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         
         //Sliding
         
-        var rightOpponentCell = GetCell(playGround, new Vector(position.X + 2, position.Y));
         var topCell = GetCell(playGround, new Vector(position.X, position.Y - 1));
         var topRightCell = GetCell(playGround, new Vector(position.X + 1, position.Y - 1));
         var topRightOpponentCell = GetCell(playGround, new Vector(position.X + 2, position.Y - 1));
@@ -113,7 +112,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         cell = cell.WithFlag(3, false);
         
         // let other materials sink in.
-        if (topCell.IsFlagSet(2) && cell.IsFlagSet(2))
+        if (topCell.GetCounter() >= 2 && cell.GetCounter() >= 2)
         {
             return null;
         }
