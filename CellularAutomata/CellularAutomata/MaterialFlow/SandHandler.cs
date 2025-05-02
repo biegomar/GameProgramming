@@ -32,7 +32,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
 
         var isRightBottomWayFree = IsEmpty(rightCell.Type) && IsEmpty(rightBottomCell.Type);
         var isLeftBottomWayFree = IsEmpty(leftCell.Type) && IsEmpty(leftBottomCell.Type) &&
-                                  (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3));
+                                  (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(0));
         
         // the right way is free
         if (isRightBottomWayFree)
@@ -51,7 +51,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
                     }
                     
                     // go left
-                    cell = cell.WithFlag(3, true);
+                    cell = cell.WithFlag(0, true);
                     return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
                 }
                     
@@ -72,7 +72,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
         if (isLeftBottomWayFree)
         {
             // go left
-            cell = cell.WithFlag(3, true);
+            cell = cell.WithFlag(0, true);
             return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
         }
         
@@ -101,7 +101,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
 
         var isLeftBottomWayFreeToSink = (IsEmpty(leftCell.Type) || IsLiquid(leftCell.Type) && leftCell.IsFlagSet(2))
                                         && IsLiquid(leftBottomCell.Type) && leftBottomCell.IsFlagSet(2)
-                                        && (IsSolidOrLiquidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3))
+                                        && (IsSolidOrLiquidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(0))
                                         && cell.IsFlagSet(2);
         
         if (isLeftBottomWayFreeToSink)
@@ -109,7 +109,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
             // go left
             leftBottomCell = leftBottomCell.WithFlag(2, false);
             leftBottomCell = leftBottomCell.WithFlag(1, false);
-            cell = cell.WithFlag(3, true);
+            cell = cell.WithFlag(0, true);
             cell = cell.WithFlag(2, false);
             cell = cell.WithFlag(1, false);
             return SetNewMaterialPositions(position, leftBottomCell, leftBottomPosition, cell);

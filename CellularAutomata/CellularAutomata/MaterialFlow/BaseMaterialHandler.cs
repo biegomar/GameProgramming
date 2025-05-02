@@ -39,7 +39,7 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
             immobileCell = immobileCell.WithFlag(2, true);
         }
         
-        return new MaterialMovement(new Material(position, immobileCell.WithFlag(0, true)), null);
+        return new MaterialMovement(new Material(position, immobileCell), null);
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

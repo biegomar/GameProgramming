@@ -17,7 +17,7 @@ namespace CellularAutomata.Cells;
 /// </listheader>
 /// <item>
 /// <term>0</term>
-/// <description>Indicates whether the cell has moved.</description>
+/// <description>Indicates if the cell is moving in the left direction.</description>
 /// </item>
 /// <item>
 /// <term>1</term>

@@ -31,7 +31,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         if (rightCell.Type == Empty && rightBottomCell.Type == Empty)
         {
             // the left way as well
-            if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3)))
+            if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(0)))
             {
                 // move by 80%
                 if (WillMoveAtAll(80))
@@ -44,7 +44,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
                     }
                     
                     // go left
-                    cell = cell.WithFlag(3, true);
+                    cell = cell.WithFlag(0, true);
                     return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
                 }
                     
@@ -63,10 +63,10 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         }
 
         // the left bottom way is free 
-        if (IsEmpty(leftCell.Type) && IsEmpty(leftBottomCell.Type) && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3)))
+        if (IsEmpty(leftCell.Type) && IsEmpty(leftBottomCell.Type) && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(0)))
         {
             // go left
-            cell = cell.WithFlag(3, true);
+            cell = cell.WithFlag(0, true);
             return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
         }
         
@@ -88,7 +88,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         // the right way is free
         if (isRightWayFree)
         {
-            cell = cell.WithFlag(3, false);
+            cell = cell.WithFlag(0, false);
             return SetNewMaterialPositions(position, emptyCell, rightPosition, cell);
         }
         
@@ -105,7 +105,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         
         if (isLeftWayFree)
         {
-            cell = cell.WithFlag(3, true);
+            cell = cell.WithFlag(0, true);
             return SetNewMaterialPositions(position, emptyCell, leftPosition, cell);
         }
         
