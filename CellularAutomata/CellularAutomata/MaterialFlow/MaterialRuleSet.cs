@@ -9,6 +9,7 @@ public sealed class MaterialRuleSet(Vector dimension)
     private readonly Random random = new ();
     private readonly SandHandler sandHandler = new(dimension);
     private readonly WaterHandler waterHandler = new(dimension);
+    private readonly StoneHandler stoneHandler = new(dimension);
 
     public MaterialMovement? ApplyRules(PlayGround playGround, Vector position)
     {
@@ -20,9 +21,15 @@ public sealed class MaterialRuleSet(Vector dimension)
         {
             return sandHandler.ApplyRules(playGround, position, cell);
         }
-        else if (IsWater(cell.Type))
+        
+        if (IsWater(cell.Type))
         {
             return waterHandler.ApplyRules(playGround, position, cell);
+        }
+        
+        if (IsStone(cell.Type))
+        {
+            return stoneHandler.ApplyRules(playGround, position, cell);
         }
 
         // do nothing!
@@ -71,5 +78,11 @@ public sealed class MaterialRuleSet(Vector dimension)
     private bool IsWater(CellType cellType)
     {
         return (byte)cellType == 3;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool IsStone(CellType cellType)
+    {
+        return (byte)cellType == 6;
     }
 }
