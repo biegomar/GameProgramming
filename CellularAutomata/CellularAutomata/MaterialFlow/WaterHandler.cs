@@ -78,7 +78,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         var topLeftCell = GetCell(playGround, new Vector(position.X - 1, position.Y - 1));
         var topLeftOpponentCell = GetCell(playGround, new Vector(position.X - 2, position.Y - 1));
 
-        var isRightWayFree = !cell.IsFlagSet(3) 
+        var isRightWayFree = !cell.IsFlagSet(1) 
                              && IsSolidOrEmpty(topCell.Type) 
                              && IsEmpty(rightCell.Type) 
                              && IsSolidOrEmpty(topRightCell.Type) 
@@ -92,15 +92,15 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         }
         
         // flag to move only left until blocked
-        cell = cell.WithFlag(3, true);
+        cell = cell.WithFlag(1, true);
 
         // the left way is free
-        var isLeftWayFree = cell.IsFlagSet(3)
+        var isLeftWayFree = cell.IsFlagSet(1)
                             && IsSolidOrEmpty(topCell.Type)
                             && IsEmpty(leftCell.Type)
                             && IsSolidOrEmpty(topLeftCell.Type)
                             && IsSolidOrEmpty(topLeftOpponentCell.Type)
-                            && (IsNonSlidingOrEmpty(leftOpponentCell.Type) || IsLiquid(leftOpponentCell.Type) && leftOpponentCell.IsFlagSet(3));
+                            && (IsNonSlidingOrEmpty(leftOpponentCell.Type) || IsLiquid(leftOpponentCell.Type) && leftOpponentCell.IsFlagSet(1));
         
         if (isLeftWayFree)
         {
@@ -109,7 +109,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         }
         
         // reset flag to enable moving right
-        cell = cell.WithFlag(3, false);
+        cell = cell.WithFlag(1, false);
         
         // let other materials sink in.
         if (topCell.GetCounter() >= 2 && cell.GetCounter() >= 2)

@@ -21,15 +21,11 @@ namespace CellularAutomata.Cells;
 /// </item>
 /// <item>
 /// <term>1</term>
-/// <description>Indicates whether the cell has NOT moved since the last generation.</description>
-/// </item>
-/// <item>
-/// <term>2</term>
-/// <description>Indicates whether the cell has NOT moved since the last TWO generations.</description>
-/// </item>
-/// <item>
-/// <term>3</term>
 /// <description>Indicates if the cell is sliding to the left.</description>
+/// </item>
+/// <item>
+/// <term>2 & 3</term>
+/// <description>Not used for now.</description>
 /// </item>
 /// <item>
 /// <term>4-7</term>
