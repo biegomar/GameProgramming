@@ -30,6 +30,9 @@
                         <ComboBoxItem Content="Wand" />
                         <ComboBoxItem Content="Sand" />
                         <ComboBoxItem Content="Wasser" />
+                        <ComboBoxItem Content="Schnee" />
+                        <ComboBoxItem Content="Ice" />
+                        <ComboBoxItem Content="Stein" />
                     </ComboBox.Items>
                 </ComboBox>
                 <Panel HorizontalAlignment="Left" Margin="5,0,5,0" Name="UsePanel">
