@@ -29,7 +29,7 @@ namespace CellularAutomata.Cells;
 /// </item>
 /// <item>
 /// <term>3</term>
-/// <description>Indicates if the cell is moving to the bottom left.</description>
+/// <description>-</description>
 /// </item>
 /// <item>
 /// <term>4</term>
