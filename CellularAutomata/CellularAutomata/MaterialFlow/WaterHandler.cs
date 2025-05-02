@@ -31,7 +31,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         if (rightCell.Type == Empty && rightBottomCell.Type == Empty)
         {
             // the left way as well
-            if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3)))
+            if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(0)))
             {
                 // move by 80%
                 if (WillMoveAtAll(80))
@@ -44,7 +44,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
                     }
                     
                     // go left
-                    cell = cell.WithFlag(3, true);
+                    cell = cell.WithFlag(0, true);
                     return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
                 }
                     
@@ -63,23 +63,22 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         }
 
         // the left bottom way is free 
-        if (IsEmpty(leftCell.Type) && IsEmpty(leftBottomCell.Type) && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3)))
+        if (IsEmpty(leftCell.Type) && IsEmpty(leftBottomCell.Type) && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(0)))
         {
             // go left
-            cell = cell.WithFlag(3, true);
+            cell = cell.WithFlag(0, true);
             return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
         }
         
         //Sliding
         
-        var rightOpponentCell = GetCell(playGround, new Vector(position.X + 2, position.Y));
         var topCell = GetCell(playGround, new Vector(position.X, position.Y - 1));
         var topRightCell = GetCell(playGround, new Vector(position.X + 1, position.Y - 1));
         var topRightOpponentCell = GetCell(playGround, new Vector(position.X + 2, position.Y - 1));
         var topLeftCell = GetCell(playGround, new Vector(position.X - 1, position.Y - 1));
         var topLeftOpponentCell = GetCell(playGround, new Vector(position.X - 2, position.Y - 1));
 
-        var isRightWayFree = !cell.IsFlagSet(4) 
+        var isRightWayFree = !cell.IsFlagSet(1) 
                              && IsSolidOrEmpty(topCell.Type) 
                              && IsEmpty(rightCell.Type) 
                              && IsSolidOrEmpty(topRightCell.Type) 
@@ -88,32 +87,32 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         // the right way is free
         if (isRightWayFree)
         {
-            cell = cell.WithFlag(3, false);
+            cell = cell.WithFlag(0, false);
             return SetNewMaterialPositions(position, emptyCell, rightPosition, cell);
         }
         
         // flag to move only left until blocked
-        cell = cell.WithFlag(4, true);
+        cell = cell.WithFlag(1, true);
 
         // the left way is free
-        var isLeftWayFree = cell.IsFlagSet(4)
+        var isLeftWayFree = cell.IsFlagSet(1)
                             && IsSolidOrEmpty(topCell.Type)
                             && IsEmpty(leftCell.Type)
                             && IsSolidOrEmpty(topLeftCell.Type)
                             && IsSolidOrEmpty(topLeftOpponentCell.Type)
-                            && (IsNonSlidingOrEmpty(leftOpponentCell.Type) || IsLiquid(leftOpponentCell.Type) && leftOpponentCell.IsFlagSet(4));
+                            && (IsNonSlidingOrEmpty(leftOpponentCell.Type) || IsLiquid(leftOpponentCell.Type) && leftOpponentCell.IsFlagSet(1));
         
         if (isLeftWayFree)
         {
-            cell = cell.WithFlag(3, true);
+            cell = cell.WithFlag(0, true);
             return SetNewMaterialPositions(position, emptyCell, leftPosition, cell);
         }
         
         // reset flag to enable moving right
-        cell = cell.WithFlag(4, false);
+        cell = cell.WithFlag(1, false);
         
         // let other materials sink in.
-        if (topCell.IsFlagSet(2) && cell.IsFlagSet(2))
+        if (topCell.GetCounter() >= 2 && cell.GetCounter() >= 2)
         {
             return null;
         }

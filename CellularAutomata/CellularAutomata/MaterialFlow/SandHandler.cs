@@ -32,7 +32,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
 
         var isRightBottomWayFree = IsEmpty(rightCell.Type) && IsEmpty(rightBottomCell.Type);
         var isLeftBottomWayFree = IsEmpty(leftCell.Type) && IsEmpty(leftBottomCell.Type) &&
-                                  (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3));
+                                  (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(0));
         
         // the right way is free
         if (isRightBottomWayFree)
@@ -51,7 +51,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
                     }
                     
                     // go left
-                    cell = cell.WithFlag(3, true);
+                    cell = cell.WithFlag(0, true);
                     return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
                 }
                     
@@ -72,46 +72,40 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
         if (isLeftBottomWayFree)
         {
             // go left
-            cell = cell.WithFlag(3, true);
+            cell = cell.WithFlag(0, true);
             return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
         }
         
         // Last option: sink into liquid
-        var isBottomFreeToSink = IsLiquid(bottomCell.Type) && bottomCell.IsFlagSet(2) && cell.IsFlagSet(2);
+        var isBottomFreeToSink = IsLiquid(bottomCell.Type) && bottomCell.GetCounter() >= 2 && cell.GetCounter() >= 2;
         if (isBottomFreeToSink)
         {
-            bottomCell = bottomCell.WithFlag(2, false);
-            bottomCell = bottomCell.WithFlag(1, false);
-            cell = cell.WithFlag(2, false);
-            cell = cell.WithFlag(1, false);
+            bottomCell = bottomCell.WithCounter(0);
+            cell = cell.WithCounter(0);
             return SetNewMaterialPositions(position, bottomCell, new Vector(position.X, position.Y + 1), cell);
         }
         
-        var isRightBottomWayFreeToSink = (IsEmpty(rightCell.Type) || IsLiquid(rightCell.Type) && rightCell.IsFlagSet(2))
-                                         && IsLiquid(rightBottomCell.Type) && rightBottomCell.IsFlagSet(2) && cell.IsFlagSet(2);
+        var isRightBottomWayFreeToSink = (IsEmpty(rightCell.Type) || IsLiquid(rightCell.Type) && rightCell.GetCounter() >= 2)
+                                         && IsLiquid(rightBottomCell.Type) && rightBottomCell.GetCounter() >= 2 && cell.GetCounter() >= 2;
         
         if (isRightBottomWayFreeToSink)
         {
-            rightBottomCell = rightBottomCell.WithFlag(2, false);
-            rightBottomCell = rightBottomCell.WithFlag(1, false);
-            cell = cell.WithFlag(2, false);
-            cell = cell.WithFlag(1, false);
+            rightBottomCell = rightBottomCell.WithCounter(0);
+            cell = cell.WithCounter(0);
             return SetNewMaterialPositions(position, rightBottomCell, rightBottomPosition, cell);
         }
 
-        var isLeftBottomWayFreeToSink = (IsEmpty(leftCell.Type) || IsLiquid(leftCell.Type) && leftCell.IsFlagSet(2))
-                                        && IsLiquid(leftBottomCell.Type) && leftBottomCell.IsFlagSet(2)
-                                        && (IsSolidOrLiquidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(3))
-                                        && cell.IsFlagSet(2);
+        var isLeftBottomWayFreeToSink = (IsEmpty(leftCell.Type) || IsLiquid(leftCell.Type) && leftCell.GetCounter() >= 2)
+                                        && IsLiquid(leftBottomCell.Type) && leftBottomCell.GetCounter() >= 2
+                                        && (IsSolidOrLiquidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(0))
+                                        && cell.GetCounter() >= 2;
         
         if (isLeftBottomWayFreeToSink)
         {
             // go left
-            leftBottomCell = leftBottomCell.WithFlag(2, false);
-            leftBottomCell = leftBottomCell.WithFlag(1, false);
-            cell = cell.WithFlag(3, true);
-            cell = cell.WithFlag(2, false);
-            cell = cell.WithFlag(1, false);
+            leftBottomCell = leftBottomCell.WithCounter(0);
+            cell = cell.WithFlag(0, true);
+            cell = cell.WithCounter(0);
             return SetNewMaterialPositions(position, leftBottomCell, leftBottomPosition, cell);
         }
 
