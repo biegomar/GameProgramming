@@ -6,7 +6,22 @@ namespace CellularAutomata.MaterialFlow;
 
 public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
 {
-    private readonly PseudoRandom pseudoRandom = new (seed);
+    /// <summary>
+    /// A constant dictionary that maps each byte key (0-7) to a relative neighbor vector.
+    /// </summary>
+    protected static readonly IReadOnlyDictionary<uint, Vector> NeighborVectors = new Dictionary<uint, Vector>
+    {
+        { 0, new Vector(0, -1) },  // Oben
+        { 1, new Vector(1, -1) },  // Oben rechts
+        { 2, new Vector(1, 0) },   // Rechts
+        { 3, new Vector(1, 1) },   // Unten rechts
+        { 4, new Vector(0, 1) },   // Unten
+        { 5, new Vector(-1, 1) },  // Unten links
+        { 6, new Vector(-1, 0) },  // Links
+        { 7, new Vector(-1, -1) }  // Oben links
+    };
+    
+    protected readonly PseudoRandom pseudoRandom = new (seed);
     
     protected const CellType Solid = CellType.Solid;
     protected const CellType Empty = CellType.Empty;
@@ -76,6 +91,12 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected bool IsLiquid(CellType cellType)
+    {
+        return (byte)cellType == 3;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected bool IsWater(CellType cellType)
     {
         return (byte)cellType == 3;
     }
