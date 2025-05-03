@@ -24,7 +24,7 @@ namespace CellularAutomata.Cells;
 /// <description>Indicates if the cell is sliding to the left.</description>
 /// </item>
 /// <item>
-/// <term>2 & 3</term>
+/// <term>2 and 3</term>
 /// <description>Not used for now.</description>
 /// </item>
 /// <item>
@@ -75,5 +75,22 @@ public readonly record struct Cell(CellType Type, CellColor Color, byte Flags = 
         return this with { Flags = newFlags };
     }
 
+    /// <summary>
+    /// Increments the counter in bits 4-7 by 1, if it does not exceed 15.
+    /// </summary>
+    public Cell WithCounterIncrement()
+    {
+        int currentCounter = GetCounter();
+        return currentCounter < 15 ? WithCounter(currentCounter + 1) : this; // Counter is already at 15, so do nothing.
+    }
+
+    /// <summary>
+    /// Decrements the counter in bits 4-7 by 1, if it is greater than 0.
+    /// </summary>
+    public Cell WithCounterDecrement()
+    {
+        int currentCounter = GetCounter();
+        return currentCounter > 0 ? WithCounter(currentCounter - 1) : this; // Counter is already at 0, so do nothing.   
+    }
 
 }

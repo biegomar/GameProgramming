@@ -10,6 +10,7 @@ public sealed class MaterialRuleSet(Vector dimension)
     private readonly SandHandler sandHandler = new(dimension);
     private readonly WaterHandler waterHandler = new(dimension);
     private readonly StoneHandler stoneHandler = new(dimension);
+    private readonly IceHandler iceHandler = new(dimension);
 
     public MaterialMovement? ApplyRules(PlayGround playGround, Vector position)
     {
@@ -25,6 +26,11 @@ public sealed class MaterialRuleSet(Vector dimension)
         if (IsWater(cell.Type))
         {
             return waterHandler.ApplyRules(playGround, position, cell);
+        }
+        
+        if (IsIce(cell.Type))
+        {
+            return iceHandler.ApplyRules(playGround, position, cell);
         }
         
         if (IsStone(cell.Type))
@@ -78,6 +84,12 @@ public sealed class MaterialRuleSet(Vector dimension)
     private bool IsWater(CellType cellType)
     {
         return (byte)cellType == 3;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool IsIce(CellType cellType)
+    {
+        return (byte)cellType == 5;
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
