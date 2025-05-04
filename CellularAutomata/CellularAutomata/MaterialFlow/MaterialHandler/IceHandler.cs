@@ -3,7 +3,7 @@ using CellularAutomata.PlayGrounds;
 
 namespace CellularAutomata.MaterialFlow.MaterialHandler;
 
-public class IceHandler(Vector dimension, uint seed = 100) : BaseMaterialHandler(dimension, seed)
+public sealed class IceHandler(Vector dimension, uint seed = 100) : BaseMaterialHandler(dimension, seed)
 {
     public override MaterialMovement? ApplyRules(PlayGround playGround, Vector position, Cell cell)
     {
