@@ -17,14 +17,18 @@ namespace CellularAutomata.Cells;
 /// </listheader>
 /// <item>
 /// <term>0</term>
-/// <description>Indicates if the cell is moving in the left direction.</description>
+/// <description>Indicates whether the cell has been moved.</description>
 /// </item>
 /// <item>
 /// <term>1</term>
 /// <description>Indicates if the cell is sliding to the left.</description>
 /// </item>
 /// <item>
-/// <term>2 and 3</term>
+/// <term>2</term>
+/// <description>Indicates if the cell is moving in the left direction.</description>
+/// </item>
+/// <item>
+/// <term>3</term>
 /// <description>Not used for now.</description>
 /// </item>
 /// <item>
