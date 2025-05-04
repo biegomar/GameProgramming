@@ -19,8 +19,6 @@ public sealed class StoneHandler(Vector dimension, uint seed = 100) : BaseMateri
         var isBottomFreeToSink = IsLiquid(bottomCell.Type) && bottomCell.GetCounter() >= 2 && cell.GetCounter() >= 2;
         if (isBottomFreeToSink)
         {
-            bottomCell = bottomCell.WithCounter(0);
-            cell = cell.WithCounter(0);
             return SetNewMaterialPositions(position, bottomCell, new Vector(position.X, position.Y + 1), cell);
         }
         
