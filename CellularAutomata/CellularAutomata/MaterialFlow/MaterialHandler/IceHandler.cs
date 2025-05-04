@@ -7,7 +7,7 @@ public sealed class IceHandler(Vector dimension, uint seed = 100) : BaseMaterial
 {
     public override MaterialMovement? ApplyRules(PlayGround playGround, Vector position, Cell cell)
     {
-        var randomVector = NeighborVectors[pseudoRandom.Next(7)];
+        var randomVector = NeighborVectors[pseudoRandom.Next(8)];
         var positionToCheck = new Vector(position.X + randomVector.X, position.Y + randomVector.Y);
         
         var randomNeighbor = GetCell(playGround, positionToCheck);
