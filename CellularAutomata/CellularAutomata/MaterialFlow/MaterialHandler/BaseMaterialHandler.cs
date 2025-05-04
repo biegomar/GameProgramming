@@ -2,7 +2,7 @@
 using CellularAutomata.Cells;
 using CellularAutomata.PlayGrounds;
 
-namespace CellularAutomata.MaterialFlow;
+namespace CellularAutomata.MaterialFlow.MaterialHandler;
 
 public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
 {

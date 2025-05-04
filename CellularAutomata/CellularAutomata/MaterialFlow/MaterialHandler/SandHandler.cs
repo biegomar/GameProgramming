@@ -2,7 +2,7 @@
 using CellularAutomata.Cells;
 using CellularAutomata.PlayGrounds;
 
-namespace CellularAutomata.MaterialFlow;
+namespace CellularAutomata.MaterialFlow.MaterialHandler;
 
 public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMaterialHandler(dimension, seed)
 {
