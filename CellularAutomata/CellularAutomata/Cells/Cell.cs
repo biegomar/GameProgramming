@@ -29,7 +29,7 @@ namespace CellularAutomata.Cells;
 /// </item>
 /// <item>
 /// <term>3</term>
-/// <description>Not used for now.</description>
+/// <description>Indicates if the cell is moving in the right direction.</description>
 /// </item>
 /// <item>
 /// <term>4-7</term>
