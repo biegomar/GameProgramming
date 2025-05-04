@@ -44,7 +44,7 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected MaterialMovement DontMove(Vector position, Cell cell)
     {
-        return new MaterialMovement(new Material(position, cell.WithCounter(Math.Min(15, cell.GetCounter() + 1))), null);
+        return new MaterialMovement(new Material(position, cell.WithCounterIncrement().WithFlag(0, false)), null);
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
