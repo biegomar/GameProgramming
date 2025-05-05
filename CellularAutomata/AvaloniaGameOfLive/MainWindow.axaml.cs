@@ -546,7 +546,7 @@ public partial class MainWindow : Window
 
     private void InitializeForSand()
     {
-        GameOfLiveView.ClearColor = sandBackgroundColor;
+        GameOfLiveView.ClearColor = SKColors.Black; //sandBackgroundColor;
         automataSand = new AutomataMaterialGrid(dimension);
         playGroundSand = new PlayGround(dimension);
         ruleSetMaterial = new MaterialRuleSet(dimension);

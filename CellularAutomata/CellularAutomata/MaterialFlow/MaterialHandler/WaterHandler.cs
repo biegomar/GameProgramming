@@ -31,7 +31,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         if (rightCell.Type == Empty && rightBottomCell.Type == Empty)
         {
             // the left way as well
-            if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(2)))
+            if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsMovingLeft()))
             {
                 // move by 80%
                 if (WillMoveAtAll(80))
@@ -45,6 +45,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
                     
                     // go left
                     cell = cell.WithFlag(2, true);
+                    playGround.SetCell(position, cell);
                     return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
                 }
                     
@@ -63,10 +64,11 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         }
 
         // the left bottom way is free 
-        if (IsEmpty(leftCell.Type) && IsEmpty(leftBottomCell.Type) && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(2)))
+        if (IsEmpty(leftCell.Type) && IsEmpty(leftBottomCell.Type) && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsMovingLeft()))
         {
             // go left
             cell = cell.WithFlag(2, true);
+            playGround.SetCell(position, cell);
             return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
         }
         
@@ -78,7 +80,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         var topLeftCell = GetCell(playGround, new Vector(position.X - 1, position.Y - 1));
         var topLeftOpponentCell = GetCell(playGround, new Vector(position.X - 2, position.Y - 1));
 
-        var isRightWayFree = !cell.IsFlagSet(1) 
+        var isRightWayFree = !cell.IsSlidingLeft() 
                              && IsSolidOrEmpty(topCell.Type) 
                              && IsEmpty(rightCell.Type) 
                              && IsSolidOrEmpty(topRightCell.Type) 
@@ -95,12 +97,12 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         cell = cell.WithFlag(1, true);
 
         // the left way is free
-        var isLeftWayFree = cell.IsFlagSet(1)
+        var isLeftWayFree = cell.IsSlidingLeft()
                             && IsSolidOrEmpty(topCell.Type)
                             && IsEmpty(leftCell.Type)
                             && IsSolidOrEmpty(topLeftCell.Type)
                             && IsSolidOrEmpty(topLeftOpponentCell.Type)
-                            && (IsNonSlidingOrEmpty(leftOpponentCell.Type) || IsLiquid(leftOpponentCell.Type) && leftOpponentCell.IsFlagSet(1));
+                            && (IsNonSlidingOrEmpty(leftOpponentCell.Type) || IsLiquid(leftOpponentCell.Type) && leftOpponentCell.IsSlidingLeft());
         
         if (isLeftWayFree)
         {
@@ -108,14 +110,20 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
             return SetNewMaterialPositions(position, emptyCell, leftPosition, cell);
         }
         
-        // reset flag to enable moving right
-        cell = cell.WithFlag(1, false);
-        
         // let other materials sink in.
         if (topCell.GetCounter() >= 2 && cell.GetCounter() >= 2)
         {
             return null;
         }
+        
+        // or let it freeze from the left side.
+        if (IsIce(leftCell.Type) && leftCell.GetCounter() >= 2 && cell.GetCounter() >= 2)
+        {
+            return null;
+        }
+        
+        // reset flag to enable moving right
+        cell = cell.WithFlag(1, false);
 
         return DontMove(position, cell);
     }
