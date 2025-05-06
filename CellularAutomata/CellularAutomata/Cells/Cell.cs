@@ -17,15 +17,19 @@ namespace CellularAutomata.Cells;
 /// </listheader>
 /// <item>
 /// <term>0</term>
-/// <description>Indicates if the cell is moving in the left direction.</description>
+/// <description>Indicates whether the cell has been moved.</description>
 /// </item>
 /// <item>
 /// <term>1</term>
 /// <description>Indicates if the cell is sliding to the left.</description>
 /// </item>
 /// <item>
-/// <term>2 and 3</term>
-/// <description>Not used for now.</description>
+/// <term>2</term>
+/// <description>Indicates if the cell is moving in the left direction.</description>
+/// </item>
+/// <item>
+/// <term>3</term>
+/// <description>Indicates if the cell is moving in the right direction.</description>
 /// </item>
 /// <item>
 /// <term>4-7</term>
@@ -92,5 +96,33 @@ public readonly record struct Cell(CellType Type, CellColor Color, byte Flags = 
         int currentCounter = GetCounter();
         return currentCounter > 0 ? WithCounter(currentCounter - 1) : this; // Counter is already at 0, so do nothing.   
     }
+    
+    /// <summary>
+    /// Resets the counter in bits 4-7 to 0.
+    /// </summary>
+    /// <returns></returns>
+    public Cell WithCounterReset()
+    {
+        return WithCounter(0);
+    }
 
+    public bool IsMoving()
+    {
+        return IsFlagSet(0);
+    }
+    
+    public bool IsSlidingLeft()
+    {
+        return IsFlagSet(1);
+    }
+    
+    public bool IsMovingLeft()
+    {
+        return IsFlagSet(2);    
+    }
+    
+    public bool IsMovingRight()
+    {
+        return IsFlagSet(3);
+    }
 }

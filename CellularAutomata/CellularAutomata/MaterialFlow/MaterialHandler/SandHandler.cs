@@ -2,7 +2,7 @@
 using CellularAutomata.Cells;
 using CellularAutomata.PlayGrounds;
 
-namespace CellularAutomata.MaterialFlow;
+namespace CellularAutomata.MaterialFlow.MaterialHandler;
 
 public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMaterialHandler(dimension, seed)
 {
@@ -32,7 +32,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
 
         var isRightBottomWayFree = IsEmpty(rightCell.Type) && IsEmpty(rightBottomCell.Type);
         var isLeftBottomWayFree = IsEmpty(leftCell.Type) && IsEmpty(leftBottomCell.Type) &&
-                                  (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(0));
+                                  (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsMovingLeft());
         
         // the right way is free
         if (isRightBottomWayFree)
@@ -51,7 +51,8 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
                     }
                     
                     // go left
-                    cell = cell.WithFlag(0, true);
+                    cell = cell.WithFlag(2, true);
+                    playGround.SetCell(position, cell);
                     return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
                 }
                     
@@ -72,7 +73,8 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
         if (isLeftBottomWayFree)
         {
             // go left
-            cell = cell.WithFlag(0, true);
+            cell = cell.WithFlag(2, true);
+            playGround.SetCell(position, cell);
             return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
         }
         
@@ -80,32 +82,28 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
         var isBottomFreeToSink = IsLiquid(bottomCell.Type) && bottomCell.GetCounter() >= 2 && cell.GetCounter() >= 2;
         if (isBottomFreeToSink)
         {
-            bottomCell = bottomCell.WithCounter(0);
-            cell = cell.WithCounter(0);
             return SetNewMaterialPositions(position, bottomCell, new Vector(position.X, position.Y + 1), cell);
         }
         
-        var isRightBottomWayFreeToSink = (IsEmpty(rightCell.Type) || IsLiquid(rightCell.Type) && rightCell.GetCounter() >= 2)
-                                         && IsLiquid(rightBottomCell.Type) && rightBottomCell.GetCounter() >= 2 && cell.GetCounter() >= 2;
+        var isRightBottomWayFreeToSink = cell.GetCounter() >= 2 
+                                         && (IsEmpty(rightCell.Type) || IsLiquid(rightCell.Type) && rightCell.GetCounter() >= 2)
+                                         && IsLiquid(rightBottomCell.Type) && rightBottomCell.GetCounter() >= 2;
         
         if (isRightBottomWayFreeToSink)
         {
-            rightBottomCell = rightBottomCell.WithCounter(0);
-            cell = cell.WithCounter(0);
             return SetNewMaterialPositions(position, rightBottomCell, rightBottomPosition, cell);
         }
 
-        var isLeftBottomWayFreeToSink = (IsEmpty(leftCell.Type) || IsLiquid(leftCell.Type) && leftCell.GetCounter() >= 2)
+        var isLeftBottomWayFreeToSink = cell.GetCounter() >= 2 
+                                        && (IsEmpty(leftCell.Type) || IsLiquid(leftCell.Type) && leftCell.GetCounter() >= 2)
                                         && IsLiquid(leftBottomCell.Type) && leftBottomCell.GetCounter() >= 2
-                                        && (IsSolidOrLiquidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsFlagSet(0))
-                                        && cell.GetCounter() >= 2;
+                                        && (IsSolidOrLiquidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsMovingLeft());
         
         if (isLeftBottomWayFreeToSink)
         {
             // go left
-            leftBottomCell = leftBottomCell.WithCounter(0);
-            cell = cell.WithFlag(0, true);
-            cell = cell.WithCounter(0);
+            cell = cell.WithFlag(2, true);
+            playGround.SetCell(position, cell);
             return SetNewMaterialPositions(position, leftBottomCell, leftBottomPosition, cell);
         }
 

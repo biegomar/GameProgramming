@@ -2,7 +2,7 @@
 using CellularAutomata.Cells;
 using CellularAutomata.PlayGrounds;
 
-namespace CellularAutomata.MaterialFlow;
+namespace CellularAutomata.MaterialFlow.MaterialHandler;
 
 public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
 {
@@ -44,11 +44,11 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected MaterialMovement DontMove(Vector position, Cell cell)
     {
-        return new MaterialMovement(new Material(position, cell.WithCounter(Math.Min(15, cell.GetCounter() + 1))), null);
+        return new MaterialMovement(new Material(position, cell.WithCounterIncrement().WithFlag(0, false)), null);
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected static MaterialMovement? SetNewMaterialPositions(Vector fromPosition, Cell cellForSource, Vector toPosition, Cell cellForDestination)
+    protected MaterialMovement? SetNewMaterialPositions(Vector fromPosition, Cell cellForSource, Vector toPosition, Cell cellForDestination)
     {
         return new MaterialMovement(new Material(fromPosition, cellForSource), new Material(toPosition, cellForDestination));
     }
@@ -102,6 +102,12 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected bool IsIce(CellType cellType)
+    {
+        return (byte)cellType == 5;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected bool IsNonSlidingOrEmpty(CellType cellType)
     {
         return (byte)cellType <= 2;
@@ -123,19 +129,5 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     protected uint GetIndex(Vector position)
     {
         return (uint)position.Y * (uint)dimension.X + (uint)position.X;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected bool IsOccupied(Vector position, bool[] occupiedCells)
-    {
-        return occupiedCells[GetIndex(position)];
-    }
-    
-    private void AddToOccupiedCells(Vector position, bool[] occupiedCells)
-    {
-        if (occupiedCells[GetIndex(position)])
-            return;
-        
-        occupiedCells[GetIndex(position)] = true;
     }
 }

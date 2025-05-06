@@ -1,9 +1,9 @@
 ﻿using CellularAutomata.Cells;
 using CellularAutomata.PlayGrounds;
 
-namespace CellularAutomata.MaterialFlow;
+namespace CellularAutomata.MaterialFlow.MaterialHandler;
 
-public class StoneHandler(Vector dimension, uint seed = 100) : BaseMaterialHandler(dimension, seed)
+public sealed class StoneHandler(Vector dimension, uint seed = 100) : BaseMaterialHandler(dimension, seed)
 {
     public override MaterialMovement? ApplyRules(PlayGround playGround, Vector position, Cell cell)
     {
@@ -19,8 +19,6 @@ public class StoneHandler(Vector dimension, uint seed = 100) : BaseMaterialHandl
         var isBottomFreeToSink = IsLiquid(bottomCell.Type) && bottomCell.GetCounter() >= 2 && cell.GetCounter() >= 2;
         if (isBottomFreeToSink)
         {
-            bottomCell = bottomCell.WithCounter(0);
-            cell = cell.WithCounter(0);
             return SetNewMaterialPositions(position, bottomCell, new Vector(position.X, position.Y + 1), cell);
         }
         
