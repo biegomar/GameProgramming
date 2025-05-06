@@ -9,7 +9,7 @@ namespace AvaloniaGameOfLive;
 
 public static class SandInitializer
 {
-    public static void Randomize(PlayGround playground, int maxDegreeOfParallelism, double aliveProbability = 0.2)
+    public static void Randomize(PlayGround playground, int maxDegreeOfParallelism, CellType cellType = CellType.Sand, double aliveProbability = 0.2)
     {
         var random = new Random();
 
@@ -26,7 +26,7 @@ public static class SandInitializer
                 for (var y = 0; y < playground.Dimension.Y; y++)
                 {
                     var state = random.NextDouble() < aliveProbability;
-                    playground.SetCell(new Vector(x, y), new Cell(state ? CellType.Sand : CellType.Empty, state ? ShadeProvider.GenerateColor(CellType.Sand) : CellColor.Empty));
+                    playground.SetCell(new Vector(x, y), new Cell(state ? cellType : CellType.Empty, state ? ShadeProvider.GenerateColor(cellType) : CellColor.Empty));
                 }
             }
         });
