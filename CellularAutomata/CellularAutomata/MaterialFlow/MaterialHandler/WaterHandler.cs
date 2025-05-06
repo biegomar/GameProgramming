@@ -1,10 +1,12 @@
-﻿using CellularAutomata.Cells;
+﻿using System.Runtime.CompilerServices;
+using CellularAutomata.Cells;
 using CellularAutomata.PlayGrounds;
 
 namespace CellularAutomata.MaterialFlow.MaterialHandler;
 
 public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMaterialHandler(dimension, seed)
 {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override MaterialMovement? ApplyRules(PlayGround playGround, Vector position, Cell cell)
     {
         var bottomCell = GetCell(playGround, new Vector(position.X, position.Y + 1));
@@ -15,65 +17,46 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
             return SetNewMaterialPositions(position, bottomCell, new Vector(position.X, position.Y + 1), cell);
         }
         
-        var rightPosition = new Vector(position.X + 1, position.Y);
-        var rightBottomPosition = new Vector(position.X + 1, position.Y + 1);
-        var leftPosition = new Vector(position.X - 1, position.Y);
-        var leftBottomPosition = new Vector(position.X - 1, position.Y + 1);
+        var isRightCellEmpty = IsEmpty(GetCell(playGround, new Vector(position.X + 1, position.Y)).Type);
+        var isLeftCellEmpty = IsEmpty(GetCell(playGround, new Vector(position.X - 1, position.Y)).Type);  
+        var isRightBottomCellEmpty = IsEmpty(GetCell(playGround, new Vector(position.X + 1, position.Y + 1)).Type);
+        var isLeftBottomCellEmpty = IsEmpty(GetCell(playGround, new Vector(position.X - 1, position.Y + 1)).Type);
         
-        var emptyCell = new Cell(Empty, CellColor.Empty);
-        var rightCell = GetCell(playGround, rightPosition);
-        var rightBottomCell = GetCell(playGround, new Vector(position.X + 1, position.Y + 1));
-        var leftCell = GetCell(playGround, leftPosition);
-        var leftBottomCell = GetCell(playGround, new Vector(position.X - 1, position.Y + 1));
         var leftOpponentCell = GetCell(playGround, new Vector(position.X - 2, position.Y));
         
         // the right way is free
-        if (rightCell.Type == Empty && rightBottomCell.Type == Empty)
+        if (isRightCellEmpty && isRightBottomCellEmpty)
         {
             // the left way as well
-            if (leftCell.Type == Empty && leftBottomCell.Type == Empty && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsMovingLeft()))
+            if (isLeftCellEmpty && isLeftBottomCellEmpty && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsMovingLeft()))
             {
-                // move by 80%
-                if (WillMoveAtAll(80))
+                // pseudo-random choice
+                if (WillMoveRight())
                 {
-                    // pseudo-random choice
-                    if (WillMoveRight())
-                    {
-                        // go right
-                        return SetNewMaterialPositions(position, emptyCell, rightBottomPosition, cell);
-                    }
-                    
-                    // go left
-                    cell = cell.WithFlag(2, true);
-                    playGround.SetCell(position, cell);
-                    return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
+                    // go right
+                    return SetNewMaterialPositions(position, EmptyCell, new Vector(position.X + 1, position.Y + 1), cell);
                 }
                     
-                // dont move
-                return DontMove(position, cell);
+                // go left
+                cell = cell.WithFlag(2, true);
+                playGround.SetCell(position, cell);
+                return SetNewMaterialPositions(position, EmptyCell, new Vector(position.X - 1, position.Y + 1), cell);
             }
 
-            // go right by 90%
-            if (WillMoveAtAll(90))
-            {
-                return SetNewMaterialPositions(position, emptyCell, rightBottomPosition, cell);
-            }
-                
-            // dont move
-            return DontMove(position, cell);
+            // go right
+            return SetNewMaterialPositions(position, EmptyCell, new Vector(position.X + 1, position.Y + 1), cell);
         }
 
         // the left bottom way is free 
-        if (IsEmpty(leftCell.Type) && IsEmpty(leftBottomCell.Type) && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsMovingLeft()))
+        if (isLeftCellEmpty && isLeftBottomCellEmpty && (IsSolidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsMovingLeft()))
         {
             // go left
             cell = cell.WithFlag(2, true);
             playGround.SetCell(position, cell);
-            return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
+            return SetNewMaterialPositions(position, EmptyCell, new Vector(position.X - 1, position.Y + 1), cell);
         }
         
         //Sliding
-        
         var topCell = GetCell(playGround, new Vector(position.X, position.Y - 1));
         var topRightCell = GetCell(playGround, new Vector(position.X + 1, position.Y - 1));
         var topRightOpponentCell = GetCell(playGround, new Vector(position.X + 2, position.Y - 1));
@@ -81,8 +64,8 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         var topLeftOpponentCell = GetCell(playGround, new Vector(position.X - 2, position.Y - 1));
 
         var isRightWayFree = !cell.IsSlidingLeft() 
+                             && isRightCellEmpty
                              && IsSolidOrEmpty(topCell.Type) 
-                             && IsEmpty(rightCell.Type) 
                              && IsSolidOrEmpty(topRightCell.Type) 
                              && IsSolidOrEmpty(topRightOpponentCell.Type);
         
@@ -90,16 +73,15 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         if (isRightWayFree)
         {
             cell = cell.WithFlag(2, false);
-            return SetNewMaterialPositions(position, emptyCell, rightPosition, cell);
+            return SetNewMaterialPositions(position, EmptyCell, new Vector(position.X + 1, position.Y), cell);
         }
         
         // flag to move only left until blocked
         cell = cell.WithFlag(1, true);
 
         // the left way is free
-        var isLeftWayFree = cell.IsSlidingLeft()
+        var isLeftWayFree = isLeftCellEmpty
                             && IsSolidOrEmpty(topCell.Type)
-                            && IsEmpty(leftCell.Type)
                             && IsSolidOrEmpty(topLeftCell.Type)
                             && IsSolidOrEmpty(topLeftOpponentCell.Type)
                             && (IsNonSlidingOrEmpty(leftOpponentCell.Type) || IsLiquid(leftOpponentCell.Type) && leftOpponentCell.IsSlidingLeft());
@@ -107,7 +89,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         if (isLeftWayFree)
         {
             cell = cell.WithFlag(2, true);
-            return SetNewMaterialPositions(position, emptyCell, leftPosition, cell);
+            return SetNewMaterialPositions(position, EmptyCell, new Vector(position.X - 1, position.Y), cell);
         }
         
         // let other materials sink in.
@@ -117,6 +99,7 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         }
         
         // or let it freeze from the left side.
+        var leftCell = GetCell(playGround, new Vector(position.X - 1, position.Y));
         if (IsIce(leftCell.Type) && leftCell.GetCounter() >= 2 && cell.GetCounter() >= 2)
         {
             return null;

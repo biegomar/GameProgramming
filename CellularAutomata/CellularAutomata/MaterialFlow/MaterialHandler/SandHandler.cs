@@ -16,19 +16,12 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
         {
             return SetNewMaterialPositions(position, bottomCell, new Vector(position.X, position.Y + 1), cell);
         }
-     
-        var rightPosition = new Vector(position.X + 1, position.Y);
-        var rightBottomPosition = new Vector(position.X + 1, position.Y + 1);
-        var leftPosition = new Vector(position.X - 1, position.Y);
-        var leftBottomPosition = new Vector(position.X - 1, position.Y + 1);
-        var leftOpponentPosition = new Vector(position.X - 2, position.Y);
         
-        var emptyCell = new Cell(Empty, CellColor.Empty);
-        var rightCell = GetCell(playGround, rightPosition);
-        var rightBottomCell = GetCell(playGround, rightBottomPosition);
-        var leftCell = GetCell(playGround, leftPosition);
-        var leftBottomCell = GetCell(playGround, leftBottomPosition);
-        var leftOpponentCell = GetCell(playGround, leftOpponentPosition);
+        var rightCell = GetCell(playGround, new Vector(position.X + 1, position.Y));
+        var rightBottomCell = GetCell(playGround, new Vector(position.X + 1, position.Y + 1));
+        var leftCell = GetCell(playGround, new Vector(position.X - 1, position.Y));
+        var leftBottomCell = GetCell(playGround, new Vector(position.X - 1, position.Y + 1));
+        var leftOpponentCell = GetCell(playGround, new Vector(position.X - 2, position.Y));
 
         var isRightBottomWayFree = IsEmpty(rightCell.Type) && IsEmpty(rightBottomCell.Type);
         var isLeftBottomWayFree = IsEmpty(leftCell.Type) && IsEmpty(leftBottomCell.Type) &&
@@ -47,13 +40,13 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
                     if (WillMoveRight())
                     {
                         // go right
-                        return SetNewMaterialPositions(position, emptyCell, rightBottomPosition, cell);
+                        return SetNewMaterialPositions(position, EmptyCell, new Vector(position.X + 1, position.Y + 1), cell);
                     }
                     
                     // go left
                     cell = cell.WithFlag(2, true);
                     playGround.SetCell(position, cell);
-                    return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
+                    return SetNewMaterialPositions(position, EmptyCell, new Vector(position.X - 1, position.Y + 1), cell);
                 }
                     
                 // dont move
@@ -63,7 +56,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
             // go right by 90%
             if (WillMoveAtAll(90))
             {
-                return SetNewMaterialPositions(position, emptyCell, rightBottomPosition, cell);
+                return SetNewMaterialPositions(position, EmptyCell, new Vector(position.X + 1, position.Y + 1), cell);
             }
                 
             // dont move
@@ -75,7 +68,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
             // go left
             cell = cell.WithFlag(2, true);
             playGround.SetCell(position, cell);
-            return SetNewMaterialPositions(position, emptyCell, leftBottomPosition, cell);
+            return SetNewMaterialPositions(position, EmptyCell, new Vector(position.X - 1, position.Y + 1), cell);
         }
         
         // Last option: sink into liquid
@@ -91,7 +84,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
         
         if (isRightBottomWayFreeToSink)
         {
-            return SetNewMaterialPositions(position, rightBottomCell, rightBottomPosition, cell);
+            return SetNewMaterialPositions(position, rightBottomCell, new Vector(position.X + 1, position.Y + 1), cell);
         }
 
         var isLeftBottomWayFreeToSink = cell.GetCounter() >= 2 
@@ -104,7 +97,7 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
             // go left
             cell = cell.WithFlag(2, true);
             playGround.SetCell(position, cell);
-            return SetNewMaterialPositions(position, leftBottomCell, leftBottomPosition, cell);
+            return SetNewMaterialPositions(position, leftBottomCell, new Vector(position.X - 1, position.Y + 1), cell);
         }
 
         return DontMove(position, cell);

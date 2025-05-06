@@ -26,6 +26,8 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     protected const CellType Solid = CellType.Solid;
     protected const CellType Empty = CellType.Empty;
     protected const CellType Sand = CellType.Sand;
+    
+    protected Cell EmptyCell = new Cell(Empty, CellColor.Empty);
 
     public abstract MaterialMovement? ApplyRules(PlayGround playGround, Vector position, Cell cell);
     
