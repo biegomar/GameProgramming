@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace CellularAutomata.Cells;
 
@@ -43,11 +44,13 @@ public readonly record struct Cell(CellType Type, CellColor Color, byte Flags = 
 {
     private const int CounterMask = 0b1111_0000;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsFlagSet(int bitPosition)
     {
         return (Flags & (1 << bitPosition)) != 0;
     }
     
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Cell WithFlag(int bitPosition, bool value)
     {
         var newFlags = value 
@@ -60,6 +63,7 @@ public readonly record struct Cell(CellType Type, CellColor Color, byte Flags = 
     /// <summary>
     /// Reads the counter from bits 4-7.
     /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetCounter()
     {
         return (Flags & CounterMask) >> 4; // Verschiebt Bits 4-7 nach rechts
@@ -68,6 +72,7 @@ public readonly record struct Cell(CellType Type, CellColor Color, byte Flags = 
     /// <summary>
     /// Sets the counter in bits 4-7.
     /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Cell WithCounter(int counterValue)
     {
         if (counterValue < 0 || counterValue > 15)
@@ -82,6 +87,7 @@ public readonly record struct Cell(CellType Type, CellColor Color, byte Flags = 
     /// <summary>
     /// Increments the counter in bits 4-7 by 1, if it does not exceed 15.
     /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Cell WithCounterIncrement()
     {
         int currentCounter = GetCounter();
@@ -91,6 +97,7 @@ public readonly record struct Cell(CellType Type, CellColor Color, byte Flags = 
     /// <summary>
     /// Decrements the counter in bits 4-7 by 1, if it is greater than 0.
     /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Cell WithCounterDecrement()
     {
         int currentCounter = GetCounter();
@@ -101,26 +108,31 @@ public readonly record struct Cell(CellType Type, CellColor Color, byte Flags = 
     /// Resets the counter in bits 4-7 to 0.
     /// </summary>
     /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Cell WithCounterReset()
     {
         return WithCounter(0);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsMoving()
     {
         return IsFlagSet(0);
     }
     
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsSlidingLeft()
     {
         return IsFlagSet(1);
     }
     
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsMovingLeft()
     {
         return IsFlagSet(2);    
     }
     
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsMovingRight()
     {
         return IsFlagSet(3);
