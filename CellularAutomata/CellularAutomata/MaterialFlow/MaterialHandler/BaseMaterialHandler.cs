@@ -9,17 +9,18 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     /// <summary>
     /// A constant dictionary that maps each byte key (0-7) to a relative neighbor vector.
     /// </summary>
-    protected static readonly IReadOnlyDictionary<uint, Vector> NeighborVectors = new Dictionary<uint, Vector>
-    {
-        { 0, new Vector(0, -1) },  // Oben
-        { 1, new Vector(1, -1) },  // Oben rechts
-        { 2, new Vector(1, 0) },   // Rechts
-        { 3, new Vector(1, 1) },   // Unten rechts
-        { 4, new Vector(0, 1) },   // Unten
-        { 5, new Vector(-1, 1) },  // Unten links
-        { 6, new Vector(-1, 0) },  // Links
-        { 7, new Vector(-1, -1) }  // Oben links
-    };
+    protected Vector[] NeighborVectors =
+    [
+        new(0, -1),  
+        new(1, -1),  
+        new(1, 0),   
+        new(1, 1),   
+        new(0, 1),   
+        new(-1, 1),  
+        new(-1, 0),  
+        new(-1, -1)  
+    ];
+
     
     protected readonly PseudoRandom pseudoRandom = new (seed);
     
@@ -27,7 +28,7 @@ public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
     protected const CellType Empty = CellType.Empty;
     protected const CellType Sand = CellType.Sand;
     
-    protected Cell EmptyCell = new Cell(Empty, CellColor.Empty);
+    protected Cell EmptyCell = new(Empty, CellColor.Empty);
 
     public abstract MaterialMovement? ApplyRules(PlayGround playGround, Vector position, Cell cell);
     
