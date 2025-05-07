@@ -9,7 +9,7 @@ public sealed class IceHandler(Vector dimension, uint seed = 100) : BaseMaterial
     
     public override MaterialMovement? ApplyRules(PlayGround playGround, Vector position, Cell cell)
     {
-        if (cell.GetCounter() < 2)
+        if (cell.GetCounter() < 4)
         {
             return DontMove(position, cell);    
         }
@@ -20,7 +20,7 @@ public sealed class IceHandler(Vector dimension, uint seed = 100) : BaseMaterial
         
         var randomNeighbor = GetCell(playGround, positionToCheck);
 
-        if (randomNeighbor.GetCounter() >= 2 && IsWater(randomNeighbor.Type) && pseudoRandom.Chance(7))
+        if (randomNeighbor.GetCounter() >= 4 && IsWater(randomNeighbor.Type) && pseudoRandom.Chance(7))
         {
             return SetNewMaterialPositions(position, cell, positionToCheck, new Cell(CellType.Ice, ShadeProvider.GenerateColor(CellType.Ice)));
         }

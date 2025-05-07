@@ -6,6 +6,8 @@ namespace CellularAutomata.MaterialFlow.MaterialHandler;
 
 public abstract class BaseMaterialHandler(Vector dimension, uint seed = 100)
 {
+    protected const int SinkInCounter = 4;
+    
     /// <summary>
     /// A constant dictionary that maps each byte key (0-7) to a relative neighbor vector.
     /// </summary>

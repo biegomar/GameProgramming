@@ -93,14 +93,14 @@ public sealed class WaterHandler(Vector dimension, uint seed = 100) : BaseMateri
         }
         
         // let other materials sink in.
-        if (topCell.GetCounter() >= 2 && cell.GetCounter() >= 2)
+        if (topCell.GetCounter() >= SinkInCounter && cell.GetCounter() >= SinkInCounter)
         {
             return null;
         }
         
         // or let it freeze from the left side.
         var leftCell = GetCell(playGround, new Vector(position.X - 1, position.Y));
-        if (IsIce(leftCell.Type) && leftCell.GetCounter() >= 2 && cell.GetCounter() >= 2)
+        if (IsIce(leftCell.Type) && leftCell.GetCounter() >= SinkInCounter && cell.GetCounter() >= SinkInCounter)
         {
             return null;
         }

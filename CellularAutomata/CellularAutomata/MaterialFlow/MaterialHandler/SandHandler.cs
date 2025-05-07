@@ -72,24 +72,24 @@ public sealed class SandHandler(Vector dimension, uint seed = 100) : BaseMateria
         }
         
         // Last option: sink into liquid
-        var isBottomFreeToSink = IsLiquid(bottomCell.Type) && bottomCell.GetCounter() >= 2 && cell.GetCounter() >= 2;
+        var isBottomFreeToSink = IsLiquid(bottomCell.Type) && bottomCell.GetCounter() >= SinkInCounter && cell.GetCounter() >= SinkInCounter;
         if (isBottomFreeToSink)
         {
             return SetNewMaterialPositions(position, bottomCell, new Vector(position.X, position.Y + 1), cell);
         }
         
-        var isRightBottomWayFreeToSink = cell.GetCounter() >= 2 
-                                         && (IsEmpty(rightCell.Type) || IsLiquid(rightCell.Type) && rightCell.GetCounter() >= 2)
-                                         && IsLiquid(rightBottomCell.Type) && rightBottomCell.GetCounter() >= 2;
+        var isRightBottomWayFreeToSink = cell.GetCounter() >= SinkInCounter
+                                         && (IsEmpty(rightCell.Type) || IsLiquid(rightCell.Type) && rightCell.GetCounter() >= SinkInCounter)
+                                         && IsLiquid(rightBottomCell.Type) && rightBottomCell.GetCounter() >= SinkInCounter;
         
         if (isRightBottomWayFreeToSink)
         {
             return SetNewMaterialPositions(position, rightBottomCell, new Vector(position.X + 1, position.Y + 1), cell);
         }
 
-        var isLeftBottomWayFreeToSink = cell.GetCounter() >= 2 
-                                        && (IsEmpty(leftCell.Type) || IsLiquid(leftCell.Type) && leftCell.GetCounter() >= 2)
-                                        && IsLiquid(leftBottomCell.Type) && leftBottomCell.GetCounter() >= 2
+        var isLeftBottomWayFreeToSink = cell.GetCounter() >= SinkInCounter 
+                                        && (IsEmpty(leftCell.Type) || IsLiquid(leftCell.Type) && leftCell.GetCounter() >= SinkInCounter)
+                                        && IsLiquid(leftBottomCell.Type) && leftBottomCell.GetCounter() >= SinkInCounter
                                         && (IsSolidOrLiquidOrEmpty(leftOpponentCell.Type) || leftOpponentCell.IsMovingLeft());
         
         if (isLeftBottomWayFreeToSink)
