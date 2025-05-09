@@ -47,6 +47,7 @@ public partial class MainWindow : Window
     private Vector spawnPosition = new (0, 0);
     private Vector brushSize = new (10,10);
     private CellType actualSpawnType = CellType.Empty;
+    private CellType actualBrushType = CellType.Sand;
 
     private IList<long> generationTimes;
     private IList<long> renderingTimes;
@@ -113,6 +114,7 @@ public partial class MainWindow : Window
         cbUseProbability.IsCheckedChanged += cbUseProbability_IsCheckedChanged;
         cbEngine.SelectionChanged += cbEngine_SelectedIndexChanged;
         cbMaterial.SelectionChanged += cbMaterial_SelectedValueChanged;
+        cbUseMaterialForRandomPattern.IsCheckedChanged += cbUseMaterialForRandomPattern_IsCheckedChanged;
         
         btnStart.Click += startGameOfLive_Click;
         btnStop.Click += btnStop_Click;
@@ -129,6 +131,23 @@ public partial class MainWindow : Window
     private void cbUseProbability_IsCheckedChanged(object? sender, RoutedEventArgs e)
     {
         SetSpawnProbability();
+    }
+
+    private void cbUseMaterialForRandomPattern_IsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        SetActualBrushType(cbUseMaterialForRandomPattern.IsChecked.HasValue && cbUseMaterialForRandomPattern.IsChecked.Value);
+    }
+    
+    private void SetActualBrushType(bool isChecked)
+    {
+        if (isChecked)
+        {
+            actualBrushType = actualSpawnType;    
+        }
+        else
+        {
+            actualBrushType = CellType.Sand;
+        }
     }
 
     private void btnReset_Click(object? sender, RoutedEventArgs e)
@@ -204,6 +223,7 @@ public partial class MainWindow : Window
     private void SetSpawnType()
     {
         actualSpawnType = (CellType)cbMaterial.SelectedIndex;
+        SetActualBrushType(cbUseMaterialForRandomPattern.IsChecked.HasValue && cbUseMaterialForRandomPattern.IsChecked.Value);
     }
 
     private void processorCountSelector_ValueChanged(object? sender, EventArgs e)
@@ -559,7 +579,7 @@ public partial class MainWindow : Window
         switch (cbPattern.SelectedIndex)
         {
             case 0:
-                SandInitializer.Randomize(playGroundSand, maxDegreeOfParallelism, initializationProbability);
+                SandInitializer.Randomize(playGroundSand, maxDegreeOfParallelism, actualBrushType, initializationProbability);
                 break;
             case 1:
                 SandInitializer.GenerateSandHourglass(playGroundSand);

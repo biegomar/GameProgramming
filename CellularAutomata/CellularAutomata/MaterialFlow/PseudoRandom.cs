@@ -1,4 +1,6 @@
-﻿namespace CellularAutomata.MaterialFlow;
+﻿using System.Runtime.CompilerServices;
+
+namespace CellularAutomata.MaterialFlow;
 
 public class PseudoRandom
 {
@@ -15,6 +17,7 @@ public class PseudoRandom
         w ^= seed << 7;
     }
     
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public uint Next(uint max)
     {
         var t = x ^ (x << 11);
@@ -23,5 +26,6 @@ public class PseudoRandom
         return w % max;
     }
     
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Chance(int percent) => Next(100) < percent;
 }

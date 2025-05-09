@@ -24,7 +24,7 @@
                                Width="75"
                 />
                 <TextBlock x:Name="lblMaterial" Text="Material" VerticalAlignment="Center" Width="60"/>
-                <ComboBox x:Name="cbMaterial" HorizontalAlignment="Right" Width="100" SelectedIndex="0">
+                <ComboBox x:Name="cbMaterial" VerticalAlignment="Center" Width="100" SelectedIndex="0">
                     <ComboBox.Items>
                         <ComboBoxItem Content="Leer" />
                         <ComboBoxItem Content="Wand" />
@@ -35,9 +35,14 @@
                         <ComboBoxItem Content="Stein" />
                     </ComboBox.Items>
                 </ComboBox>
-                <Panel HorizontalAlignment="Left" Margin="5,0,5,0" Name="UsePanel">
-                    <CheckBox x:Name="cbUseProbability" Content="Wahrscheinlichkeit nutzen" VerticalAlignment="Center" IsChecked="True" Margin="5,0,0,0"/>
-                </Panel>
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Spacing="2"  Name="SpawnPanel3">
+                    <Panel HorizontalAlignment="Left" Margin="5,0,5,0" Name="UsePanel">
+                        <CheckBox x:Name="cbUseProbability" Content="Wahrscheinlichkeit nutzen" VerticalAlignment="Center" IsChecked="True" Margin="5,0,0,0"/>
+                    </Panel>
+                    <Panel HorizontalAlignment="Left" Margin="5,0,5,0" Name="UsePanel2">
+                        <CheckBox x:Name="cbUseMaterialForRandomPattern" Content="Material für Random nutzen" VerticalAlignment="Center" IsChecked="False" Margin="5,0,0,0"/>
+                    </Panel>
+                </StackPanel>    
             </StackPanel>
         </StackPanel>
         

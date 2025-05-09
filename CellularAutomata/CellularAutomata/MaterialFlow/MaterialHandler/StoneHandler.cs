@@ -1,10 +1,12 @@
-﻿using CellularAutomata.Cells;
+﻿using System.Runtime.CompilerServices;
+using CellularAutomata.Cells;
 using CellularAutomata.PlayGrounds;
 
 namespace CellularAutomata.MaterialFlow.MaterialHandler;
 
 public sealed class StoneHandler(Vector dimension, uint seed = 100) : BaseMaterialHandler(dimension, seed)
 {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override MaterialMovement? ApplyRules(PlayGround playGround, Vector position, Cell cell)
     {
         var bottomCell = GetCell(playGround, new Vector(position.X, position.Y + 1));
@@ -16,7 +18,7 @@ public sealed class StoneHandler(Vector dimension, uint seed = 100) : BaseMateri
         }
         
         // Last option: sink into liquid
-        var isBottomFreeToSink = IsLiquid(bottomCell.Type) && bottomCell.GetCounter() >= 2 && cell.GetCounter() >= 2;
+        var isBottomFreeToSink = IsLiquid(bottomCell.Type) && bottomCell.GetCounter() >= 2 && cell.GetCounter() >= SinkInCounter;
         if (isBottomFreeToSink)
         {
             return SetNewMaterialPositions(position, bottomCell, new Vector(position.X, position.Y + 1), cell);
