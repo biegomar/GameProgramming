@@ -101,6 +101,8 @@ public partial class MainWindow : Window
     private void SetProcessorCountSelectorMax()
     {
         processorCountSelector.Maximum = Environment.ProcessorCount;
+        processorCountSelector.Value = Environment.ProcessorCount;
+        SetMaxDegreeOfParallelism();
     }
 
     private void InitializeEventHandlers()
