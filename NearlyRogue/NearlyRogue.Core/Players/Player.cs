@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using NearlyRogue.Core.Amors;
+﻿using NearlyRogue.Core.Amors;
 using NearlyRogue.Core.Dices;
 using NearlyRogue.Core.FightSystems;
 using NearlyRogue.Core.Movement;
@@ -10,7 +9,7 @@ namespace NearlyRogue.Core.Players;
 
 public class Player<T> : ICreature<T>
 {
-    public required string Name { get; init; }
+    public string Name { get; init; }
     public uint Gold { get; set; }
     public ushort Experience { get; set; }
     public byte ExperienceLevel { get; set; }
@@ -23,7 +22,7 @@ public class Player<T> : ICreature<T>
     public IList<Weapon> Weapons { get; set; }
     public Armor? ActiveArmor { get; set; }
     public IList<Armor> Armors { get; set; }
-    public required IList<DiceThrow> Damage { get; init; }
+    public IList<DiceThrow> Damage { get; init; }
     public T Icon { get; set; }
 
     private readonly IExperienceCalculator<T> experienceCalculator;
